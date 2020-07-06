@@ -76,8 +76,10 @@
    <abstract>
       <t>JSONPath defines a string syntax for identifying values
    within a JavaScript Object Notation (JSON) document.</t>
-      <t><spanx style="strong">This document is a work in progress and has not yet been published as an Internet Draft.</spanx></t>
     </abstract>
+    <note>
+      <t><strong>This document is a work in progress and has not yet been published as an Internet Draft.</strong></t>
+    </note>
   </front>
 
    <!-- ***** MIDDLE MATTER ***** -->
