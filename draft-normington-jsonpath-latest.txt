@@ -16,6 +16,9 @@ Abstract
    JSONPath defines a string syntax for identifying values within a
    JavaScript Object Notation (JSON) document.
 
+   <spanx>:This document is a work in progress and has not yet been
+   published as an Internet Draft.
+
 Status of This Memo
 
    This Internet-Draft is submitted in full conformance with the
@@ -50,9 +53,6 @@ Copyright Notice
 
 
 
-
-
-
 Normington               Expires 7 January 2021                 [Page 1]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
@@ -64,13 +64,15 @@ Table of Contents
      1.1.  Requirements Language . . . . . . . . . . . . . . . . . .   2
      1.2.  ABNF Syntax . . . . . . . . . . . . . . . . . . . . . . .   2
    2.  JSONPath Syntax and Semantics . . . . . . . . . . . . . . . .   2
-   3.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   2
-   4.  Security Considerations . . . . . . . . . . . . . . . . . . .   3
-   5.  Alternatives  . . . . . . . . . . . . . . . . . . . . . . . .   3
-   6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   3
-     6.1.  Normative References  . . . . . . . . . . . . . . . . . .   3
-     6.2.  Informative References  . . . . . . . . . . . . . . . . .   3
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   4
+     2.1.  Node Matching Semantics . . . . . . . . . . . . . . . . .   2
+       2.1.1.  Basics  . . . . . . . . . . . . . . . . . . . . . . .   3
+   3.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   3
+   4.  Security Considerations . . . . . . . . . . . . . . . . . . .   4
+   5.  Alternatives  . . . . . . . . . . . . . . . . . . . . . . . .   4
+   6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   4
+     6.1.  Normative References  . . . . . . . . . . . . . . . . . .   4
+     6.2.  Informative References  . . . . . . . . . . . . . . . . .   4
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   5
 
 1.  Introduction
 
@@ -92,6 +94,62 @@ Table of Contents
 
 2.  JSONPath Syntax and Semantics
 
+2.1.  Node Matching Semantics
+
+   A JSONPath is a string which matches zero or more nodes of any JSON
+   document.
+
+
+
+
+
+
+
+
+
+
+
+Normington               Expires 7 January 2021                 [Page 2]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
+
+
+   A JSONPath is abstractly a sequence of matchers.  Each matcher takes
+   a list of nodes and produces a possibly different list of nodes.  The
+   initial list of nodes, consisting of just the root node of a given
+   JSON document, is passed to the first matcher of the sequence.  The
+   output from each matcher is passed to the next matcher in the
+   sequence, and so forth until the end of the sequence is reached.  The
+   list of nodes produced by the last matcher is the result of matching
+   the JSONPath to the given JSON document.
+
+   If the JSONPath is empty, this correspondds to an empty sequence of
+   matchers and matches the root node of the JSON document.  That is,
+   the result is a list consisting of just the root node of the JSON
+   document.
+
+   As a consequence, if any of the matchers matches no nodes, then the
+   whole JSONPath matches no nodes.
+
+   The semantics of each matcher are defined for each type of node.
+   Each node holds a JSON value (as defined by RFC 8259 [RFC8259]), that
+   is, an object, array, number, string, or one of the literals "true",
+   "false", or "null".
+
+2.1.1.  Basics
+
+   JSONPaths start by matching the root node of a JSON document.  There
+   is an explicit notation "$" for a matcher which matches just the root
+   node:
+
+   path = root subpath ;
+   root = %x24         ; $ matches the root node of a document
+
+   subpath = identity  ; see below for alternatives
+   identity = ""       ; matches all input nodes
+
+   Valid JSONPaths MUST conform to the grammar of "path".
+
 3.  IANA Considerations
 
    This memo includes no request to IANA.
@@ -107,9 +165,7 @@ Table of Contents
 
 
 
-
-
-Normington               Expires 7 January 2021                 [Page 2]
+Normington               Expires 7 January 2021                 [Page 3]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
 
@@ -165,7 +221,7 @@ Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
 
 
 
-Normington               Expires 7 January 2021                 [Page 3]
+Normington               Expires 7 January 2021                 [Page 4]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
 
@@ -221,4 +277,4 @@ Author's Address
 
 
 
-Normington               Expires 7 January 2021                 [Page 4]
+Normington               Expires 7 January 2021                 [Page 5]

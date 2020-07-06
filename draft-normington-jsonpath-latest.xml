@@ -105,7 +105,40 @@
       </section>
     </section>
    <section numbered="true" toc="default">
-      <name>JSONPath Syntax and Semantics</name>         
+      <name>JSONPath Syntax and Semantics</name>
+         <section numbered="true" toc="default">
+            <name>Node Matching Semantics</name>
+            <t>A JSONPath is a string which matches zero or more nodes of any JSON document.
+            </t>
+            <t>A JSONPath is abstractly a sequence of matchers. Each matcher takes a list of nodes and produces a possibly different list of nodes.
+               The initial list of nodes, consisting of just the root node of a given JSON document, is passed to the first matcher of the sequence.
+               The output from each matcher is passed to the next matcher in the sequence, and so forth until the end of the sequence is reached.
+               The list of nodes produced by the last matcher is the result of matching the JSONPath to the given JSON document.
+            </t>
+            <t>If the JSONPath is empty, this correspondds to an empty sequence of matchers and matches the root node of the JSON document.
+               That is, the result is a list consisting of just the root node of the JSON document.
+            </t>
+            <t>As a consequence, if any of the matchers matches no nodes, then the whole JSONPath matches no nodes.
+            </t>
+            <t>The semantics of each matcher are defined for each type of node. Each node holds a JSON value
+               (as defined by <xref target="RFC8259" format="default">RFC&nbsp;8259</xref>), that is, an object, array, number, string, or one
+               of the literals <tt>true</tt>, <tt>false</tt>, or <tt>null</tt>.
+            </t>
+            <section numbered="true" toc="default">
+               <name>Basics</name>
+               <t>JSONPaths start by matching the root node of a JSON document. There is an explicit notation <tt>$</tt> for a matcher which matches just the root node:
+               </t>
+               <sourcecode type="abnf">
+path = root subpath ; 
+root = %x24         ; $ matches the root node of a document
+
+subpath = identity  ; see below for alternatives
+identity = ""       ; matches all input nodes
+               </sourcecode>
+               <t>Valid JSONPaths MUST conform to the grammar of <tt>path</tt>.
+               </t>
+         </section>
+         </section>       
    </section>
    <section anchor="IANA" numbered="true" toc="default">
       <name>IANA Considerations</name>
