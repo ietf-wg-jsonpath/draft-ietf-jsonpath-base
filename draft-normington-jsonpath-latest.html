@@ -1107,7 +1107,7 @@ dd.break {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Normington</td>
-<td class="center">Expires 7 January 2021</td>
+<td class="center">Expires 10 January 2021</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1120,12 +1120,12 @@ dd.break {
 <dd class="internet-draft">draft-normington-jsonpath-00</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2020-07-06" class="published">6 July 2020</time>
+<time datetime="2020-07-09" class="published">9 July 2020</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2021-01-07">7 January 2021</time></dd>
+<dd class="expires"><time datetime="2021-01-10">10 January 2021</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1164,7 +1164,7 @@ dd.break {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 7 January 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 10 January 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1208,12 +1208,19 @@ dd.break {
             <p id="section-toc.1-1.2.1"><a href="#section-2" class="xref">2</a>.  <a href="#name-jsonpath-syntax-and-semantic" class="xref">JSONPath Syntax and Semantics</a><a href="#section-toc.1-1.2.1" class="pilcrow">¶</a></p>
 <ul class="toc ulEmpty">
 <li class="toc ulEmpty" id="section-toc.1-1.2.2.1">
-                <p id="section-toc.1-1.2.2.1.1"><a href="#section-2.1" class="xref">2.1</a>.  <a href="#name-node-matching-semantics-2" class="xref">Node Matching Semantics</a><a href="#section-toc.1-1.2.2.1.1" class="pilcrow">¶</a></p>
-<ul class="toc ulEmpty">
-<li class="toc ulEmpty" id="section-toc.1-1.2.2.1.2.1">
-                    <p id="section-toc.1-1.2.2.1.2.1.1"><a href="#section-2.1.1" class="xref">2.1.1</a>.  <a href="#name-basics-2" class="xref">Basics</a><a href="#section-toc.1-1.2.2.1.2.1.1" class="pilcrow">¶</a></p>
+                <p id="section-toc.1-1.2.2.1.1"><a href="#section-2.1" class="xref">2.1</a>.  <a href="#name-overview-2" class="xref">Overview</a><a href="#section-toc.1-1.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-</ul>
+<li class="toc ulEmpty" id="section-toc.1-1.2.2.2">
+                <p id="section-toc.1-1.2.2.2.1"><a href="#section-2.2" class="xref">2.2</a>.  <a href="#name-terminology-2" class="xref">Terminology</a><a href="#section-toc.1-1.2.2.2.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.2.2.3">
+                <p id="section-toc.1-1.2.2.3.1"><a href="#section-2.3" class="xref">2.3</a>.  <a href="#name-implementation-2" class="xref">Implementation</a><a href="#section-toc.1-1.2.2.3.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.2.2.4">
+                <p id="section-toc.1-1.2.2.4.1"><a href="#section-2.4" class="xref">2.4</a>.  <a href="#name-syntax-2" class="xref">Syntax</a><a href="#section-toc.1-1.2.2.4.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.2.2.5">
+                <p id="section-toc.1-1.2.2.5.1"><a href="#section-2.5" class="xref">2.5</a>.  <a href="#name-semantics-2" class="xref">Semantics</a><a href="#section-toc.1-1.2.2.5.1" class="pilcrow">¶</a></p>
 </li>
 </ul>
 </li>
@@ -1271,36 +1278,68 @@ dd.break {
 <a href="#section-2" class="section-number selfRef">2. </a><a href="#name-jsonpath-syntax-and-semantic" class="section-name selfRef">JSONPath Syntax and Semantics</a>
       </h2>
 <section id="section-2.1">
-        <h3 id="name-node-matching-semantics-2">
-<a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-node-matching-semantics-2" class="section-name selfRef">Node Matching Semantics</a>
+        <h3 id="name-overview-2">
+<a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-overview-2" class="section-name selfRef">Overview</a>
         </h3>
-<p id="section-2.1-1">A JSONPath is a string which matches zero or more nodes of any JSON document.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
-<p id="section-2.1-2">A JSONPath is abstractly a sequence of matchers. Each matcher takes a list of nodes and produces a possibly different list of nodes.
-               The initial list of nodes, consisting of just the root node of a given JSON document, is passed to the first matcher of the sequence.
-               The output from each matcher is passed to the next matcher in the sequence, and so forth until the end of the sequence is reached.
-               The list of nodes produced by the last matcher is the result of matching the JSONPath to the given JSON document.<a href="#section-2.1-2" class="pilcrow">¶</a></p>
-<p id="section-2.1-3">If the JSONPath is empty, this correspondds to an empty sequence of matchers and matches the root node of the JSON document.
-               That is, the result is a list consisting of just the root node of the JSON document.<a href="#section-2.1-3" class="pilcrow">¶</a></p>
-<p id="section-2.1-4">As a consequence, if any of the matchers matches no nodes, then the whole JSONPath matches no nodes.<a href="#section-2.1-4" class="pilcrow">¶</a></p>
-<p id="section-2.1-5">The semantics of each matcher are defined for each type of node. Each node holds a JSON value
-               (as defined by <span><a href="#RFC8259" class="xref">RFC 8259</a> [<a href="#RFC8259" class="xref">RFC8259</a>]</span>), that is, an object, array, number, string, or one
-               of the literals <code>true</code>, <code>false</code>, or <code>null</code>.<a href="#section-2.1-5" class="pilcrow">¶</a></p>
-<section id="section-2.1.1">
-          <h4 id="name-basics-2">
-<a href="#section-2.1.1" class="section-number selfRef">2.1.1. </a><a href="#name-basics-2" class="section-name selfRef">Basics</a>
-          </h4>
-<p id="section-2.1.1-1">JSONPaths start by matching the root node of a JSON document. There is an explicit notation <code>$</code> for a matcher which matches just the root node:<a href="#section-2.1.1-1" class="pilcrow">¶</a></p>
-<div id="section-2.1.1-2">
-<pre class="sourcecode lang-abnf">
-path = root subpath ;
-root = %x24         ; $ matches the root node of a document
-
-subpath = identity  ; see below for alternatives
-identity = ""       ; matches all input nodes
-</pre><a href="#section-2.1.1-2" class="pilcrow">¶</a>
-</div>
-<p id="section-2.1.1-3">Valid JSONPaths MUST conform to the grammar of <code>path</code>.<a href="#section-2.1.1-3" class="pilcrow">¶</a></p>
+<p id="section-2.1-1">A JSONPath is a string which matches zero or more nodes of any JSON document. A valid JSONPath conforms to the ABNF syntax defined by this document.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
 </section>
+<section id="section-2.2">
+        <h3 id="name-terminology-2">
+<a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-terminology-2" class="section-name selfRef">Terminology</a>
+        </h3>
+<p id="section-2.2-1">A JSON document is logically a tree of nodes with the document as the root node of the tree.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
+<p id="section-2.2-2">Each node holds a JSON value (as defined by <span><a href="#RFC8259" class="xref">RFC 8259</a> [<a href="#RFC8259" class="xref">RFC8259</a>]</span>) of one of the types object, array, number, string, or one
+               of the literals <code>true</code>, <code>false</code>, or <code>null</code>. The type of the JSON value held by a node is sometimes referred to as the type of the node.<a href="#section-2.2-2" class="pilcrow">¶</a></p>
+<p id="section-2.2-3">The descendants of a node are taken to include the node itself and the descendants of any children of the node.<a href="#section-2.2-3" class="pilcrow">¶</a></p>
+</section>
+<section id="section-2.3">
+        <h3 id="name-implementation-2">
+<a href="#section-2.3" class="section-number selfRef">2.3. </a><a href="#name-implementation-2" class="section-name selfRef">Implementation</a>
+        </h3>
+<p id="section-2.3-1">An implementation of this specification, from now on referred to simply as "an implementation", SHOULD takes two inputs, a JSONPath and a JSON document, and produce
+               a possibly empty list of nodes of the JSON document which match the JSONPath or an error (but not both).<a href="#section-2.3-1" class="pilcrow">¶</a></p>
+<p id="section-2.3-2">If there is no matching node and no error has occurred, an implementation MUST return an empty list of nodes.<a href="#section-2.3-2" class="pilcrow">¶</a></p>
+<p id="section-2.3-3">Syntax errors in the JSONPath SHOULD be detected before matching is attempted since they do not depend on the JSON document.
+               Therefore, an implementation SHOULD take a JSONPath and produce an optional syntax error and then,
+               if and only if an error was not produced, SHOULD take a JSON document and produce a list of matches or an error (but not both).<a href="#section-2.3-3" class="pilcrow">¶</a></p>
+<p id="section-2.3-4">Alternatively, an implementation MAY take a JSONPath and a JSON document and produce a list of matches or an optional error (but not both).<a href="#section-2.3-4" class="pilcrow">¶</a></p>
+<p id="section-2.3-5">For any implementation, if a syntactically invalid JSONPath is provided, the implementation MUST return an error.<a href="#section-2.3-5" class="pilcrow">¶</a></p>
+<p id="section-2.3-6">If a syntactially invalid JSON document is provided, any implementation SHOULD return an error.<a href="#section-2.3-6" class="pilcrow">¶</a></p>
+</section>
+<section id="section-2.4">
+        <h3 id="name-syntax-2">
+<a href="#section-2.4" class="section-number selfRef">2.4. </a><a href="#name-syntax-2" class="section-name selfRef">Syntax</a>
+        </h3>
+<p id="section-2.4-1">Syntactically, a JSONPath consists of a root selector (<code>$</code>), which selects the root node of a JSON document, followed by a possibly empty sequence of <em>matchers</em>.<a href="#section-2.4-1" class="pilcrow">¶</a></p>
+<div id="section-2.4-2">
+<pre class="sourcecode lang-abnf">
+json-path = root-selector *matcher
+root-selector = %x24               ; $ selects document root node
+</pre><a href="#section-2.4-2" class="pilcrow">¶</a>
+</div>
+<p id="section-2.4-3">The syntax and semantics of each matcher is defined below.<a href="#section-2.4-3" class="pilcrow">¶</a></p>
+</section>
+<section id="section-2.5">
+        <h3 id="name-semantics-2">
+<a href="#section-2.5" class="section-number selfRef">2.5. </a><a href="#name-semantics-2" class="section-name selfRef">Semantics</a>
+        </h3>
+<p id="section-2.5-1">The root selector <code>$</code> not only selects the root node of the input document, but it produces as output a list consisting of one node: the input document.<a href="#section-2.5-1" class="pilcrow">¶</a></p>
+<p id="section-2.5-2">After the root selector, the remainder of the JSONPath passes lists of nodes from one matcher to the next ending up with a list of nodes which is the result of
+               matching the JSONPath to the input JSON document.<a href="#section-2.5-2" class="pilcrow">¶</a></p>
+<p id="section-2.5-3">Each matcher acts on its input list of nodes as follows. For each node in the list, the matcher matches zero or more descendants of the node.
+               The output list of nodes of a matcher is the concatenation of the lists of matching descendents for each input node.<a href="#section-2.5-3" class="pilcrow">¶</a></p>
+<p id="section-2.5-4">A specific, non-normative example will make this clearer. Suppose the input document is: <code>{"a":[{"b":0},{"b":1},{"b":2}]}</code>. As we will see later, the JSONPath
+               <code>$.a[*].b</code> produces the following list of matching nodes: <code>0</code>, <code>1</code>, <code>2</code>. Let's walk through this in detail.<a href="#section-2.5-4" class="pilcrow">¶</a></p>
+<p id="section-2.5-5">The JSONPath consists of <code>$</code> followed by three matchers: <code>.a</code>, <code>[*]</code>, and <code>.b</code>.<a href="#section-2.5-5" class="pilcrow">¶</a></p>
+<p id="section-2.5-6">Firstly, <code>$</code> matches the input document and produces a list of one node: the input document.<a href="#section-2.5-6" class="pilcrow">¶</a></p>
+<p id="section-2.5-7">Next, <code>.a</code> matches any values of input nodes (which are objects) corresponding to the key <code>"a"</code>.
+               The result is again a list of one node: <code>[{"b":0},{"b":1},{"b":2}]</code>.<a href="#section-2.5-7" class="pilcrow">¶</a></p>
+<p id="section-2.5-8">Next, <code>[*]</code> matches all the elements of input nodes which are arrays.
+               The result is a list of three nodes: <code>{"b":0}</code>, <code>{"b":1}</code>, and <code>{"b":2}</code>.<a href="#section-2.5-8" class="pilcrow">¶</a></p>
+<p id="section-2.5-9">Finally, <code>.b</code> matches any values of input nodes (which are objects) corresponding to the key <code>"b"</code>.
+               The result is the concatenation of three lists each of length one containing <code>0</code>, <code>1</code>, <code>2</code>, respectively.<a href="#section-2.5-9" class="pilcrow">¶</a></p>
+<p id="section-2.5-10">As a consequence of this approach, if any of the matchers matches no nodes, then the whole JSONPath matches no nodes.<a href="#section-2.5-10" class="pilcrow">¶</a></p>
+<p id="section-2.5-11">In what follows, the semantics of each matcher are defined for each type of node.<a href="#section-2.5-11" class="pilcrow">¶</a></p>
 </section>
 </section>
 <div id="IANA">

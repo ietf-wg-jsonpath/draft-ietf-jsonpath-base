@@ -109,37 +109,79 @@
    <section numbered="true" toc="default">
       <name>JSONPath Syntax and Semantics</name>
          <section numbered="true" toc="default">
-            <name>Node Matching Semantics</name>
-            <t>A JSONPath is a string which matches zero or more nodes of any JSON document.
+            <name>Overview</name>
+            <t>A JSONPath is a string which matches zero or more nodes of any JSON document. A valid JSONPath conforms to the ABNF syntax defined by this document.
             </t>
-            <t>A JSONPath is abstractly a sequence of matchers. Each matcher takes a list of nodes and produces a possibly different list of nodes.
-               The initial list of nodes, consisting of just the root node of a given JSON document, is passed to the first matcher of the sequence.
-               The output from each matcher is passed to the next matcher in the sequence, and so forth until the end of the sequence is reached.
-               The list of nodes produced by the last matcher is the result of matching the JSONPath to the given JSON document.
-            </t>
-            <t>If the JSONPath is empty, this correspondds to an empty sequence of matchers and matches the root node of the JSON document.
-               That is, the result is a list consisting of just the root node of the JSON document.
-            </t>
-            <t>As a consequence, if any of the matchers matches no nodes, then the whole JSONPath matches no nodes.
-            </t>
-            <t>The semantics of each matcher are defined for each type of node. Each node holds a JSON value
-               (as defined by <xref target="RFC8259" format="default">RFC&nbsp;8259</xref>), that is, an object, array, number, string, or one
-               of the literals <tt>true</tt>, <tt>false</tt>, or <tt>null</tt>.
-            </t>
-            <section numbered="true" toc="default">
-               <name>Basics</name>
-               <t>JSONPaths start by matching the root node of a JSON document. There is an explicit notation <tt>$</tt> for a matcher which matches just the root node:
-               </t>
-               <sourcecode type="abnf">
-path = root subpath ; 
-root = %x24         ; $ matches the root node of a document
-
-subpath = identity  ; see below for alternatives
-identity = ""       ; matches all input nodes
-               </sourcecode>
-               <t>Valid JSONPaths MUST conform to the grammar of <tt>path</tt>.
-               </t>
          </section>
+         <section numbered="true" toc="default">
+            <name>Terminology</name>
+            <t>A JSON document is logically a tree of nodes with the document as the root node of the tree.
+            </t>
+            <t>Each node holds a JSON value (as defined by <xref target="RFC8259" format="default">RFC&nbsp;8259</xref>) of one of the types object, array, number, string, or one
+               of the literals <tt>true</tt>, <tt>false</tt>, or <tt>null</tt>. The type of the JSON value held by a node is sometimes referred to as the type of the node.
+            </t>
+            <t>The descendants of a node are taken to include the node itself and the descendants of any children of the node.
+            </t>
+         </section>
+         <section numbered="true" toc="default">
+            <name>Implementation</name>
+            <t>An implementation of this specification, from now on referred to simply as "an implementation", SHOULD takes two inputs, a JSONPath and a JSON document, and produce
+               a possibly empty list of nodes of the JSON document which match the JSONPath or an error (but not both).
+            </t>
+            <t>If there is no matching node and no error has occurred, an implementation MUST return an empty list of nodes.
+            </t>
+            <t>Syntax errors in the JSONPath SHOULD be detected before matching is attempted since they do not depend on the JSON document.
+               Therefore, an implementation SHOULD take a JSONPath and produce an optional syntax error and then,
+               if and only if an error was not produced, SHOULD take a JSON document and produce a list of matches or an error (but not both).
+            </t>
+            <t>Alternatively, an implementation MAY take a JSONPath and a JSON document and produce a list of matches or an optional error (but not both).
+            </t>
+            <t>For any implementation, if a syntactically invalid JSONPath is provided, the implementation MUST return an error.
+            </t>
+            <t>If a syntactially invalid JSON document is provided, any implementation SHOULD return an error.
+            </t>
+         </section>
+         <section numbered="true" toc="default">
+            <name>Syntax</name>
+            <t>Syntactically, a JSONPath consists of a root selector (<tt>$</tt>), which selects the root node of a JSON document, followed by a possibly empty sequence of <em>matchers</em>.
+            </t>
+            <sourcecode type="abnf">
+json-path = root-selector *matcher
+root-selector = %x24               ; $ selects document root node
+            </sourcecode>
+            <t>The syntax and semantics of each matcher is defined below.
+            </t>
+         </section>
+         <section numbered="true" toc="default">
+            <name>Semantics</name>
+            <t>The root selector <tt>$</tt> not only selects the root node of the input document, but it produces as output a list consisting of one node: the input document.
+            </t>
+            <t>After the root selector, the remainder of the JSONPath passes lists of nodes from one matcher to the next ending up with a list of nodes which is the result of
+               matching the JSONPath to the input JSON document.
+            </t>
+            <t>Each matcher acts on its input list of nodes as follows. For each node in the list, the matcher matches zero or more descendants of the node.
+               The output list of nodes of a matcher is the concatenation of the lists of matching descendents for each input node. 
+            </t>
+            <t>A specific, non-normative example will make this clearer. Suppose the input document is: <tt>{"a":[{"b":0},{"b":1},{"b":2}]}</tt>. As we will see later, the JSONPath
+               <tt>$.a[*].b</tt> produces the following list of matching nodes: <tt>0</tt>, <tt>1</tt>, <tt>2</tt>. Let's walk through this in detail.
+            </t>
+            <t>The JSONPath consists of <tt>$</tt> followed by three matchers: <tt>.a</tt>, <tt>[*]</tt>, and <tt>.b</tt>.
+            </t>
+            <t>Firstly, <tt>$</tt> matches the input document and produces a list of one node: the input document.
+            </t>
+            <t>Next, <tt>.a</tt> matches any values of input nodes (which are objects) corresponding to the key <tt>"a"</tt>.
+               The result is again a list of one node: <tt>[{"b":0},{"b":1},{"b":2}]</tt>.
+            </t>
+            <t>Next, <tt>[*]</tt> matches all the elements of input nodes which are arrays.
+               The result is a list of three nodes: <tt>{"b":0}</tt>, <tt>{"b":1}</tt>, and <tt>{"b":2}</tt>. 
+            </t>
+            <t>Finally, <tt>.b</tt> matches any values of input nodes (which are objects) corresponding to the key <tt>"b"</tt>.
+               The result is the concatenation of three lists each of length one containing <tt>0</tt>, <tt>1</tt>, <tt>2</tt>, respectively.
+            </t>
+            <t>As a consequence of this approach, if any of the matchers matches no nodes, then the whole JSONPath matches no nodes.
+            </t>
+            <t>In what follows, the semantics of each matcher are defined for each type of node.
+            </t>
          </section>       
    </section>
    <section anchor="IANA" numbered="true" toc="default">

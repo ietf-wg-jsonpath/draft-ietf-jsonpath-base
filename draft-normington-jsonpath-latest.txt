@@ -4,8 +4,8 @@
 
 Internet Engineering Task Force                       G. Normington, Ed.
 Internet-Draft                                              VMware, Inc.
-Intended status: Standards Track                             6 July 2020
-Expires: 7 January 2021
+Intended status: Standards Track                             9 July 2020
+Expires: 10 January 2021
 
 
                  JavaScript Object Notation (JSON) Path
@@ -36,7 +36,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 January 2021.
+   This Internet-Draft will expire on 10 January 2021.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Normington               Expires 7 January 2021                 [Page 1]
+Normington               Expires 10 January 2021                [Page 1]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
 
@@ -73,15 +73,18 @@ Table of Contents
      1.1.  Requirements Language . . . . . . . . . . . . . . . . . .   2
      1.2.  ABNF Syntax . . . . . . . . . . . . . . . . . . . . . . .   2
    2.  JSONPath Syntax and Semantics . . . . . . . . . . . . . . . .   2
-     2.1.  Node Matching Semantics . . . . . . . . . . . . . . . . .   3
-       2.1.1.  Basics  . . . . . . . . . . . . . . . . . . . . . . .   3
-   3.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   3
-   4.  Security Considerations . . . . . . . . . . . . . . . . . . .   4
-   5.  Alternatives  . . . . . . . . . . . . . . . . . . . . . . . .   4
-   6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   4
-     6.1.  Normative References  . . . . . . . . . . . . . . . . . .   4
-     6.2.  Informative References  . . . . . . . . . . . . . . . . .   4
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   5
+     2.1.  Overview  . . . . . . . . . . . . . . . . . . . . . . . .   3
+     2.2.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   3
+     2.3.  Implementation  . . . . . . . . . . . . . . . . . . . . .   3
+     2.4.  Syntax  . . . . . . . . . . . . . . . . . . . . . . . . .   4
+     2.5.  Semantics . . . . . . . . . . . . . . . . . . . . . . . .   4
+   3.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   5
+   4.  Security Considerations . . . . . . . . . . . . . . . . . . .   5
+   5.  Alternatives  . . . . . . . . . . . . . . . . . . . . . . . .   5
+   6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   5
+     6.1.  Normative References  . . . . . . . . . . . . . . . . . .   5
+     6.2.  Informative References  . . . . . . . . . . . . . . . . .   5
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   6
 
 1.  Introduction
 
@@ -106,54 +109,133 @@ Table of Contents
 
 
 
-
-
-
-Normington               Expires 7 January 2021                 [Page 2]
+Normington               Expires 10 January 2021                [Page 2]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
 
 
-2.1.  Node Matching Semantics
+2.1.  Overview
 
    A JSONPath is a string which matches zero or more nodes of any JSON
+   document.  A valid JSONPath conforms to the ABNF syntax defined by
+   this document.
+
+2.2.  Terminology
+
+   A JSON document is logically a tree of nodes with the document as the
+   root node of the tree.
+
+   Each node holds a JSON value (as defined by RFC 8259 [RFC8259]) of
+   one of the types object, array, number, string, or one of the
+   literals "true", "false", or "null".  The type of the JSON value held
+   by a node is sometimes referred to as the type of the node.
+
+   The descendants of a node are taken to include the node itself and
+   the descendants of any children of the node.
+
+2.3.  Implementation
+
+   An implementation of this specification, from now on referred to
+   simply as "an implementation", SHOULD takes two inputs, a JSONPath
+   and a JSON document, and produce a possibly empty list of nodes of
+   the JSON document which match the JSONPath or an error (but not
+   both).
+
+   If there is no matching node and no error has occurred, an
+   implementation MUST return an empty list of nodes.
+
+   Syntax errors in the JSONPath SHOULD be detected before matching is
+   attempted since they do not depend on the JSON document.  Therefore,
+   an implementation SHOULD take a JSONPath and produce an optional
+   syntax error and then, if and only if an error was not produced,
+   SHOULD take a JSON document and produce a list of matches or an error
+   (but not both).
+
+   Alternatively, an implementation MAY take a JSONPath and a JSON
+   document and produce a list of matches or an optional error (but not
+   both).
+
+   For any implementation, if a syntactically invalid JSONPath is
+   provided, the implementation MUST return an error.
+
+   If a syntactially invalid JSON document is provided, any
+   implementation SHOULD return an error.
+
+
+
+
+
+Normington               Expires 10 January 2021                [Page 3]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
+
+
+2.4.  Syntax
+
+   Syntactically, a JSONPath consists of a root selector ("$"), which
+   selects the root node of a JSON document, followed by a possibly
+   empty sequence of _matchers_.
+
+   json-path = root-selector *matcher
+   root-selector = %x24               ; $ selects document root node
+
+   The syntax and semantics of each matcher is defined below.
+
+2.5.  Semantics
+
+   The root selector "$" not only selects the root node of the input
+   document, but it produces as output a list consisting of one node:
+   the input document.
+
+   After the root selector, the remainder of the JSONPath passes lists
+   of nodes from one matcher to the next ending up with a list of nodes
+   which is the result of matching the JSONPath to the input JSON
    document.
 
-   A JSONPath is abstractly a sequence of matchers.  Each matcher takes
-   a list of nodes and produces a possibly different list of nodes.  The
-   initial list of nodes, consisting of just the root node of a given
-   JSON document, is passed to the first matcher of the sequence.  The
-   output from each matcher is passed to the next matcher in the
-   sequence, and so forth until the end of the sequence is reached.  The
-   list of nodes produced by the last matcher is the result of matching
-   the JSONPath to the given JSON document.
+   Each matcher acts on its input list of nodes as follows.  For each
+   node in the list, the matcher matches zero or more descendants of the
+   node.  The output list of nodes of a matcher is the concatenation of
+   the lists of matching descendents for each input node.
 
-   If the JSONPath is empty, this correspondds to an empty sequence of
-   matchers and matches the root node of the JSON document.  That is,
-   the result is a list consisting of just the root node of the JSON
-   document.
+   A specific, non-normative example will make this clearer.  Suppose
+   the input document is: "{"a":[{"b":0},{"b":1},{"b":2}]}".  As we will
+   see later, the JSONPath "$.a[*].b" produces the following list of
+   matching nodes: "0", "1", "2".  Let's walk through this in detail.
 
-   As a consequence, if any of the matchers matches no nodes, then the
-   whole JSONPath matches no nodes.
+   The JSONPath consists of "$" followed by three matchers: ".a", "[*]",
+   and ".b".
 
-   The semantics of each matcher are defined for each type of node.
-   Each node holds a JSON value (as defined by RFC 8259 [RFC8259]), that
-   is, an object, array, number, string, or one of the literals "true",
-   "false", or "null".
+   Firstly, "$" matches the input document and produces a list of one
+   node: the input document.
 
-2.1.1.  Basics
+   Next, ".a" matches any values of input nodes (which are objects)
+   corresponding to the key ""a"".  The result is again a list of one
+   node: "[{"b":0},{"b":1},{"b":2}]".
 
-   JSONPaths start by matching the root node of a JSON document.  There
-   is an explicit notation "$" for a matcher which matches just the root
-   node:
+   Next, "[*]" matches all the elements of input nodes which are arrays.
+   The result is a list of three nodes: "{"b":0}", "{"b":1}", and
+   "{"b":2}".
 
-   path = root subpath ;
-   root = %x24         ; $ matches the root node of a document
 
-   subpath = identity  ; see below for alternatives
-   identity = ""       ; matches all input nodes
 
-   Valid JSONPaths MUST conform to the grammar of "path".
+
+
+
+Normington               Expires 10 January 2021                [Page 4]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
+
+
+   Finally, ".b" matches any values of input nodes (which are objects)
+   corresponding to the key ""b"".  The result is the concatenation of
+   three lists each of length one containing "0", "1", "2",
+   respectively.
+
+   As a consequence of this approach, if any of the matchers matches no
+   nodes, then the whole JSONPath matches no nodes.
+
+   In what follows, the semantics of each matcher are defined for each
+   type of node.
 
 3.  IANA Considerations
 
@@ -162,14 +244,6 @@ Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
    All drafts are required to have an IANA considerations section (see
    Guidelines for Writing an IANA Considerations Section in RFCs
    [RFC5226] for a guide).  If the draft does not require IANA to do
-
-
-
-Normington               Expires 7 January 2021                 [Page 3]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
-
-
    anything, the section contains an explicit statement that this is the
    case (as above).  If there are no requirements for IANA, the section
    will be removed during conversion into an RFC by the RFC Editor.
@@ -200,6 +274,14 @@ Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
 
 6.2.  Informative References
 
+
+
+
+Normington               Expires 10 January 2021                [Page 5]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
+
+
    [Goessner] Stefan Gössner, "JSONPath - XPath for JSON", February
               2007, <https://goessner.net/articles/JsonPath/>.
 
@@ -217,14 +299,6 @@ Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
               "JavaScript Object Notation (JSON) Pointer", RFC 6901,
               DOI 10.17487/RFC6901, April 2013,
               <https://www.rfc-editor.org/info/rfc6901>.
-
-
-
-
-Normington               Expires 7 January 2021                 [Page 4]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
-
 
    [RFC8259]  Bray, T., Ed., "The JavaScript Object Notation (JSON) Data
               Interchange Format", STD 90, RFC 8259,
@@ -259,22 +333,4 @@ Author's Address
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Normington               Expires 7 January 2021                 [Page 5]
+Normington               Expires 10 January 2021                [Page 6]
