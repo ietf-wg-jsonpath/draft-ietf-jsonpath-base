@@ -39,3 +39,5 @@ Re-generate the `.txt` and `.html` files, check the ABNF syntax, and copy the HT
 ```
 xml2rfc ./draft-normington-jsonpath-latest.xml --text --html && aex draft-normington-jsonpath-latest.txt | bap -S path -q && cp draft-normington-jsonpath-latest.html docs/index.html
 ```
+
+A script [gen.sh](scripts/gen.sh) is provided for convenience.
