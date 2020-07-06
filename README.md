@@ -14,11 +14,11 @@ implementation which will inform the Internet Draft.
 Informal discussions happen in slack. If you would like to join in, here is an
 [invitation](https://join.slack.com/t/jsonpath-standard/shared_invite/zt-fp521hp0-D7gmDcmOMK4UkrRRug~SQQ).
 
-## License
+## License
 
 See the draft for the copyright which is repeated in [LICENSE](./LICENSE).
 
-## Authoring
+## Authoring
 
 The source of the Internet Draft is in XML and corresponding `.txt` and `.html` files are generated and checked in.
 
