@@ -24,7 +24,7 @@ The source of the Internet Draft is in XML and corresponding `.txt` and `.html` 
 
 So that the HTML version can be viewed via github pages, it is copied to `docs/index.html`.
 
-See [RFC 7749](https://tools.ietf.org/html/rfc7749) for rfc XML syntax information.
+See [RFC 7991](https://tools.ietf.org/html/rfc7991) for rfc XML syntax information.
 
 The XML document was created from this [template](https://tools.ietf.org/tools/templates/draft-davies-template-bare-07.xml).
 
@@ -39,3 +39,5 @@ Re-generate the `.txt` and `.html` files, check the ABNF syntax, and copy the HT
 ```
 xml2rfc ./draft-normington-jsonpath-latest.xml --text --html && aex draft-normington-jsonpath-latest.txt | bap -S path -q && cp draft-normington-jsonpath-latest.html docs/index.html
 ```
+
+A script [gen.sh](scripts/gen.sh) is provided for convenience.
