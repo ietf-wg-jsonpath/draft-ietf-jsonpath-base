@@ -4,8 +4,8 @@
 
 Internet Engineering Task Force                       G. Normington, Ed.
 Internet-Draft                                              VMware, Inc.
-Intended status: Standards Track                             9 July 2020
-Expires: 10 January 2021
+Intended status: Standards Track                            14 July 2020
+Expires: 15 January 2021
 
 
                  JavaScript Object Notation (JSON) Path
@@ -36,7 +36,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 10 January 2021.
+   This Internet-Draft will expire on 15 January 2021.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Normington               Expires 10 January 2021                [Page 1]
+Normington               Expires 15 January 2021                [Page 1]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
 
@@ -72,19 +72,21 @@ Table of Contents
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
      1.1.  Requirements Language . . . . . . . . . . . . . . . . . .   2
      1.2.  ABNF Syntax . . . . . . . . . . . . . . . . . . . . . . .   2
-   2.  JSONPath Syntax and Semantics . . . . . . . . . . . . . . . .   2
+   2.  JSONPath Syntax and Semantics . . . . . . . . . . . . . . . .   3
      2.1.  Overview  . . . . . . . . . . . . . . . . . . . . . . . .   3
      2.2.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   3
      2.3.  Implementation  . . . . . . . . . . . . . . . . . . . . .   3
      2.4.  Syntax  . . . . . . . . . . . . . . . . . . . . . . . . .   4
      2.5.  Semantics . . . . . . . . . . . . . . . . . . . . . . . .   4
-   3.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   5
-   4.  Security Considerations . . . . . . . . . . . . . . . . . . .   5
-   5.  Alternatives  . . . . . . . . . . . . . . . . . . . . . . . .   5
-   6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   5
-     6.1.  Normative References  . . . . . . . . . . . . . . . . . .   5
-     6.2.  Informative References  . . . . . . . . . . . . . . . . .   5
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   6
+     2.6.  Matchers  . . . . . . . . . . . . . . . . . . . . . . . .   5
+       2.6.1.  Dot Child Matcher . . . . . . . . . . . . . . . . . .   5
+   3.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   6
+   4.  Security Considerations . . . . . . . . . . . . . . . . . . .   6
+   5.  Alternatives  . . . . . . . . . . . . . . . . . . . . . . . .   6
+   6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   6
+     6.1.  Normative References  . . . . . . . . . . . . . . . . . .   6
+     6.2.  Informative References  . . . . . . . . . . . . . . . . .   6
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   7
 
 1.  Introduction
 
@@ -104,15 +106,15 @@ Table of Contents
    The syntax in this document conforms to ABNF as defined by RFC 5234
    [RFC5234].
 
-2.  JSONPath Syntax and Semantics
 
 
 
-
-Normington               Expires 10 January 2021                [Page 2]
+Normington               Expires 15 January 2021                [Page 2]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
 
+
+2.  JSONPath Syntax and Semantics
 
 2.1.  Overview
 
@@ -163,9 +165,7 @@ Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
 
 
 
-
-
-Normington               Expires 10 January 2021                [Page 3]
+Normington               Expires 15 January 2021                [Page 3]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
 
@@ -184,58 +184,103 @@ Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
 2.5.  Semantics
 
    The root selector "$" not only selects the root node of the input
-   document, but it produces as output a list consisting of one node:
-   the input document.
+   document, but it also produces as output a list consisting of one
+   node: the input document.
 
-   After the root selector, the remainder of the JSONPath passes lists
-   of nodes from one matcher to the next ending up with a list of nodes
-   which is the result of matching the JSONPath to the input JSON
-   document.
+   A matcher may match a node and, if it matches, may then select zero
+   or more descendants of the node for further processing.  But there's
+   more to it than this: each matcher acts on a list of nodes and
+   produces a list of nodes, as follows.
+
+   After the root selector, the remainder of the JSONPath is processed
+   by passing lists of nodes from one matcher to the next ending up with
+   a list of nodes which is the result of matching the JSONPath to the
+   input JSON document.
 
    Each matcher acts on its input list of nodes as follows.  For each
-   node in the list, the matcher matches zero or more descendants of the
+   node in the list, the matcher may or may not match the node.  If the
+   matcher matches the node, it selects zero or more descendants of the
    node.  The output list of nodes of a matcher is the concatenation of
-   the lists of matching descendents for each input node.
+   the lists of selected descendents for each input node.
 
    A specific, non-normative example will make this clearer.  Suppose
    the input document is: "{"a":[{"b":0},{"b":1},{"b":2}]}".  As we will
-   see later, the JSONPath "$.a[*].b" produces the following list of
-   matching nodes: "0", "1", "2".  Let's walk through this in detail.
+   see later, the JSONPath "$.a[*].b" selects the following list of
+   nodes: "0", "1", "2".  Let's walk through this in detail.
 
    The JSONPath consists of "$" followed by three matchers: ".a", "[*]",
    and ".b".
 
-   Firstly, "$" matches the input document and produces a list of one
-   node: the input document.
+   Firstly, "$" matches the input document and selects the root node
+   which is the input document.  So the result is a list consisting of
+   just the root node.
 
-   Next, ".a" matches any values of input nodes (which are objects)
-   corresponding to the key ""a"".  The result is again a list of one
-   node: "[{"b":0},{"b":1},{"b":2}]".
-
-   Next, "[*]" matches all the elements of input nodes which are arrays.
-   The result is a list of three nodes: "{"b":0}", "{"b":1}", and
-   "{"b":2}".
+   Next, ".a" matches any input node of type object and selects any
+   value of the input node corresponding to the key ""a"".  The result
+   is again a list of one node: "[{"b":0},{"b":1},{"b":2}]".
 
 
 
-
-
-
-Normington               Expires 10 January 2021                [Page 4]
+Normington               Expires 15 January 2021                [Page 4]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
 
 
-   Finally, ".b" matches any values of input nodes (which are objects)
-   corresponding to the key ""b"".  The result is the concatenation of
-   three lists each of length one containing "0", "1", "2",
-   respectively.
+   Next, "[*]" matches any input node which is an array and selects all
+   the elements of the input node.  The result is a list of three nodes:
+   "{"b":0}", "{"b":1}", and "{"b":2}".
+
+   Finally, ".b" matches any input node of type object and selects any
+   value of the input node corresponding to the key ""b"".  The result
+   is the concatenation of three lists each of length one containing
+   "0", "1", "2", respectively.
 
    As a consequence of this approach, if any of the matchers matches no
    nodes, then the whole JSONPath matches no nodes.
 
    In what follows, the semantics of each matcher are defined for each
    type of node.
+
+2.6.  Matchers
+
+2.6.1.  Dot Child Matcher
+
+Syntax
+
+   A dot child matcher has a key known as a dot child name or a single
+   asterisk ("*").
+
+   A dot child name corresponds to a key in a JSON object, without the
+   surrounding double quotes (""").
+
+   matcher = dot-child             ; see below for alternatives
+   dot-child = %x2E dot-child-name / ; .<dot-child-name>
+               %x2E %x2A             ; .*
+   dot-child-name = TBD
+
+   More general child names, such as the empty string, are supported by
+   "Bracket Child Name" in (reference TBD).
+
+Semantics
+
+   A dot child name which is not a single asterisk ("*") matches any
+   node which is an object having a key equal to the dot child name and
+   selects the value corresponding to that key.  It does not match a
+   node which is not an object.
+
+   A dot child name consisting of a single asterisk is a wild card.  It
+   matches any node which is an object and selects all the values of the
+   object.  It also matches any node which is an array and selects all
+   the elements of the array.  It does not match a number, string, or
+   literal node.
+
+
+
+
+Normington               Expires 15 January 2021                [Page 5]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
+
 
 3.  IANA Considerations
 
@@ -274,14 +319,6 @@ Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
 
 6.2.  Informative References
 
-
-
-
-Normington               Expires 10 January 2021                [Page 5]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
-
-
    [Goessner] Stefan Gössner, "JSONPath - XPath for JSON", February
               2007, <https://goessner.net/articles/JsonPath/>.
 
@@ -289,6 +326,17 @@ Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
               Text on Security Considerations", BCP 72, RFC 3552,
               DOI 10.17487/RFC3552, July 2003,
               <https://www.rfc-editor.org/info/rfc3552>.
+
+
+
+
+
+
+
+Normington               Expires 15 January 2021                [Page 6]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
+
 
    [RFC5226]  Narten, T. and H. Alvestrand, "Guidelines for Writing an
               IANA Considerations Section in RFCs", RFC 5226,
@@ -333,4 +381,12 @@ Author's Address
 
 
 
-Normington               Expires 10 January 2021                [Page 6]
+
+
+
+
+
+
+
+
+Normington               Expires 15 January 2021                [Page 7]

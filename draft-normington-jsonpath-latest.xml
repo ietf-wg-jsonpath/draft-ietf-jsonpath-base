@@ -12,7 +12,7 @@
       submissionType="IETF"
       xml:lang="en"
       tocInclude="true"
-      tocDepth="4"
+      tocDepth="3"
       symRefs="true"
       sortRefs="true"
       version="3">
@@ -154,34 +154,70 @@ root-selector = %x24               ; $ selects document root node
          </section>
          <section numbered="true" toc="default">
             <name>Semantics</name>
-            <t>The root selector <tt>$</tt> not only selects the root node of the input document, but it produces as output a list consisting of one node: the input document.
+            <t>The root selector <tt>$</tt> not only selects the root node of the input document, but it also produces as output a list consisting of one node: the input document.
             </t>
-            <t>After the root selector, the remainder of the JSONPath passes lists of nodes from one matcher to the next ending up with a list of nodes which is the result of
+            <t>A matcher may match a node and, if it matches, may then select zero or more descendants of the node for further processing.
+               But there's more to it than this: each matcher acts on a list of nodes and produces a list of nodes, as follows.
+            </t>
+            <t>After the root selector, the remainder of the JSONPath is processed by passing lists of nodes from one matcher to the next ending up with a list of nodes which is the result of
                matching the JSONPath to the input JSON document.
             </t>
-            <t>Each matcher acts on its input list of nodes as follows. For each node in the list, the matcher matches zero or more descendants of the node.
-               The output list of nodes of a matcher is the concatenation of the lists of matching descendents for each input node. 
+            <t>Each matcher acts on its input list of nodes as follows. For each node in the list, the matcher may or may not match the node. If the matcher
+               matches the node, it selects zero or more descendants of the node.
+               The output list of nodes of a matcher is the concatenation of the lists of selected descendents for each input node. 
             </t>
             <t>A specific, non-normative example will make this clearer. Suppose the input document is: <tt>{"a":[{"b":0},{"b":1},{"b":2}]}</tt>. As we will see later, the JSONPath
-               <tt>$.a[*].b</tt> produces the following list of matching nodes: <tt>0</tt>, <tt>1</tt>, <tt>2</tt>. Let's walk through this in detail.
+               <tt>$.a[*].b</tt> selects the following list of nodes: <tt>0</tt>, <tt>1</tt>, <tt>2</tt>. Let's walk through this in detail.
             </t>
             <t>The JSONPath consists of <tt>$</tt> followed by three matchers: <tt>.a</tt>, <tt>[*]</tt>, and <tt>.b</tt>.
             </t>
-            <t>Firstly, <tt>$</tt> matches the input document and produces a list of one node: the input document.
+            <t>Firstly, <tt>$</tt> matches the input document and selects the root node which is the input document. So the result is a list consisting of just the root node.
             </t>
-            <t>Next, <tt>.a</tt> matches any values of input nodes (which are objects) corresponding to the key <tt>"a"</tt>.
+            <t>Next, <tt>.a</tt> matches any input node of type object and selects any value of the input node corresponding to the key <tt>"a"</tt>.
                The result is again a list of one node: <tt>[{"b":0},{"b":1},{"b":2}]</tt>.
             </t>
-            <t>Next, <tt>[*]</tt> matches all the elements of input nodes which are arrays.
+            <t>Next, <tt>[*]</tt> matches any input node which is an array and selects all the elements of the input node.
                The result is a list of three nodes: <tt>{"b":0}</tt>, <tt>{"b":1}</tt>, and <tt>{"b":2}</tt>. 
             </t>
-            <t>Finally, <tt>.b</tt> matches any values of input nodes (which are objects) corresponding to the key <tt>"b"</tt>.
+            <t>Finally, <tt>.b</tt> matches any input node of type object and selects any value of the input node corresponding to the key <tt>"b"</tt>.
                The result is the concatenation of three lists each of length one containing <tt>0</tt>, <tt>1</tt>, <tt>2</tt>, respectively.
             </t>
             <t>As a consequence of this approach, if any of the matchers matches no nodes, then the whole JSONPath matches no nodes.
             </t>
             <t>In what follows, the semantics of each matcher are defined for each type of node.
             </t>
+         </section>       
+         <section numbered="true" toc="default">
+            <name>Matchers</name>
+            <section numbered="true" toc="default">
+               <name>Dot Child Matcher</name>
+               <section numbered="false" toc="default">
+                  <name>Syntax</name>
+                  <t>A dot child matcher has a key known as a dot child name or a single asterisk (<tt>*</tt>).
+                  </t>
+                  <t>A dot child name corresponds to a key in a JSON object, without the surrounding double quotes (<tt>"</tt>).
+                  </t>
+                  <sourcecode type="abnf">
+matcher = dot-child             ; see below for alternatives
+dot-child = %x2E dot-child-name / ; .&lt;dot-child-name&gt;
+            %x2E %x2A             ; .*
+dot-child-name = TBD
+                  </sourcecode>
+                  <!-- TODO: define dot-child-name using an identifier like syntax. See https://github.com/cburgmer/json-path-comparison/issues/42 -->
+                  <t>More general child names, such as the empty string, are supported by "Bracket Child Name" in (reference TBD)<!-- <xref target="bracketchildname" format="default"/> -->.
+                  </t>
+               </section>       
+               <section numbered="false" toc="default">
+                  <name>Semantics</name>
+                  <t>A dot child name which is not a single asterisk (<tt>*</tt>) matches any node which is an object having a key equal to the dot child name
+                  and selects the value corresponding to that key.
+                  It does not match a node which is not an object.
+                  </t>
+                  <t>A dot child name consisting of a single asterisk is a wild card. It matches any node which is an object and selects all the values of the object.
+                     It also matches any node which is an array and selects all the elements of the array. It does not match a number, string, or literal node.
+                  </t>
+               </section>       
+            </section>       
          </section>       
    </section>
    <section anchor="IANA" numbered="true" toc="default">
