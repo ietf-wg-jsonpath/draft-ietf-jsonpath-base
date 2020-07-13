@@ -34,15 +34,16 @@ pip3 install xml2rfc --user
 ```
 This will place the executable in `~/.local/bin`
 
-### Install the `aex` and `bap`
+### Install `aex` and `bap`
 
-`aex` is an ABNF extractor and `bap` an ABNF syntax checker
+`aex` is an ABNF extractor and `bap` an ABNF syntax checker.
 
 1. Clone https://github.com/fenner/bap
 2. In the cloned directory execute 
    1. `./configure`
    2. `make`
 3. `aex` and `bap` binaries should now exist in the directory
+4. Add them to your path
 
 ### Re-generate files
 
@@ -56,3 +57,12 @@ xml2rfc ./draft-normington-jsonpath-latest.xml --text --html && aex draft-normin
 ```
 
 A script [gen.sh](scripts/gen.sh) is provided for convenience.
+
+### Pull Requests
+
+For ease of reading pull requests, push the PR branch to `master` of your fork. For instance, if your
+github username/organisation is `xxx`, then rendered HTML will be available at:
+
+```
+https://xxx.github.io/internet-draft/
+```
