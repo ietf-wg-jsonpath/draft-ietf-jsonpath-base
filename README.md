@@ -28,14 +28,29 @@ See [RFC 7991](https://tools.ietf.org/html/rfc7991) for rfc XML syntax informati
 
 The XML document was created from this [template](https://tools.ietf.org/tools/templates/draft-davies-template-bare-07.xml).
 
-Install [xml2rfc](https://xml2rfc.tools.ietf.org/):
+### Install [xml2rfc](https://xml2rfc.tools.ietf.org/):
 ```
 pip3 install xml2rfc --user
 ```
+This will place the executable in `~/.local/bin`
 
-Install the `aex` ABNF extractor and the `bap` ABNF syntax checker from https://github.com/fenner/bap.
+### Install the `aex` and `bap`
 
-Re-generate the `.txt` and `.html` files, check the ABNF syntax, and copy the HTML file for use by github pages:
+`aex` is an ABNF extractor and `bap` an ABNF syntax checker
+
+1. Clone https://github.com/fenner/bap
+2. In the cloned directory execute 
+   1. `./configure`
+   2. `make`
+3. `aex` and `bap` binaries should now exist in the directory
+
+### Re-generate files
+
+ This will:
+ - re-generate the `.txt` and `.html` files
+ - check the ABNF syntax 
+ - copy the HTML file for use by github pages:
+
 ```
 xml2rfc ./draft-normington-jsonpath-latest.xml --text --html && aex draft-normington-jsonpath-latest.txt | bap -S path -q && cp draft-normington-jsonpath-latest.html docs/index.html
 ```
