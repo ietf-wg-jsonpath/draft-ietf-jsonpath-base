@@ -12,7 +12,7 @@
       submissionType="IETF"
       xml:lang="en"
       tocInclude="true"
-      tocDepth="3"
+      tocDepth="4"
       symRefs="true"
       sortRefs="true"
       version="3">
@@ -74,7 +74,7 @@
         keywords will be used for the search engine. -->
 
    <abstract>
-      <t>JSONPath defines a string syntax for identifying values
+      <t>JSON Path defines a string syntax for identifying values
    within a JavaScript Object Notation (JSON) document.</t>
     </abstract>
     <note>
@@ -88,7 +88,7 @@
     <section numbered="true" toc="default">
       <name>Introduction</name>
       <!-- move the following to an Acknowledgements appendix and write a proper introduction -->
-      <t>JSONPath was introduced by Stefan Goessner as a simple form of XPath for JSON.
+      <t>JSON Path, or rather JSONPath, was introduced by Stefan Goessner as a simple form of XPath for JSON.
          See his original article <xref target="Goessner" format="default">Goessner</xref>.
       </t>
       <t>JSON is defined by <xref target="RFC8259" format="default">RFC&nbsp;8259</xref>.
@@ -103,14 +103,21 @@
 
       <section numbered="true" toc="default">
         <name>ABNF Syntax</name>
-        <t>The syntax in this document conforms to ABNF as defined by <xref target="RFC5234" format="default">RFC&nbsp;5234</xref>.</t>
+        <t>The syntax in this document conforms to ABNF as defined by <xref target="RFC5234" format="default">RFC&nbsp;5234</xref>.
+        </t>
+        <t>ABNF terminal values in this document define Unicode code points rather than their UTF-8 encoding.
+           For example, the Unicode PLACE OF INTEREST SIGN (U+2318) would be defined in ABNF as <tt>%x2318</tt>.
+        </t>
       </section>
     </section>
    <section numbered="true" toc="default">
-      <name>JSONPath Syntax and Semantics</name>
+      <name>JSON Path Syntax and Semantics</name>
          <section numbered="true" toc="default">
             <name>Overview</name>
-            <t>A JSONPath is a string which matches zero or more nodes of any JSON document. A valid JSONPath conforms to the ABNF syntax defined by this document.
+            <t>A JSON Path is a string which matches zero or more nodes of any JSON document. A valid JSON Path conforms to the ABNF syntax defined by this document.
+            </t>
+            <t>A JSON Path MUST be encoded using UTF-8. To parse a JSON Path according to the grammar in this document, its UTF-8 form SHOULD first be decoded into Unicode code points as described
+               in <xref target="RFC3629" format="default">RFC&nbsp;3629</xref>.
             </t>
          </section>
          <section numbered="true" toc="default">
@@ -125,25 +132,25 @@
          </section>
          <section numbered="true" toc="default">
             <name>Implementation</name>
-            <t>An implementation of this specification, from now on referred to simply as "an implementation", SHOULD takes two inputs, a JSONPath and a JSON document, and produce
-               a possibly empty list of nodes of the JSON document which match the JSONPath or an error (but not both).
+            <t>An implementation of this specification, from now on referred to simply as "an implementation", SHOULD takes two inputs, a JSON Path and a JSON document, and produce
+               a possibly empty list of nodes of the JSON document which match the JSON Path or an error (but not both).
             </t>
             <t>If there is no matching node and no error has occurred, an implementation MUST return an empty list of nodes.
             </t>
-            <t>Syntax errors in the JSONPath SHOULD be detected before matching is attempted since they do not depend on the JSON document.
-               Therefore, an implementation SHOULD take a JSONPath and produce an optional syntax error and then,
+            <t>Syntax errors in the JSON Path SHOULD be detected before matching is attempted since they do not depend on the JSON document.
+               Therefore, an implementation SHOULD take a JSON Path and produce an optional syntax error and then,
                if and only if an error was not produced, SHOULD take a JSON document and produce a list of matches or an error (but not both).
             </t>
-            <t>Alternatively, an implementation MAY take a JSONPath and a JSON document and produce a list of matches or an optional error (but not both).
+            <t>Alternatively, an implementation MAY take a JSON Path and a JSON document and produce a list of matches or an optional error (but not both).
             </t>
-            <t>For any implementation, if a syntactically invalid JSONPath is provided, the implementation MUST return an error.
+            <t>For any implementation, if a syntactically invalid JSON Path is provided, the implementation MUST return an error.
             </t>
             <t>If a syntactially invalid JSON document is provided, any implementation SHOULD return an error.
             </t>
          </section>
          <section numbered="true" toc="default">
             <name>Syntax</name>
-            <t>Syntactically, a JSONPath consists of a root selector (<tt>$</tt>), which selects the root node of a JSON document, followed by a possibly empty sequence of <em>matchers</em>.
+            <t>Syntactically, a JSON Path consists of a root selector (<tt>$</tt>), which selects the root node of a JSON document, followed by a possibly empty sequence of <em>matchers</em>.
             </t>
             <sourcecode type="abnf">
 json-path = root-selector *matcher
@@ -159,17 +166,17 @@ root-selector = %x24               ; $ selects document root node
             <t>A matcher may match a node and, if it matches, may then select zero or more descendants of the node for further processing.
                But there's more to it than this: each matcher acts on a list of nodes and produces a list of nodes, as follows.
             </t>
-            <t>After the root selector, the remainder of the JSONPath is processed by passing lists of nodes from one matcher to the next ending up with a list of nodes which is the result of
-               matching the JSONPath to the input JSON document.
+            <t>After the root selector, the remainder of the JSON Path is processed by passing lists of nodes from one matcher to the next ending up with a list of nodes which is the result of
+               matching the JSON Path to the input JSON document.
             </t>
             <t>Each matcher acts on its input list of nodes as follows. For each node in the list, the matcher may or may not match the node. If the matcher
                matches the node, it selects zero or more descendants of the node.
                The output list of nodes of a matcher is the concatenation of the lists of selected descendents for each input node. 
             </t>
-            <t>A specific, non-normative example will make this clearer. Suppose the input document is: <tt>{"a":[{"b":0},{"b":1},{"b":2}]}</tt>. As we will see later, the JSONPath
+            <t>A specific, non-normative example will make this clearer. Suppose the input document is: <tt>{"a":[{"b":0},{"b":1},{"b":2}]}</tt>. As we will see later, the JSON Path
                <tt>$.a[*].b</tt> selects the following list of nodes: <tt>0</tt>, <tt>1</tt>, <tt>2</tt>. Let's walk through this in detail.
             </t>
-            <t>The JSONPath consists of <tt>$</tt> followed by three matchers: <tt>.a</tt>, <tt>[*]</tt>, and <tt>.b</tt>.
+            <t>The JSON Path consists of <tt>$</tt> followed by three matchers: <tt>.a</tt>, <tt>[*]</tt>, and <tt>.b</tt>.
             </t>
             <t>Firstly, <tt>$</tt> matches the input document and selects the root node which is the input document. So the result is a list consisting of just the root node.
             </t>
@@ -182,7 +189,7 @@ root-selector = %x24               ; $ selects document root node
             <t>Finally, <tt>.b</tt> matches any input node of type object and selects any value of the input node corresponding to the key <tt>"b"</tt>.
                The result is the concatenation of three lists each of length one containing <tt>0</tt>, <tt>1</tt>, <tt>2</tt>, respectively.
             </t>
-            <t>As a consequence of this approach, if any of the matchers matches no nodes, then the whole JSONPath matches no nodes.
+            <t>As a consequence of this approach, if any of the matchers matches no nodes, then the whole JSON Path matches no nodes.
             </t>
             <t>In what follows, the semantics of each matcher are defined for each type of node.
             </t>
@@ -191,7 +198,7 @@ root-selector = %x24               ; $ selects document root node
             <name>Matchers</name>
             <section numbered="true" toc="default">
                <name>Dot Child Matcher</name>
-               <section numbered="false" toc="default">
+               <section numbered="false" toc="exclude">
                   <name>Syntax</name>
                   <t>A dot child matcher has a key known as a dot child name or a single asterisk (<tt>*</tt>).
                   </t>
@@ -204,10 +211,10 @@ dot-child = %x2E dot-child-name / ; .&lt;dot-child-name&gt;
 dot-child-name = TBD
                   </sourcecode>
                   <!-- TODO: define dot-child-name using an identifier like syntax. See https://github.com/cburgmer/json-path-comparison/issues/42 -->
-                  <t>More general child names, such as the empty string, are supported by "Bracket Child Name" in (reference TBD)<!-- <xref target="bracketchildname" format="default"/> -->.
+                  <t>More general child names, such as the empty string, are supported by "Union Child" (<xref target="unionchild" format="default"/>).
                   </t>
                </section>       
-               <section numbered="false" toc="default">
+               <section numbered="false" toc="exclude">
                   <name>Semantics</name>
                   <t>A dot child name which is not a single asterisk (<tt>*</tt>) matches any node which is an object having a key equal to the dot child name
                   and selects the value corresponding to that key.
@@ -217,6 +224,94 @@ dot-child-name = TBD
                      It also matches any node which is an array and selects all the elements of the array. It does not match a number, string, or literal node.
                   </t>
                </section>       
+            </section>       
+            <section numbered="true" toc="default">
+               <name>Union Matcher</name>
+               <section numbered="true" toc="default">
+                  <name>Syntax</name>
+                  <t>A union matcher consists of one or more union elements.
+                  </t>
+                  <sourcecode type="abnf">
+matcher =/ union
+union = %x5B ws union-elements ws %x5D ; [...]
+ws = *%x20                             ; zero or more spaces
+union-elements = union-element /
+                 union-element ws %x2C ws union-elements
+                                       ; ,-separated list
+                  </sourcecode>
+               </section>       
+               <section numbered="true" toc="default">
+                  <name>Semantics</name>
+                  <t>A union matches any node which is matched by at least one of the union elements and selects the concatenation of the
+                     lists (in the order of the matchers) of descendants selected by the union elements.
+                  </t>
+               </section>
+               <section numbered="true" toc="default" anchor="unionchild">
+                  <name>Union Child</name>
+                  <section numbered="false" toc="exclude">
+                     <name>Syntax</name>
+                     <t>A union child is a union element consisting of a quoted string.
+                     </t>
+                     <sourcecode type="abnf">
+union-element = union-child ; see below for more alternatives
+union-child = %x27 *single-quoted %x27 / ; 'string'
+              %x22 *double-quoted %x22   ; "string"
+
+single-quoted = %x5C %x27 / ; \' (escaped single quote)
+                %x5C %x5C / ; \\ (escaped reverse solidus)
+                %x00-26 / %x28-5B %x5D-D7FF / %xE000-10FFFF
+                            ; any Unicode code point except ' or \
+
+double-quoted = %x5C 5x22 / ; \" (escaped double quote)
+                %x5C 5x5C / ; \\ (escaped reverse solidus)
+                %x00-21 / %x23-5B / %x5D-D7FF / %xE000-10FFFF
+                            ; any Unicode code point except " or \
+                     </sourcecode>
+                     <t>Note: the syntax does not allow any character other than a quote or reverse solidus to be escaped.
+                     </t>
+                  </section>       
+                  <section numbered="false" toc="exclude">
+                     <name>Semantics</name>
+                     <t>If the union child is a quoted string, the string must first have the surrounding quotes removed and then be unescaped
+                        as describe below.
+                        The union child matches any node which is an object having a key equal to the unescaped value of the union child string
+                        and selects the value corresponding to that key.
+                        It does not match a node which is not an object.
+                     </t>
+                     <t>After the surrounding quotes have been removed, a string is unescaped by replacing each escaped quote by the corresponding
+                        quote and replacing each escaped reverse solidus by a reverse solidus.
+                     </t>
+                  </section>       
+               </section>             
+               <section numbered="true" toc="default">
+                  <name>Array Index</name>
+                  <section numbered="false" toc="exclude">
+                     <name>Syntax</name>
+                     <t>An array index is a union element consisting of an integer (in base 10).
+                     </t>
+                     <sourcecode type="abnf">
+union-element =/ integer
+integer = [%x2D] (%x30 / (%x31-39 *%x30-39))
+                            ; optional - followed by 0 or
+                            ; sequence of digits with no leading zero
+                     </sourcecode>
+                     <t>Note: the syntax does not allow integers with leading zeros such as <tt>01</tt> and <tt>-01</tt>.
+                     </t>
+                  </section>       
+                  <section numbered="false" toc="exclude">
+                     <name>Semantics</name>
+                     <t>An array index matches any node which is an array and selects any element of the array indexed by the integer index.
+                        It does not match a node which is not an array.
+                     </t>
+                     <t>A non-negative index <tt>i</tt> selects an element of an array of length <tt>len</tt> if and only if <tt>0 &lt;= i &lt; len</tt>.
+                        The index <tt>0</tt> selects the first element of a non-empty array and, providing <tt>i &lt; len - 1</tt>, index <tt>i + 1</tt>
+                        selects the element immedately after (in array order) the element selected by index <tt>i</tt>.
+                     </t>
+                     <t>A negative index <tt>j</tt> selects an element of an array of length <tt>len</tt> if and only if <tt>0 &lt;= j + len &lt; len</tt>,
+                        in which case it selects the same element as selected by the non-negative index <tt>j + len</tt>.
+                     </t>
+                  </section>       
+               </section>             
             </section>       
          </section>       
    </section>
@@ -247,6 +342,7 @@ dot-child-name = TBD
       <references>
         <name>Normative References</name>
         <?rfc include="reference.RFC.2119.xml"?>
+        <?rfc include="reference.RFC.3629.xml"?>
         <?rfc include="reference.RFC.5234.xml"?>
       </references>
       <references>
