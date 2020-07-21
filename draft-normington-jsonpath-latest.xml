@@ -178,7 +178,10 @@ root-selector = %x24               ; $ selects document root node
             <t>The root selector <tt>$</tt> not only selects the root node of the input document, but it also produces as output a list consisting of one node: the input document.
             </t>
             <t>A matcher may match a node and, if it matches, may then select zero or more descendants of the node for further processing.
-               But there's more to it than this: each matcher acts on a list of nodes and produces a list of nodes, as follows.
+               A syntactically valid matcher MUST NOT produce errors. This means that some operations which might be considered erroneous, such as indexing beyond the end of an array,
+               simply result in fewer descendants being selected.
+            </t>
+            <t>But a matcher doesn't just act on a single node: each matcher acts on a list of nodes and produces a list of nodes, as follows.
             </t>
             <t>After the root selector, the remainder of the JSON Path is processed by passing lists of nodes from one matcher to the next ending up with a list of nodes which is the result of
                matching the JSON Path to the input JSON document.
@@ -351,23 +354,44 @@ HEXDIG =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
                   </section>       
                </section>             
                <section numbered="true" toc="default">
-                  <name>Array Index</name>
+                  <name>Array Access</name>
                   <section numbered="false" toc="exclude">
                      <name>Syntax</name>
+                     <t>Array access is a union element which selects zero or more elements of an array.
+                        It does not match a node which is not an array.
+                        Array access takes the form of an index, which selects at most one element, or a slice, which selects zero or more elements.
+                     </t>
+                     <sourcecode type="abnf">
+union-element =/ array-index / array-slice
+                     </sourcecode>
                      <t>An array index is a union element consisting of an integer (in base 10).
                      </t>
                      <sourcecode type="abnf">
-union-element =/ integer
+array-index = integer
+
 integer = [%x2D] (%x30 / (%x31-39 *%x30-39))
                             ; optional - followed by 0 or
                             ; sequence of digits with no leading zero
                      </sourcecode>
                      <t>Note: the syntax does not allow integers with leading zeros such as <tt>01</tt> and <tt>-01</tt>.
                      </t>
+                     <t>An array slice is a union element consisting of two or three integers (in base 10 and which may be omitted) separated by colons.
+                     </t>
+                     <sourcecode type="abnf">
+array-slice = [ integer ] ws %x3A ws [ integer ]
+                   [ ws %x3A ws non-zero-integer ]
+                            ; start:end or start:end:step
+
+non-zero-integer = [%x2D] %x31-39 *%x30-39
+                            ; optional - followed by
+                            ; sequence of digits with no leading zero
+                    </sourcecode>
+                    <t>Note: if the third integer (the <tt>step</tt> value) is present, it MUST be non-zero.
+                    </t>
                   </section>       
                   <section numbered="false" toc="exclude">
                      <name>Semantics</name>
-                     <t>An array index matches any node which is an array and selects any element of the array indexed by the integer index.
+                     <t>An array index selects any element of an array which is indexed by the integer index.
                         It does not match a node which is not an array.
                      </t>
                      <t>A non-negative index <tt>i</tt> selects an element of an array of length <tt>len</tt> if and only if <tt>0 &lt;= i &lt; len</tt>.
@@ -375,7 +399,39 @@ integer = [%x2D] (%x30 / (%x31-39 *%x30-39))
                         selects the element immedately after (in array order) the element selected by index <tt>i</tt>.
                      </t>
                      <t>A negative index <tt>j</tt> selects an element of an array of length <tt>len</tt> if and only if <tt>0 &lt;= j + len &lt; len</tt>,
-                        in which case it selects the same element as selected by the non-negative index <tt>j + len</tt>.
+                        in which case it selects the same element as the non-negative index <tt>j + len</tt>.
+                     </t>
+                     <t>An array slice selects any elements of an array which are indexed by the members of the slice,
+                        as defined below, in the same order as the slice.
+                        It does not match a node which is not an array.
+                     </t>
+                     <t>The members of a slice depend on whether the step value is positive or negative, as follows. If the step value is
+                        omitted, it defaults to <tt>1</tt>.
+                     </t>
+                     <t>For positive integer <tt>step</tt> and integers <tt>start</tt> and <tt>end</tt>, the array slice
+                        <tt>start:end:step</tt> consists of the indices starting at <tt>start</tt> and increasing repeatedly
+                        by <tt>step</tt> while the resultant index is less than <tt>end</tt>.
+                        The indices of the slice are the same as the values of i iterated over by this <tt>for</tt> loop in C:
+                     </t>
+                     <sourcecode type="c">
+for (i = start; i &lt; end; i = i + step) {
+  ...
+}
+                     </sourcecode>
+                     <t>When <tt>step</tt> is positive, the default value of <tt>start</tt> is <tt>0</tt> and the default value of <tt>end</tt> is the length of the array.
+                     </t>
+                     <t>For negative integer <tt>step</tt> and integers <tt>start</tt> and <tt>end</tt>, the array slice
+                        <tt>start:end:step</tt> consists of the indices starting at <tt>start</tt> and decreasing repeatedly
+                        by <tt>step</tt> while the resultant index is greater than <tt>end</tt>.
+                        The indices of the slice are the same as the values of i iterated over by this <tt>for</tt> loop in C:
+                     </t>
+                     <sourcecode type="c">
+for (i = start; i &gt; end; i = i + step) {
+  ...
+}
+                     </sourcecode>
+                     <t>When <tt>step</tt> is negative, the default value of <tt>start</tt> is <tt>len - 1</tt> (where <tt>len</tt> is the length of the array)
+                        and the default value of <tt>end</tt> is <tt>-1</tt> (literally, not in the earlier sense of a shorthand for <tt>len - 1</tt>).
                      </t>
                   </section>       
                </section>             
