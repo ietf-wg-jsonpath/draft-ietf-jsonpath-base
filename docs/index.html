@@ -1107,7 +1107,7 @@ dd.break {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Normington</td>
-<td class="center">Expires 18 January 2021</td>
+<td class="center">Expires 29 January 2021</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1120,12 +1120,12 @@ dd.break {
 <dd class="internet-draft">draft-normington-jsonpath-00</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2020-07-17" class="published">17 July 2020</time>
+<time datetime="2020-07-28" class="published">28 July 2020</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2021-01-18">18 January 2021</time></dd>
+<dd class="expires"><time datetime="2021-01-29">29 January 2021</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1164,7 +1164,7 @@ dd.break {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 18 January 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 29 January 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1448,33 +1448,110 @@ union-elements = union-element /
 <div id="section-2.6.2.3.1-2">
 <pre class="sourcecode lang-abnf">
 union-element = union-child ; see below for more alternatives
-union-child = %x27 *single-quoted %x27 / ; 'string'
-              %x22 *double-quoted %x22   ; "string"
+union-child = %x22 *double-quoted %x22 / ; "string"
+              %x27 *single-quoted %x27   ; 'string'
 
-single-quoted = %x5C %x27 / ; \' (escaped single quote)
-                %x5C %x5C / ; \\ (escaped reverse solidus)
-                %x00-26 / %x28-5B %x5D-D7FF / %xE000-10FFFF
-                            ; any Unicode code point except ' or \
+double-quoted = dq-unescaped /
+          escape (
+              %x22 /          ; "    quotation mark  U+0022
+              %x2F /          ; /    solidus         U+002F
+              %x5C /          ; \    reverse solidus U+005C
+              %x62 /          ; b    backspace       U+0008
+              %x66 /          ; f    form feed       U+000C
+              %x6E /          ; n    line feed       U+000A
+              %x72 /          ; r    carriage return U+000D
+              %x74 /          ; t    tab             U+0009
+              %x75 4HEXDIG )  ; uXXXX                U+XXXX
 
-double-quoted = %x5C 5x22 / ; \" (escaped double quote)
-                %x5C 5x5C / ; \\ (escaped reverse solidus)
-                %x00-21 / %x23-5B / %x5D-D7FF / %xE000-10FFFF
-                            ; any Unicode code point except " or \
+
+      dq-unescaped = %x20-21 / %x23-5B / %x5D-10FFFF
+
+single-quoted = sq-unescaped /
+          escape (
+              %x27 /          ; '    apostrophe      U+0027
+              %x2F /          ; /    solidus         U+002F
+              %x5C /          ; \    reverse solidus U+005C
+              %x62 /          ; b    backspace       U+0008
+              %x66 /          ; f    form feed       U+000C
+              %x6E /          ; n    line feed       U+000A
+              %x72 /          ; r    carriage return U+000D
+              %x74 /          ; t    tab             U+0009
+              %x75 4HEXDIG )  ; uXXXX                U+XXXX
+
+      sq-unescaped = %x20-26 / %x28-5B / %x5D-10FFFF
+
+escape = %x5C                 ; \
+
+HEXDIG =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
+DIGIT =  %x30-39              ; 0-9
 </pre><a href="#section-2.6.2.3.1-2" class="pilcrow">¶</a>
 </div>
-<p id="section-2.6.2.3.1-3">Note: the syntax does not allow any character other than a quote or reverse solidus to be escaped.<a href="#section-2.6.2.3.1-3" class="pilcrow">¶</a></p>
+<p id="section-2.6.2.3.1-3">Note: double-quoted strings follow JSON in <span><a href="#RFC8259" class="xref">RFC 8259</a> [<a href="#RFC8259" class="xref">RFC8259</a>]</span>.
+                        Single-quoted strings follow an analogous pattern.<a href="#section-2.6.2.3.1-3" class="pilcrow">¶</a></p>
 </section>
 <section id="section-2.6.2.3.2">
               <h6 id="name-semantics-9">
 <a href="#name-semantics-9" class="section-name selfRef">Semantics</a>
               </h6>
-<p id="section-2.6.2.3.2-1">If the union child is a quoted string, the string must first have the surrounding quotes removed and then be unescaped
-                        as describe below.
-                        The union child matches any node which is an object having a key equal to the unescaped value of the union child string
-                        and selects the value corresponding to that key.
-                        It does not match a node which is not an object.<a href="#section-2.6.2.3.2-1" class="pilcrow">¶</a></p>
-<p id="section-2.6.2.3.2-2">After the surrounding quotes have been removed, a string is unescaped by replacing each escaped quote by the corresponding
-                        quote and replacing each escaped reverse solidus by a reverse solidus.<a href="#section-2.6.2.3.2-2" class="pilcrow">¶</a></p>
+<p id="section-2.6.2.3.2-1">If the union child is a quoted string, the string MUST be converted to a key by removing the surrounding quotes and
+                        replacing each escape sequence with its equivalent Unicode character, as in the table below:<a href="#section-2.6.2.3.2-1" class="pilcrow">¶</a></p>
+<span id="name-escape-sequence-replacements"></span><table class="center" id="table-1">
+                <caption>
+<a href="#table-1" class="selfRef">Table 1</a>:
+<a href="#name-escape-sequence-replacements" class="selfRef">Escape Sequence Replacements</a>
+                </caption>
+<thead>
+                  <tr>
+                    <th class="text-center" rowspan="1" colspan="1">Escape Sequence</th>
+                    <th class="text-center" rowspan="1" colspan="1">Unicode Character</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-center" rowspan="1" colspan="1">%x5C %x22</td>
+                    <td class="text-center" rowspan="1" colspan="1">U+0022</td>
+                  </tr>
+                  <tr>
+                    <td class="text-center" rowspan="1" colspan="1">%x5C %x27</td>
+                    <td class="text-center" rowspan="1" colspan="1">U+0027</td>
+                  </tr>
+                  <tr>
+                    <td class="text-center" rowspan="1" colspan="1">%x5C %x2F</td>
+                    <td class="text-center" rowspan="1" colspan="1">U+002F</td>
+                  </tr>
+                  <tr>
+                    <td class="text-center" rowspan="1" colspan="1">%x5C %x5C</td>
+                    <td class="text-center" rowspan="1" colspan="1">U+005C</td>
+                  </tr>
+                  <tr>
+                    <td class="text-center" rowspan="1" colspan="1">%x5C %x62</td>
+                    <td class="text-center" rowspan="1" colspan="1">U+0008</td>
+                  </tr>
+                  <tr>
+                    <td class="text-center" rowspan="1" colspan="1">%x5C %x66</td>
+                    <td class="text-center" rowspan="1" colspan="1">U+000C</td>
+                  </tr>
+                  <tr>
+                    <td class="text-center" rowspan="1" colspan="1">%x5C %x6E</td>
+                    <td class="text-center" rowspan="1" colspan="1">U+000A</td>
+                  </tr>
+                  <tr>
+                    <td class="text-center" rowspan="1" colspan="1">%x5C %x72</td>
+                    <td class="text-center" rowspan="1" colspan="1">U+000D</td>
+                  </tr>
+                  <tr>
+                    <td class="text-center" rowspan="1" colspan="1">%x5C %x74</td>
+                    <td class="text-center" rowspan="1" colspan="1">U+0009</td>
+                  </tr>
+                  <tr>
+                    <td class="text-center" rowspan="1" colspan="1">%x5C uXXXX</td>
+                    <td class="text-center" rowspan="1" colspan="1">U+XXXX</td>
+                  </tr>
+                </tbody>
+              </table>
+<p id="section-2.6.2.3.2-3">
+                        The union child matches any node which is an object with this key and selects the value corresponding to the key.
+                        It does not match a node which is not an object.<a href="#section-2.6.2.3.2-3" class="pilcrow">¶</a></p>
 </section>
 </section>
 </div>
