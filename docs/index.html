@@ -7,7 +7,7 @@
 <title>JavaScript Object Notation (JSON) Path</title>
 <meta content="Glyn Normington" name="author">
 <meta content="
-       JSONPath defines a string syntax for identifying values
+       JSON Path defines a string syntax for identifying values
    within a JavaScript Object Notation (JSON) document. 
     " name="description">
 <meta content="xml2rfc 2.44.0" name="generator">
@@ -1107,7 +1107,7 @@ dd.break {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Normington</td>
-<td class="center">Expires 15 January 2021</td>
+<td class="center">Expires 29 January 2021</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1120,12 +1120,12 @@ dd.break {
 <dd class="internet-draft">draft-normington-jsonpath-00</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2020-07-14" class="published">14 July 2020</time>
+<time datetime="2020-07-28" class="published">28 July 2020</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2021-01-15">15 January 2021</time></dd>
+<dd class="expires"><time datetime="2021-01-29">29 January 2021</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1139,7 +1139,7 @@ dd.break {
 <h1 id="title">JavaScript Object Notation (JSON) Path</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">JSONPath defines a string syntax for identifying values
+<p id="section-abstract-1">JSON Path defines a string syntax for identifying values
    within a JavaScript Object Notation (JSON) document.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note" id="section-note.1">
@@ -1164,7 +1164,7 @@ dd.break {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 15 January 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 29 January 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1205,7 +1205,7 @@ dd.break {
 </ul>
 </li>
 <li class="toc ulEmpty" id="section-toc.1-1.2">
-            <p id="section-toc.1-1.2.1"><a href="#section-2" class="xref">2</a>.  <a href="#name-jsonpath-syntax-and-semantic" class="xref">JSONPath Syntax and Semantics</a><a href="#section-toc.1-1.2.1" class="pilcrow">¶</a></p>
+            <p id="section-toc.1-1.2.1"><a href="#section-2" class="xref">2</a>.  <a href="#name-json-path-syntax-and-semanti" class="xref">JSON Path Syntax and Semantics</a><a href="#section-toc.1-1.2.1" class="pilcrow">¶</a></p>
 <ul class="toc ulEmpty">
 <li class="toc ulEmpty" id="section-toc.1-1.2.2.1">
                 <p id="section-toc.1-1.2.2.1.1"><a href="#section-2.1" class="xref">2.1</a>.  <a href="#name-overview-2" class="xref">Overview</a><a href="#section-toc.1-1.2.2.1.1" class="pilcrow">¶</a></p>
@@ -1217,16 +1217,33 @@ dd.break {
                 <p id="section-toc.1-1.2.2.3.1"><a href="#section-2.3" class="xref">2.3</a>.  <a href="#name-implementation-2" class="xref">Implementation</a><a href="#section-toc.1-1.2.2.3.1" class="pilcrow">¶</a></p>
 </li>
 <li class="toc ulEmpty" id="section-toc.1-1.2.2.4">
-                <p id="section-toc.1-1.2.2.4.1"><a href="#section-2.4" class="xref">2.4</a>.  <a href="#name-syntax-3" class="xref">Syntax</a><a href="#section-toc.1-1.2.2.4.1" class="pilcrow">¶</a></p>
+                <p id="section-toc.1-1.2.2.4.1"><a href="#section-2.4" class="xref">2.4</a>.  <a href="#name-syntax-6" class="xref">Syntax</a><a href="#section-toc.1-1.2.2.4.1" class="pilcrow">¶</a></p>
 </li>
 <li class="toc ulEmpty" id="section-toc.1-1.2.2.5">
-                <p id="section-toc.1-1.2.2.5.1"><a href="#section-2.5" class="xref">2.5</a>.  <a href="#name-semantics-3" class="xref">Semantics</a><a href="#section-toc.1-1.2.2.5.1" class="pilcrow">¶</a></p>
+                <p id="section-toc.1-1.2.2.5.1"><a href="#section-2.5" class="xref">2.5</a>.  <a href="#name-semantics-6" class="xref">Semantics</a><a href="#section-toc.1-1.2.2.5.1" class="pilcrow">¶</a></p>
 </li>
 <li class="toc ulEmpty" id="section-toc.1-1.2.2.6">
                 <p id="section-toc.1-1.2.2.6.1"><a href="#section-2.6" class="xref">2.6</a>.  <a href="#name-matchers-2" class="xref">Matchers</a><a href="#section-toc.1-1.2.2.6.1" class="pilcrow">¶</a></p>
 <ul class="toc ulEmpty">
 <li class="toc ulEmpty" id="section-toc.1-1.2.2.6.2.1">
                     <p id="section-toc.1-1.2.2.6.2.1.1"><a href="#section-2.6.1" class="xref">2.6.1</a>.  <a href="#name-dot-child-matcher-2" class="xref">Dot Child Matcher</a><a href="#section-toc.1-1.2.2.6.2.1.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.2.2.6.2.2">
+                    <p id="section-toc.1-1.2.2.6.2.2.1"><a href="#section-2.6.2" class="xref">2.6.2</a>.  <a href="#name-union-matcher-2" class="xref">Union Matcher</a><a href="#section-toc.1-1.2.2.6.2.2.1" class="pilcrow">¶</a></p>
+<ul class="toc ulEmpty">
+<li class="toc ulEmpty" id="section-toc.1-1.2.2.6.2.2.2.1">
+                        <p id="section-toc.1-1.2.2.6.2.2.2.1.1"><a href="#section-2.6.2.1" class="xref">2.6.2.1</a>.  <a href="#name-syntax-8" class="xref">Syntax</a><a href="#section-toc.1-1.2.2.6.2.2.2.1.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.2.2.6.2.2.2.2">
+                        <p id="section-toc.1-1.2.2.6.2.2.2.2.1"><a href="#section-2.6.2.2" class="xref">2.6.2.2</a>.  <a href="#name-semantics-8" class="xref">Semantics</a><a href="#section-toc.1-1.2.2.6.2.2.2.2.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.2.2.6.2.2.2.3">
+                        <p id="section-toc.1-1.2.2.6.2.2.2.3.1"><a href="#section-2.6.2.3" class="xref">2.6.2.3</a>.  <a href="#name-union-child-2" class="xref">Union Child</a><a href="#section-toc.1-1.2.2.6.2.2.2.3.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.2.2.6.2.2.2.4">
+                        <p id="section-toc.1-1.2.2.6.2.2.2.4.1"><a href="#section-2.6.2.4" class="xref">2.6.2.4</a>.  <a href="#name-array-index-2" class="xref">Array Index</a><a href="#section-toc.1-1.2.2.6.2.2.2.4.1" class="pilcrow">¶</a></p>
+</li>
+</ul>
 </li>
 </ul>
 </li>
@@ -1263,7 +1280,7 @@ dd.break {
       <h2 id="name-introduction-2">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction-2" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">JSONPath was introduced by Stefan Goessner as a simple form of XPath for JSON.
+<p id="section-1-1">JSON Path, or rather JSONPath, was introduced by Stefan Goessner as a simple form of XPath for JSON.
          See his original article <span>[<a href="#Goessner" class="xref">Goessner</a>]</span>.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">JSON is defined by <span><a href="#RFC8259" class="xref">RFC 8259</a> [<a href="#RFC8259" class="xref">RFC8259</a>]</span>.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <section id="section-1.1">
@@ -1279,17 +1296,21 @@ dd.break {
 <a href="#section-1.2" class="section-number selfRef">1.2. </a><a href="#name-abnf-syntax-2" class="section-name selfRef">ABNF Syntax</a>
         </h3>
 <p id="section-1.2-1">The syntax in this document conforms to ABNF as defined by <span><a href="#RFC5234" class="xref">RFC 5234</a> [<a href="#RFC5234" class="xref">RFC5234</a>]</span>.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
+<p id="section-1.2-2">ABNF terminal values in this document define Unicode code points rather than their UTF-8 encoding.
+           For example, the Unicode PLACE OF INTEREST SIGN (U+2318) would be defined in ABNF as <code>%x2318</code>.<a href="#section-1.2-2" class="pilcrow">¶</a></p>
 </section>
 </section>
 <section id="section-2">
-      <h2 id="name-jsonpath-syntax-and-semantic">
-<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-jsonpath-syntax-and-semantic" class="section-name selfRef">JSONPath Syntax and Semantics</a>
+      <h2 id="name-json-path-syntax-and-semanti">
+<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-json-path-syntax-and-semanti" class="section-name selfRef">JSON Path Syntax and Semantics</a>
       </h2>
 <section id="section-2.1">
         <h3 id="name-overview-2">
 <a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-overview-2" class="section-name selfRef">Overview</a>
         </h3>
-<p id="section-2.1-1">A JSONPath is a string which matches zero or more nodes of any JSON document. A valid JSONPath conforms to the ABNF syntax defined by this document.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
+<p id="section-2.1-1">A JSON Path is a string which matches zero or more nodes of any JSON document. A valid JSON Path conforms to the ABNF syntax defined by this document.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
+<p id="section-2.1-2">A JSON Path MUST be encoded using UTF-8. To parse a JSON Path according to the grammar in this document, its UTF-8 form SHOULD first be decoded into Unicode code points as described
+               in <span><a href="#RFC3629" class="xref">RFC 3629</a> [<a href="#RFC3629" class="xref">RFC3629</a>]</span>.<a href="#section-2.1-2" class="pilcrow">¶</a></p>
 </section>
 <section id="section-2.2">
         <h3 id="name-terminology-2">
@@ -1304,21 +1325,21 @@ dd.break {
         <h3 id="name-implementation-2">
 <a href="#section-2.3" class="section-number selfRef">2.3. </a><a href="#name-implementation-2" class="section-name selfRef">Implementation</a>
         </h3>
-<p id="section-2.3-1">An implementation of this specification, from now on referred to simply as "an implementation", SHOULD takes two inputs, a JSONPath and a JSON document, and produce
-               a possibly empty list of nodes of the JSON document which match the JSONPath or an error (but not both).<a href="#section-2.3-1" class="pilcrow">¶</a></p>
+<p id="section-2.3-1">An implementation of this specification, from now on referred to simply as "an implementation", SHOULD takes two inputs, a JSON Path and a JSON document, and produce
+               a possibly empty list of nodes of the JSON document which match the JSON Path or an error (but not both).<a href="#section-2.3-1" class="pilcrow">¶</a></p>
 <p id="section-2.3-2">If there is no matching node and no error has occurred, an implementation MUST return an empty list of nodes.<a href="#section-2.3-2" class="pilcrow">¶</a></p>
-<p id="section-2.3-3">Syntax errors in the JSONPath SHOULD be detected before matching is attempted since they do not depend on the JSON document.
-               Therefore, an implementation SHOULD take a JSONPath and produce an optional syntax error and then,
+<p id="section-2.3-3">Syntax errors in the JSON Path SHOULD be detected before matching is attempted since they do not depend on the JSON document.
+               Therefore, an implementation SHOULD take a JSON Path and produce an optional syntax error and then,
                if and only if an error was not produced, SHOULD take a JSON document and produce a list of matches or an error (but not both).<a href="#section-2.3-3" class="pilcrow">¶</a></p>
-<p id="section-2.3-4">Alternatively, an implementation MAY take a JSONPath and a JSON document and produce a list of matches or an optional error (but not both).<a href="#section-2.3-4" class="pilcrow">¶</a></p>
-<p id="section-2.3-5">For any implementation, if a syntactically invalid JSONPath is provided, the implementation MUST return an error.<a href="#section-2.3-5" class="pilcrow">¶</a></p>
+<p id="section-2.3-4">Alternatively, an implementation MAY take a JSON Path and a JSON document and produce a list of matches or an optional error (but not both).<a href="#section-2.3-4" class="pilcrow">¶</a></p>
+<p id="section-2.3-5">For any implementation, if a syntactically invalid JSON Path is provided, the implementation MUST return an error.<a href="#section-2.3-5" class="pilcrow">¶</a></p>
 <p id="section-2.3-6">If a syntactially invalid JSON document is provided, any implementation SHOULD return an error.<a href="#section-2.3-6" class="pilcrow">¶</a></p>
 </section>
 <section id="section-2.4">
-        <h3 id="name-syntax-3">
-<a href="#section-2.4" class="section-number selfRef">2.4. </a><a href="#name-syntax-3" class="section-name selfRef">Syntax</a>
+        <h3 id="name-syntax-6">
+<a href="#section-2.4" class="section-number selfRef">2.4. </a><a href="#name-syntax-6" class="section-name selfRef">Syntax</a>
         </h3>
-<p id="section-2.4-1">Syntactically, a JSONPath consists of a root selector (<code>$</code>), which selects the root node of a JSON document, followed by a possibly empty sequence of <em>matchers</em>.<a href="#section-2.4-1" class="pilcrow">¶</a></p>
+<p id="section-2.4-1">Syntactically, a JSON Path consists of a root selector (<code>$</code>), which selects the root node of a JSON document, followed by a possibly empty sequence of <em>matchers</em>.<a href="#section-2.4-1" class="pilcrow">¶</a></p>
 <div id="section-2.4-2">
 <pre class="sourcecode lang-abnf">
 json-path = root-selector *matcher
@@ -1328,20 +1349,20 @@ root-selector = %x24               ; $ selects document root node
 <p id="section-2.4-3">The syntax and semantics of each matcher is defined below.<a href="#section-2.4-3" class="pilcrow">¶</a></p>
 </section>
 <section id="section-2.5">
-        <h3 id="name-semantics-3">
-<a href="#section-2.5" class="section-number selfRef">2.5. </a><a href="#name-semantics-3" class="section-name selfRef">Semantics</a>
+        <h3 id="name-semantics-6">
+<a href="#section-2.5" class="section-number selfRef">2.5. </a><a href="#name-semantics-6" class="section-name selfRef">Semantics</a>
         </h3>
 <p id="section-2.5-1">The root selector <code>$</code> not only selects the root node of the input document, but it also produces as output a list consisting of one node: the input document.<a href="#section-2.5-1" class="pilcrow">¶</a></p>
 <p id="section-2.5-2">A matcher may match a node and, if it matches, may then select zero or more descendants of the node for further processing.
                But there's more to it than this: each matcher acts on a list of nodes and produces a list of nodes, as follows.<a href="#section-2.5-2" class="pilcrow">¶</a></p>
-<p id="section-2.5-3">After the root selector, the remainder of the JSONPath is processed by passing lists of nodes from one matcher to the next ending up with a list of nodes which is the result of
-               matching the JSONPath to the input JSON document.<a href="#section-2.5-3" class="pilcrow">¶</a></p>
+<p id="section-2.5-3">After the root selector, the remainder of the JSON Path is processed by passing lists of nodes from one matcher to the next ending up with a list of nodes which is the result of
+               matching the JSON Path to the input JSON document.<a href="#section-2.5-3" class="pilcrow">¶</a></p>
 <p id="section-2.5-4">Each matcher acts on its input list of nodes as follows. For each node in the list, the matcher may or may not match the node. If the matcher
                matches the node, it selects zero or more descendants of the node.
                The output list of nodes of a matcher is the concatenation of the lists of selected descendents for each input node.<a href="#section-2.5-4" class="pilcrow">¶</a></p>
-<p id="section-2.5-5">A specific, non-normative example will make this clearer. Suppose the input document is: <code>{"a":[{"b":0},{"b":1},{"b":2}]}</code>. As we will see later, the JSONPath
+<p id="section-2.5-5">A specific, non-normative example will make this clearer. Suppose the input document is: <code>{"a":[{"b":0},{"b":1},{"b":2}]}</code>. As we will see later, the JSON Path
                <code>$.a[*].b</code> selects the following list of nodes: <code>0</code>, <code>1</code>, <code>2</code>. Let's walk through this in detail.<a href="#section-2.5-5" class="pilcrow">¶</a></p>
-<p id="section-2.5-6">The JSONPath consists of <code>$</code> followed by three matchers: <code>.a</code>, <code>[*]</code>, and <code>.b</code>.<a href="#section-2.5-6" class="pilcrow">¶</a></p>
+<p id="section-2.5-6">The JSON Path consists of <code>$</code> followed by three matchers: <code>.a</code>, <code>[*]</code>, and <code>.b</code>.<a href="#section-2.5-6" class="pilcrow">¶</a></p>
 <p id="section-2.5-7">Firstly, <code>$</code> matches the input document and selects the root node which is the input document. So the result is a list consisting of just the root node.<a href="#section-2.5-7" class="pilcrow">¶</a></p>
 <p id="section-2.5-8">Next, <code>.a</code> matches any input node of type object and selects any value of the input node corresponding to the key <code>"a"</code>.
                The result is again a list of one node: <code>[{"b":0},{"b":1},{"b":2}]</code>.<a href="#section-2.5-8" class="pilcrow">¶</a></p>
@@ -1349,7 +1370,7 @@ root-selector = %x24               ; $ selects document root node
                The result is a list of three nodes: <code>{"b":0}</code>, <code>{"b":1}</code>, and <code>{"b":2}</code>.<a href="#section-2.5-9" class="pilcrow">¶</a></p>
 <p id="section-2.5-10">Finally, <code>.b</code> matches any input node of type object and selects any value of the input node corresponding to the key <code>"b"</code>.
                The result is the concatenation of three lists each of length one containing <code>0</code>, <code>1</code>, <code>2</code>, respectively.<a href="#section-2.5-10" class="pilcrow">¶</a></p>
-<p id="section-2.5-11">As a consequence of this approach, if any of the matchers matches no nodes, then the whole JSONPath matches no nodes.<a href="#section-2.5-11" class="pilcrow">¶</a></p>
+<p id="section-2.5-11">As a consequence of this approach, if any of the matchers matches no nodes, then the whole JSON Path matches no nodes.<a href="#section-2.5-11" class="pilcrow">¶</a></p>
 <p id="section-2.5-12">In what follows, the semantics of each matcher are defined for each type of node.<a href="#section-2.5-12" class="pilcrow">¶</a></p>
 </section>
 <section id="section-2.6">
@@ -1361,8 +1382,8 @@ root-selector = %x24               ; $ selects document root node
 <a href="#section-2.6.1" class="section-number selfRef">2.6.1. </a><a href="#name-dot-child-matcher-2" class="section-name selfRef">Dot Child Matcher</a>
           </h4>
 <section id="section-2.6.1.1">
-            <h5 id="name-syntax-4">
-<a href="#name-syntax-4" class="section-name selfRef">Syntax</a>
+            <h5 id="name-syntax-7">
+<a href="#name-syntax-7" class="section-name selfRef">Syntax</a>
             </h5>
 <p id="section-2.6.1.1-1">A dot child matcher has a key known as a dot child name or a single asterisk (<code>*</code>).<a href="#section-2.6.1.1-1" class="pilcrow">¶</a></p>
 <p id="section-2.6.1.1-2">A dot child name corresponds to a key in a JSON object, without the surrounding double quotes (<code>"</code>).<a href="#section-2.6.1.1-2" class="pilcrow">¶</a></p>
@@ -1374,17 +1395,197 @@ dot-child = %x2E dot-child-name / ; .&lt;dot-child-name&gt;
 dot-child-name = TBD
 </pre><a href="#section-2.6.1.1-3" class="pilcrow">¶</a>
 </div>
-<p id="section-2.6.1.1-4">More general child names, such as the empty string, are supported by "Bracket Child Name" in (reference TBD).<a href="#section-2.6.1.1-4" class="pilcrow">¶</a></p>
+<p id="section-2.6.1.1-4">More general child names, such as the empty string, are supported by "Union Child" (<a href="#unionchild" class="xref">Section 2.6.2.3</a>).<a href="#section-2.6.1.1-4" class="pilcrow">¶</a></p>
 </section>
 <section id="section-2.6.1.2">
-            <h5 id="name-semantics-4">
-<a href="#name-semantics-4" class="section-name selfRef">Semantics</a>
+            <h5 id="name-semantics-7">
+<a href="#name-semantics-7" class="section-name selfRef">Semantics</a>
             </h5>
 <p id="section-2.6.1.2-1">A dot child name which is not a single asterisk (<code>*</code>) matches any node which is an object having a key equal to the dot child name
                   and selects the value corresponding to that key.
                   It does not match a node which is not an object.<a href="#section-2.6.1.2-1" class="pilcrow">¶</a></p>
 <p id="section-2.6.1.2-2">A dot child name consisting of a single asterisk is a wild card. It matches any node which is an object and selects all the values of the object.
                      It also matches any node which is an array and selects all the elements of the array. It does not match a number, string, or literal node.<a href="#section-2.6.1.2-2" class="pilcrow">¶</a></p>
+</section>
+</section>
+<section id="section-2.6.2">
+          <h4 id="name-union-matcher-2">
+<a href="#section-2.6.2" class="section-number selfRef">2.6.2. </a><a href="#name-union-matcher-2" class="section-name selfRef">Union Matcher</a>
+          </h4>
+<section id="section-2.6.2.1">
+            <h5 id="name-syntax-8">
+<a href="#section-2.6.2.1" class="section-number selfRef">2.6.2.1. </a><a href="#name-syntax-8" class="section-name selfRef">Syntax</a>
+            </h5>
+<p id="section-2.6.2.1-1">A union matcher consists of one or more union elements.<a href="#section-2.6.2.1-1" class="pilcrow">¶</a></p>
+<div id="section-2.6.2.1-2">
+<pre class="sourcecode lang-abnf">
+matcher =/ union
+union = %x5B ws union-elements ws %x5D ; [...]
+ws = *%x20                             ; zero or more spaces
+union-elements = union-element /
+                 union-element ws %x2C ws union-elements
+                                       ; ,-separated list
+</pre><a href="#section-2.6.2.1-2" class="pilcrow">¶</a>
+</div>
+</section>
+<section id="section-2.6.2.2">
+            <h5 id="name-semantics-8">
+<a href="#section-2.6.2.2" class="section-number selfRef">2.6.2.2. </a><a href="#name-semantics-8" class="section-name selfRef">Semantics</a>
+            </h5>
+<p id="section-2.6.2.2-1">A union matches any node which is matched by at least one of the union elements and selects the concatenation of the
+                     lists (in the order of the matchers) of descendants selected by the union elements.<a href="#section-2.6.2.2-1" class="pilcrow">¶</a></p>
+</section>
+<div id="unionchild">
+<section id="section-2.6.2.3">
+            <h5 id="name-union-child-2">
+<a href="#section-2.6.2.3" class="section-number selfRef">2.6.2.3. </a><a href="#name-union-child-2" class="section-name selfRef">Union Child</a>
+            </h5>
+<section id="section-2.6.2.3.1">
+              <h6 id="name-syntax-9">
+<a href="#name-syntax-9" class="section-name selfRef">Syntax</a>
+              </h6>
+<p id="section-2.6.2.3.1-1">A union child is a union element consisting of a quoted string.<a href="#section-2.6.2.3.1-1" class="pilcrow">¶</a></p>
+<div id="section-2.6.2.3.1-2">
+<pre class="sourcecode lang-abnf">
+union-element = union-child ; see below for more alternatives
+union-child = %x22 *double-quoted %x22 / ; "string"
+              %x27 *single-quoted %x27   ; 'string'
+
+double-quoted = dq-unescaped /
+          escape (
+              %x22 /          ; "    quotation mark  U+0022
+              %x2F /          ; /    solidus         U+002F
+              %x5C /          ; \    reverse solidus U+005C
+              %x62 /          ; b    backspace       U+0008
+              %x66 /          ; f    form feed       U+000C
+              %x6E /          ; n    line feed       U+000A
+              %x72 /          ; r    carriage return U+000D
+              %x74 /          ; t    tab             U+0009
+              %x75 4HEXDIG )  ; uXXXX                U+XXXX
+
+
+      dq-unescaped = %x20-21 / %x23-5B / %x5D-10FFFF
+
+single-quoted = sq-unescaped /
+          escape (
+              %x27 /          ; '    apostrophe      U+0027
+              %x2F /          ; /    solidus         U+002F
+              %x5C /          ; \    reverse solidus U+005C
+              %x62 /          ; b    backspace       U+0008
+              %x66 /          ; f    form feed       U+000C
+              %x6E /          ; n    line feed       U+000A
+              %x72 /          ; r    carriage return U+000D
+              %x74 /          ; t    tab             U+0009
+              %x75 4HEXDIG )  ; uXXXX                U+XXXX
+
+      sq-unescaped = %x20-26 / %x28-5B / %x5D-10FFFF
+
+escape = %x5C                 ; \
+
+HEXDIG =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
+DIGIT =  %x30-39              ; 0-9
+</pre><a href="#section-2.6.2.3.1-2" class="pilcrow">¶</a>
+</div>
+<p id="section-2.6.2.3.1-3">Note: double-quoted strings follow JSON in <span><a href="#RFC8259" class="xref">RFC 8259</a> [<a href="#RFC8259" class="xref">RFC8259</a>]</span>.
+                        Single-quoted strings follow an analogous pattern.<a href="#section-2.6.2.3.1-3" class="pilcrow">¶</a></p>
+</section>
+<section id="section-2.6.2.3.2">
+              <h6 id="name-semantics-9">
+<a href="#name-semantics-9" class="section-name selfRef">Semantics</a>
+              </h6>
+<p id="section-2.6.2.3.2-1">If the union child is a quoted string, the string MUST be converted to a key by removing the surrounding quotes and
+                        replacing each escape sequence with its equivalent Unicode character, as in the table below:<a href="#section-2.6.2.3.2-1" class="pilcrow">¶</a></p>
+<span id="name-escape-sequence-replacements"></span><table class="center" id="table-1">
+                <caption>
+<a href="#table-1" class="selfRef">Table 1</a>:
+<a href="#name-escape-sequence-replacements" class="selfRef">Escape Sequence Replacements</a>
+                </caption>
+<thead>
+                  <tr>
+                    <th class="text-center" rowspan="1" colspan="1">Escape Sequence</th>
+                    <th class="text-center" rowspan="1" colspan="1">Unicode Character</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-center" rowspan="1" colspan="1">%x5C %x22</td>
+                    <td class="text-center" rowspan="1" colspan="1">U+0022</td>
+                  </tr>
+                  <tr>
+                    <td class="text-center" rowspan="1" colspan="1">%x5C %x27</td>
+                    <td class="text-center" rowspan="1" colspan="1">U+0027</td>
+                  </tr>
+                  <tr>
+                    <td class="text-center" rowspan="1" colspan="1">%x5C %x2F</td>
+                    <td class="text-center" rowspan="1" colspan="1">U+002F</td>
+                  </tr>
+                  <tr>
+                    <td class="text-center" rowspan="1" colspan="1">%x5C %x5C</td>
+                    <td class="text-center" rowspan="1" colspan="1">U+005C</td>
+                  </tr>
+                  <tr>
+                    <td class="text-center" rowspan="1" colspan="1">%x5C %x62</td>
+                    <td class="text-center" rowspan="1" colspan="1">U+0008</td>
+                  </tr>
+                  <tr>
+                    <td class="text-center" rowspan="1" colspan="1">%x5C %x66</td>
+                    <td class="text-center" rowspan="1" colspan="1">U+000C</td>
+                  </tr>
+                  <tr>
+                    <td class="text-center" rowspan="1" colspan="1">%x5C %x6E</td>
+                    <td class="text-center" rowspan="1" colspan="1">U+000A</td>
+                  </tr>
+                  <tr>
+                    <td class="text-center" rowspan="1" colspan="1">%x5C %x72</td>
+                    <td class="text-center" rowspan="1" colspan="1">U+000D</td>
+                  </tr>
+                  <tr>
+                    <td class="text-center" rowspan="1" colspan="1">%x5C %x74</td>
+                    <td class="text-center" rowspan="1" colspan="1">U+0009</td>
+                  </tr>
+                  <tr>
+                    <td class="text-center" rowspan="1" colspan="1">%x5C uXXXX</td>
+                    <td class="text-center" rowspan="1" colspan="1">U+XXXX</td>
+                  </tr>
+                </tbody>
+              </table>
+<p id="section-2.6.2.3.2-3">
+                        The union child matches any node which is an object with this key and selects the value corresponding to the key.
+                        It does not match a node which is not an object.<a href="#section-2.6.2.3.2-3" class="pilcrow">¶</a></p>
+</section>
+</section>
+</div>
+<section id="section-2.6.2.4">
+            <h5 id="name-array-index-2">
+<a href="#section-2.6.2.4" class="section-number selfRef">2.6.2.4. </a><a href="#name-array-index-2" class="section-name selfRef">Array Index</a>
+            </h5>
+<section id="section-2.6.2.4.1">
+              <h6 id="name-syntax-10">
+<a href="#name-syntax-10" class="section-name selfRef">Syntax</a>
+              </h6>
+<p id="section-2.6.2.4.1-1">An array index is a union element consisting of an integer (in base 10).<a href="#section-2.6.2.4.1-1" class="pilcrow">¶</a></p>
+<div id="section-2.6.2.4.1-2">
+<pre class="sourcecode lang-abnf">
+union-element =/ integer
+integer = [%x2D] (%x30 / (%x31-39 *%x30-39))
+                            ; optional - followed by 0 or
+                            ; sequence of digits with no leading zero
+</pre><a href="#section-2.6.2.4.1-2" class="pilcrow">¶</a>
+</div>
+<p id="section-2.6.2.4.1-3">Note: the syntax does not allow integers with leading zeros such as <code>01</code> and <code>-01</code>.<a href="#section-2.6.2.4.1-3" class="pilcrow">¶</a></p>
+</section>
+<section id="section-2.6.2.4.2">
+              <h6 id="name-semantics-10">
+<a href="#name-semantics-10" class="section-name selfRef">Semantics</a>
+              </h6>
+<p id="section-2.6.2.4.2-1">An array index matches any node which is an array and selects any element of the array indexed by the integer index.
+                        It does not match a node which is not an array.<a href="#section-2.6.2.4.2-1" class="pilcrow">¶</a></p>
+<p id="section-2.6.2.4.2-2">A non-negative index <code>i</code> selects an element of an array of length <code>len</code> if and only if <code>0 &lt;= i &lt; len</code>.
+                        The index <code>0</code> selects the first element of a non-empty array and, providing <code>i &lt; len - 1</code>, index <code>i + 1</code>
+                        selects the element immedately after (in array order) the element selected by index <code>i</code>.<a href="#section-2.6.2.4.2-2" class="pilcrow">¶</a></p>
+<p id="section-2.6.2.4.2-3">A negative index <code>j</code> selects an element of an array of length <code>len</code> if and only if <code>0 &lt;= j + len &lt; len</code>,
+                        in which case it selects the same element as selected by the non-negative index <code>j + len</code>.<a href="#section-2.6.2.4.2-3" class="pilcrow">¶</a></p>
+</section>
 </section>
 </section>
 </section>
@@ -1430,6 +1631,10 @@ dot-child-name = TBD
 <dt id="RFC2119">[RFC2119]</dt>
 <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc2119">https://www.rfc-editor.org/info/rfc2119</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC3629">[RFC3629]</dt>
+<dd>
+<span class="refAuthor">Yergeau, F.</span>, <span class="refTitle">"UTF-8, a transformation format of ISO 10646"</span>, <span class="seriesInfo">STD 63</span>, <span class="seriesInfo">RFC 3629</span>, <span class="seriesInfo">DOI 10.17487/RFC3629</span>, <time datetime="2003-11">November 2003</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc3629">https://www.rfc-editor.org/info/rfc3629</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC5234">[RFC5234]</dt>
 <dd>
