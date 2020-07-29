@@ -11,6 +11,9 @@ implementation which will inform the Internet Draft.
 
 ## Community
 
+All official discussion is on the [jsonpath@ietf.org mailing list](https://www.ietf.org/mailman/listinfo/jsonpath).
+See the [archive](https://mailarchive.ietf.org/arch/browse/jsonpath/) for previous posts.
+
 Informal discussions happen in slack. If you would like to join in, here is an
 [invitation](https://join.slack.com/t/jsonpath-standard/shared_invite/zt-fp521hp0-D7gmDcmOMK4UkrRRug~SQQ).
 
