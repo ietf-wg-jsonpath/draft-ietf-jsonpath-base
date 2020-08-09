@@ -202,24 +202,36 @@ root-selector = %x24               ; $ selects document root node
                   <name>Syntax</name>
                   <t>A dot child matcher has a key known as a dot child name or a single asterisk (<tt>*</tt>).
                   </t>
-                  <t>A dot child name corresponds to a key in a JSON object, without the surrounding double quotes (<tt>"</tt>).
+                  <t>A dot child name corresponds to a name in a JSON object. It can be unquoted or surrounded with quotes, either double (<tt>"</tt>) or single (<tt>'</tt>).
                   </t>
                   <sourcecode type="abnf">
 matcher = dot-child             ; see below for alternatives
 dot-child = %x2E dot-child-name / ; .&lt;dot-child-name&gt;
             %x2E %x2A             ; .*
-dot-child-name = TBD
+dot-child-name = union-child / ; "key" or 'key' (see below)
+                 unquoted-key
+unquoted-key = 1*(
+                  %x2D / ; -
+                  %x30-39 / ; 0-9 (core ABNF: DIGIT)
+                  %x41-5A / %x61-7A / ; A-Z / a-z (core ABNF: ALPHA)
+                  %x5F / ; _
+                  %x80-10FFFF ; any non-ASCII Unicode character
+               )
                   </sourcecode>
-                  <!-- TODO: define dot-child-name using an identifier like syntax. See https://github.com/cburgmer/json-path-comparison/issues/42 -->
                   <t>More general child names, such as the empty string, are supported by "Union Child" (<xref target="unionchild" format="default"/>).
+                  </t>
+                  <t>Note that <tt>unquoted-key</tt> rule follows the philosophy of JSON strings when working with non-ASCII range of Unicode: it's
+                     allowed to contain bit sequences that cannot encode Unicode character (an single unpaired UTF-16 surrogate, for example). It can lead
+                     to unpredictable behavior of software that receives such query.
                   </t>
                </section>       
                <section numbered="false" toc="exclude">
                   <name>Semantics</name>
-                  <t>A dot child name which is not a single asterisk (<tt>*</tt>) matches any node which is an object having a key equal to the dot child name
-                  and selects the value corresponding to that key.
-                  It does not match a node which is not an object.
+                  <t>A dot child name which is not a single asterisk (<tt>*</tt>) is considered to have a key. It matches any node which is an object having a name equal to that key
+                      and selects the value corresponding to that name. It does not match a node which is not an object.
                   </t>
+                   <t>If dot child name is unquoted then its key is equal to the name. For a quoted name the process of extracting the key is defined below.
+                   </t>
                   <t>A dot child name consisting of a single asterisk is a wild card. It matches any node which is an object and selects all the values of the object.
                      It also matches any node which is an array and selects all the elements of the array. It does not match a number, string, or literal node.
                   </t>
