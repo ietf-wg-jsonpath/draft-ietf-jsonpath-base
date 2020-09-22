@@ -4,8 +4,8 @@
 
 Internet Engineering Task Force                       G. Normington, Ed.
 Internet-Draft                                              VMware, Inc.
-Intended status: Standards Track                       21 September 2020
-Expires: 25 March 2021
+Intended status: Standards Track                       22 September 2020
+Expires: 26 March 2021
 
 
                  JavaScript Object Notation (JSON) Path
@@ -36,7 +36,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 25 March 2021.
+   This Internet-Draft will expire on 26 March 2021.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Normington                Expires 25 March 2021                 [Page 1]
+Normington                Expires 26 March 2021                 [Page 1]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Normington                Expires 25 March 2021                 [Page 2]
+Normington                Expires 26 March 2021                 [Page 2]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
@@ -165,7 +165,7 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
 
-Normington                Expires 25 March 2021                 [Page 3]
+Normington                Expires 26 March 2021                 [Page 3]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
@@ -221,7 +221,7 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
 
-Normington                Expires 25 March 2021                 [Page 4]
+Normington                Expires 26 March 2021                 [Page 4]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
@@ -272,39 +272,33 @@ Syntax
    A dot child matcher has a key known as a dot child name or a single
    asterisk ("*").
 
+   A dot child name corresponds to a name in a JSON object.
 
 
 
 
-
-Normington                Expires 25 March 2021                 [Page 5]
+Normington                Expires 26 March 2021                 [Page 5]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
-   A dot child name corresponds to a name in a JSON object.  It can be
-   unquoted or surrounded with quotes, either double (""") or single
-   ("'").
-
    matcher = dot-child             ; see below for alternatives
    dot-child = %x2E dot-child-name / ; .<dot-child-name>
                %x2E %x2A             ; .*
-   dot-child-name = union-child / ; "key" or 'key' (see below)
-                    unquoted-key
-   unquoted-key = 1*(
-                     %x2D / ; -
-                     %x30-39 / ; 0-9 (core ABNF: DIGIT)
-                     %x41-5A / %x61-7A / ; A-Z / a-z (core ABNF: ALPHA)
-                     %x5F / ; _
-                     %x80-10FFFF ; any non-ASCII Unicode character
-                  )
+   dot-child-name = 1*(
+                      %x2D / ; -
+                      %x30-39 / ; 0-9 (core ABNF: DIGIT)
+                      %x41-5A / %x61-7A / ; A-Z / a-z (core ABNF: ALPHA)
+                      %x5F / ; _
+                      %x80-10FFFF ; any non-ASCII Unicode character
+                    )
 
    More general child names, such as the empty string, are supported by
    "Union Child" (Section 2.6.2.3).
 
-   Note that "unquoted-key" rule follows the philosophy of JSON strings
-   when working with non-ASCII range of Unicode: it's allowed to contain
-   bit sequences that cannot encode Unicode character (an single
+   Note that "dot-child-name" rule follows the philosophy of JSON
+   strings when working with non-ASCII range of Unicode: it's allowed to
+   contain bit sequences that cannot encode Unicode character (an single
    unpaired UTF-16 surrogate, for example).  It can lead to
    unpredictable behavior of software that receives such query.
 
@@ -330,20 +324,19 @@ Semantics
 
    A union matcher consists of one or more union elements.
 
-
-
-
-Normington                Expires 25 March 2021                 [Page 6]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
-
-
    matcher =/ union
    union = %x5B ws union-elements ws %x5D ; [...]
    ws = *%x20                             ; zero or more spaces
    union-elements = union-element /
                     union-element ws %x2C ws union-elements
                                           ; ,-separated list
+
+
+
+Normington                Expires 26 March 2021                 [Page 6]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
+
 
 2.6.2.2.  Semantics
 
@@ -389,7 +382,14 @@ Syntax
 
 
 
-Normington                Expires 25 March 2021                 [Page 7]
+
+
+
+
+
+
+
+Normington                Expires 26 March 2021                 [Page 7]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
@@ -445,7 +445,7 @@ Semantics
 
 
 
-Normington                Expires 25 March 2021                 [Page 8]
+Normington                Expires 26 March 2021                 [Page 8]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
@@ -501,7 +501,7 @@ Syntax
 
 
 
-Normington                Expires 25 March 2021                 [Page 9]
+Normington                Expires 26 March 2021                 [Page 9]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
@@ -557,7 +557,7 @@ Semantics
 
 
 
-Normington                Expires 25 March 2021                [Page 10]
+Normington                Expires 26 March 2021                [Page 10]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
@@ -613,4 +613,4 @@ Author's Address
 
 
 
-Normington                Expires 25 March 2021                [Page 11]
+Normington                Expires 26 March 2021                [Page 11]

@@ -202,25 +202,23 @@ root-selector = %x24               ; $ selects document root node
                   <name>Syntax</name>
                   <t>A dot child matcher has a key known as a dot child name or a single asterisk (<tt>*</tt>).
                   </t>
-                  <t>A dot child name corresponds to a name in a JSON object. It can be unquoted or surrounded with quotes, either double (<tt>"</tt>) or single (<tt>'</tt>).
+                  <t>A dot child name corresponds to a name in a JSON object.
                   </t>
                   <sourcecode type="abnf">
 matcher = dot-child             ; see below for alternatives
 dot-child = %x2E dot-child-name / ; .&lt;dot-child-name&gt;
             %x2E %x2A             ; .*
-dot-child-name = union-child / ; "key" or 'key' (see below)
-                 unquoted-key
-unquoted-key = 1*(
-                  %x2D / ; -
-                  %x30-39 / ; 0-9 (core ABNF: DIGIT)
-                  %x41-5A / %x61-7A / ; A-Z / a-z (core ABNF: ALPHA)
-                  %x5F / ; _
-                  %x80-10FFFF ; any non-ASCII Unicode character
-               )
+dot-child-name = 1*(
+                   %x2D / ; -
+                   %x30-39 / ; 0-9 (core ABNF: DIGIT)
+                   %x41-5A / %x61-7A / ; A-Z / a-z (core ABNF: ALPHA)
+                   %x5F / ; _
+                   %x80-10FFFF ; any non-ASCII Unicode character
+                 )
                   </sourcecode>
                   <t>More general child names, such as the empty string, are supported by "Union Child" (<xref target="unionchild" format="default"/>).
                   </t>
-                  <t>Note that <tt>unquoted-key</tt> rule follows the philosophy of JSON strings when working with non-ASCII range of Unicode: it's
+                  <t>Note that <tt>dot-child-name</tt> rule follows the philosophy of JSON strings when working with non-ASCII range of Unicode: it's
                      allowed to contain bit sequences that cannot encode Unicode character (an single unpaired UTF-16 surrogate, for example). It can lead
                      to unpredictable behavior of software that receives such query.
                   </t>
