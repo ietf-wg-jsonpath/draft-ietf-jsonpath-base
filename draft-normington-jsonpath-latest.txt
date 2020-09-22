@@ -309,8 +309,8 @@ Semantics
    equal to that key and selects the value corresponding to that name.
    It does not match a node which is not an object.
 
-   If dot child name is unquoted then its key is equal to the name.  For
-   a quoted name the process of extracting the key is defined below.
+   The key of a dot child name is the sequence of Unicode symbols
+   contained in that name.
 
    A dot child name consisting of a single asterisk is a wild card.  It
    matches any node which is an object and selects all the values of the
