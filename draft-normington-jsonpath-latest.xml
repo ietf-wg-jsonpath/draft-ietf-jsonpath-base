@@ -202,7 +202,8 @@ root-selector = %x24               ; $ selects document root node
                The result is a list of three nodes: <tt>{"b":0}</tt>, <tt>{"b":1}</tt>, and <tt>{"c":2}</tt>. 
             </t>
             <t>Finally, <tt>.b</tt> matches any input node of type object with a key <tt>b</tt> and selects the value of the input node corresponding to that key.
-               The result is the concatenation of two lists each of length one containing <tt>0</tt>, <tt>1</tt>, respectively.
+               The result is a list containing <tt>0</tt>, <tt>1</tt>.
+               This is the concatenation of three lists, two of length one containing <tt>0</tt>, <tt>1</tt>, respectively, and one of length zero.
             </t>
             <t>As a consequence of this approach, if any of the matchers matches no nodes, then the whole JSON Path matches no nodes.
             </t>

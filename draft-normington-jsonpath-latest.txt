@@ -254,8 +254,9 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
    Finally, ".b" matches any input node of type object with a key "b"
    and selects the value of the input node corresponding to that key.
-   The result is the concatenation of two lists each of length one
-   containing "0", "1", respectively.
+   The result is a list containing "0", "1".  This is the concatenation
+   of three lists, two of length one containing "0", "1", respectively,
+   and one of length zero.
 
    As a consequence of this approach, if any of the matchers matches no
    nodes, then the whole JSON Path matches no nodes.
@@ -273,7 +274,6 @@ Syntax
    asterisk ("*").
 
    A dot child name corresponds to a name in a JSON object.
-
 
 
 
