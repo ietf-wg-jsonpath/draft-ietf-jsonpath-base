@@ -4,8 +4,9 @@
 
 Internet Engineering Task Force                       G. Normington, Ed.
 Internet-Draft                                              VMware, Inc.
-Intended status: Standards Track                       22 September 2020
-Expires: 26 March 2021
+Intended status: Standards Track                           E. Surov, Ed.
+Expires: 27 March 2021                           TheSoul Publishing Ltd.
+                                                       23 September 2020
 
 
                  JavaScript Object Notation (JSON) Path
@@ -36,7 +37,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 26 March 2021.
+   This Internet-Draft will expire on 27 March 2021.
 
 Copyright Notice
 
@@ -52,8 +53,7 @@ Copyright Notice
 
 
 
-
-Normington                Expires 26 March 2021                 [Page 1]
+Normington & Surov        Expires 27 March 2021                 [Page 1]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
@@ -91,7 +91,7 @@ Table of Contents
    6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  10
      6.1.  Normative References  . . . . . . . . . . . . . . . . . .  10
      6.2.  Informative References  . . . . . . . . . . . . . . . . .  11
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .  11
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  11
 
 1.  Introduction
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Normington                Expires 26 March 2021                 [Page 2]
+Normington & Surov        Expires 27 March 2021                 [Page 2]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
@@ -165,7 +165,7 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
 
-Normington                Expires 26 March 2021                 [Page 3]
+Normington & Surov        Expires 27 March 2021                 [Page 3]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
@@ -221,7 +221,7 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
 
-Normington                Expires 26 March 2021                 [Page 4]
+Normington & Surov        Expires 27 March 2021                 [Page 4]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
@@ -277,7 +277,7 @@ Syntax
 
 
 
-Normington                Expires 26 March 2021                 [Page 5]
+Normington & Surov        Expires 27 March 2021                 [Page 5]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
@@ -333,7 +333,7 @@ Semantics
 
 
 
-Normington                Expires 26 March 2021                 [Page 6]
+Normington & Surov        Expires 27 March 2021                 [Page 6]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
@@ -389,7 +389,7 @@ Syntax
 
 
 
-Normington                Expires 26 March 2021                 [Page 7]
+Normington & Surov        Expires 27 March 2021                 [Page 7]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
@@ -445,7 +445,7 @@ Semantics
 
 
 
-Normington                Expires 26 March 2021                 [Page 8]
+Normington & Surov        Expires 27 March 2021                 [Page 8]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
@@ -501,7 +501,7 @@ Syntax
 
 
 
-Normington                Expires 26 March 2021                 [Page 9]
+Normington & Surov        Expires 27 March 2021                 [Page 9]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
@@ -557,7 +557,7 @@ Semantics
 
 
 
-Normington                Expires 26 March 2021                [Page 10]
+Normington & Surov        Expires 27 March 2021                [Page 10]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
@@ -596,7 +596,7 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
               DOI 10.17487/RFC8259, December 2017,
               <https://www.rfc-editor.org/info/rfc8259>.
 
-Author's Address
+Authors' Addresses
 
    Glyn Normington (editor)
    VMware, Inc.
@@ -613,4 +613,60 @@ Author's Address
 
 
 
-Normington                Expires 26 March 2021                [Page 11]
+Normington & Surov        Expires 27 March 2021                [Page 11]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
+
+
+   Edward Surov (editor)
+   TheSoul Publishing Ltd.
+   Limassol
+   Cyprus
+
+   Email: esurov.tsp@gmail.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Normington & Surov        Expires 27 March 2021                [Page 12]

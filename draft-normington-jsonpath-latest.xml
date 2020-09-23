@@ -49,6 +49,20 @@
         <email>glyn.normington@gmail.com</email>
      </address>
     </author>
+    <author fullname="Edward Surov" initials="E" role="editor" surname="Surov">
+      <organization>TheSoul Publishing Ltd.</organization>
+      <address>
+        <postal>
+          <street/>
+          <city>Limassol</city>
+          <region/>
+          <code/>
+          <country>Cyprus</country>
+        </postal>
+        <phone/>
+        <email>esurov.tsp@gmail.com</email>
+     </address>
+    </author>
     <date year="2020"/>
     <!-- If the month and year are both specified and are the current ones, xml2rfc will fill 
         in the current day for you. If only the current year is specified, xml2rfc will fill 
