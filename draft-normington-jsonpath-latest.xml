@@ -219,18 +219,18 @@ root-selector = %x24               ; $ selects document root node
                   <t>A dot child name corresponds to a name in a JSON object.
                   </t>
                   <sourcecode type="abnf">
-matcher = dot-child             ; see below for alternatives
+matcher = dot-child               ; see below for alternatives
 dot-child = %x2E dot-child-name / ; .&lt;dot-child-name&gt;
             %x2E %x2A             ; .*
 dot-child-name = 1*(
-                   %x2D / ; -
+                   %x2D /         ; -
                    DIGIT /
                    ALPHA /
-                   %x5F / ; _
-                   %x80-10FFFF ; any non-ASCII Unicode character
+                   %x5F /         ; _
+                   %x80-10FFFF    ; any non-ASCII Unicode character
                  )
-DIGIT =  %x30-39 ; 0-9
-ALPHA = %x41-5A / %x61-7A ; A-Z / a-z
+DIGIT =  %x30-39                  ; 0-9
+ALPHA = %x41-5A / %x61-7A         ; A-Z / a-z
                   </sourcecode>
                   <t>More general child names, such as the empty string, are supported by "Union Child" (<xref target="unionchild" format="default"/>).
                   </t>
@@ -244,7 +244,7 @@ ALPHA = %x41-5A / %x61-7A ; A-Z / a-z
                   <t>A dot child name which is not a single asterisk (<tt>*</tt>) is considered to have a key. It matches any node which is an object having a name equal to that key
                       and selects the value corresponding to that name. It does not match a node which is not an object.
                   </t>
-                   <t>The key of a dot child name is the sequence of Unicode symbols contained in that name.
+                   <t>The key of a dot child name is the sequence of Unicode characters contained in that name.
                    </t>
                   <t>A dot child name consisting of a single asterisk is a wild card. It matches any node which is an object and selects all the values of the object.
                      It also matches any node which is an array and selects all the elements of the array. It does not match a number, string, or literal node.
