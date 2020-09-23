@@ -4,8 +4,9 @@
 
 Internet Engineering Task Force                       G. Normington, Ed.
 Internet-Draft                                              VMware, Inc.
-Intended status: Standards Track                            28 July 2020
-Expires: 29 January 2021
+Intended status: Standards Track                           E. Surov, Ed.
+Expires: 27 March 2021                           TheSoul Publishing Ltd.
+                                                       23 September 2020
 
 
                  JavaScript Object Notation (JSON) Path
@@ -36,7 +37,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 29 January 2021.
+   This Internet-Draft will expire on 27 March 2021.
 
 Copyright Notice
 
@@ -52,10 +53,9 @@ Copyright Notice
 
 
 
-
-Normington               Expires 29 January 2021                [Page 1]
+Normington & Surov        Expires 27 March 2021                 [Page 1]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -82,16 +82,16 @@ Table of Contents
        2.6.1.  Dot Child Matcher . . . . . . . . . . . . . . . . . .   5
        2.6.2.  Union Matcher . . . . . . . . . . . . . . . . . . . .   6
          2.6.2.1.  Syntax  . . . . . . . . . . . . . . . . . . . . .   6
-         2.6.2.2.  Semantics . . . . . . . . . . . . . . . . . . . .   6
-         2.6.2.3.  Union Child . . . . . . . . . . . . . . . . . . .   6
-         2.6.2.4.  Array Index . . . . . . . . . . . . . . . . . . .   8
-   3.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   9
-   4.  Security Considerations . . . . . . . . . . . . . . . . . . .   9
-   5.  Alternatives  . . . . . . . . . . . . . . . . . . . . . . . .   9
-   6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   9
-     6.1.  Normative References  . . . . . . . . . . . . . . . . . .   9
-     6.2.  Informative References  . . . . . . . . . . . . . . . . .  10
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .  10
+         2.6.2.2.  Semantics . . . . . . . . . . . . . . . . . . . .   7
+         2.6.2.3.  Union Child . . . . . . . . . . . . . . . . . . .   7
+         2.6.2.4.  Array Index . . . . . . . . . . . . . . . . . . .   9
+   3.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  10
+   4.  Security Considerations . . . . . . . . . . . . . . . . . . .  10
+   5.  Alternatives  . . . . . . . . . . . . . . . . . . . . . . . .  10
+   6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  10
+     6.1.  Normative References  . . . . . . . . . . . . . . . . . .  10
+     6.2.  Informative References  . . . . . . . . . . . . . . . . .  11
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  11
 
 1.  Introduction
 
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Normington               Expires 29 January 2021                [Page 2]
+Normington & Surov        Expires 27 March 2021                 [Page 2]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
 1.2.  ABNF Syntax
@@ -165,9 +165,9 @@ Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
 
 
 
-Normington               Expires 29 January 2021                [Page 3]
+Normington & Surov        Expires 27 March 2021                 [Page 3]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
    Syntax errors in the JSON Path SHOULD be detected before matching is
@@ -221,9 +221,9 @@ Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
 
 
 
-Normington               Expires 29 January 2021                [Page 4]
+Normington & Surov        Expires 27 March 2021                 [Page 4]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
    Each matcher acts on its input list of nodes as follows.  For each
@@ -272,30 +272,47 @@ Syntax
    A dot child matcher has a key known as a dot child name or a single
    asterisk ("*").
 
-   A dot child name corresponds to a key in a JSON object, without the
-   surrounding double quotes (""").
+   A dot child name corresponds to a name in a JSON object.
 
 
 
-Normington               Expires 29 January 2021                [Page 5]
+
+Normington & Surov        Expires 27 March 2021                 [Page 5]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
    matcher = dot-child             ; see below for alternatives
    dot-child = %x2E dot-child-name / ; .<dot-child-name>
                %x2E %x2A             ; .*
-   dot-child-name = TBD
+   dot-child-name = 1*(
+                      %x2D / ; -
+                      DIGIT /
+                      ALPHA /
+                      %x5F / ; _
+                      %x80-10FFFF ; any non-ASCII Unicode character
+                    )
+   DIGIT =  %x30-39 ; 0-9
+   ALPHA = %x41-5A / %x61-7A ; A-Z / a-z
 
    More general child names, such as the empty string, are supported by
    "Union Child" (Section 2.6.2.3).
 
+   Note that "dot-child-name" rule follows the philosophy of JSON
+   strings when working with non-ASCII range of Unicode: it's allowed to
+   contain bit sequences that cannot encode Unicode character (an single
+   unpaired UTF-16 surrogate, for example).  It can lead to
+   unpredictable behavior of software that receives such query.
+
 Semantics
 
-   A dot child name which is not a single asterisk ("*") matches any
-   node which is an object having a key equal to the dot child name and
-   selects the value corresponding to that key.  It does not match a
-   node which is not an object.
+   A dot child name which is not a single asterisk ("*") is considered
+   to have a key.  It matches any node which is an object having a name
+   equal to that key and selects the value corresponding to that name.
+   It does not match a node which is not an object.
+
+   The key of a dot child name is the sequence of Unicode symbols
+   contained in that name.
 
    A dot child name consisting of a single asterisk is a wild card.  It
    matches any node which is an object and selects all the values of the
@@ -308,6 +325,18 @@ Semantics
 2.6.2.1.  Syntax
 
    A union matcher consists of one or more union elements.
+
+
+
+
+
+
+
+
+Normington & Surov        Expires 27 March 2021                 [Page 6]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
+
 
    matcher =/ union
    union = %x5B ws union-elements ws %x5D ; [...]
@@ -333,9 +362,36 @@ Syntax
 
 
 
-Normington               Expires 29 January 2021                [Page 6]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Normington & Surov        Expires 27 March 2021                 [Page 7]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
    union-element = union-child ; see below for more alternatives
@@ -374,7 +430,6 @@ Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
    escape = %x5C                 ; \
 
    HEXDIG =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
-   DIGIT =  %x30-39              ; 0-9
 
    Note: double-quoted strings follow JSON in RFC 8259 [RFC8259].
    Single-quoted strings follow an analogous pattern.
@@ -389,12 +444,13 @@ Semantics
 
 
 
-Normington               Expires 29 January 2021                [Page 7]
+
+Normington & Surov        Expires 27 March 2021                 [Page 8]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
-                  +-----------------+-------------------+
+                  +=================+===================+
                   | Escape Sequence | Unicode Character |
                   +=================+===================+
                   |    %x5C %x22    |       U+0022      |
@@ -445,9 +501,9 @@ Syntax
 
 
 
-Normington               Expires 29 January 2021                [Page 8]
+Normington & Surov        Expires 27 March 2021                 [Page 9]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
 Semantics
@@ -501,9 +557,9 @@ Semantics
 
 
 
-Normington               Expires 29 January 2021                [Page 9]
+Normington & Surov        Expires 27 March 2021                [Page 10]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
    [RFC3629]  Yergeau, F., "UTF-8, a transformation format of ISO
@@ -540,7 +596,7 @@ Internet-Draft   JavaScript Object Notation (JSON) Path        July 2020
               DOI 10.17487/RFC8259, December 2017,
               <https://www.rfc-editor.org/info/rfc8259>.
 
-Author's Address
+Authors' Addresses
 
    Glyn Normington (editor)
    VMware, Inc.
@@ -557,4 +613,60 @@ Author's Address
 
 
 
-Normington               Expires 29 January 2021               [Page 10]
+Normington & Surov        Expires 27 March 2021                [Page 11]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
+
+
+   Edward Surov (editor)
+   TheSoul Publishing Ltd.
+   Limassol
+   Cyprus
+
+   Email: esurov.tsp@gmail.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Normington & Surov        Expires 27 March 2021                [Page 12]

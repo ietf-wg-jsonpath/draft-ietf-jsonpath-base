@@ -59,7 +59,8 @@ This will place the executable in `~/.local/bin`
 xml2rfc ./draft-normington-jsonpath-latest.xml --text --html && aex draft-normington-jsonpath-latest.txt | bap -S path -q && cp draft-normington-jsonpath-latest.html docs/index.html
 ```
 
-A script [gen.sh](scripts/gen.sh) is provided for convenience.
+A script [gen.sh](scripts/gen.sh) is provided for convenience. You can also use [docker-gen.sh](scripts/docker-gen.sh) 
+version that installs and runs all utilities within a Docker container.
 
 ### Pull Requests
 

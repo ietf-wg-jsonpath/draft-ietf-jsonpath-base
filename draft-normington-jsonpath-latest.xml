@@ -49,6 +49,20 @@
         <email>glyn.normington@gmail.com</email>
      </address>
     </author>
+    <author fullname="Edward Surov" initials="E" role="editor" surname="Surov">
+      <organization>TheSoul Publishing Ltd.</organization>
+      <address>
+        <postal>
+          <street/>
+          <city>Limassol</city>
+          <region/>
+          <code/>
+          <country>Cyprus</country>
+        </postal>
+        <phone/>
+        <email>esurov.tsp@gmail.com</email>
+     </address>
+    </author>
     <date year="2020"/>
     <!-- If the month and year are both specified and are the current ones, xml2rfc will fill 
         in the current day for you. If only the current year is specified, xml2rfc will fill 
@@ -202,24 +216,36 @@ root-selector = %x24               ; $ selects document root node
                   <name>Syntax</name>
                   <t>A dot child matcher has a key known as a dot child name or a single asterisk (<tt>*</tt>).
                   </t>
-                  <t>A dot child name corresponds to a key in a JSON object, without the surrounding double quotes (<tt>"</tt>).
+                  <t>A dot child name corresponds to a name in a JSON object.
                   </t>
                   <sourcecode type="abnf">
 matcher = dot-child             ; see below for alternatives
 dot-child = %x2E dot-child-name / ; .&lt;dot-child-name&gt;
             %x2E %x2A             ; .*
-dot-child-name = TBD
+dot-child-name = 1*(
+                   %x2D / ; -
+                   DIGIT /
+                   ALPHA /
+                   %x5F / ; _
+                   %x80-10FFFF ; any non-ASCII Unicode character
+                 )
+DIGIT =  %x30-39 ; 0-9
+ALPHA = %x41-5A / %x61-7A ; A-Z / a-z
                   </sourcecode>
-                  <!-- TODO: define dot-child-name using an identifier like syntax. See https://github.com/cburgmer/json-path-comparison/issues/42 -->
                   <t>More general child names, such as the empty string, are supported by "Union Child" (<xref target="unionchild" format="default"/>).
+                  </t>
+                  <t>Note that the <tt>dot-child-name</tt> rule follows the philosophy of JSON strings and is
+                     allowed to contain bit sequences that cannot encode Unicode characters (a single unpaired UTF-16 surrogate, for example).
+                     The behaviour of an implementation is undefined for child names which do not encode Unicode characters.
                   </t>
                </section>       
                <section numbered="false" toc="exclude">
                   <name>Semantics</name>
-                  <t>A dot child name which is not a single asterisk (<tt>*</tt>) matches any node which is an object having a key equal to the dot child name
-                  and selects the value corresponding to that key.
-                  It does not match a node which is not an object.
+                  <t>A dot child name which is not a single asterisk (<tt>*</tt>) is considered to have a key. It matches any node which is an object having a name equal to that key
+                      and selects the value corresponding to that name. It does not match a node which is not an object.
                   </t>
+                   <t>The key of a dot child name is the sequence of Unicode symbols contained in that name.
+                   </t>
                   <t>A dot child name consisting of a single asterisk is a wild card. It matches any node which is an object and selects all the values of the object.
                      It also matches any node which is an array and selects all the elements of the array. It does not match a number, string, or literal node.
                   </t>
@@ -289,7 +315,6 @@ single-quoted = sq-unescaped /
 escape = %x5C                 ; \
 
 HEXDIG =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
-DIGIT =  %x30-39              ; 0-9
                      </sourcecode>
                      <t>Note: double-quoted strings follow JSON in <xref target="RFC8259" format="default">RFC&nbsp;8259</xref>.
                         Single-quoted strings follow an analogous pattern.
