@@ -84,14 +84,14 @@ Table of Contents
          2.6.2.1.  Syntax  . . . . . . . . . . . . . . . . . . . . .   6
          2.6.2.2.  Semantics . . . . . . . . . . . . . . . . . . . .   7
          2.6.2.3.  Union Child . . . . . . . . . . . . . . . . . . .   7
-         2.6.2.4.  Array Index . . . . . . . . . . . . . . . . . . .   9
-   3.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  10
-   4.  Security Considerations . . . . . . . . . . . . . . . . . . .  10
-   5.  Alternatives  . . . . . . . . . . . . . . . . . . . . . . . .  10
-   6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  10
-     6.1.  Normative References  . . . . . . . . . . . . . . . . . .  10
-     6.2.  Informative References  . . . . . . . . . . . . . . . . .  11
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  11
+         2.6.2.4.  Array Access  . . . . . . . . . . . . . . . . . .   9
+   3.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  11
+   4.  Security Considerations . . . . . . . . . . . . . . . . . . .  11
+   5.  Alternatives  . . . . . . . . . . . . . . . . . . . . . . . .  11
+   6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  11
+     6.1.  Normative References  . . . . . . . . . . . . . . . . . .  11
+     6.2.  Informative References  . . . . . . . . . . . . . . . . .  12
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  12
 
 1.  Introduction
 
@@ -146,9 +146,6 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
    literals "true", "false", or "null".  The type of the JSON value held
    by a node is sometimes referred to as the type of the node.
 
-   The descendants of a node are taken to include the node itself and
-   the descendants of any children of the node.
-
 2.3.  Implementation
 
    An implementation of this specification, from now on referred to
@@ -159,6 +156,9 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
    If there is no matching node and no error has occurred, an
    implementation MUST return an empty list of nodes.
+
+
+
 
 
 
@@ -205,19 +205,19 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
    node: the input document.
 
    A matcher may match a node and, if it matches, may then select zero
-   or more descendants of the node for further processing.  But there's
-   more to it than this: each matcher acts on a list of nodes and
-   produces a list of nodes, as follows.
+   or more descendants of the node, or the node itself, for further
+   processing.  A syntactically valid matcher MUST NOT produce errors.
+   This means that some operations which might be considered erroneous,
+   such as indexing beyond the end of an array, simply result in fewer
+   nodes being selected.
+
+   But a matcher doesn't just act on a single node: each matcher acts on
+   a list of nodes and produces a list of nodes, as follows.
 
    After the root selector, the remainder of the JSON Path is processed
    by passing lists of nodes from one matcher to the next ending up with
    a list of nodes which is the result of matching the JSON Path to the
    input JSON document.
-
-
-
-
-
 
 
 
@@ -229,13 +229,13 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
    Each matcher acts on its input list of nodes as follows.  For each
    node in the list, the matcher may or may not match the node.  If the
    matcher matches the node, it selects zero or more descendants of the
-   node.  The output list of nodes of a matcher is the concatenation of
-   the lists of selected descendents for each input node.
+   node, or the node itself.  The output list of nodes of a matcher is
+   the concatenation of the lists of selected nodes for each input node.
 
    A specific, non-normative example will make this clearer.  Suppose
-   the input document is: "{"a":[{"b":0},{"b":1},{"b":2}]}".  As we will
+   the input document is: "{"a":[{"b":0},{"b":1},{"c":2}]}".  As we will
    see later, the JSON Path "$.a[*].b" selects the following list of
-   nodes: "0", "1", "2".  Let's walk through this in detail.
+   nodes: "0", "1".  Let's walk through this in detail.
 
    The JSON Path consists of "$" followed by three matchers: ".a",
    "[*]", and ".b".
@@ -246,16 +246,17 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
    Next, ".a" matches any input node of type object and selects any
    value of the input node corresponding to the key ""a"".  The result
-   is again a list of one node: "[{"b":0},{"b":1},{"b":2}]".
+   is again a list of one node: "[{"b":0},{"b":1},{"c":2}]".
 
    Next, "[*]" matches any input node which is an array and selects all
    the elements of the input node.  The result is a list of three nodes:
-   "{"b":0}", "{"b":1}", and "{"b":2}".
+   "{"b":0}", "{"b":1}", and "{"c":2}".
 
-   Finally, ".b" matches any input node of type object and selects any
-   value of the input node corresponding to the key ""b"".  The result
-   is the concatenation of three lists each of length one containing
-   "0", "1", "2", respectively.
+   Finally, ".b" matches any input node of type object with a key "b"
+   and selects the value of the input node corresponding to that key.
+   The result is a list containing "0", "1".  This is the concatenation
+   of three lists, two of length one containing "0", "1", respectively,
+   and one of length zero.
 
    As a consequence of this approach, if any of the matchers matches no
    nodes, then the whole JSON Path matches no nodes.
@@ -273,7 +274,6 @@ Syntax
    asterisk ("*").
 
    A dot child name corresponds to a name in a JSON object.
-
 
 
 
@@ -349,7 +349,7 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
    A union matches any node which is matched by at least one of the
    union elements and selects the concatenation of the lists (in the
-   order of the matchers) of descendants selected by the union elements.
+   order of the matchers) of nodes selected by the union elements.
 
 2.6.2.3.  Union Child
 
@@ -480,20 +480,20 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
    selects the value corresponding to the key.  It does not match a node
    which is not an object.
 
-2.6.2.4.  Array Index
+2.6.2.4.  Array Access
 
 Syntax
+
+   Array access is a union element which selects zero or more elements
+   of an array.  It does not match a node which is not an array.  Array
+   access takes the form of an index, which selects at most one element,
+   or a slice, which selects zero or more elements.
+
+   union-element =/ array-index / array-slice
 
    An array index is a union element consisting of an integer (in base
    10).
 
-   union-element =/ integer
-   integer = [%x2D] (%x30 / (%x31-39 *%x30-39))
-                               ; optional - followed by 0 or
-                               ; sequence of digits with no leading zero
-
-   Note: the syntax does not allow integers with leading zeros such as
-   "01" and "-01".
 
 
 
@@ -506,11 +506,26 @@ Normington & Surov        Expires 27 March 2021                 [Page 9]
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
+   array-index = integer
+
+   integer = [%x2D] (%x30 / (%x31-39 *%x30-39))
+                               ; optional - followed by 0 or
+                               ; sequence of digits with no leading zero
+
+   Note: the syntax does not allow integers with leading zeros such as
+   "01" and "-01".
+
+   An array slice is a union element consisting of two or three integers
+   (in base 10 and which may be omitted) separated by colons.
+
+   array-slice = [ integer ] ws %x3A ws [ integer ]
+                      [ ws %x3A ws integer ]
+                               ; start:end or start:end:step
+
 Semantics
 
-   An array index matches any node which is an array and selects any
-   element of the array indexed by the integer index.  It does not match
-   a node which is not an array.
+   An array index selects any element of an array which is indexed by
+   the integer index.  It does not match a node which is not an array.
 
    A non-negative index "i" selects an element of an array of length
    "len" if and only if "0 <= i < len".  The index "0" selects the first
@@ -520,7 +535,53 @@ Semantics
 
    A negative index "j" selects an element of an array of length "len"
    if and only if "0 <= j + len < len", in which case it selects the
-   same element as selected by the non-negative index "j + len".
+   same element as the non-negative index "j + len".
+
+   An array slice selects any elements of an array which are indexed by
+   the members of the slice, as defined below, in the same order as the
+   slice.  It does not match a node which is not an array.
+
+   The members of a slice depend on whether the step value is positive,
+   negative, or zero as follows.  If the step value is omitted, it
+   defaults to "1".
+
+   For positive integer "step" and integers "start" and "end", the array
+   slice "start:end:step" consists of the indices starting at "start"
+   and increasing repeatedly by "step" while the resultant index is less
+   than "end".  The indices of the slice are the same as the values of i
+   iterated over by this "for" loop in C:
+
+   for (i = start; i < end; i = i + step) {
+     ...
+   }
+
+
+
+Normington & Surov        Expires 27 March 2021                [Page 10]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
+
+
+   When "step" is positive, the default value of "start" is "0" and the
+   default value of "end" is the length of the array.
+
+   For negative integer "step" and integers "start" and "end", the array
+   slice "start:end:step" consists of the indices starting at "start"
+   and decreasing repeatedly by "step" while the resultant index is
+   greater than "end".  The indices of the slice are the same as the
+   values of i iterated over by this "for" loop in C:
+
+   for (i = start; i > end; i = i + step) {
+     ...
+   }
+
+   When "step" is negative, the default value of "start" is "len - 1"
+   (where "len" is the length of the array) and the default value of
+   "end" is "-1" (literally, not in the earlier sense of a shorthand for
+   "len - 1").
+
+   For zero "step", the array slice is empty and no elements are
+   selected.
 
 3.  IANA Considerations
 
@@ -547,20 +608,20 @@ Semantics
 
 6.1.  Normative References
 
+
+
+
+
+
+Normington & Surov        Expires 27 March 2021                [Page 11]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
+
+
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
-
-
-
-
-
-
-Normington & Surov        Expires 27 March 2021                [Page 10]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
-
 
    [RFC3629]  Yergeau, F., "UTF-8, a transformation format of ISO
               10646", STD 63, RFC 3629, DOI 10.17487/RFC3629, November
@@ -608,12 +669,7 @@ Authors' Addresses
 
 
 
-
-
-
-
-
-Normington & Surov        Expires 27 March 2021                [Page 11]
+Normington & Surov        Expires 27 March 2021                [Page 12]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
@@ -669,4 +725,4 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
 
-Normington & Surov        Expires 27 March 2021                [Page 12]
+Normington & Surov        Expires 27 March 2021                [Page 13]

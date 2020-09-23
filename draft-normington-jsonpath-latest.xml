@@ -141,8 +141,6 @@
             <t>Each node holds a JSON value (as defined by <xref target="RFC8259" format="default">RFC&nbsp;8259</xref>) of one of the types object, array, number, string, or one
                of the literals <tt>true</tt>, <tt>false</tt>, or <tt>null</tt>. The type of the JSON value held by a node is sometimes referred to as the type of the node.
             </t>
-            <t>The descendants of a node are taken to include the node itself and the descendants of any children of the node.
-            </t>
          </section>
          <section numbered="true" toc="default">
             <name>Implementation</name>
@@ -177,31 +175,35 @@ root-selector = %x24               ; $ selects document root node
             <name>Semantics</name>
             <t>The root selector <tt>$</tt> not only selects the root node of the input document, but it also produces as output a list consisting of one node: the input document.
             </t>
-            <t>A matcher may match a node and, if it matches, may then select zero or more descendants of the node for further processing.
-               But there's more to it than this: each matcher acts on a list of nodes and produces a list of nodes, as follows.
+            <t>A matcher may match a node and, if it matches, may then select zero or more descendants of the node, or the node itself, for further processing.
+               A syntactically valid matcher MUST NOT produce errors. This means that some operations which might be considered erroneous, such as indexing beyond the end of an array,
+               simply result in fewer nodes being selected.
+            </t>
+            <t>But a matcher doesn't just act on a single node: each matcher acts on a list of nodes and produces a list of nodes, as follows.
             </t>
             <t>After the root selector, the remainder of the JSON Path is processed by passing lists of nodes from one matcher to the next ending up with a list of nodes which is the result of
                matching the JSON Path to the input JSON document.
             </t>
             <t>Each matcher acts on its input list of nodes as follows. For each node in the list, the matcher may or may not match the node. If the matcher
-               matches the node, it selects zero or more descendants of the node.
-               The output list of nodes of a matcher is the concatenation of the lists of selected descendents for each input node. 
+               matches the node, it selects zero or more descendants of the node, or the node itself.
+               The output list of nodes of a matcher is the concatenation of the lists of selected nodes for each input node. 
             </t>
-            <t>A specific, non-normative example will make this clearer. Suppose the input document is: <tt>{"a":[{"b":0},{"b":1},{"b":2}]}</tt>. As we will see later, the JSON Path
-               <tt>$.a[*].b</tt> selects the following list of nodes: <tt>0</tt>, <tt>1</tt>, <tt>2</tt>. Let's walk through this in detail.
+            <t>A specific, non-normative example will make this clearer. Suppose the input document is: <tt>{"a":[{"b":0},{"b":1},{"c":2}]}</tt>. As we will see later, the JSON Path
+               <tt>$.a[*].b</tt> selects the following list of nodes: <tt>0</tt>, <tt>1</tt>. Let's walk through this in detail.
             </t>
             <t>The JSON Path consists of <tt>$</tt> followed by three matchers: <tt>.a</tt>, <tt>[*]</tt>, and <tt>.b</tt>.
             </t>
             <t>Firstly, <tt>$</tt> matches the input document and selects the root node which is the input document. So the result is a list consisting of just the root node.
             </t>
             <t>Next, <tt>.a</tt> matches any input node of type object and selects any value of the input node corresponding to the key <tt>"a"</tt>.
-               The result is again a list of one node: <tt>[{"b":0},{"b":1},{"b":2}]</tt>.
+               The result is again a list of one node: <tt>[{"b":0},{"b":1},{"c":2}]</tt>.
             </t>
             <t>Next, <tt>[*]</tt> matches any input node which is an array and selects all the elements of the input node.
-               The result is a list of three nodes: <tt>{"b":0}</tt>, <tt>{"b":1}</tt>, and <tt>{"b":2}</tt>. 
+               The result is a list of three nodes: <tt>{"b":0}</tt>, <tt>{"b":1}</tt>, and <tt>{"c":2}</tt>. 
             </t>
-            <t>Finally, <tt>.b</tt> matches any input node of type object and selects any value of the input node corresponding to the key <tt>"b"</tt>.
-               The result is the concatenation of three lists each of length one containing <tt>0</tt>, <tt>1</tt>, <tt>2</tt>, respectively.
+            <t>Finally, <tt>.b</tt> matches any input node of type object with a key <tt>b</tt> and selects the value of the input node corresponding to that key.
+               The result is a list containing <tt>0</tt>, <tt>1</tt>.
+               This is the concatenation of three lists, two of length one containing <tt>0</tt>, <tt>1</tt>, respectively, and one of length zero.
             </t>
             <t>As a consequence of this approach, if any of the matchers matches no nodes, then the whole JSON Path matches no nodes.
             </t>
@@ -269,7 +271,8 @@ union-elements = union-element /
                <section numbered="true" toc="default">
                   <name>Semantics</name>
                   <t>A union matches any node which is matched by at least one of the union elements and selects the concatenation of the
-                     lists (in the order of the matchers) of descendants selected by the union elements.
+                     lists (in the order of the matchers) of nodes selected by the union elements.
+                     <!-- TODO: define whether duplicates are kept or removed. -->
                   </t>
                </section>
                <section numbered="true" toc="default" anchor="unionchild">
@@ -351,23 +354,38 @@ HEXDIG =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
                   </section>       
                </section>             
                <section numbered="true" toc="default">
-                  <name>Array Index</name>
+                  <name>Array Access</name>
                   <section numbered="false" toc="exclude">
                      <name>Syntax</name>
+                     <t>Array access is a union element which selects zero or more elements of an array.
+                        It does not match a node which is not an array.
+                        Array access takes the form of an index, which selects at most one element, or a slice, which selects zero or more elements.
+                     </t>
+                     <sourcecode type="abnf">
+union-element =/ array-index / array-slice
+                     </sourcecode>
                      <t>An array index is a union element consisting of an integer (in base 10).
                      </t>
                      <sourcecode type="abnf">
-union-element =/ integer
+array-index = integer
+
 integer = [%x2D] (%x30 / (%x31-39 *%x30-39))
                             ; optional - followed by 0 or
                             ; sequence of digits with no leading zero
                      </sourcecode>
                      <t>Note: the syntax does not allow integers with leading zeros such as <tt>01</tt> and <tt>-01</tt>.
                      </t>
+                     <t>An array slice is a union element consisting of two or three integers (in base 10 and which may be omitted) separated by colons.
+                     </t>
+                     <sourcecode type="abnf">
+array-slice = [ integer ] ws %x3A ws [ integer ]
+                   [ ws %x3A ws integer ]
+                            ; start:end or start:end:step
+                    </sourcecode>
                   </section>       
                   <section numbered="false" toc="exclude">
                      <name>Semantics</name>
-                     <t>An array index matches any node which is an array and selects any element of the array indexed by the integer index.
+                     <t>An array index selects any element of an array which is indexed by the integer index.
                         It does not match a node which is not an array.
                      </t>
                      <t>A non-negative index <tt>i</tt> selects an element of an array of length <tt>len</tt> if and only if <tt>0 &lt;= i &lt; len</tt>.
@@ -375,7 +393,41 @@ integer = [%x2D] (%x30 / (%x31-39 *%x30-39))
                         selects the element immedately after (in array order) the element selected by index <tt>i</tt>.
                      </t>
                      <t>A negative index <tt>j</tt> selects an element of an array of length <tt>len</tt> if and only if <tt>0 &lt;= j + len &lt; len</tt>,
-                        in which case it selects the same element as selected by the non-negative index <tt>j + len</tt>.
+                        in which case it selects the same element as the non-negative index <tt>j + len</tt>.
+                     </t>
+                     <t>An array slice selects any elements of an array which are indexed by the members of the slice,
+                        as defined below, in the same order as the slice.
+                        It does not match a node which is not an array.
+                     </t>
+                     <t>The members of a slice depend on whether the step value is positive, negative, or zero as follows. If the step value is
+                        omitted, it defaults to <tt>1</tt>.
+                     </t>
+                     <t>For positive integer <tt>step</tt> and integers <tt>start</tt> and <tt>end</tt>, the array slice
+                        <tt>start:end:step</tt> consists of the indices starting at <tt>start</tt> and increasing repeatedly
+                        by <tt>step</tt> while the resultant index is less than <tt>end</tt>.
+                        The indices of the slice are the same as the values of i iterated over by this <tt>for</tt> loop in C:
+                     </t>
+                     <sourcecode type="c">
+for (i = start; i &lt; end; i = i + step) {
+  ...
+}
+                     </sourcecode>
+                     <t>When <tt>step</tt> is positive, the default value of <tt>start</tt> is <tt>0</tt> and the default value of <tt>end</tt> is the length of the array.
+                     </t>
+                     <t>For negative integer <tt>step</tt> and integers <tt>start</tt> and <tt>end</tt>, the array slice
+                        <tt>start:end:step</tt> consists of the indices starting at <tt>start</tt> and decreasing repeatedly
+                        by <tt>step</tt> while the resultant index is greater than <tt>end</tt>.
+                        The indices of the slice are the same as the values of i iterated over by this <tt>for</tt> loop in C:
+                     </t>
+                     <sourcecode type="c">
+for (i = start; i &gt; end; i = i + step) {
+  ...
+}
+                     </sourcecode>
+                     <t>When <tt>step</tt> is negative, the default value of <tt>start</tt> is <tt>len - 1</tt> (where <tt>len</tt> is the length of the array)
+                        and the default value of <tt>end</tt> is <tt>-1</tt> (literally, not in the earlier sense of a shorthand for <tt>len - 1</tt>).
+                     </t>
+                     <t>For zero <tt>step</tt>, the array slice is empty and no elements are selected.
                      </t>
                   </section>       
                </section>             
