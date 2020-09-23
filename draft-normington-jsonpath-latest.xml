@@ -379,15 +379,9 @@ integer = [%x2D] (%x30 / (%x31-39 *%x30-39))
                      </t>
                      <sourcecode type="abnf">
 array-slice = [ integer ] ws %x3A ws [ integer ]
-                   [ ws %x3A ws non-zero-integer ]
+                   [ ws %x3A ws integer ]
                             ; start:end or start:end:step
-
-non-zero-integer = [%x2D] %x31-39 *%x30-39
-                            ; optional - followed by
-                            ; sequence of digits with no leading zero
                     </sourcecode>
-                    <t>Note: if the third integer (the <tt>step</tt> value) is present, it MUST be non-zero.
-                    </t>
                   </section>       
                   <section numbered="false" toc="exclude">
                      <name>Semantics</name>
@@ -405,7 +399,7 @@ non-zero-integer = [%x2D] %x31-39 *%x30-39
                         as defined below, in the same order as the slice.
                         It does not match a node which is not an array.
                      </t>
-                     <t>The members of a slice depend on whether the step value is positive or negative, as follows. If the step value is
+                     <t>The members of a slice depend on whether the step value is positive, negative, or zero as follows. If the step value is
                         omitted, it defaults to <tt>1</tt>.
                      </t>
                      <t>For positive integer <tt>step</tt> and integers <tt>start</tt> and <tt>end</tt>, the array slice
@@ -432,6 +426,8 @@ for (i = start; i &gt; end; i = i + step) {
                      </sourcecode>
                      <t>When <tt>step</tt> is negative, the default value of <tt>start</tt> is <tt>len - 1</tt> (where <tt>len</tt> is the length of the array)
                         and the default value of <tt>end</tt> is <tt>-1</tt> (literally, not in the earlier sense of a shorthand for <tt>len - 1</tt>).
+                     </t>
+                     <t>For zero <tt>step</tt>, the array slice is empty and no elements are selected.
                      </t>
                   </section>       
                </section>             

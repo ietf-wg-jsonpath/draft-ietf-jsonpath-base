@@ -88,8 +88,8 @@ Table of Contents
    3.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  11
    4.  Security Considerations . . . . . . . . . . . . . . . . . . .  11
    5.  Alternatives  . . . . . . . . . . . . . . . . . . . . . . . .  11
-   6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  12
-     6.1.  Normative References  . . . . . . . . . . . . . . . . . .  12
+   6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  11
+     6.1.  Normative References  . . . . . . . . . . . . . . . . . .  11
      6.2.  Informative References  . . . . . . . . . . . . . . . . .  12
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  12
 
@@ -519,15 +519,8 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
    (in base 10 and which may be omitted) separated by colons.
 
    array-slice = [ integer ] ws %x3A ws [ integer ]
-                      [ ws %x3A ws non-zero-integer ]
+                      [ ws %x3A ws integer ]
                                ; start:end or start:end:step
-
-   non-zero-integer = [%x2D] %x31-39 *%x30-39
-                               ; optional - followed by
-                               ; sequence of digits with no leading zero
-
-   Note: if the third integer (the "step" value) is present, it MUST be
-   non-zero.
 
 Semantics
 
@@ -548,19 +541,9 @@ Semantics
    the members of the slice, as defined below, in the same order as the
    slice.  It does not match a node which is not an array.
 
-   The members of a slice depend on whether the step value is positive
-   or negative, as follows.  If the step value is omitted, it defaults
-   to "1".
-
-
-
-
-
-
-Normington & Surov        Expires 27 March 2021                [Page 10]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
-
+   The members of a slice depend on whether the step value is positive,
+   negative, or zero as follows.  If the step value is omitted, it
+   defaults to "1".
 
    For positive integer "step" and integers "start" and "end", the array
    slice "start:end:step" consists of the indices starting at "start"
@@ -571,6 +554,13 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
    for (i = start; i < end; i = i + step) {
      ...
    }
+
+
+
+Normington & Surov        Expires 27 March 2021                [Page 10]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
+
 
    When "step" is positive, the default value of "start" is "0" and the
    default value of "end" is the length of the array.
@@ -589,6 +579,9 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
    (where "len" is the length of the array) and the default value of
    "end" is "-1" (literally, not in the earlier sense of a shorthand for
    "len - 1").
+
+   For zero "step", the array slice is empty and no elements are
+   selected.
 
 3.  IANA Considerations
 
@@ -611,16 +604,19 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
    An analogous standard, JSON Pointer, is provided by RFC 6901
    [RFC6901].
 
+6.  References
+
+6.1.  Normative References
+
+
+
+
 
 
 Normington & Surov        Expires 27 March 2021                [Page 11]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
-
-6.  References
-
-6.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -663,8 +659,12 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 Authors' Addresses
 
+   Glyn Normington (editor)
+   VMware, Inc.
+   Winchester
+   United Kingdom
 
-
+   Email: glyn.normington@gmail.com
 
 
 
@@ -674,20 +674,20 @@ Normington & Surov        Expires 27 March 2021                [Page 12]
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
-   Glyn Normington (editor)
-   VMware, Inc.
-   Winchester
-   United Kingdom
-
-   Email: glyn.normington@gmail.com
-
-
    Edward Surov (editor)
    TheSoul Publishing Ltd.
    Limassol
    Cyprus
 
    Email: esurov.tsp@gmail.com
+
+
+
+
+
+
+
+
 
 
 
