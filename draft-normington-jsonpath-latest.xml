@@ -190,21 +190,21 @@ root-selector = %x24               ; $ selects document root node
                matches the node, it selects zero or more descendants of the node.
                The output list of nodes of a matcher is the concatenation of the lists of selected descendents for each input node. 
             </t>
-            <t>A specific, non-normative example will make this clearer. Suppose the input document is: <tt>{"a":[{"b":0},{"b":1},{"b":2}]}</tt>. As we will see later, the JSON Path
-               <tt>$.a[*].b</tt> selects the following list of nodes: <tt>0</tt>, <tt>1</tt>, <tt>2</tt>. Let's walk through this in detail.
+            <t>A specific, non-normative example will make this clearer. Suppose the input document is: <tt>{"a":[{"b":0},{"b":1},{"c":2}]}</tt>. As we will see later, the JSON Path
+               <tt>$.a[*].b</tt> selects the following list of nodes: <tt>0</tt>, <tt>1</tt>. Let's walk through this in detail.
             </t>
             <t>The JSON Path consists of <tt>$</tt> followed by three matchers: <tt>.a</tt>, <tt>[*]</tt>, and <tt>.b</tt>.
             </t>
             <t>Firstly, <tt>$</tt> matches the input document and selects the root node which is the input document. So the result is a list consisting of just the root node.
             </t>
             <t>Next, <tt>.a</tt> matches any input node of type object and selects any value of the input node corresponding to the key <tt>"a"</tt>.
-               The result is again a list of one node: <tt>[{"b":0},{"b":1},{"b":2}]</tt>.
+               The result is again a list of one node: <tt>[{"b":0},{"b":1},{"c":2}]</tt>.
             </t>
             <t>Next, <tt>[*]</tt> matches any input node which is an array and selects all the elements of the input node.
-               The result is a list of three nodes: <tt>{"b":0}</tt>, <tt>{"b":1}</tt>, and <tt>{"b":2}</tt>. 
+               The result is a list of three nodes: <tt>{"b":0}</tt>, <tt>{"b":1}</tt>, and <tt>{"c":2}</tt>. 
             </t>
-            <t>Finally, <tt>.b</tt> matches any input node of type object and selects any value of the input node corresponding to the key <tt>"b"</tt>.
-               The result is the concatenation of three lists each of length one containing <tt>0</tt>, <tt>1</tt>, <tt>2</tt>, respectively.
+            <t>Finally, <tt>.b</tt> matches any input node of type object with a key <tt>b</tt> and selects the value of the input node corresponding to that key.
+               The result is the concatenation of two lists each of length one containing <tt>0</tt>, <tt>1</tt>, respectively.
             </t>
             <t>As a consequence of this approach, if any of the matchers matches no nodes, then the whole JSON Path matches no nodes.
             </t>
@@ -273,6 +273,7 @@ union-elements = union-element /
                   <name>Semantics</name>
                   <t>A union matches any node which is matched by at least one of the union elements and selects the concatenation of the
                      lists (in the order of the matchers) of descendants selected by the union elements.
+                     <!-- TODO: define whether duplicates are kept or removed. -->
                   </t>
                </section>
                <section numbered="true" toc="default" anchor="unionchild">
