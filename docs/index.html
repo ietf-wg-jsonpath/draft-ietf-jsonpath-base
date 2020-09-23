@@ -1431,11 +1431,13 @@ dot-child = %x2E dot-child-name / ; .&lt;dot-child-name&gt;
             %x2E %x2A             ; .*
 dot-child-name = 1*(
                    %x2D / ; -
-                   %x30-39 / ; 0-9 (core ABNF: DIGIT)
-                   %x41-5A / %x61-7A / ; A-Z / a-z (core ABNF: ALPHA)
+                   DIGIT /
+                   ALPHA /
                    %x5F / ; _
                    %x80-10FFFF ; any non-ASCII Unicode character
                  )
+DIGIT =  %x30-39 ; 0-9
+ALPHA = %x41-5A / %x61-7A ; A-Z / a-z
 </pre><a href="#section-2.6.1.1-3" class="pilcrow">¶</a>
 </div>
 <p id="section-2.6.1.1-4">More general child names, such as the empty string, are supported by "Union Child" (<a href="#unionchild" class="xref">Section 2.6.2.3</a>).<a href="#section-2.6.1.1-4" class="pilcrow">¶</a></p>
@@ -1529,7 +1531,6 @@ single-quoted = sq-unescaped /
 escape = %x5C                 ; \
 
 HEXDIG =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
-DIGIT =  %x30-39              ; 0-9
 </pre><a href="#section-2.6.2.3.1-2" class="pilcrow">¶</a>
 </div>
 <p id="section-2.6.2.3.1-3">Note: double-quoted strings follow JSON in <span><a href="#RFC8259" class="xref">RFC 8259</a> [<a href="#RFC8259" class="xref">RFC8259</a>]</span>.

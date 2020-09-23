@@ -287,11 +287,13 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
                %x2E %x2A             ; .*
    dot-child-name = 1*(
                       %x2D / ; -
-                      %x30-39 / ; 0-9 (core ABNF: DIGIT)
-                      %x41-5A / %x61-7A / ; A-Z / a-z (core ABNF: ALPHA)
+                      DIGIT /
+                      ALPHA /
                       %x5F / ; _
                       %x80-10FFFF ; any non-ASCII Unicode character
                     )
+   DIGIT =  %x30-39 ; 0-9
+   ALPHA = %x41-5A / %x61-7A ; A-Z / a-z
 
    More general child names, such as the empty string, are supported by
    "Union Child" (Section 2.6.2.3).
@@ -324,12 +326,10 @@ Semantics
 
    A union matcher consists of one or more union elements.
 
-   matcher =/ union
-   union = %x5B ws union-elements ws %x5D ; [...]
-   ws = *%x20                             ; zero or more spaces
-   union-elements = union-element /
-                    union-element ws %x2C ws union-elements
-                                          ; ,-separated list
+
+
+
+
 
 
 
@@ -337,6 +337,13 @@ Normington & Surov        Expires 27 March 2021                 [Page 6]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
+
+   matcher =/ union
+   union = %x5B ws union-elements ws %x5D ; [...]
+   ws = *%x20                             ; zero or more spaces
+   union-elements = union-element /
+                    union-element ws %x2C ws union-elements
+                                          ; ,-separated list
 
 2.6.2.2.  Semantics
 
@@ -349,13 +356,6 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 Syntax
 
    A union child is a union element consisting of a quoted string.
-
-
-
-
-
-
-
 
 
 
@@ -430,7 +430,6 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
    escape = %x5C                 ; \
 
    HEXDIG =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
-   DIGIT =  %x30-39              ; 0-9
 
    Note: double-quoted strings follow JSON in RFC 8259 [RFC8259].
    Single-quoted strings follow an analogous pattern.
@@ -441,6 +440,7 @@ Semantics
    to a key by removing the surrounding quotes and replacing each escape
    sequence with its equivalent Unicode character, as in the table
    below:
+
 
 
 
