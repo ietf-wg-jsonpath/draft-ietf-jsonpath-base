@@ -282,27 +282,27 @@ Normington & Surov        Expires 27 March 2021                 [Page 5]
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
-   matcher = dot-child             ; see below for alternatives
+   matcher = dot-child               ; see below for alternatives
    dot-child = %x2E dot-child-name / ; .<dot-child-name>
                %x2E %x2A             ; .*
    dot-child-name = 1*(
-                      %x2D / ; -
+                      %x2D /         ; -
                       DIGIT /
                       ALPHA /
-                      %x5F / ; _
-                      %x80-10FFFF ; any non-ASCII Unicode character
+                      %x5F /         ; _
+                      %x80-10FFFF    ; any non-ASCII Unicode character
                     )
-   DIGIT =  %x30-39 ; 0-9
-   ALPHA = %x41-5A / %x61-7A ; A-Z / a-z
+   DIGIT =  %x30-39                  ; 0-9
+   ALPHA = %x41-5A / %x61-7A         ; A-Z / a-z
 
    More general child names, such as the empty string, are supported by
    "Union Child" (Section 2.6.2.3).
 
-   Note that "dot-child-name" rule follows the philosophy of JSON
-   strings when working with non-ASCII range of Unicode: it's allowed to
-   contain bit sequences that cannot encode Unicode character (an single
-   unpaired UTF-16 surrogate, for example).  It can lead to
-   unpredictable behavior of software that receives such query.
+   Note that the "dot-child-name" rule follows the philosophy of JSON
+   strings and is allowed to contain bit sequences that cannot encode
+   Unicode characters (a single unpaired UTF-16 surrogate, for example).
+   The behaviour of an implementation is undefined for child names which
+   do not encode Unicode characters.
 
 Semantics
 
@@ -311,7 +311,7 @@ Semantics
    equal to that key and selects the value corresponding to that name.
    It does not match a node which is not an object.
 
-   The key of a dot child name is the sequence of Unicode symbols
+   The key of a dot child name is the sequence of Unicode characters
    contained in that name.
 
    A dot child name consisting of a single asterisk is a wild card.  It
