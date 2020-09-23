@@ -234,9 +234,9 @@ ALPHA = %x41-5A / %x61-7A ; A-Z / a-z
                   </sourcecode>
                   <t>More general child names, such as the empty string, are supported by "Union Child" (<xref target="unionchild" format="default"/>).
                   </t>
-                  <t>Note that <tt>dot-child-name</tt> rule follows the philosophy of JSON strings when working with non-ASCII range of Unicode: it's
-                     allowed to contain bit sequences that cannot encode Unicode character (an single unpaired UTF-16 surrogate, for example). It can lead
-                     to unpredictable behavior of software that receives such query.
+                  <t>Note that the <tt>dot-child-name</tt> rule follows the philosophy of JSON strings and is
+                     allowed to contain bit sequences that cannot encode Unicode characters (a single unpaired UTF-16 surrogate, for example).
+                     The behaviour of an implementation is undefined for child names which do not encode Unicode characters.
                   </t>
                </section>       
                <section numbered="false" toc="exclude">
