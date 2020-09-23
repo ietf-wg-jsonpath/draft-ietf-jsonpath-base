@@ -146,9 +146,6 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
    literals "true", "false", or "null".  The type of the JSON value held
    by a node is sometimes referred to as the type of the node.
 
-   The descendants of a node are taken to include the node itself and
-   the descendants of any children of the node.
-
 2.3.  Implementation
 
    An implementation of this specification, from now on referred to
@@ -159,6 +156,9 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
    If there is no matching node and no error has occurred, an
    implementation MUST return an empty list of nodes.
+
+
+
 
 
 
@@ -205,11 +205,11 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
    node: the input document.
 
    A matcher may match a node and, if it matches, may then select zero
-   or more descendants of the node for further processing.  A
-   syntactically valid matcher MUST NOT produce errors.  This means that
-   some operations which might be considered erroneous, such as indexing
-   beyond the end of an array, simply result in fewer descendants being
-   selected.
+   or more descendants of the node, or the node itself, for further
+   processing.  A syntactically valid matcher MUST NOT produce errors.
+   This means that some operations which might be considered erroneous,
+   such as indexing beyond the end of an array, simply result in fewer
+   nodes being selected.
 
    But a matcher doesn't just act on a single node: each matcher acts on
    a list of nodes and produces a list of nodes, as follows.
@@ -229,8 +229,8 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
    Each matcher acts on its input list of nodes as follows.  For each
    node in the list, the matcher may or may not match the node.  If the
    matcher matches the node, it selects zero or more descendants of the
-   node.  The output list of nodes of a matcher is the concatenation of
-   the lists of selected descendents for each input node.
+   node, or the node itself.  The output list of nodes of a matcher is
+   the concatenation of the lists of selected nodes for each input node.
 
    A specific, non-normative example will make this clearer.  Suppose
    the input document is: "{"a":[{"b":0},{"b":1},{"c":2}]}".  As we will
@@ -349,7 +349,7 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
    A union matches any node which is matched by at least one of the
    union elements and selects the concatenation of the lists (in the
-   order of the matchers) of descendants selected by the union elements.
+   order of the matchers) of nodes selected by the union elements.
 
 2.6.2.3.  Union Child
 

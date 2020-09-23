@@ -141,8 +141,6 @@
             <t>Each node holds a JSON value (as defined by <xref target="RFC8259" format="default">RFC&nbsp;8259</xref>) of one of the types object, array, number, string, or one
                of the literals <tt>true</tt>, <tt>false</tt>, or <tt>null</tt>. The type of the JSON value held by a node is sometimes referred to as the type of the node.
             </t>
-            <t>The descendants of a node are taken to include the node itself and the descendants of any children of the node.
-            </t>
          </section>
          <section numbered="true" toc="default">
             <name>Implementation</name>
@@ -177,9 +175,9 @@ root-selector = %x24               ; $ selects document root node
             <name>Semantics</name>
             <t>The root selector <tt>$</tt> not only selects the root node of the input document, but it also produces as output a list consisting of one node: the input document.
             </t>
-            <t>A matcher may match a node and, if it matches, may then select zero or more descendants of the node for further processing.
+            <t>A matcher may match a node and, if it matches, may then select zero or more descendants of the node, or the node itself, for further processing.
                A syntactically valid matcher MUST NOT produce errors. This means that some operations which might be considered erroneous, such as indexing beyond the end of an array,
-               simply result in fewer descendants being selected.
+               simply result in fewer nodes being selected.
             </t>
             <t>But a matcher doesn't just act on a single node: each matcher acts on a list of nodes and produces a list of nodes, as follows.
             </t>
@@ -187,8 +185,8 @@ root-selector = %x24               ; $ selects document root node
                matching the JSON Path to the input JSON document.
             </t>
             <t>Each matcher acts on its input list of nodes as follows. For each node in the list, the matcher may or may not match the node. If the matcher
-               matches the node, it selects zero or more descendants of the node.
-               The output list of nodes of a matcher is the concatenation of the lists of selected descendents for each input node. 
+               matches the node, it selects zero or more descendants of the node, or the node itself.
+               The output list of nodes of a matcher is the concatenation of the lists of selected nodes for each input node. 
             </t>
             <t>A specific, non-normative example will make this clearer. Suppose the input document is: <tt>{"a":[{"b":0},{"b":1},{"c":2}]}</tt>. As we will see later, the JSON Path
                <tt>$.a[*].b</tt> selects the following list of nodes: <tt>0</tt>, <tt>1</tt>. Let's walk through this in detail.
@@ -272,7 +270,7 @@ union-elements = union-element /
                <section numbered="true" toc="default">
                   <name>Semantics</name>
                   <t>A union matches any node which is matched by at least one of the union elements and selects the concatenation of the
-                     lists (in the order of the matchers) of descendants selected by the union elements.
+                     lists (in the order of the matchers) of nodes selected by the union elements.
                      <!-- TODO: define whether duplicates are kept or removed. -->
                   </t>
                </section>
