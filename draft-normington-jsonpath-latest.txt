@@ -5,8 +5,8 @@
 Internet Engineering Task Force                       G. Normington, Ed.
 Internet-Draft                                              VMware, Inc.
 Intended status: Standards Track                           E. Surov, Ed.
-Expires: 27 March 2021                           TheSoul Publishing Ltd.
-                                                       23 September 2020
+Expires: 28 March 2021                           TheSoul Publishing Ltd.
+                                                       24 September 2020
 
 
                  JavaScript Object Notation (JSON) Path
@@ -37,7 +37,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 27 March 2021.
+   This Internet-Draft will expire on 28 March 2021.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Normington & Surov        Expires 27 March 2021                 [Page 1]
+Normington & Surov        Expires 28 March 2021                 [Page 1]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
@@ -78,9 +78,9 @@ Table of Contents
      2.3.  Implementation  . . . . . . . . . . . . . . . . . . . . .   3
      2.4.  Syntax  . . . . . . . . . . . . . . . . . . . . . . . . .   4
      2.5.  Semantics . . . . . . . . . . . . . . . . . . . . . . . .   4
-     2.6.  Matchers  . . . . . . . . . . . . . . . . . . . . . . . .   5
-       2.6.1.  Dot Child Matcher . . . . . . . . . . . . . . . . . .   5
-       2.6.2.  Union Matcher . . . . . . . . . . . . . . . . . . . .   6
+     2.6.  Selectors . . . . . . . . . . . . . . . . . . . . . . . .   5
+       2.6.1.  Dot Child Selector  . . . . . . . . . . . . . . . . .   5
+       2.6.2.  Union Selector  . . . . . . . . . . . . . . . . . . .   6
          2.6.2.1.  Syntax  . . . . . . . . . . . . . . . . . . . . .   6
          2.6.2.2.  Semantics . . . . . . . . . . . . . . . . . . . .   7
          2.6.2.3.  Union Child . . . . . . . . . . . . . . . . . . .   7
@@ -89,7 +89,7 @@ Table of Contents
    4.  Security Considerations . . . . . . . . . . . . . . . . . . .  11
    5.  Alternatives  . . . . . . . . . . . . . . . . . . . . . . . .  11
    6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  11
-     6.1.  Normative References  . . . . . . . . . . . . . . . . . .  11
+     6.1.  Normative References  . . . . . . . . . . . . . . . . . .  12
      6.2.  Informative References  . . . . . . . . . . . . . . . . .  12
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  12
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Normington & Surov        Expires 27 March 2021                 [Page 2]
+Normington & Surov        Expires 28 March 2021                 [Page 2]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
@@ -127,7 +127,7 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 2.1.  Overview
 
-   A JSON Path is a string which matches zero or more nodes of any JSON
+   A JSON Path is a string which selects zero or more nodes of any JSON
    document.  A valid JSON Path conforms to the ABNF syntax defined by
    this document.
 
@@ -151,13 +151,11 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
    An implementation of this specification, from now on referred to
    simply as "an implementation", SHOULD takes two inputs, a JSON Path
    and a JSON document, and produce a possibly empty list of nodes of
-   the JSON document which match the JSON Path or an error (but not
-   both).
+   the JSON document which are selected by the JSON Path or an error
+   (but not both).
 
-   If there is no matching node and no error has occurred, an
-   implementation MUST return an empty list of nodes.
-
-
+   If no node is selected and no error has occurred, an implementation
+   MUST return an empty list of nodes.
 
 
 
@@ -165,20 +163,22 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
 
-Normington & Surov        Expires 27 March 2021                 [Page 3]
+
+
+Normington & Surov        Expires 28 March 2021                 [Page 3]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
-   Syntax errors in the JSON Path SHOULD be detected before matching is
-   attempted since they do not depend on the JSON document.  Therefore,
-   an implementation SHOULD take a JSON Path and produce an optional
-   syntax error and then, if and only if an error was not produced,
-   SHOULD take a JSON document and produce a list of matches or an error
-   (but not both).
+   Syntax errors in the JSON Path SHOULD be detected before selection is
+   attempted since these errors do not depend on the JSON document.
+   Therefore, an implementation SHOULD take a JSON Path and produce an
+   optional syntax error and then, if and only if an error was not
+   produced, SHOULD take a JSON document and produce a list of nodes or
+   an error (but not both).
 
    Alternatively, an implementation MAY take a JSON Path and a JSON
-   document and produce a list of matches or an optional error (but not
+   document and produce a list of nodes or an optional error (but not
    both).
 
    For any implementation, if a syntactically invalid JSON Path is
@@ -191,12 +191,12 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
    Syntactically, a JSON Path consists of a root selector ("$"), which
    selects the root node of a JSON document, followed by a possibly
-   empty sequence of _matchers_.
+   empty sequence of _selectors_.
 
-   json-path = root-selector *matcher
+   json-path = root-selector *selector
    root-selector = %x24               ; $ selects document root node
 
-   The syntax and semantics of each matcher is defined below.
+   The syntax and semantics of each selector is defined below.
 
 2.5.  Semantics
 
@@ -204,85 +204,85 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
    document, but it also produces as output a list consisting of one
    node: the input document.
 
-   A matcher may match a node and, if it matches, may then select zero
-   or more descendants of the node, or the node itself, for further
-   processing.  A syntactically valid matcher MUST NOT produce errors.
-   This means that some operations which might be considered erroneous,
-   such as indexing beyond the end of an array, simply result in fewer
-   nodes being selected.
+   A selector may select zero or more nodes for further processing.  A
+   syntactically valid selector MUST NOT produce errors.  This means
+   that some operations which might be considered erroneous, such as
+   indexing beyond the end of an array, simply result in fewer nodes
+   being selected.
 
-   But a matcher doesn't just act on a single node: each matcher acts on
-   a list of nodes and produces a list of nodes, as follows.
+   But a selector doesn't just act on a single node: each selector acts
+   on a list of nodes and produces a list of nodes, as follows.
 
    After the root selector, the remainder of the JSON Path is processed
-   by passing lists of nodes from one matcher to the next ending up with
-   a list of nodes which is the result of matching the JSON Path to the
-   input JSON document.
+   by passing lists of nodes from one selector to the next ending up
+   with a list of nodes which is the result of applying the JSON Path to
+   the input JSON document.
 
 
 
-Normington & Surov        Expires 27 March 2021                 [Page 4]
+
+Normington & Surov        Expires 28 March 2021                 [Page 4]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
-   Each matcher acts on its input list of nodes as follows.  For each
-   node in the list, the matcher may or may not match the node.  If the
-   matcher matches the node, it selects zero or more descendants of the
-   node, or the node itself.  The output list of nodes of a matcher is
-   the concatenation of the lists of selected nodes for each input node.
+   Each selector acts on its input list of nodes as follows.  For each
+   node in the list, the selector selects zero or more nodes, each of
+   which is a descendant of the node or the node itself.  The output
+   list of nodes of a selector is the concatenation of the lists of
+   selected nodes for each input node.
 
    A specific, non-normative example will make this clearer.  Suppose
    the input document is: "{"a":[{"b":0},{"b":1},{"c":2}]}".  As we will
    see later, the JSON Path "$.a[*].b" selects the following list of
    nodes: "0", "1".  Let's walk through this in detail.
 
-   The JSON Path consists of "$" followed by three matchers: ".a",
+   The JSON Path consists of "$" followed by three selectors: ".a",
    "[*]", and ".b".
 
-   Firstly, "$" matches the input document and selects the root node
-   which is the input document.  So the result is a list consisting of
-   just the root node.
+   Firstly, "$" selects the root node which is the input document.  So
+   the result is a list consisting of just the root node.
 
-   Next, ".a" matches any input node of type object and selects any
+   Next, ".a" selects from any input node of type object and selects any
    value of the input node corresponding to the key ""a"".  The result
    is again a list of one node: "[{"b":0},{"b":1},{"c":2}]".
 
-   Next, "[*]" matches any input node which is an array and selects all
-   the elements of the input node.  The result is a list of three nodes:
-   "{"b":0}", "{"b":1}", and "{"c":2}".
+   Next, "[*]" selects from any input node which is an array and selects
+   all the elements of the input node.  The result is a list of three
+   nodes: "{"b":0}", "{"b":1}", and "{"c":2}".
 
-   Finally, ".b" matches any input node of type object with a key "b"
-   and selects the value of the input node corresponding to that key.
-   The result is a list containing "0", "1".  This is the concatenation
-   of three lists, two of length one containing "0", "1", respectively,
-   and one of length zero.
+   Finally, ".b" selects from any input node of type object with a key
+   "b" and selects the value of the input node corresponding to that
+   key.  The result is a list containing "0", "1".  This is the
+   concatenation of three lists, two of length one containing "0", "1",
+   respectively, and one of length zero.
 
-   As a consequence of this approach, if any of the matchers matches no
-   nodes, then the whole JSON Path matches no nodes.
+   As a consequence of this approach, if any of the selectors selects no
+   nodes, then the whole JSON Path selects no nodes.
 
-   In what follows, the semantics of each matcher are defined for each
+   In what follows, the semantics of each selector are defined for each
    type of node.
 
-2.6.  Matchers
+2.6.  Selectors
 
-2.6.1.  Dot Child Matcher
+2.6.1.  Dot Child Selector
 
 Syntax
 
-   A dot child matcher has a key known as a dot child name or a single
+   A dot child selector has a key known as a dot child name or a single
    asterisk ("*").
 
    A dot child name corresponds to a name in a JSON object.
 
 
 
-Normington & Surov        Expires 27 March 2021                 [Page 5]
+
+Normington & Surov        Expires 28 March 2021                 [Page 5]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
-   matcher = dot-child               ; see below for alternatives
+   selector = dot-child               ; see below for alternatives
    dot-child = %x2E dot-child-name / ; .<dot-child-name>
                %x2E %x2A             ; .*
    dot-child-name = 1*(
@@ -307,24 +307,23 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 Semantics
 
    A dot child name which is not a single asterisk ("*") is considered
-   to have a key.  It matches any node which is an object having a name
-   equal to that key and selects the value corresponding to that name.
-   It does not match a node which is not an object.
+   to have a key.  It selects the value corresponding to the key from
+   any object node.  It selects no nodes from a node which is not an
+   object.
 
    The key of a dot child name is the sequence of Unicode characters
    contained in that name.
 
    A dot child name consisting of a single asterisk is a wild card.  It
-   matches any node which is an object and selects all the values of the
-   object.  It also matches any node which is an array and selects all
-   the elements of the array.  It does not match a number, string, or
-   literal node.
+   selects all the values of any object node.  It also selects all the
+   elements of any array node.  It selects no nodes from number, string,
+   or literal nodes.
 
-2.6.2.  Union Matcher
+2.6.2.  Union Selector
 
 2.6.2.1.  Syntax
 
-   A union matcher consists of one or more union elements.
+   A union selector consists of one or more union elements.
 
 
 
@@ -333,12 +332,13 @@ Semantics
 
 
 
-Normington & Surov        Expires 27 March 2021                 [Page 6]
+
+Normington & Surov        Expires 28 March 2021                 [Page 6]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
-   matcher =/ union
+   selector =/ union
    union = %x5B ws union-elements ws %x5D ; [...]
    ws = *%x20                             ; zero or more spaces
    union-elements = union-element /
@@ -347,9 +347,9 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 2.6.2.2.  Semantics
 
-   A union matches any node which is matched by at least one of the
-   union elements and selects the concatenation of the lists (in the
-   order of the matchers) of nodes selected by the union elements.
+   A union selects any node which is selected by at least one of the
+   union selectors and selects the concatenation of the lists (in the
+   order of the selectors) of nodes selected by the union elements.
 
 2.6.2.3.  Union Child
 
@@ -389,7 +389,7 @@ Syntax
 
 
 
-Normington & Surov        Expires 27 March 2021                 [Page 7]
+Normington & Surov        Expires 28 March 2021                 [Page 7]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
@@ -445,7 +445,7 @@ Semantics
 
 
 
-Normington & Surov        Expires 27 March 2021                 [Page 8]
+Normington & Surov        Expires 28 March 2021                 [Page 8]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
@@ -476,8 +476,8 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
                    Table 1: Escape Sequence Replacements
 
-   The union child matches any node which is an object with this key and
-   selects the value corresponding to the key.  It does not match a node
+   The union child selects the value corresponding to the key from any
+   object node with the key as a name.  It selects no nodes from a node
    which is not an object.
 
 2.6.2.4.  Array Access
@@ -485,9 +485,9 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 Syntax
 
    Array access is a union element which selects zero or more elements
-   of an array.  It does not match a node which is not an array.  Array
-   access takes the form of an index, which selects at most one element,
-   or a slice, which selects zero or more elements.
+   of an array node.  It selects no nodes from a node which is not an
+   array.  Array access takes the form of an index, which selects at
+   most one element, or a slice, which selects zero or more elements.
 
    union-element =/ array-index / array-slice
 
@@ -501,7 +501,7 @@ Syntax
 
 
 
-Normington & Surov        Expires 27 March 2021                 [Page 9]
+Normington & Surov        Expires 28 March 2021                 [Page 9]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
@@ -525,7 +525,8 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 Semantics
 
    An array index selects any element of an array which is indexed by
-   the integer index.  It does not match a node which is not an array.
+   the integer index.  It selects no nodes from a node which is not an
+   array.
 
    A non-negative index "i" selects an element of an array of length
    "len" if and only if "0 <= i < len".  The index "0" selects the first
@@ -539,7 +540,7 @@ Semantics
 
    An array slice selects any elements of an array which are indexed by
    the members of the slice, as defined below, in the same order as the
-   slice.  It does not match a node which is not an array.
+   slice.  It selects no nodes from a node which is not an array.
 
    The members of a slice depend on whether the step value is positive,
    negative, or zero as follows.  If the step value is omitted, it
@@ -551,16 +552,19 @@ Semantics
    than "end".  The indices of the slice are the same as the values of i
    iterated over by this "for" loop in C:
 
-   for (i = start; i < end; i = i + step) {
-     ...
-   }
 
 
 
-Normington & Surov        Expires 27 March 2021                [Page 10]
+
+
+Normington & Surov        Expires 28 March 2021                [Page 10]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
+
+   for (i = start; i < end; i = i + step) {
+     ...
+   }
 
    When "step" is positive, the default value of "start" is "0" and the
    default value of "end" is the length of the array.
@@ -606,17 +610,15 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 6.  References
 
-6.1.  Normative References
 
 
 
-
-
-
-Normington & Surov        Expires 27 March 2021                [Page 11]
+Normington & Surov        Expires 28 March 2021                [Page 11]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
+
+6.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -664,14 +666,15 @@ Authors' Addresses
    Winchester
    United Kingdom
 
-   Email: glyn.normington@gmail.com
 
 
 
-
-Normington & Surov        Expires 27 March 2021                [Page 12]
+Normington & Surov        Expires 28 March 2021                [Page 12]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
+
+
+   Email: glyn.normington@gmail.com
 
 
    Edward Surov (editor)
@@ -722,7 +725,4 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
 
-
-
-
-Normington & Surov        Expires 27 March 2021                [Page 13]
+Normington & Surov        Expires 28 March 2021                [Page 13]
