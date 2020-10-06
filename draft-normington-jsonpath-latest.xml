@@ -378,7 +378,7 @@ integer = [%x2D] (%x30 / (%x31-39 *%x30-39))
                      </t>
                      <sourcecode type="abnf">
 array-slice = [ integer ] ws %x3A ws [ integer ]
-                   [ ws %x3A ws integer ]
+                   [ ws %x3A ws [ integer ] ]
                             ; start:end or start:end:step
                     </sourcecode>
                   </section>       
