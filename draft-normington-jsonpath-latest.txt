@@ -5,8 +5,8 @@
 Internet Engineering Task Force                       G. Normington, Ed.
 Internet-Draft                                              VMware, Inc.
 Intended status: Standards Track                           E. Surov, Ed.
-Expires: 28 March 2021                           TheSoul Publishing Ltd.
-                                                       24 September 2020
+Expires: 10 April 2021                           TheSoul Publishing Ltd.
+                                                          7 October 2020
 
 
                  JavaScript Object Notation (JSON) Path
@@ -37,7 +37,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 28 March 2021.
+   This Internet-Draft will expire on 10 April 2021.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Normington & Surov        Expires 28 March 2021                 [Page 1]
+Normington & Surov        Expires 10 April 2021                 [Page 1]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Normington & Surov        Expires 28 March 2021                 [Page 2]
+Normington & Surov        Expires 10 April 2021                 [Page 2]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
 
 1.2.  ABNF Syntax
@@ -165,9 +165,9 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
 
-Normington & Surov        Expires 28 March 2021                 [Page 3]
+Normington & Surov        Expires 10 April 2021                 [Page 3]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
 
    Syntax errors in the JSON Path SHOULD be detected before selection is
@@ -221,9 +221,9 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
 
-Normington & Surov        Expires 28 March 2021                 [Page 4]
+Normington & Surov        Expires 10 April 2021                 [Page 4]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
 
    Each selector acts on its input list of nodes as follows.  For each
@@ -277,9 +277,9 @@ Syntax
 
 
 
-Normington & Surov        Expires 28 March 2021                 [Page 5]
+Normington & Surov        Expires 10 April 2021                 [Page 5]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
 
    selector = dot-child               ; see below for alternatives
@@ -333,9 +333,9 @@ Semantics
 
 
 
-Normington & Surov        Expires 28 March 2021                 [Page 6]
+Normington & Surov        Expires 10 April 2021                 [Page 6]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
 
    selector =/ union
@@ -389,9 +389,9 @@ Syntax
 
 
 
-Normington & Surov        Expires 28 March 2021                 [Page 7]
+Normington & Surov        Expires 10 April 2021                 [Page 7]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
 
    union-element = union-child ; see below for more alternatives
@@ -445,9 +445,9 @@ Semantics
 
 
 
-Normington & Surov        Expires 28 March 2021                 [Page 8]
+Normington & Surov        Expires 10 April 2021                 [Page 8]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
 
                   +=================+===================+
@@ -501,9 +501,9 @@ Syntax
 
 
 
-Normington & Surov        Expires 28 March 2021                 [Page 9]
+Normington & Surov        Expires 10 April 2021                 [Page 9]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
 
    array-index = integer
@@ -519,7 +519,7 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
    (in base 10 and which may be omitted) separated by colons.
 
    array-slice = [ integer ] ws %x3A ws [ integer ]
-                      [ ws %x3A ws integer ]
+                      [ ws %x3A ws [ integer ] ]
                                ; start:end or start:end:step
 
 Semantics
@@ -557,9 +557,9 @@ Semantics
 
 
 
-Normington & Surov        Expires 28 March 2021                [Page 10]
+Normington & Surov        Expires 10 April 2021                [Page 10]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
 
    for (i = start; i < end; i = i + step) {
@@ -613,9 +613,9 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
 
-Normington & Surov        Expires 28 March 2021                [Page 11]
+Normington & Surov        Expires 10 April 2021                [Page 11]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
 
 6.1.  Normative References
@@ -669,9 +669,9 @@ Authors' Addresses
 
 
 
-Normington & Surov        Expires 28 March 2021                [Page 12]
+Normington & Surov        Expires 10 April 2021                [Page 12]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
 
    Email: glyn.normington@gmail.com
@@ -725,4 +725,4 @@ Internet-Draft   JavaScript Object Notation (JSON) Path   September 2020
 
 
 
-Normington & Surov        Expires 28 March 2021                [Page 13]
+Normington & Surov        Expires 10 April 2021                [Page 13]
