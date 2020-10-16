@@ -63,6 +63,20 @@
         <email>esurov.tsp@gmail.com</email>
      </address>
     </author>
+    <author fullname="Marko Mikulicic" initials="M" surname="Mikulicic">
+      <organization>VMware, Inc.</organization>
+      <address>
+        <postal>
+          <street/>
+          <city>Pisa</city>
+          <region/>
+          <code/>
+          <country>IT</country>
+        </postal>
+        <phone/>
+        <email>mmikulicic@gmail.com</email>
+     </address>
+    </author>
     <date year="2020"/>
     <!-- If the month and year are both specified and are the current ones, xml2rfc will fill
         in the current day for you. If only the current year is specified, xml2rfc will fill
@@ -357,7 +371,6 @@ HEXDIG =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
                   <section numbered="false" toc="exclude">
                      <name>Syntax</name>
                      <t>Array access is a union element which selects zero or more elements of an array node.
-                        It selects no nodes from a node which is not an array.
                         Array access takes the form of an index, which selects at most one element, or a slice, which selects zero or more elements.
                      </t>
                      <sourcecode type="abnf">
@@ -384,50 +397,104 @@ array-slice = [ integer ] ws %x3A ws [ integer ]
                   </section>
                   <section numbered="false" toc="exclude">
                      <name>Semantics</name>
-                     <t>An array index selects any element of an array which is indexed by the integer index.
-                        It selects no nodes from a node which is not an array.
-                     </t>
-                     <t>A non-negative index <tt>i</tt> selects an element of an array of length <tt>len</tt> if and only if <tt>0 &lt;= i &lt; len</tt>.
-                        The index <tt>0</tt> selects the first element of a non-empty array and, providing <tt>i &lt; len - 1</tt>, index <tt>i + 1</tt>
-                        selects the element immedately after (in array order) the element selected by index <tt>i</tt>.
-                     </t>
-                     <t>A negative index <tt>j</tt> selects an element of an array of length <tt>len</tt> if and only if <tt>0 &lt;= j + len &lt; len</tt>,
-                        in which case it selects the same element as the non-negative index <tt>j + len</tt>.
-                     </t>
-                     <t>An array slice selects any elements of an array which are indexed by the members of the slice,
-                        as defined below, in the same order as the slice.
-                        It selects no nodes from a node which is not an array.
-                     </t>
-                     <t>The members of a slice depend on whether the step value is positive, negative, or zero as follows. If the step value is
-                        omitted, it defaults to <tt>1</tt>.
-                     </t>
-                     <t>For positive integer <tt>step</tt> and integers <tt>start</tt> and <tt>end</tt>, the array slice
-                        <tt>start:end:step</tt> consists of the indices starting at <tt>start</tt> and increasing repeatedly
-                        by <tt>step</tt> while the resultant index is less than <tt>end</tt>.
-                        The indices of the slice are the same as the values of i iterated over by this <tt>for</tt> loop in C:
-                     </t>
-                     <sourcecode type="c">
-for (i = start; i &lt; end; i = i + step) {
-  ...
-}
+                     <t>Array slicing is inspired by the behaviour of the <tt>Array.prototype.slice</tt> method
+                        of the JavaScript language as defined by the ECMA-262 standard
+                        <xref target="ECMA-262" format="default">ECMA-262</xref>,
+                        with the addition of the <tt>step</tt> parameter, which is inspired by the Python slice expression.
+                        This section specifies the behaviour fully, without depending on JavaScript or Python behaviour.
+                        Array indexing is defined in terms of array slicing.</t>
+
+                     <t>A slice expression selects a subset of the elements of the input array, in the same order
+                        as the array or the reverse order, depending on the sign of the <tt>step</tt> parameter.
+                        It selects no nodes from a node which is not an array.</t>
+
+                     <t>A slice is defined by the two slice parameters, <tt>start</tt> and <tt>end</tt>,
+                        and an iteration delta, <tt>step</tt>. Each of these parameters is optional.
+                        <tt>len</tt> is the length of the input array.</t>
+
+                     <t>The default value for <tt>step</tt> is <tt>1</tt>.
+                        The default values for <tt>start</tt> and <tt>end</tt> depend on the sign of <tt>step</tt>,
+                        as follows:</t>
+
+                     <table>
+                       <name>Default array slice start and end values</name>
+                       <thead>
+                         <tr> <th>Condition</th>    <th>start</th>   <th>end</th> </tr>
+                       </thead>
+                       <tbody>
+                         <tr> <td>step &gt;= 0</td> <td>0</td>       <td>len</td> </tr>
+                         <tr> <td>step &lt; 0</td>  <td>len - 1</td> <td>-len - 1</td> </tr>
+                       </tbody>
+                     </table>
+
+                     <t>Slice expression parameters <tt>start</tt> and <tt>end</tt> are not directly usable
+                        as slice bounds and must first be normalized. Normalization is defined as:</t>
+
+                     <sourcecode type="pseudocode">
+FUNCTION Normalize(i):
+  IF i &gt;= 0 THEN
+    RETURN i
+  ELSE
+    RETURN len + i
+  END IF
                      </sourcecode>
-                     <t>When <tt>step</tt> is positive, the default value of <tt>start</tt> is <tt>0</tt> and the default value of <tt>end</tt> is the length of the array.
-                     </t>
-                     <t>For negative integer <tt>step</tt> and integers <tt>start</tt> and <tt>end</tt>, the array slice
-                        <tt>start:end:step</tt> consists of the indices starting at <tt>start</tt> and decreasing repeatedly
-                        by <tt>step</tt> while the resultant index is greater than <tt>end</tt>.
-                        The indices of the slice are the same as the values of i iterated over by this <tt>for</tt> loop in C:
-                     </t>
-                     <sourcecode type="c">
-for (i = start; i &gt; end; i = i + step) {
-  ...
-}
+
+                     <t>The result of the array indexing expression <tt>[i]</tt> is defined to be the result of the array
+                        slicing expression <tt>[i:Normalize(i)+1:1]</tt>.</t>
+
+                     <t>Slice expression parameters <tt>start</tt> and <tt>end</tt> are used to derive slice bounds
+                        <tt>lower</tt> and <tt>upper</tt>. The direction of the iteration, defined
+                        by the sign of <tt>step</tt>, determines which of the parameters is the lower bound and which
+                        is the upper bound:</t>
+
+                     <sourcecode type="pseudocode">
+FUNCTION Bounds(start, end, step, len):
+  n_start = Normalize(start)
+  n_end = Normalize(end)
+
+  IF step &gt;= 0 THEN
+    lower = MIN(MAX(n_start, 0), len)
+    upper = MIN(MAX(n_end, 0), len)
+  ELSE
+    upper = MIN(MAX(n_start, -1), len-1)
+    lower = MIN(MAX(n_end, -1), len-1)
+  END IF
+
+  RETURN (lower, upper)
+</sourcecode>
+
+                     <t>The slice expression selects elements with indices between the lower and upper bounds.
+                        In the following pseudocode, the <tt>a(i)</tt> construct expresses the
+                        0-based indexing operation on the underlying array.</t>
+
+                     <sourcecode type="pseudocode">
+IF step &gt; 0 THEN
+
+  i = lower
+  WHILE i &lt; upper:
+    SELECT a(i)
+    i = i + step
+  END WHILE
+
+ELSE if step &lt; 0 THEN
+
+  i = upper
+  WHILE lower &lt; i:
+    SELECT a(i)
+    i = i + step
+  END WHILE
+
+END IF
                      </sourcecode>
-                     <t>When <tt>step</tt> is negative, the default value of <tt>start</tt> is <tt>len - 1</tt> (where <tt>len</tt> is the length of the array)
-                        and the default value of <tt>end</tt> is <tt>-1</tt> (literally, not in the earlier sense of a shorthand for <tt>len - 1</tt>).
-                     </t>
-                     <t>For zero <tt>step</tt>, the array slice is empty and no elements are selected.
-                     </t>
+
+                     <t>When <tt>step = 0</tt>, no elements are selected and the result array is empty.</t>
+
+                     <t>An implementation MUST raise an error if any of the slice expression parameters does not fit in
+                        the implementation's representation of an integer.
+                        If a successfully parsed slice expression is evaluated against an array whose size doesn't
+                        fit in the implementation's representation of an integer, the implementation
+                        MUST raise an error.</t>
+
                   </section>
                </section>
             </section>
@@ -478,7 +545,16 @@ for (i = start; i &gt; end; i = i + step) {
             <date year="2007" month="February"/>
           </front>
         </reference>
-      </references>
+        <reference anchor="ECMA-262" target="http://www.ecma-international.org/publications/files/ECMA-ST-ARCH/ECMA-262,%203rd%20edition,%20December%201999.pdf">
+          <front>
+            <title>ECMAScript Language Specification, Standard ECMA-262, Third Edition</title>
+            <author>
+              <organization>Ecma International</organization>
+            </author>
+            <date year="1999" month="December"/>
+          </front>
+        </reference>
+       </references>
     </references>
  </back>
 </rfc>
