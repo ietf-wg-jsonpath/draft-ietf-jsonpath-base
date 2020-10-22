@@ -4,7 +4,7 @@ This repository is for the development of an Internet Draft for JSONPath. The dr
 
 See the latest rendered version of the draft [here](https://jsonpath-standard.github.io/internet-draft/).
 
-Christoph Burgmer's [JSONPath Comparison project](https://github.com/cburgmer/json-path-comparison) 
+Christoph Burgmer's [JSONPath Comparison project](https://github.com/cburgmer/json-path-comparison)
 publishes a [comparison](https://cburgmer.github.io/json-path-comparison/) of many existing
 implementations of JSONPath, calculates a consensus on various features, and proposes at least one
 implementation which will inform the Internet Draft.
@@ -42,7 +42,7 @@ This will place the executable in `~/.local/bin`
 `aex` is an ABNF extractor and `bap` an ABNF syntax checker.
 
 1. Clone https://github.com/fenner/bap
-2. In the cloned directory execute 
+2. In the cloned directory execute
    1. `./configure`
    2. `make`
 3. `aex` and `bap` binaries should now exist in the directory
@@ -52,15 +52,20 @@ This will place the executable in `~/.local/bin`
 
  This will:
  - re-generate the `.txt` and `.html` files
- - check the ABNF syntax 
+ - check the ABNF syntax
  - copy the HTML file for use by github pages:
 
 ```
 xml2rfc ./draft-normington-jsonpath-latest.xml --text --html && aex draft-normington-jsonpath-latest.txt | bap -S path -q && cp draft-normington-jsonpath-latest.html docs/index.html
 ```
 
-A script [gen.sh](scripts/gen.sh) is provided for convenience. You can also use [docker-gen.sh](scripts/docker-gen.sh) 
+A script [gen.sh](scripts/gen.sh) is provided for convenience. You can also use [docker-gen.sh](scripts/docker-gen.sh)
 version that installs and runs all utilities within a Docker container.
+
+### Conventions
+
+Basic conventions around source files formatting is captured in the `.editorconfig` file.
+Many editors support that file natively. Others (such as VS code) require a plugin, see https://editorconfig.org/.
 
 ### Pull Requests
 
