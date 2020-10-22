@@ -64,7 +64,7 @@ version that installs and runs all utilities within a Docker container.
 
 ### Conventions
 
-Basic conventions around source files formatting is captured in the `.editorconfig` file.
+Basic conventions around source files formatting are captured in the `.editorconfig` file.
 Many editors support that file natively. Others (such as VS code) require a plugin, see https://editorconfig.org/.
 
 ### Pull Requests
