@@ -20,13 +20,13 @@
   <!-- category values: std, bcp, info, exp, and historic
     ipr values: trust200902, noModificationTrust200902, noDerivativesTrust200902,
        or pre5378Trust200902
-    you can add the attributes updates="NNNN" and obsoletes="NNNN" 
+    you can add the attributes updates="NNNN" and obsoletes="NNNN"
     they will automatically be output with "(if approved)" -->
 
  <!-- ***** FRONT MATTER ***** -->
 
  <front>
-    <!-- The abbreviated title is used in the page header - it is only necessary if the 
+    <!-- The abbreviated title is used in the page header - it is only necessary if the
         full title is longer than 39 characters -->
 
    <title>JavaScript Object Notation (JSON) Path</title>
@@ -64,11 +64,11 @@
      </address>
     </author>
     <date year="2020"/>
-    <!-- If the month and year are both specified and are the current ones, xml2rfc will fill 
-        in the current day for you. If only the current year is specified, xml2rfc will fill 
-	 in the current day and month for you. If the year is not the current one, it is 
-	 necessary to specify at least a month (xml2rfc assumes day="1" if not specified for the 
-	 purpose of calculating the expiry date).  With drafts it is normally sufficient to 
+    <!-- If the month and year are both specified and are the current ones, xml2rfc will fill
+        in the current day for you. If only the current year is specified, xml2rfc will fill
+	 in the current day and month for you. If the year is not the current one, it is
+	 necessary to specify at least a month (xml2rfc assumes day="1" if not specified for the
+	 purpose of calculating the expiry date).  With drafts it is normally sufficient to
 	 specify just the year. -->
 
    <!-- Meta-data Declarations -->
@@ -76,7 +76,7 @@
    <area>General</area>
     <workgroup>Internet Engineering Task Force</workgroup>
     <!-- WG name at the upperleft corner of the doc,
-        IETF is fine for individual submissions.  
+        IETF is fine for individual submissions.
 	 If this element is not present, the default is "Network Working Group",
         which is used by the RFC Editor as a nod to the history of the IETF. -->
 
@@ -185,7 +185,7 @@ root-selector = %x24               ; $ selects document root node
                applying the JSON Path to the input JSON document.
             </t>
             <t>Each selector acts on its input list of nodes as follows. For each node in the list, the selector selects zero or more nodes, each of which is a descendant of the node or the node itself.
-               The output list of nodes of a selector is the concatenation of the lists of selected nodes for each input node. 
+               The output list of nodes of a selector is the concatenation of the lists of selected nodes for each input node.
             </t>
             <t>A specific, non-normative example will make this clearer. Suppose the input document is: <tt>{"a":[{"b":0},{"b":1},{"c":2}]}</tt>. As we will see later, the JSON Path
                <tt>$.a[*].b</tt> selects the following list of nodes: <tt>0</tt>, <tt>1</tt>. Let's walk through this in detail.
@@ -198,7 +198,7 @@ root-selector = %x24               ; $ selects document root node
                The result is again a list of one node: <tt>[{"b":0},{"b":1},{"c":2}]</tt>.
             </t>
             <t>Next, <tt>[*]</tt> selects from any input node which is an array and selects all the elements of the input node.
-               The result is a list of three nodes: <tt>{"b":0}</tt>, <tt>{"b":1}</tt>, and <tt>{"c":2}</tt>. 
+               The result is a list of three nodes: <tt>{"b":0}</tt>, <tt>{"b":1}</tt>, and <tt>{"c":2}</tt>.
             </t>
             <t>Finally, <tt>.b</tt> selects from any input node of type object with a key <tt>b</tt> and selects the value of the input node corresponding to that key.
                The result is a list containing <tt>0</tt>, <tt>1</tt>.
@@ -208,7 +208,7 @@ root-selector = %x24               ; $ selects document root node
             </t>
             <t>In what follows, the semantics of each selector are defined for each type of node.
             </t>
-         </section>       
+         </section>
          <section numbered="true" toc="default">
             <name>Selectors</name>
             <section numbered="true" toc="default">
@@ -239,7 +239,7 @@ ALPHA = %x41-5A / %x61-7A         ; A-Z / a-z
                      allowed to contain bit sequences that cannot encode Unicode characters (a single unpaired UTF-16 surrogate, for example).
                      The behaviour of an implementation is undefined for child names which do not encode Unicode characters.
                   </t>
-               </section>       
+               </section>
                <section numbered="false" toc="exclude">
                   <name>Semantics</name>
                   <t>A dot child name which is not a single asterisk (<tt>*</tt>) is considered to have a key.
@@ -250,8 +250,8 @@ ALPHA = %x41-5A / %x61-7A         ; A-Z / a-z
                   <t>A dot child name consisting of a single asterisk is a wild card. It selects all the values of any object node.
                      It also selects all the elements of any array node. It selects no nodes from number, string, or literal nodes.
                   </t>
-               </section>       
-            </section>       
+               </section>
+            </section>
             <section numbered="true" toc="default">
                <name>Union Selector</name>
                <section numbered="true" toc="default">
@@ -266,7 +266,7 @@ union-elements = union-element /
                  union-element ws %x2C ws union-elements
                                        ; ,-separated list
                   </sourcecode>
-               </section>       
+               </section>
                <section numbered="true" toc="default">
                   <name>Semantics</name>
                   <t>A union selects any node which is selected by at least one of the union selectors and selects the concatenation of the
@@ -321,7 +321,7 @@ HEXDIG =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
                      <t>Note: double-quoted strings follow JSON in <xref target="RFC8259" format="default">RFC&nbsp;8259</xref>.
                         Single-quoted strings follow an analogous pattern.
                      </t>
-                  </section>       
+                  </section>
                   <section numbered="false" toc="exclude">
                      <name>Semantics</name>
                      <t>If the union child is a quoted string, the string MUST be converted to a key by removing the surrounding quotes and
@@ -350,8 +350,8 @@ HEXDIG =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
                         The union child selects the value corresponding to the key from any object node with the key as a name.
                         It selects no nodes from a node which is not an object.
                      </t>
-                  </section>       
-               </section>             
+                  </section>
+               </section>
                <section numbered="true" toc="default">
                   <name>Array Access</name>
                   <section numbered="false" toc="exclude">
@@ -381,7 +381,7 @@ array-slice = [ integer ] ws %x3A ws [ integer ]
                    [ ws %x3A ws [ integer ] ]
                             ; start:end or start:end:step
                     </sourcecode>
-                  </section>       
+                  </section>
                   <section numbered="false" toc="exclude">
                      <name>Semantics</name>
                      <t>An array index selects any element of an array which is indexed by the integer index.
@@ -428,10 +428,10 @@ for (i = start; i &gt; end; i = i + step) {
                      </t>
                      <t>For zero <tt>step</tt>, the array slice is empty and no elements are selected.
                      </t>
-                  </section>       
-               </section>             
-            </section>       
-         </section>       
+                  </section>
+               </section>
+            </section>
+         </section>
    </section>
    <section anchor="IANA" numbered="true" toc="default">
       <name>IANA Considerations</name>
