@@ -7,6 +7,7 @@
 <title>JavaScript Object Notation (JSON) Path</title>
 <meta content="Glyn Normington" name="author">
 <meta content="Edward Surov" name="author">
+<meta content="Marko Mikulicic" name="author">
 <meta content="
        JSON Path defines a string syntax for identifying values
    within a JavaScript Object Notation (JSON) document. 
@@ -1173,8 +1174,8 @@ dt+dd:empty::before{
 <td class="right">October 2020</td>
 </tr></thead>
 <tfoot><tr>
-<td class="left">Normington &amp; Surov</td>
-<td class="center">Expires 10 April 2021</td>
+<td class="left">Normington, et al.</td>
+<td class="center">Expires 29 April 2021</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1187,12 +1188,12 @@ dt+dd:empty::before{
 <dd class="internet-draft">draft-normington-jsonpath-00</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2020-10-07" class="published">7 October 2020</time>
+<time datetime="2020-10-26" class="published">26 October 2020</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2021-04-10">10 April 2021</time></dd>
+<dd class="expires"><time datetime="2021-04-29">29 April 2021</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1204,6 +1205,10 @@ dt+dd:empty::before{
       <div class="author-name">E. Surov, <span class="editor">Ed.</span>
 </div>
 <div class="org">TheSoul Publishing Ltd.</div>
+</div>
+<div class="author">
+      <div class="author-name">M. Mikulicic</div>
+<div class="org">VMware, Inc.</div>
 </div>
 </dd>
 </dl>
@@ -1236,7 +1241,7 @@ dt+dd:empty::before{
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 10 April 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 29 April 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1264,55 +1269,55 @@ dt+dd:empty::before{
         <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents-2">
 <a href="#name-table-of-contents-2" class="section-name selfRef">Table of Contents</a>
         </h2>
-<nav class="toc"><ul class="toc ulEmpty compact">
-<li class="toc ulEmpty compact" id="section-toc.1-1.1">
+<nav class="toc"><ul class="toc compact ulEmpty">
+<li class="toc compact ulEmpty" id="section-toc.1-1.1">
             <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="xref">1</a>.  <a href="#name-introduction-2" class="xref">Introduction</a><a href="#section-toc.1-1.1.1" class="pilcrow">¶</a></p>
-<ul class="toc ulEmpty compact">
-<li class="toc ulEmpty compact" id="section-toc.1-1.1.2.1">
+<ul class="toc compact ulEmpty">
+<li class="toc compact ulEmpty" id="section-toc.1-1.1.2.1">
                 <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="xref">1.1</a>.  <a href="#name-requirements-language-2" class="xref">Requirements Language</a><a href="#section-toc.1-1.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc ulEmpty compact" id="section-toc.1-1.1.2.2">
+              <li class="toc compact ulEmpty" id="section-toc.1-1.1.2.2">
                 <p id="section-toc.1-1.1.2.2.1" class="keepWithNext"><a href="#section-1.2" class="xref">1.2</a>.  <a href="#name-abnf-syntax-2" class="xref">ABNF Syntax</a><a href="#section-toc.1-1.1.2.2.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="toc ulEmpty compact" id="section-toc.1-1.2">
+          <li class="toc compact ulEmpty" id="section-toc.1-1.2">
             <p id="section-toc.1-1.2.1"><a href="#section-2" class="xref">2</a>.  <a href="#name-json-path-syntax-and-semanti" class="xref">JSON Path Syntax and Semantics</a><a href="#section-toc.1-1.2.1" class="pilcrow">¶</a></p>
-<ul class="toc ulEmpty compact">
-<li class="toc ulEmpty compact" id="section-toc.1-1.2.2.1">
+<ul class="toc compact ulEmpty">
+<li class="toc compact ulEmpty" id="section-toc.1-1.2.2.1">
                 <p id="section-toc.1-1.2.2.1.1"><a href="#section-2.1" class="xref">2.1</a>.  <a href="#name-overview-2" class="xref">Overview</a><a href="#section-toc.1-1.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc ulEmpty compact" id="section-toc.1-1.2.2.2">
+              <li class="toc compact ulEmpty" id="section-toc.1-1.2.2.2">
                 <p id="section-toc.1-1.2.2.2.1"><a href="#section-2.2" class="xref">2.2</a>.  <a href="#name-terminology-2" class="xref">Terminology</a><a href="#section-toc.1-1.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc ulEmpty compact" id="section-toc.1-1.2.2.3">
+              <li class="toc compact ulEmpty" id="section-toc.1-1.2.2.3">
                 <p id="section-toc.1-1.2.2.3.1"><a href="#section-2.3" class="xref">2.3</a>.  <a href="#name-implementation-2" class="xref">Implementation</a><a href="#section-toc.1-1.2.2.3.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc ulEmpty compact" id="section-toc.1-1.2.2.4">
+              <li class="toc compact ulEmpty" id="section-toc.1-1.2.2.4">
                 <p id="section-toc.1-1.2.2.4.1"><a href="#section-2.4" class="xref">2.4</a>.  <a href="#name-syntax-6" class="xref">Syntax</a><a href="#section-toc.1-1.2.2.4.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc ulEmpty compact" id="section-toc.1-1.2.2.5">
+              <li class="toc compact ulEmpty" id="section-toc.1-1.2.2.5">
                 <p id="section-toc.1-1.2.2.5.1"><a href="#section-2.5" class="xref">2.5</a>.  <a href="#name-semantics-6" class="xref">Semantics</a><a href="#section-toc.1-1.2.2.5.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc ulEmpty compact" id="section-toc.1-1.2.2.6">
+              <li class="toc compact ulEmpty" id="section-toc.1-1.2.2.6">
                 <p id="section-toc.1-1.2.2.6.1"><a href="#section-2.6" class="xref">2.6</a>.  <a href="#name-selectors-2" class="xref">Selectors</a><a href="#section-toc.1-1.2.2.6.1" class="pilcrow">¶</a></p>
-<ul class="toc ulEmpty compact">
-<li class="toc ulEmpty compact" id="section-toc.1-1.2.2.6.2.1">
+<ul class="toc compact ulEmpty">
+<li class="toc compact ulEmpty" id="section-toc.1-1.2.2.6.2.1">
                     <p id="section-toc.1-1.2.2.6.2.1.1"><a href="#section-2.6.1" class="xref">2.6.1</a>.  <a href="#name-dot-child-selector-2" class="xref">Dot Child Selector</a><a href="#section-toc.1-1.2.2.6.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                  <li class="toc ulEmpty compact" id="section-toc.1-1.2.2.6.2.2">
+                  <li class="toc compact ulEmpty" id="section-toc.1-1.2.2.6.2.2">
                     <p id="section-toc.1-1.2.2.6.2.2.1"><a href="#section-2.6.2" class="xref">2.6.2</a>.  <a href="#name-union-selector-2" class="xref">Union Selector</a><a href="#section-toc.1-1.2.2.6.2.2.1" class="pilcrow">¶</a></p>
-<ul class="toc ulEmpty compact">
-<li class="toc ulEmpty compact" id="section-toc.1-1.2.2.6.2.2.2.1">
+<ul class="toc compact ulEmpty">
+<li class="toc compact ulEmpty" id="section-toc.1-1.2.2.6.2.2.2.1">
                         <p id="section-toc.1-1.2.2.6.2.2.2.1.1"><a href="#section-2.6.2.1" class="xref">2.6.2.1</a>.  <a href="#name-syntax-8" class="xref">Syntax</a><a href="#section-toc.1-1.2.2.6.2.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                      <li class="toc ulEmpty compact" id="section-toc.1-1.2.2.6.2.2.2.2">
+                      <li class="toc compact ulEmpty" id="section-toc.1-1.2.2.6.2.2.2.2">
                         <p id="section-toc.1-1.2.2.6.2.2.2.2.1"><a href="#section-2.6.2.2" class="xref">2.6.2.2</a>.  <a href="#name-semantics-8" class="xref">Semantics</a><a href="#section-toc.1-1.2.2.6.2.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
-                      <li class="toc ulEmpty compact" id="section-toc.1-1.2.2.6.2.2.2.3">
+                      <li class="toc compact ulEmpty" id="section-toc.1-1.2.2.6.2.2.2.3">
                         <p id="section-toc.1-1.2.2.6.2.2.2.3.1"><a href="#section-2.6.2.3" class="xref">2.6.2.3</a>.  <a href="#name-union-child-2" class="xref">Union Child</a><a href="#section-toc.1-1.2.2.6.2.2.2.3.1" class="pilcrow">¶</a></p>
 </li>
-                      <li class="toc ulEmpty compact" id="section-toc.1-1.2.2.6.2.2.2.4">
+                      <li class="toc compact ulEmpty" id="section-toc.1-1.2.2.6.2.2.2.4">
                         <p id="section-toc.1-1.2.2.6.2.2.2.4.1"><a href="#section-2.6.2.4" class="xref">2.6.2.4</a>.  <a href="#name-array-access-2" class="xref">Array Access</a><a href="#section-toc.1-1.2.2.6.2.2.2.4.1" class="pilcrow">¶</a></p>
 </li>
                     </ul>
@@ -1321,27 +1326,27 @@ dt+dd:empty::before{
 </li>
             </ul>
 </li>
-          <li class="toc ulEmpty compact" id="section-toc.1-1.3">
+          <li class="toc compact ulEmpty" id="section-toc.1-1.3">
             <p id="section-toc.1-1.3.1"><a href="#section-3" class="xref">3</a>.  <a href="#name-iana-considerations-2" class="xref">IANA Considerations</a><a href="#section-toc.1-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="toc ulEmpty compact" id="section-toc.1-1.4">
+          <li class="toc compact ulEmpty" id="section-toc.1-1.4">
             <p id="section-toc.1-1.4.1"><a href="#section-4" class="xref">4</a>.  <a href="#name-security-considerations-2" class="xref">Security Considerations</a><a href="#section-toc.1-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="toc ulEmpty compact" id="section-toc.1-1.5">
+          <li class="toc compact ulEmpty" id="section-toc.1-1.5">
             <p id="section-toc.1-1.5.1"><a href="#section-5" class="xref">5</a>.  <a href="#name-alternatives-2" class="xref">Alternatives</a><a href="#section-toc.1-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="toc ulEmpty compact" id="section-toc.1-1.6">
+          <li class="toc compact ulEmpty" id="section-toc.1-1.6">
             <p id="section-toc.1-1.6.1"><a href="#section-6" class="xref">6</a>.  <a href="#name-references-2" class="xref">References</a><a href="#section-toc.1-1.6.1" class="pilcrow">¶</a></p>
-<ul class="toc ulEmpty compact">
-<li class="toc ulEmpty compact" id="section-toc.1-1.6.2.1">
+<ul class="toc compact ulEmpty">
+<li class="toc compact ulEmpty" id="section-toc.1-1.6.2.1">
                 <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="xref">6.1</a>.  <a href="#name-normative-references-2" class="xref">Normative References</a><a href="#section-toc.1-1.6.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc ulEmpty compact" id="section-toc.1-1.6.2.2">
+              <li class="toc compact ulEmpty" id="section-toc.1-1.6.2.2">
                 <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="xref">6.2</a>.  <a href="#name-informative-references-2" class="xref">Informative References</a><a href="#section-toc.1-1.6.2.2.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="toc ulEmpty compact" id="section-toc.1-1.7">
+          <li class="toc compact ulEmpty" id="section-toc.1-1.7">
             <p id="section-toc.1-1.7.1"><a href="#section-appendix.a" class="xref"></a><a href="#name-authors-addresses-2" class="xref">Authors' Addresses</a><a href="#section-toc.1-1.7.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
@@ -1647,7 +1652,6 @@ HEXDIG =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
 <a href="#name-syntax-10" class="section-name selfRef">Syntax</a>
               </h6>
 <p id="section-2.6.2.4.1-1">Array access is a union element which selects zero or more elements of an array node.
-                        It selects no nodes from a node which is not an array.
                         Array access takes the form of an index, which selects at most one element, or a slice, which selects zero or more elements.<a href="#section-2.6.2.4.1-1" class="pilcrow">¶</a></p>
 <div id="section-2.6.2.4.1-2">
 <pre class="sourcecode lang-abnf">
@@ -1678,44 +1682,111 @@ array-slice = [ integer ] ws %x3A ws [ integer ]
               <h6 id="name-semantics-10">
 <a href="#name-semantics-10" class="section-name selfRef">Semantics</a>
               </h6>
-<p id="section-2.6.2.4.2-1">An array index selects any element of an array which is indexed by the integer index.
-                        It selects no nodes from a node which is not an array.<a href="#section-2.6.2.4.2-1" class="pilcrow">¶</a></p>
-<p id="section-2.6.2.4.2-2">A non-negative index <code>i</code> selects an element of an array of length <code>len</code> if and only if <code>0 &lt;= i &lt; len</code>.
-                        The index <code>0</code> selects the first element of a non-empty array and, providing <code>i &lt; len - 1</code>, index <code>i + 1</code>
-                        selects the element immedately after (in array order) the element selected by index <code>i</code>.<a href="#section-2.6.2.4.2-2" class="pilcrow">¶</a></p>
-<p id="section-2.6.2.4.2-3">A negative index <code>j</code> selects an element of an array of length <code>len</code> if and only if <code>0 &lt;= j + len &lt; len</code>,
-                        in which case it selects the same element as the non-negative index <code>j + len</code>.<a href="#section-2.6.2.4.2-3" class="pilcrow">¶</a></p>
-<p id="section-2.6.2.4.2-4">An array slice selects any elements of an array which are indexed by the members of the slice,
-                        as defined below, in the same order as the slice.
-                        It selects no nodes from a node which is not an array.<a href="#section-2.6.2.4.2-4" class="pilcrow">¶</a></p>
-<p id="section-2.6.2.4.2-5">The members of a slice depend on whether the step value is positive, negative, or zero as follows. If the step value is
-                        omitted, it defaults to <code>1</code>.<a href="#section-2.6.2.4.2-5" class="pilcrow">¶</a></p>
-<p id="section-2.6.2.4.2-6">For positive integer <code>step</code> and integers <code>start</code> and <code>end</code>, the array slice
-                        <code>start:end:step</code> consists of the indices starting at <code>start</code> and increasing repeatedly
-                        by <code>step</code> while the resultant index is less than <code>end</code>.
-                        The indices of the slice are the same as the values of i iterated over by this <code>for</code> loop in C:<a href="#section-2.6.2.4.2-6" class="pilcrow">¶</a></p>
+<p id="section-2.6.2.4.2-1">Array slicing is inspired by the behaviour of the <code>Array.prototype.slice</code> method
+                        of the JavaScript language as defined by the ECMA-262 standard
+                        <span>[<a href="#ECMA-262" class="xref">ECMA-262</a>]</span>,
+                        with the addition of the <code>step</code> parameter, which is inspired by the Python slice expression.
+                        This section specifies the behaviour fully, without depending on JavaScript or Python behaviour.
+                        Array indexing is defined in terms of array slicing.<a href="#section-2.6.2.4.2-1" class="pilcrow">¶</a></p>
+<p id="section-2.6.2.4.2-2">A slice expression selects a subset of the elements of the input array, in the same order
+                        as the array or the reverse order, depending on the sign of the <code>step</code> parameter.
+                        It selects no nodes from a node which is not an array.<a href="#section-2.6.2.4.2-2" class="pilcrow">¶</a></p>
+<p id="section-2.6.2.4.2-3">A slice is defined by the two slice parameters, <code>start</code> and <code>end</code>,
+                        and an iteration delta, <code>step</code>. Each of these parameters is optional.
+                        <code>len</code> is the length of the input array.<a href="#section-2.6.2.4.2-3" class="pilcrow">¶</a></p>
+<p id="section-2.6.2.4.2-4">The default value for <code>step</code> is <code>1</code>.
+                        The default values for <code>start</code> and <code>end</code> depend on the sign of <code>step</code>,
+                        as follows:<a href="#section-2.6.2.4.2-4" class="pilcrow">¶</a></p>
+<span id="name-default-array-slice-start-an"></span><table class="center" id="table-2">
+                <caption>
+<a href="#table-2" class="selfRef">Table 2</a>:
+<a href="#name-default-array-slice-start-an" class="selfRef">Default array slice start and end values</a>
+                </caption>
+<thead>
+                  <tr>
+                    <th class="text-left" rowspan="1" colspan="1">Condition</th>
+                    <th class="text-left" rowspan="1" colspan="1">start</th>
+                    <th class="text-left" rowspan="1" colspan="1">end</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-left" rowspan="1" colspan="1">step &gt;= 0</td>
+                    <td class="text-left" rowspan="1" colspan="1">0</td>
+                    <td class="text-left" rowspan="1" colspan="1">len</td>
+                  </tr>
+                  <tr>
+                    <td class="text-left" rowspan="1" colspan="1">step &lt; 0</td>
+                    <td class="text-left" rowspan="1" colspan="1">len - 1</td>
+                    <td class="text-left" rowspan="1" colspan="1">-len - 1</td>
+                  </tr>
+                </tbody>
+              </table>
+<p id="section-2.6.2.4.2-6">Slice expression parameters <code>start</code> and <code>end</code> are not directly usable
+                        as slice bounds and must first be normalized. Normalization is defined as:<a href="#section-2.6.2.4.2-6" class="pilcrow">¶</a></p>
 <div id="section-2.6.2.4.2-7">
-<pre class="sourcecode lang-c">
-for (i = start; i &lt; end; i = i + step) {
-  ...
-}
+<pre class="sourcecode lang-pseudocode">
+FUNCTION Normalize(i):
+  IF i &gt;= 0 THEN
+    RETURN i
+  ELSE
+    RETURN len + i
+  END IF
 </pre><a href="#section-2.6.2.4.2-7" class="pilcrow">¶</a>
 </div>
-<p id="section-2.6.2.4.2-8">When <code>step</code> is positive, the default value of <code>start</code> is <code>0</code> and the default value of <code>end</code> is the length of the array.<a href="#section-2.6.2.4.2-8" class="pilcrow">¶</a></p>
-<p id="section-2.6.2.4.2-9">For negative integer <code>step</code> and integers <code>start</code> and <code>end</code>, the array slice
-                        <code>start:end:step</code> consists of the indices starting at <code>start</code> and decreasing repeatedly
-                        by <code>step</code> while the resultant index is greater than <code>end</code>.
-                        The indices of the slice are the same as the values of i iterated over by this <code>for</code> loop in C:<a href="#section-2.6.2.4.2-9" class="pilcrow">¶</a></p>
+<p id="section-2.6.2.4.2-8">The result of the array indexing expression <code>[i]</code> is defined to be the result of the array
+                        slicing expression <code>[i:Normalize(i)+1:1]</code>.<a href="#section-2.6.2.4.2-8" class="pilcrow">¶</a></p>
+<p id="section-2.6.2.4.2-9">Slice expression parameters <code>start</code> and <code>end</code> are used to derive slice bounds
+                        <code>lower</code> and <code>upper</code>. The direction of the iteration, defined
+                        by the sign of <code>step</code>, determines which of the parameters is the lower bound and which
+                        is the upper bound:<a href="#section-2.6.2.4.2-9" class="pilcrow">¶</a></p>
 <div id="section-2.6.2.4.2-10">
-<pre class="sourcecode lang-c">
-for (i = start; i &gt; end; i = i + step) {
-  ...
-}
+<pre class="sourcecode lang-pseudocode">
+FUNCTION Bounds(start, end, step, len):
+  n_start = Normalize(start)
+  n_end = Normalize(end)
+
+  IF step &gt;= 0 THEN
+    lower = MIN(MAX(n_start, 0), len)
+    upper = MIN(MAX(n_end, 0), len)
+  ELSE
+    upper = MIN(MAX(n_start, -1), len-1)
+    lower = MIN(MAX(n_end, -1), len-1)
+  END IF
+
+  RETURN (lower, upper)
 </pre><a href="#section-2.6.2.4.2-10" class="pilcrow">¶</a>
 </div>
-<p id="section-2.6.2.4.2-11">When <code>step</code> is negative, the default value of <code>start</code> is <code>len - 1</code> (where <code>len</code> is the length of the array)
-                        and the default value of <code>end</code> is <code>-1</code> (literally, not in the earlier sense of a shorthand for <code>len - 1</code>).<a href="#section-2.6.2.4.2-11" class="pilcrow">¶</a></p>
-<p id="section-2.6.2.4.2-12">For zero <code>step</code>, the array slice is empty and no elements are selected.<a href="#section-2.6.2.4.2-12" class="pilcrow">¶</a></p>
+<p id="section-2.6.2.4.2-11">The slice expression selects elements with indices between the lower and upper bounds.
+                        In the following pseudocode, the <code>a(i)</code> construct expresses the
+                        0-based indexing operation on the underlying array.<a href="#section-2.6.2.4.2-11" class="pilcrow">¶</a></p>
+<div id="section-2.6.2.4.2-12">
+<pre class="sourcecode lang-pseudocode">
+IF step &gt; 0 THEN
+
+  i = lower
+  WHILE i &lt; upper:
+    SELECT a(i)
+    i = i + step
+  END WHILE
+
+ELSE if step &lt; 0 THEN
+
+  i = upper
+  WHILE lower &lt; i:
+    SELECT a(i)
+    i = i + step
+  END WHILE
+
+END IF
+</pre><a href="#section-2.6.2.4.2-12" class="pilcrow">¶</a>
+</div>
+<p id="section-2.6.2.4.2-13">When <code>step = 0</code>, no elements are selected and the result array is empty.<a href="#section-2.6.2.4.2-13" class="pilcrow">¶</a></p>
+<p id="section-2.6.2.4.2-14">An implementation MUST raise an error if any of the slice expression parameters does not fit in
+                        the implementation's representation of an integer.
+                        If a successfully parsed slice expression is evaluated against an array whose size doesn't
+                        fit in the implementation's representation of an integer, the implementation
+                        MUST raise an error.<a href="#section-2.6.2.4.2-14" class="pilcrow">¶</a></p>
 </section>
 </section>
 </section>
@@ -1778,6 +1849,10 @@ for (i = start; i &gt; end; i = i + step) {
 <a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-informative-references-2" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
+<dt id="ECMA-262">[ECMA-262]</dt>
+        <dd>
+<span class="refAuthor">Ecma International</span>, <span class="refTitle">"ECMAScript Language Specification, Standard ECMA-262, Third Edition"</span>, <time datetime="1999-12" class="refDate">December 1999</time>, <span>&lt;<a href="http://www.ecma-international.org/publications/files/ECMA-ST-ARCH/ECMA-262,%203rd%20edition,%20December%201999.pdf">http://www.ecma-international.org/publications/files/ECMA-ST-ARCH/ECMA-262,%203rd%20edition,%20December%201999.pdf</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="Goessner">[Goessner]</dt>
         <dd>
 <span class="refAuthor">Stefan Gössner</span>, <span class="refTitle">"JSONPath - XPath for JSON"</span>, <time datetime="2007-02" class="refDate">February 2007</time>, <span>&lt;<a href="https://goessner.net/articles/JsonPath/">https://goessner.net/articles/JsonPath/</a>&gt;</span>. </dd>
@@ -1824,6 +1899,17 @@ for (i = start; i &gt; end; i = i + step) {
 <div class="email">
 <span>Email:</span>
 <a href="mailto:esurov.tsp@gmail.com" class="email">esurov.tsp@gmail.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Marko Mikulicic</span></div>
+<div dir="auto" class="left"><span class="org">VMware, Inc.</span></div>
+<div dir="auto" class="left">
+<span class="locality">Pisa</span> </div>
+<div dir="auto" class="left"><span class="country-name">Italy</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:mmikulicic@gmail.com" class="email">mmikulicic@gmail.com</a>
 </div>
 </address>
 </section>
