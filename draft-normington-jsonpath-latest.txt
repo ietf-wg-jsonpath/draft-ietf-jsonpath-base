@@ -5,8 +5,10 @@
 Internet Engineering Task Force                       G. Normington, Ed.
 Internet-Draft                                              VMware, Inc.
 Intended status: Standards Track                           E. Surov, Ed.
-Expires: 10 April 2021                           TheSoul Publishing Ltd.
-                                                          7 October 2020
+Expires: 29 April 2021                           TheSoul Publishing Ltd.
+                                                            M. Mikulicic
+                                                            VMware, Inc.
+                                                         26 October 2020
 
 
                  JavaScript Object Notation (JSON) Path
@@ -37,31 +39,25 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 10 April 2021.
+   This Internet-Draft will expire on 29 April 2021.
 
 Copyright Notice
 
    Copyright (c) 2020 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
-
-
-
-
-
-
-
-
-
-Normington & Surov        Expires 10 April 2021                 [Page 1]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
-
-
    This document is subject to BCP 78 and the IETF Trust's Legal
    Provisions Relating to IETF Documents (https://trustee.ietf.org/
    license-info) in effect on the date of publication of this document.
    Please review these documents carefully, as they describe your rights
+
+
+
+Normington, et al.        Expires 29 April 2021                 [Page 1]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
+
+
    and restrictions with respect to this document.  Code Components
    extracted from this document must include Simplified BSD License text
    as described in Section 4.e of the Trust Legal Provisions and are
@@ -71,7 +67,7 @@ Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
      1.1.  Requirements Language . . . . . . . . . . . . . . . . . .   2
-     1.2.  ABNF Syntax . . . . . . . . . . . . . . . . . . . . . . .   3
+     1.2.  ABNF Syntax . . . . . . . . . . . . . . . . . . . . . . .   2
    2.  JSON Path Syntax and Semantics  . . . . . . . . . . . . . . .   3
      2.1.  Overview  . . . . . . . . . . . . . . . . . . . . . . . .   3
      2.2.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   3
@@ -85,13 +81,13 @@ Table of Contents
          2.6.2.2.  Semantics . . . . . . . . . . . . . . . . . . . .   7
          2.6.2.3.  Union Child . . . . . . . . . . . . . . . . . . .   7
          2.6.2.4.  Array Access  . . . . . . . . . . . . . . . . . .   9
-   3.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  11
-   4.  Security Considerations . . . . . . . . . . . . . . . . . . .  11
-   5.  Alternatives  . . . . . . . . . . . . . . . . . . . . . . . .  11
-   6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  11
-     6.1.  Normative References  . . . . . . . . . . . . . . . . . .  12
-     6.2.  Informative References  . . . . . . . . . . . . . . . . .  12
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  12
+   3.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  12
+   4.  Security Considerations . . . . . . . . . . . . . . . . . . .  12
+   5.  Alternatives  . . . . . . . . . . . . . . . . . . . . . . . .  12
+   6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  13
+     6.1.  Normative References  . . . . . . . . . . . . . . . . . .  13
+     6.2.  Informative References  . . . . . . . . . . . . . . . . .  13
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  14
 
 1.  Introduction
 
@@ -106,18 +102,17 @@ Table of Contents
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
    document are to be interpreted as described in RFC 2119 [RFC2119].
 
-
-
-
-Normington & Surov        Expires 10 April 2021                 [Page 2]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
-
-
 1.2.  ABNF Syntax
 
    The syntax in this document conforms to ABNF as defined by RFC 5234
    [RFC5234].
+
+
+
+Normington, et al.        Expires 29 April 2021                 [Page 2]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
+
 
    ABNF terminal values in this document define Unicode code points
    rather than their UTF-8 encoding.  For example, the Unicode PLACE OF
@@ -157,19 +152,6 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
    If no node is selected and no error has occurred, an implementation
    MUST return an empty list of nodes.
 
-
-
-
-
-
-
-
-
-Normington & Surov        Expires 10 April 2021                 [Page 3]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
-
-
    Syntax errors in the JSON Path SHOULD be detected before selection is
    attempted since these errors do not depend on the JSON document.
    Therefore, an implementation SHOULD take a JSON Path and produce an
@@ -180,6 +162,13 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
    Alternatively, an implementation MAY take a JSON Path and a JSON
    document and produce a list of nodes or an optional error (but not
    both).
+
+
+
+Normington, et al.        Expires 29 April 2021                 [Page 3]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
+
 
    For any implementation, if a syntactically invalid JSON Path is
    provided, the implementation MUST return an error.
@@ -218,14 +207,6 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
    with a list of nodes which is the result of applying the JSON Path to
    the input JSON document.
 
-
-
-
-Normington & Surov        Expires 10 April 2021                 [Page 4]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
-
-
    Each selector acts on its input list of nodes as follows.  For each
    node in the list, the selector selects zero or more nodes, each of
    which is a descendant of the node or the node itself.  The output
@@ -236,6 +217,14 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
    the input document is: "{"a":[{"b":0},{"b":1},{"c":2}]}".  As we will
    see later, the JSON Path "$.a[*].b" selects the following list of
    nodes: "0", "1".  Let's walk through this in detail.
+
+
+
+
+Normington, et al.        Expires 29 April 2021                 [Page 4]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
+
 
    The JSON Path consists of "$" followed by three selectors: ".a",
    "[*]", and ".b".
@@ -277,7 +266,18 @@ Syntax
 
 
 
-Normington & Surov        Expires 10 April 2021                 [Page 5]
+
+
+
+
+
+
+
+
+
+
+
+Normington, et al.        Expires 29 April 2021                 [Page 5]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
@@ -333,7 +333,7 @@ Semantics
 
 
 
-Normington & Surov        Expires 10 April 2021                 [Page 6]
+Normington, et al.        Expires 29 April 2021                 [Page 6]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
@@ -389,7 +389,7 @@ Syntax
 
 
 
-Normington & Surov        Expires 10 April 2021                 [Page 7]
+Normington, et al.        Expires 29 April 2021                 [Page 7]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
@@ -445,7 +445,7 @@ Semantics
 
 
 
-Normington & Surov        Expires 10 April 2021                 [Page 8]
+Normington, et al.        Expires 29 April 2021                 [Page 8]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
@@ -485,9 +485,9 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 Syntax
 
    Array access is a union element which selects zero or more elements
-   of an array node.  It selects no nodes from a node which is not an
-   array.  Array access takes the form of an index, which selects at
-   most one element, or a slice, which selects zero or more elements.
+   of an array node.  Array access takes the form of an index, which
+   selects at most one element, or a slice, which selects zero or more
+   elements.
 
    union-element =/ array-index / array-slice
 
@@ -501,7 +501,7 @@ Syntax
 
 
 
-Normington & Surov        Expires 10 April 2021                 [Page 9]
+Normington, et al.        Expires 29 April 2021                 [Page 9]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
@@ -524,68 +524,126 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
 Semantics
 
-   An array index selects any element of an array which is indexed by
-   the integer index.  It selects no nodes from a node which is not an
-   array.
+   Array slicing is inspired by the behaviour of the
+   "Array.prototype.slice" method of the JavaScript language as defined
+   by the ECMA-262 standard [ECMA-262], with the addition of the "step"
+   parameter, which is inspired by the Python slice expression.  This
+   section specifies the behaviour fully, without depending on
+   JavaScript or Python behaviour.  Array indexing is defined in terms
+   of array slicing.
 
-   A non-negative index "i" selects an element of an array of length
-   "len" if and only if "0 <= i < len".  The index "0" selects the first
-   element of a non-empty array and, providing "i < len - 1", index "i +
-   1" selects the element immedately after (in array order) the element
-   selected by index "i".
+   A slice expression selects a subset of the elements of the input
+   array, in the same order as the array or the reverse order, depending
+   on the sign of the "step" parameter.  It selects no nodes from a node
+   which is not an array.
 
-   A negative index "j" selects an element of an array of length "len"
-   if and only if "0 <= j + len < len", in which case it selects the
-   same element as the non-negative index "j + len".
+   A slice is defined by the two slice parameters, "start" and "end",
+   and an iteration delta, "step".  Each of these parameters is
+   optional.  "len" is the length of the input array.
 
-   An array slice selects any elements of an array which are indexed by
-   the members of the slice, as defined below, in the same order as the
-   slice.  It selects no nodes from a node which is not an array.
+   The default value for "step" is "1".  The default values for "start"
+   and "end" depend on the sign of "step", as follows:
 
-   The members of a slice depend on whether the step value is positive,
-   negative, or zero as follows.  If the step value is omitted, it
-   defaults to "1".
+                    +===========+=========+==========+
+                    | Condition | start   | end      |
+                    +===========+=========+==========+
+                    | step >= 0 | 0       | len      |
+                    +-----------+---------+----------+
+                    | step < 0  | len - 1 | -len - 1 |
+                    +-----------+---------+----------+
 
-   For positive integer "step" and integers "start" and "end", the array
-   slice "start:end:step" consists of the indices starting at "start"
-   and increasing repeatedly by "step" while the resultant index is less
-   than "end".  The indices of the slice are the same as the values of i
-   iterated over by this "for" loop in C:
-
+                       Table 2: Default array slice
+                           start and end values
 
 
 
-
-
-Normington & Surov        Expires 10 April 2021                [Page 10]
+Normington, et al.        Expires 29 April 2021                [Page 10]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
 
-   for (i = start; i < end; i = i + step) {
-     ...
-   }
+   Slice expression parameters "start" and "end" are not directly usable
+   as slice bounds and must first be normalized.  Normalization is
+   defined as:
 
-   When "step" is positive, the default value of "start" is "0" and the
-   default value of "end" is the length of the array.
+   FUNCTION Normalize(i):
+     IF i >= 0 THEN
+       RETURN i
+     ELSE
+       RETURN len + i
+     END IF
 
-   For negative integer "step" and integers "start" and "end", the array
-   slice "start:end:step" consists of the indices starting at "start"
-   and decreasing repeatedly by "step" while the resultant index is
-   greater than "end".  The indices of the slice are the same as the
-   values of i iterated over by this "for" loop in C:
+   The result of the array indexing expression "[i]" is defined to be
+   the result of the array slicing expression "[i:Normalize(i)+1:1]".
 
-   for (i = start; i > end; i = i + step) {
-     ...
-   }
+   Slice expression parameters "start" and "end" are used to derive
+   slice bounds "lower" and "upper".  The direction of the iteration,
+   defined by the sign of "step", determines which of the parameters is
+   the lower bound and which is the upper bound:
 
-   When "step" is negative, the default value of "start" is "len - 1"
-   (where "len" is the length of the array) and the default value of
-   "end" is "-1" (literally, not in the earlier sense of a shorthand for
-   "len - 1").
+   FUNCTION Bounds(start, end, step, len):
+     n_start = Normalize(start)
+     n_end = Normalize(end)
 
-   For zero "step", the array slice is empty and no elements are
-   selected.
+     IF step >= 0 THEN
+       lower = MIN(MAX(n_start, 0), len)
+       upper = MIN(MAX(n_end, 0), len)
+     ELSE
+       upper = MIN(MAX(n_start, -1), len-1)
+       lower = MIN(MAX(n_end, -1), len-1)
+     END IF
+
+     RETURN (lower, upper)
+
+   The slice expression selects elements with indices between the lower
+   and upper bounds.  In the following pseudocode, the "a(i)" construct
+   expresses the 0-based indexing operation on the underlying array.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Normington, et al.        Expires 29 April 2021                [Page 11]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
+
+
+   IF step > 0 THEN
+
+     i = lower
+     WHILE i < upper:
+       SELECT a(i)
+       i = i + step
+     END WHILE
+
+   ELSE if step < 0 THEN
+
+     i = upper
+     WHILE lower < i:
+       SELECT a(i)
+       i = i + step
+     END WHILE
+
+   END IF
+
+   When "step = 0", no elements are selected and the result array is
+   empty.
+
+   An implementation MUST raise an error if any of the slice expression
+   parameters does not fit in the implementation's representation of an
+   integer.  If a successfully parsed slice expression is evaluated
+   against an array whose size doesn't fit in the implementation's
+   representation of an integer, the implementation MUST raise an error.
 
 3.  IANA Considerations
 
@@ -608,15 +666,15 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
    An analogous standard, JSON Pointer, is provided by RFC 6901
    [RFC6901].
 
-6.  References
 
 
 
-
-Normington & Surov        Expires 10 April 2021                [Page 11]
+Normington, et al.        Expires 29 April 2021                [Page 12]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
+
+6.  References
 
 6.1.  Normative References
 
@@ -635,6 +693,12 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
               <https://www.rfc-editor.org/info/rfc5234>.
 
 6.2.  Informative References
+
+   [ECMA-262] Ecma International, "ECMAScript Language Specification,
+              Standard ECMA-262, Third Edition", December 1999,
+              <http://www.ecma-international.org/publications/files/
+              ECMA-ST-ARCH/ECMA-
+              262,%203rd%20edition,%20December%201999.pdf>.
 
    [Goessner] Stefan Gössner, "JSONPath - XPath for JSON", February
               2007, <https://goessner.net/articles/JsonPath/>.
@@ -659,20 +723,19 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
               DOI 10.17487/RFC8259, December 2017,
               <https://www.rfc-editor.org/info/rfc8259>.
 
+
+
+Normington, et al.        Expires 29 April 2021                [Page 13]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
+
+
 Authors' Addresses
 
    Glyn Normington (editor)
    VMware, Inc.
    Winchester
    United Kingdom
-
-
-
-
-Normington & Surov        Expires 10 April 2021                [Page 12]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
-
 
    Email: glyn.normington@gmail.com
 
@@ -685,6 +748,12 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
    Email: esurov.tsp@gmail.com
 
 
+   Marko Mikulicic
+   VMware, Inc.
+   Pisa
+   Italy
+
+   Email: mmikulicic@gmail.com
 
 
 
@@ -712,17 +781,4 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-Normington & Surov        Expires 10 April 2021                [Page 13]
+Normington, et al.        Expires 29 April 2021                [Page 14]
