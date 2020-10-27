@@ -367,11 +367,11 @@ HEXDIG =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
                   </section>
                </section>
                <section numbered="true" toc="default">
-                  <name>Array Access</name>
+                  <name>Array Selector</name>
                   <section numbered="false" toc="exclude">
                      <name>Syntax</name>
-                     <t>Array access is a union element which selects zero or more elements of an array node.
-                        Array access takes the form of an index, which selects at most one element, or a slice, which selects zero or more elements.
+                     <t>An array selector is a union element which selects zero or more elements of an array node.
+                        An array selector takes the form of an index, which selects at most one element, or a slice, which selects zero or more elements.
                      </t>
                      <sourcecode type="abnf">
 union-element =/ array-index / array-slice
@@ -428,8 +428,8 @@ array-slice = [ integer ] ws %x3A ws [ integer ]
                         </t>
                      </section>
                      <section numbered="false" toc="exclude">
-                        <name>Normative Definition</name>
-                        <t>Array access includes array slicing and array indexing, which is defined in terms of array slicing.</t>
+                        <name>Detailed Semantics</name>
+                        <t>An array selector is either an array slice or an array index, which is defined in terms of an array slice.</t>
 
                         <t>A slice expression selects a subset of the elements of the input array, in the same order
                            as the array or the reverse order, depending on the sign of the <tt>step</tt> parameter.
