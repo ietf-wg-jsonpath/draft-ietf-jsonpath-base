@@ -397,57 +397,84 @@ array-slice = [ integer ] ws %x3A ws [ integer ]
                   </section>
                   <section numbered="false" toc="exclude">
                      <name>Semantics</name>
-                     <t>Array slicing is inspired by the behaviour of the <tt>Array.prototype.slice</tt> method
-                        of the JavaScript language as defined by the ECMA-262 standard
-                        <xref target="ECMA-262" format="default">ECMA-262</xref>,
-                        with the addition of the <tt>step</tt> parameter, which is inspired by the Python slice expression.
-                        This section specifies the behaviour fully, without depending on JavaScript or Python behaviour.
-                        Array indexing is defined in terms of array slicing.</t>
+                     <section numbered="false" toc="exclude">
+                        <name>Informal Introduction</name>
+                        <t>This section is non-normative.</t>
+                        <t>Array indexing is a way of selecting a particular element of an array using a 0-based index.
+                           For example, the expression <tt>[0]</tt> selects the first element of a non-empty array.
+                        </t>
+                        <t>Negative indices index from the end of an array. For example, the expression <tt>[-2]</tt>
+                           selects the last but one element of an array with at least two elements.
+                        </t>
+                        <t>Array slicing is inspired by the behaviour of the <tt>Array.prototype.slice</tt> method
+                           of the JavaScript language as defined by the ECMA-262 standard
+                           <xref target="ECMA-262" format="default">ECMA-262</xref>,
+                           with the addition of the <tt>step</tt> parameter, which is inspired by the Python slice expression.
+                        </t>
+                        <t>The array slice expression <tt>[start:end:step]</tt> selects elements at indices starting at <tt>start</tt>,
+                           incrementing by <tt>step</tt>, and ending with <tt>end</tt> (which is itself excluded). So, for example,
+                           the expression <tt>[1:3]</tt> (where <tt>step</tt> defaults to <tt>1</tt>) selects elements with indices
+                           <tt>1</tt> and <tt>2</tt> (in that order) whereas <tt>[1:5:2]</tt> selects elements with indices
+                           <tt>1</tt> and <tt>3</tt>.
+                        </t>
+                        <t>When <tt>step</tt> is negative, elements are selected in reverse order. Thus, for example, <tt>[5:1:-2]</tt>
+                           selects elements with indices <tt>5</tt> and <tt>3</tt>, in that order and <tt>[::-1]</tt> selects all the
+                           elements of an array in reverse order.
+                        </t>
+                        <t>When <tt>step</tt> is <tt>0</tt>, no elements are selected. This is the one case which differs from the
+                           behaviour of Python, which raises an error in this case.
+                        </t>
+                        <t>The following section specifies the behaviour fully, without depending on JavaScript or Python behaviour.
+                        </t>
+                     </section>
+                     <section numbered="false" toc="exclude">
+                        <name>Normative Definition</name>
+                        <t>Array access includes array slicing and array indexing, which is defined in terms of array slicing.</t>
 
-                     <t>A slice expression selects a subset of the elements of the input array, in the same order
-                        as the array or the reverse order, depending on the sign of the <tt>step</tt> parameter.
-                        It selects no nodes from a node which is not an array.</t>
+                        <t>A slice expression selects a subset of the elements of the input array, in the same order
+                           as the array or the reverse order, depending on the sign of the <tt>step</tt> parameter.
+                           It selects no nodes from a node which is not an array.</t>
 
-                     <t>A slice is defined by the two slice parameters, <tt>start</tt> and <tt>end</tt>,
-                        and an iteration delta, <tt>step</tt>. Each of these parameters is optional.
-                        <tt>len</tt> is the length of the input array.</t>
+                        <t>A slice is defined by the two slice parameters, <tt>start</tt> and <tt>end</tt>,
+                           and an iteration delta, <tt>step</tt>. Each of these parameters is optional.
+                           <tt>len</tt> is the length of the input array.</t>
 
-                     <t>The default value for <tt>step</tt> is <tt>1</tt>.
-                        The default values for <tt>start</tt> and <tt>end</tt> depend on the sign of <tt>step</tt>,
-                        as follows:</t>
+                        <t>The default value for <tt>step</tt> is <tt>1</tt>.
+                           The default values for <tt>start</tt> and <tt>end</tt> depend on the sign of <tt>step</tt>,
+                           as follows:</t>
 
-                     <table>
-                       <name>Default array slice start and end values</name>
-                       <thead>
-                         <tr> <th>Condition</th>    <th>start</th>   <th>end</th> </tr>
-                       </thead>
-                       <tbody>
-                         <tr> <td>step &gt;= 0</td> <td>0</td>       <td>len</td> </tr>
-                         <tr> <td>step &lt; 0</td>  <td>len - 1</td> <td>-len - 1</td> </tr>
-                       </tbody>
-                     </table>
+                        <table>
+                          <name>Default array slice start and end values</name>
+                          <thead>
+                            <tr> <th>Condition</th>    <th>start</th>   <th>end</th> </tr>
+                          </thead>
+                          <tbody>
+                            <tr> <td>step &gt;= 0</td> <td>0</td>       <td>len</td> </tr>
+                            <tr> <td>step &lt; 0</td>  <td>len - 1</td> <td>-len - 1</td> </tr>
+                          </tbody>
+                        </table>
 
-                     <t>Slice expression parameters <tt>start</tt> and <tt>end</tt> are not directly usable
-                        as slice bounds and must first be normalized. Normalization is defined as:</t>
+                        <t>Slice expression parameters <tt>start</tt> and <tt>end</tt> are not directly usable
+                           as slice bounds and must first be normalized. Normalization is defined as:</t>
 
-                     <sourcecode type="pseudocode">
+                        <sourcecode type="pseudocode">
 FUNCTION Normalize(i):
   IF i &gt;= 0 THEN
     RETURN i
   ELSE
     RETURN len + i
   END IF
-                     </sourcecode>
+                        </sourcecode>
 
-                     <t>The result of the array indexing expression <tt>[i]</tt> is defined to be the result of the array
-                        slicing expression <tt>[i:Normalize(i)+1:1]</tt>.</t>
+                        <t>The result of the array indexing expression <tt>[i]</tt> is defined to be the result of the array
+                           slicing expression <tt>[i:Normalize(i)+1:1]</tt>.</t>
 
-                     <t>Slice expression parameters <tt>start</tt> and <tt>end</tt> are used to derive slice bounds
-                        <tt>lower</tt> and <tt>upper</tt>. The direction of the iteration, defined
-                        by the sign of <tt>step</tt>, determines which of the parameters is the lower bound and which
-                        is the upper bound:</t>
+                        <t>Slice expression parameters <tt>start</tt> and <tt>end</tt> are used to derive slice bounds
+                           <tt>lower</tt> and <tt>upper</tt>. The direction of the iteration, defined
+                           by the sign of <tt>step</tt>, determines which of the parameters is the lower bound and which
+                           is the upper bound:</t>
 
-                     <sourcecode type="pseudocode">
+                        <sourcecode type="pseudocode">
 FUNCTION Bounds(start, end, step, len):
   n_start = Normalize(start)
   n_end = Normalize(end)
@@ -461,13 +488,13 @@ FUNCTION Bounds(start, end, step, len):
   END IF
 
   RETURN (lower, upper)
-</sourcecode>
+                        </sourcecode>
 
-                     <t>The slice expression selects elements with indices between the lower and upper bounds.
-                        In the following pseudocode, the <tt>a(i)</tt> construct expresses the
-                        0-based indexing operation on the underlying array.</t>
+                        <t>The slice expression selects elements with indices between the lower and upper bounds.
+                           In the following pseudocode, the <tt>a(i)</tt> construct expresses the
+                           0-based indexing operation on the underlying array.</t>
 
-                     <sourcecode type="pseudocode">
+                        <sourcecode type="pseudocode">
 IF step &gt; 0 THEN
 
   i = lower
@@ -485,16 +512,16 @@ ELSE if step &lt; 0 THEN
   END WHILE
 
 END IF
-                     </sourcecode>
+                        </sourcecode>
 
-                     <t>When <tt>step = 0</tt>, no elements are selected and the result array is empty.</t>
+                        <t>When <tt>step = 0</tt>, no elements are selected and the result array is empty.</t>
 
-                     <t>An implementation MUST raise an error if any of the slice expression parameters does not fit in
-                        the implementation's representation of an integer.
-                        If a successfully parsed slice expression is evaluated against an array whose size doesn't
-                        fit in the implementation's representation of an integer, the implementation
-                        MUST raise an error.</t>
-
+                        <t>An implementation MUST raise an error if any of the slice expression parameters does not fit in
+                           the implementation's representation of an integer.
+                           If a successfully parsed slice expression is evaluated against an array whose size doesn't
+                           fit in the implementation's representation of an integer, the implementation
+                           MUST raise an error.</t>
+                     </section>
                   </section>
                </section>
             </section>
