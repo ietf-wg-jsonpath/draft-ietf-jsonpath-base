@@ -4,7 +4,8 @@ RUN apt-get update && apt-get install -y \
     git \
     python3-pip \
     bison \
-    flex
+    flex \
+    xmlstarlet
 
 RUN pip3 install xml2rfc
 
