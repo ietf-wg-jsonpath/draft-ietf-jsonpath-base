@@ -5,10 +5,10 @@
 Internet Engineering Task Force                       G. Normington, Ed.
 Internet-Draft                                              VMware, Inc.
 Intended status: Standards Track                           E. Surov, Ed.
-Expires: 29 April 2021                           TheSoul Publishing Ltd.
+Expires: 1 May 2021                              TheSoul Publishing Ltd.
                                                             M. Mikulicic
                                                             VMware, Inc.
-                                                         26 October 2020
+                                                         28 October 2020
 
 
                  JavaScript Object Notation (JSON) Path
@@ -39,7 +39,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 29 April 2021.
+   This Internet-Draft will expire on 1 May 2021.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Normington, et al.        Expires 29 April 2021                 [Page 1]
+Normington, et al.         Expires 1 May 2021                   [Page 1]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
@@ -80,10 +80,10 @@ Table of Contents
          2.6.2.1.  Syntax  . . . . . . . . . . . . . . . . . . . . .   6
          2.6.2.2.  Semantics . . . . . . . . . . . . . . . . . . . .   7
          2.6.2.3.  Union Child . . . . . . . . . . . . . . . . . . .   7
-         2.6.2.4.  Array Access  . . . . . . . . . . . . . . . . . .   9
-   3.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  12
-   4.  Security Considerations . . . . . . . . . . . . . . . . . . .  12
-   5.  Alternatives  . . . . . . . . . . . . . . . . . . . . . . . .  12
+         2.6.2.4.  Array Selector  . . . . . . . . . . . . . . . . .   9
+   3.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  13
+   4.  Security Considerations . . . . . . . . . . . . . . . . . . .  13
+   5.  Alternatives  . . . . . . . . . . . . . . . . . . . . . . . .  13
    6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  13
      6.1.  Normative References  . . . . . . . . . . . . . . . . . .  13
      6.2.  Informative References  . . . . . . . . . . . . . . . . .  13
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Normington, et al.        Expires 29 April 2021                 [Page 2]
+Normington, et al.         Expires 1 May 2021                   [Page 2]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
@@ -165,7 +165,7 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
 
 
-Normington, et al.        Expires 29 April 2021                 [Page 3]
+Normington, et al.         Expires 1 May 2021                   [Page 3]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
@@ -221,7 +221,7 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
 
 
-Normington, et al.        Expires 29 April 2021                 [Page 4]
+Normington, et al.         Expires 1 May 2021                   [Page 4]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
@@ -277,7 +277,7 @@ Syntax
 
 
 
-Normington, et al.        Expires 29 April 2021                 [Page 5]
+Normington, et al.         Expires 1 May 2021                   [Page 5]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
@@ -333,7 +333,7 @@ Semantics
 
 
 
-Normington, et al.        Expires 29 April 2021                 [Page 6]
+Normington, et al.         Expires 1 May 2021                   [Page 6]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
@@ -389,7 +389,7 @@ Syntax
 
 
 
-Normington, et al.        Expires 29 April 2021                 [Page 7]
+Normington, et al.         Expires 1 May 2021                   [Page 7]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
@@ -445,7 +445,7 @@ Semantics
 
 
 
-Normington, et al.        Expires 29 April 2021                 [Page 8]
+Normington, et al.         Expires 1 May 2021                   [Page 8]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
@@ -480,14 +480,14 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
    object node with the key as a name.  It selects no nodes from a node
    which is not an object.
 
-2.6.2.4.  Array Access
+2.6.2.4.  Array Selector
 
 Syntax
 
-   Array access is a union element which selects zero or more elements
-   of an array node.  Array access takes the form of an index, which
-   selects at most one element, or a slice, which selects zero or more
-   elements.
+   An array selector is a union element which selects zero or more
+   elements of an array node.  An array selector takes the form of an
+   index, which selects at most one element, or a slice, which selects
+   zero or more elements.
 
    union-element =/ array-index / array-slice
 
@@ -501,7 +501,7 @@ Syntax
 
 
 
-Normington, et al.        Expires 29 April 2021                 [Page 9]
+Normington, et al.         Expires 1 May 2021                   [Page 9]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
@@ -524,13 +524,55 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
 Semantics
 
+Informal Introduction
+
+   This section is non-normative.
+
+   Array indexing is a way of selecting a particular element of an array
+   using a 0-based index.  For example, the expression "[0]" selects the
+   first element of a non-empty array.
+
+   Negative indices index from the end of an array.  For example, the
+   expression "[-2]" selects the last but one element of an array with
+   at least two elements.
+
    Array slicing is inspired by the behaviour of the
    "Array.prototype.slice" method of the JavaScript language as defined
    by the ECMA-262 standard [ECMA-262], with the addition of the "step"
-   parameter, which is inspired by the Python slice expression.  This
-   section specifies the behaviour fully, without depending on
-   JavaScript or Python behaviour.  Array indexing is defined in terms
-   of array slicing.
+   parameter, which is inspired by the Python slice expression.
+
+   The array slice expression "[start:end:step]" selects elements at
+   indices starting at "start", incrementing by "step", and ending with
+   "end" (which is itself excluded).  So, for example, the expression
+   "[1:3]" (where "step" defaults to "1") selects elements with indices
+   "1" and "2" (in that order) whereas "[1:5:2]" selects elements with
+   indices "1" and "3".
+
+   When "step" is negative, elements are selected in reverse order.
+   Thus, for example, "[5:1:-2]" selects elements with indices "5" and
+   "3", in that order and "[::-1]" selects all the elements of an array
+   in reverse order.
+
+
+
+
+
+Normington, et al.         Expires 1 May 2021                  [Page 10]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
+
+
+   When "step" is "0", no elements are selected.  This is the one case
+   which differs from the behaviour of Python, which raises an error in
+   this case.
+
+   The following section specifies the behaviour fully, without
+   depending on JavaScript or Python behaviour.
+
+Detailed Semantics
+
+   An array selector is either an array slice or an array index, which
+   is defined in terms of an array slice.
 
    A slice expression selects a subset of the elements of the input
    array, in the same order as the array or the reverse order, depending
@@ -555,13 +597,6 @@ Semantics
                        Table 2: Default array slice
                            start and end values
 
-
-
-Normington, et al.        Expires 29 April 2021                [Page 10]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
-
-
    Slice expression parameters "start" and "end" are not directly usable
    as slice bounds and must first be normalized.  Normalization is
    defined as:
@@ -575,6 +610,13 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
    The result of the array indexing expression "[i]" is defined to be
    the result of the array slicing expression "[i:Normalize(i)+1:1]".
+
+
+
+Normington, et al.         Expires 1 May 2021                  [Page 11]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
+
 
    Slice expression parameters "start" and "end" are used to derive
    slice bounds "lower" and "upper".  The direction of the iteration,
@@ -599,25 +641,6 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
    and upper bounds.  In the following pseudocode, the "a(i)" construct
    expresses the 0-based indexing operation on the underlying array.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Normington, et al.        Expires 29 April 2021                [Page 11]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
-
-
    IF step > 0 THEN
 
      i = lower
@@ -638,6 +661,18 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
    When "step = 0", no elements are selected and the result array is
    empty.
+
+
+
+
+
+
+
+
+Normington, et al.         Expires 1 May 2021                  [Page 12]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
+
 
    An implementation MUST raise an error if any of the slice expression
    parameters does not fit in the implementation's representation of an
@@ -666,14 +701,6 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
    An analogous standard, JSON Pointer, is provided by RFC 6901
    [RFC6901].
 
-
-
-
-Normington, et al.        Expires 29 April 2021                [Page 12]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
-
-
 6.  References
 
 6.1.  Normative References
@@ -693,6 +720,15 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
               <https://www.rfc-editor.org/info/rfc5234>.
 
 6.2.  Informative References
+
+
+
+
+
+Normington, et al.         Expires 1 May 2021                  [Page 13]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
+
 
    [ECMA-262] Ecma International, "ECMAScript Language Specification,
               Standard ECMA-262, Third Edition", December 1999,
@@ -723,13 +759,6 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
               DOI 10.17487/RFC8259, December 2017,
               <https://www.rfc-editor.org/info/rfc8259>.
 
-
-
-Normington, et al.        Expires 29 April 2021                [Page 13]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
-
-
 Authors' Addresses
 
    Glyn Normington (editor)
@@ -746,6 +775,15 @@ Authors' Addresses
    Cyprus
 
    Email: esurov.tsp@gmail.com
+
+
+
+
+
+
+Normington, et al.         Expires 1 May 2021                  [Page 14]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
 
    Marko Mikulicic
@@ -781,4 +819,22 @@ Authors' Addresses
 
 
 
-Normington, et al.        Expires 29 April 2021                [Page 14]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Normington, et al.         Expires 1 May 2021                  [Page 15]
