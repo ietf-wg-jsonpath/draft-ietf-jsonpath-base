@@ -387,6 +387,7 @@ replacing each escape sequence with its equivalent Unicode character, as
 in the table below:
 
 | Escape Sequence | Unicode Character |
+|:---------------:|:-----------------:|
 | %x5C %x22       | U+0022            |
 | %x5C %x27       | U+0027            |
 | %x5C %x2F       | U+002F            |
@@ -500,6 +501,7 @@ The default values for `start` and `end` depend on the sign of `step`,
 as follows:
 
 | Condition    | start   | end      |
+|--------------|---------|----------|
 | step >= 0    | 0       | len      |
 | step < 0     | len - 1 | -len - 1 |
 {: title="Default array slice start and end values"}
