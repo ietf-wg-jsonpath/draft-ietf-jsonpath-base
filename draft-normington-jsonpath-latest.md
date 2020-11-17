@@ -142,7 +142,8 @@ node of the tree.
 
 Each node holds a JSON value (as defined by {{RFC8259}}) of one of the
 types object, array, number, string, or one of the literals `true`,
-`false`, or `null`. The type of the JSON value held by a node is
+`false`, or `null`.
+The type of the JSON value held by a node is
 sometimes referred to as the type of the node.
 
 
@@ -195,7 +196,8 @@ document, but it also produces as output a list consisting of one
 node: the input document.
 
 A selector may select zero or more nodes for further processing.
-A syntactically valid selector MUST NOT produce errors. This means that some
+A syntactically valid selector MUST NOT produce errors.
+This means that some
 operations which might be considered erroneous, such as indexing beyond the
 end of an array,
 simply result in fewer nodes being selected.
@@ -208,20 +210,23 @@ lists of nodes from one selector to the next ending up with a list of nodes
 which is the result of
 applying the JSON Path to the input JSON document.
 
-Each selector acts on its input list of nodes as follows. For each node in
+Each selector acts on its input list of nodes as follows.
+For each node in
 the list, the selector selects zero or more nodes, each of which is a descendant
 of the node or the node itself.
 The output list of nodes of a selector is the concatenation of the lists
 of selected nodes for each input node.
 
-A specific, non-normative example will make this clearer. Suppose the input
+A specific, non-normative example will make this clearer.
+Suppose the input
 document is: `{"a":[{"b":0},{"b":1},{"c":2}]}`.
 As we will see later, the JSON Path `$.a[*].b` selects the following list of nodes: `0`, `1`.
 Let's walk through this in detail.
 
 The JSON Path consists of `$` followed by three selectors: `.a`, `[*]`, and `.b`.
 
-Firstly, `$` selects the root node which is the input document. So the result is a list
+Firstly, `$` selects the root node which is the input document.
+So the result is a list
 consisting of just the root node.
 
 Next, `.a` selects from any input node of type object and selects any value of the input
@@ -285,7 +290,8 @@ not encode Unicode characters.
 {: numbered="false" toc="exclude"}
 
 A dot child name which is not a single asterisk (`*`) is considered to have a key.
-It selects the value corresponding to the key from any object node. It selects
+It selects the value corresponding to the key from any object node.
+It selects
 no nodes from a node which is not an object.
 
 The key of a dot child name is the sequence of Unicode characters contained
@@ -293,7 +299,8 @@ in that name.
 
 A dot child name consisting of a single asterisk is a wild card. It selects
 all the values of any object node.
-It also selects all the elements of any array node. It selects no nodes from
+It also selects all the elements of any array node.
+It selects no nodes from
 number, string, or literal nodes.
 
 
@@ -484,7 +491,8 @@ as the array or the reverse order, depending on the sign of the `step` parameter
 It selects no nodes from a node which is not an array.
 
 A slice is defined by the two slice parameters, `start` and `end`, and
-an iteration delta, `step`. Each of these parameters is
+an iteration delta, `step`.
+Each of these parameters is
 optional. `len` is the length of the input array.
 
 The default value for `step` is `1`.

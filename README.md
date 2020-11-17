@@ -31,6 +31,8 @@ See [RFC 7991](https://tools.ietf.org/html/rfc7991) for rfc XML syntax informati
 
 The XML document was created from this [template](https://tools.ietf.org/tools/templates/draft-davies-template-bare-07.xml).
 
+In the markdown file, the convention is to start a new line when starting a new sentence.
+
 ### Install [kramdown-rfc2629](https://github.com/cabo/kramdown-rfc2629)
 ```
 gem install kramdown-rfc2629
