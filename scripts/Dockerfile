@@ -2,10 +2,13 @@ FROM ubuntu:18.04
 
 RUN apt-get update && apt-get install -y \
     git \
+    ruby \
     python3-pip \
     bison \
     flex \
     xmlstarlet
+
+RUN gem install kramdown-rfc2629
 
 RUN pip3 install xml2rfc
 

@@ -5,10 +5,10 @@
 Internet Engineering Task Force                       G. Normington, Ed.
 Internet-Draft                                              VMware, Inc.
 Intended status: Standards Track                           E. Surov, Ed.
-Expires: 1 May 2021                              TheSoul Publishing Ltd.
+Expires: 21 May 2021                             TheSoul Publishing Ltd.
                                                             M. Mikulicic
                                                             VMware, Inc.
-                                                         28 October 2020
+                                                        17 November 2020
 
 
                  JavaScript Object Notation (JSON) Path
@@ -39,7 +39,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 May 2021.
+   This Internet-Draft will expire on 21 May 2021.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Normington, et al.         Expires 1 May 2021                   [Page 1]
+Normington, et al.         Expires 21 May 2021                  [Page 1]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
 
    and restrictions with respect to this document.  Code Components
@@ -67,7 +67,7 @@ Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
      1.1.  Requirements Language . . . . . . . . . . . . . . . . . .   2
-     1.2.  ABNF Syntax . . . . . . . . . . . . . . . . . . . . . . .   2
+     1.2.  ABNF Syntax . . . . . . . . . . . . . . . . . . . . . . .   3
    2.  JSON Path Syntax and Semantics  . . . . . . . . . . . . . . .   3
      2.1.  Overview  . . . . . . . . . . . . . . . . . . . . . . . .   3
      2.2.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   3
@@ -87,6 +87,7 @@ Table of Contents
    6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  13
      6.1.  Normative References  . . . . . . . . . . . . . . . . . .  13
      6.2.  Informative References  . . . . . . . . . . . . . . . . .  13
+   Contributors  . . . . . . . . . . . . . . . . . . . . . . . . . .  14
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  14
 
 1.  Introduction
@@ -94,25 +95,28 @@ Table of Contents
    JSON Path, or rather JSONPath, was introduced by Stefan Goessner as a
    simple form of XPath for JSON.  See his original article [Goessner].
 
-   JSON is defined by RFC 8259 [RFC8259].
+   JSON is defined by [RFC8259].
 
 1.1.  Requirements Language
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-   document are to be interpreted as described in RFC 2119 [RFC2119].
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in
+   BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
+   capitals, as shown here.
+
+
+
+
+
+Normington, et al.         Expires 21 May 2021                  [Page 2]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
+
 
 1.2.  ABNF Syntax
 
-   The syntax in this document conforms to ABNF as defined by RFC 5234
-   [RFC5234].
-
-
-
-Normington, et al.         Expires 1 May 2021                   [Page 2]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
-
+   The syntax in this document conforms to ABNF as defined by [RFC5234].
 
    ABNF terminal values in this document define Unicode code points
    rather than their UTF-8 encoding.  For example, the Unicode PLACE OF
@@ -128,18 +132,17 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
    A JSON Path MUST be encoded using UTF-8.  To parse a JSON Path
    according to the grammar in this document, its UTF-8 form SHOULD
-   first be decoded into Unicode code points as described in RFC 3629
-   [RFC3629].
+   first be decoded into Unicode code points as described in [RFC3629].
 
 2.2.  Terminology
 
    A JSON document is logically a tree of nodes with the document as the
    root node of the tree.
 
-   Each node holds a JSON value (as defined by RFC 8259 [RFC8259]) of
-   one of the types object, array, number, string, or one of the
-   literals "true", "false", or "null".  The type of the JSON value held
-   by a node is sometimes referred to as the type of the node.
+   Each node holds a JSON value (as defined by [RFC8259]) of one of the
+   types object, array, number, string, or one of the literals "true",
+   "false", or "null".  The type of the JSON value held by a node is
+   sometimes referred to as the type of the node.
 
 2.3.  Implementation
 
@@ -159,16 +162,17 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
    produced, SHOULD take a JSON document and produce a list of nodes or
    an error (but not both).
 
+
+
+
+Normington, et al.         Expires 21 May 2021                  [Page 3]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
+
+
    Alternatively, an implementation MAY take a JSON Path and a JSON
    document and produce a list of nodes or an optional error (but not
    both).
-
-
-
-Normington, et al.         Expires 1 May 2021                   [Page 3]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
-
 
    For any implementation, if a syntactically invalid JSON Path is
    provided, the implementation MUST return an error.
@@ -213,18 +217,19 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
    list of nodes of a selector is the concatenation of the lists of
    selected nodes for each input node.
 
+
+
+
+
+Normington, et al.         Expires 21 May 2021                  [Page 4]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
+
+
    A specific, non-normative example will make this clearer.  Suppose
    the input document is: "{"a":[{"b":0},{"b":1},{"c":2}]}".  As we will
    see later, the JSON Path "$.a[*].b" selects the following list of
    nodes: "0", "1".  Let's walk through this in detail.
-
-
-
-
-Normington, et al.         Expires 1 May 2021                   [Page 4]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
-
 
    The JSON Path consists of "$" followed by three selectors: ".a",
    "[*]", and ".b".
@@ -272,17 +277,12 @@ Syntax
 
 
 
-
-
-
-
-
-Normington, et al.         Expires 1 May 2021                   [Page 5]
+Normington, et al.         Expires 21 May 2021                  [Page 5]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
 
-   selector = dot-child               ; see below for alternatives
+   selector = dot-child              ; see below for alternatives
    dot-child = %x2E dot-child-name / ; .<dot-child-name>
                %x2E %x2A             ; .*
    dot-child-name = 1*(
@@ -333,9 +333,9 @@ Semantics
 
 
 
-Normington, et al.         Expires 1 May 2021                   [Page 6]
+Normington, et al.         Expires 21 May 2021                  [Page 6]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
 
    selector =/ union
@@ -389,9 +389,9 @@ Syntax
 
 
 
-Normington, et al.         Expires 1 May 2021                   [Page 7]
+Normington, et al.         Expires 21 May 2021                  [Page 7]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
 
    union-element = union-child ; see below for more alternatives
@@ -431,8 +431,8 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
    HEXDIG =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
 
-   Note: double-quoted strings follow JSON in RFC 8259 [RFC8259].
-   Single-quoted strings follow an analogous pattern.
+   Note: double-quoted strings follow JSON in [RFC8259].  Single-quoted
+   strings follow an analogous pattern.
 
 Semantics
 
@@ -445,9 +445,9 @@ Semantics
 
 
 
-Normington, et al.         Expires 1 May 2021                   [Page 8]
+Normington, et al.         Expires 21 May 2021                  [Page 8]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
 
                   +=================+===================+
@@ -501,9 +501,9 @@ Syntax
 
 
 
-Normington, et al.         Expires 1 May 2021                   [Page 9]
+Normington, et al.         Expires 21 May 2021                  [Page 9]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
 
    array-index = integer
@@ -557,9 +557,9 @@ Informal Introduction
 
 
 
-Normington, et al.         Expires 1 May 2021                  [Page 10]
+Normington, et al.         Expires 21 May 2021                 [Page 10]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
 
    When "step" is "0", no elements are selected.  This is the one case
@@ -581,7 +581,7 @@ Detailed Semantics
 
    A slice is defined by the two slice parameters, "start" and "end",
    and an iteration delta, "step".  Each of these parameters is
-   optional.  "len" is the length of the input array.
+   optional. "len" is the length of the input array.
 
    The default value for "step" is "1".  The default values for "start"
    and "end" depend on the sign of "step", as follows:
@@ -613,9 +613,9 @@ Detailed Semantics
 
 
 
-Normington, et al.         Expires 1 May 2021                  [Page 11]
+Normington, et al.         Expires 21 May 2021                 [Page 11]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
 
    Slice expression parameters "start" and "end" are used to derive
@@ -669,9 +669,9 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
 
 
-Normington, et al.         Expires 1 May 2021                  [Page 12]
+Normington, et al.         Expires 21 May 2021                 [Page 12]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
 
    An implementation MUST raise an error if any of the slice expression
@@ -693,13 +693,11 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
 4.  Security Considerations
 
-   This section gives security considerations, as required by RFC 3552
-   [RFC3552].
+   This section gives security considerations, as required by [RFC3552].
 
 5.  Alternatives
 
-   An analogous standard, JSON Pointer, is provided by RFC 6901
-   [RFC6901].
+   An analogous standard, JSON Pointer, is provided by [RFC6901].
 
 6.  References
 
@@ -719,15 +717,17 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
               DOI 10.17487/RFC5234, January 2008,
               <https://www.rfc-editor.org/info/rfc5234>.
 
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
+              May 2017, <https://www.rfc-editor.org/info/rfc8174>.
+
 6.2.  Informative References
 
 
 
-
-
-Normington, et al.         Expires 1 May 2021                  [Page 13]
+Normington, et al.         Expires 21 May 2021                 [Page 13]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
+Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
 
    [ECMA-262] Ecma International, "ECMAScript Language Specification,
@@ -759,12 +759,32 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
               DOI 10.17487/RFC8259, December 2017,
               <https://www.rfc-editor.org/info/rfc8259>.
 
+Contributors
+
+   Carsten Bormann
+   Universitaet Bremen TZI
+   Postfach 330440
+   D-28359 Bremen
+   Germany
+
+   Phone: +49-421-218-63921
+   Email: cabo@tzi.org
+
+
 Authors' Addresses
 
    Glyn Normington (editor)
    VMware, Inc.
    Winchester
    United Kingdom
+
+
+
+
+Normington, et al.         Expires 21 May 2021                 [Page 14]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
+
 
    Email: glyn.normington@gmail.com
 
@@ -775,15 +795,6 @@ Authors' Addresses
    Cyprus
 
    Email: esurov.tsp@gmail.com
-
-
-
-
-
-
-Normington, et al.         Expires 1 May 2021                  [Page 14]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
 
    Marko Mikulicic
@@ -826,15 +837,4 @@ Internet-Draft   JavaScript Object Notation (JSON) Path     October 2020
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-Normington, et al.         Expires 1 May 2021                  [Page 15]
+Normington, et al.         Expires 21 May 2021                 [Page 15]

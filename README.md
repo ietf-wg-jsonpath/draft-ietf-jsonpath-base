@@ -23,7 +23,7 @@ See the draft for the copyright which is repeated in [LICENSE](./LICENSE).
 
 ## Authoring
 
-The source of the Internet Draft is in XML and corresponding `.txt` and `.html` files are generated and checked in.
+The source of the Internet Draft is in markdown and corresponding `.xml`, `.txt`, and `.html` files are generated and checked in.
 
 So that the HTML version can be viewed via github pages, it is copied to `docs/index.html`.
 
@@ -31,11 +31,29 @@ See [RFC 7991](https://tools.ietf.org/html/rfc7991) for rfc XML syntax informati
 
 The XML document was created from this [template](https://tools.ietf.org/tools/templates/draft-davies-template-bare-07.xml).
 
+In the markdown file, the convention is to start a new line when starting a new sentence.
+
+### Install [kramdown-rfc2629](https://github.com/cabo/kramdown-rfc2629)
+```
+gem install kramdown-rfc2629
+```
+You may need to prefix the above command with `sudo` if it doesn't have sufficient permissions to complete the installation.
+
 ### Install [xml2rfc](https://xml2rfc.tools.ietf.org/):
 ```
 pip3 install xml2rfc --user
 ```
 This will place the executable in `~/.local/bin`
+
+### Install [xmlstarlet](http://xmlstar.sourceforge.net/)
+On macOS, issue:
+```
+brew install xmlstarlet
+```
+On Linux, issue something like:
+```
+apt-get install -y xmlstarlet
+```
 
 ### Install `aex` and `bap`
 
