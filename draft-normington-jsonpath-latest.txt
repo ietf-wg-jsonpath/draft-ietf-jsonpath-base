@@ -5,10 +5,10 @@
 Internet Engineering Task Force                       G. Normington, Ed.
 Internet-Draft                                              VMware, Inc.
 Intended status: Standards Track                           E. Surov, Ed.
-Expires: 21 May 2021                             TheSoul Publishing Ltd.
+Expires: 29 May 2021                             TheSoul Publishing Ltd.
                                                             M. Mikulicic
                                                             VMware, Inc.
-                                                        17 November 2020
+                                                        25 November 2020
 
 
                  JavaScript Object Notation (JSON) Path
@@ -39,7 +39,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 21 May 2021.
+   This Internet-Draft will expire on 29 May 2021.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Normington, et al.         Expires 21 May 2021                  [Page 1]
+Normington, et al.         Expires 29 May 2021                  [Page 1]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
@@ -85,10 +85,10 @@ Table of Contents
    4.  Security Considerations . . . . . . . . . . . . . . . . . . .  13
    5.  Alternatives  . . . . . . . . . . . . . . . . . . . . . . . .  13
    6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  13
-     6.1.  Normative References  . . . . . . . . . . . . . . . . . .  13
-     6.2.  Informative References  . . . . . . . . . . . . . . . . .  13
-   Contributors  . . . . . . . . . . . . . . . . . . . . . . . . . .  14
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  14
+     6.1.  Normative References  . . . . . . . . . . . . . . . . . .  14
+     6.2.  Informative References  . . . . . . . . . . . . . . . . .  14
+   Contributors  . . . . . . . . . . . . . . . . . . . . . . . . . .  15
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  15
 
 1.  Introduction
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Normington, et al.         Expires 21 May 2021                  [Page 2]
+Normington, et al.         Expires 29 May 2021                  [Page 2]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
@@ -165,7 +165,7 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
 
 
-Normington, et al.         Expires 21 May 2021                  [Page 3]
+Normington, et al.         Expires 29 May 2021                  [Page 3]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
@@ -221,7 +221,7 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
 
 
-Normington, et al.         Expires 21 May 2021                  [Page 4]
+Normington, et al.         Expires 29 May 2021                  [Page 4]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
@@ -277,7 +277,7 @@ Syntax
 
 
 
-Normington, et al.         Expires 21 May 2021                  [Page 5]
+Normington, et al.         Expires 29 May 2021                  [Page 5]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
@@ -333,7 +333,7 @@ Semantics
 
 
 
-Normington, et al.         Expires 21 May 2021                  [Page 6]
+Normington, et al.         Expires 29 May 2021                  [Page 6]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
@@ -389,7 +389,7 @@ Syntax
 
 
 
-Normington, et al.         Expires 21 May 2021                  [Page 7]
+Normington, et al.         Expires 29 May 2021                  [Page 7]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
@@ -430,9 +430,11 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
    escape = %x5C                 ; \
 
    HEXDIG =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
+                                 ; case insensitive hex digit
 
-   Note: double-quoted strings follow JSON in [RFC8259].  Single-quoted
-   strings follow an analogous pattern.
+   Notes: 1. double-quoted strings follow JSON in [RFC8259].  Single-
+   quoted strings follow an analogous pattern. 2.  "HEXDIG" includes A-F
+   and a-f.
 
 Semantics
 
@@ -443,9 +445,7 @@ Semantics
 
 
 
-
-
-Normington, et al.         Expires 21 May 2021                  [Page 8]
+Normington, et al.         Expires 29 May 2021                  [Page 8]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
@@ -501,26 +501,32 @@ Syntax
 
 
 
-Normington, et al.         Expires 21 May 2021                  [Page 9]
+Normington, et al.         Expires 29 May 2021                  [Page 9]
 
 Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
 
    array-index = integer
 
-   integer = [%x2D] (%x30 / (%x31-39 *%x30-39))
+   integer = ["-"] ("0" / (%x31-39 *%x30-39))
                                ; optional - followed by 0 or
                                ; sequence of digits with no leading zero
+   DIGIT1 = %x31-39            ; non-zero digit
 
    Note: the syntax does not allow integers with leading zeros such as
    "01" and "-01".
 
-   An array slice is a union element consisting of two or three integers
-   (in base 10 and which may be omitted) separated by colons.
+   An array slice is a union element consisting of optional integers (in
+   base 10) separated by colons.
 
-   array-slice = [ integer ] ws %x3A ws [ integer ]
-                      [ ws %x3A ws [ integer ] ]
-                               ; start:end or start:end:step
+   array-slice = [ start ] ws ":" ws [ end ]
+                      [ ws ":" ws [ step ] ]
+   start = integer
+   end = integer
+   step = integer
+
+   Note: the array slices ":" and "::" are both syntactically valid, as
+   are ":2:2", "2::2", and "2:4:".
 
 Semantics
 
@@ -548,19 +554,18 @@ Informal Introduction
    "1" and "2" (in that order) whereas "[1:5:2]" selects elements with
    indices "1" and "3".
 
+
+
+
+Normington, et al.         Expires 29 May 2021                 [Page 10]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
+
+
    When "step" is negative, elements are selected in reverse order.
    Thus, for example, "[5:1:-2]" selects elements with indices "5" and
    "3", in that order and "[::-1]" selects all the elements of an array
    in reverse order.
-
-
-
-
-
-Normington, et al.         Expires 21 May 2021                 [Page 10]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
-
 
    When "step" is "0", no elements are selected.  This is the one case
    which differs from the behaviour of Python, which raises an error in
@@ -601,6 +606,18 @@ Detailed Semantics
    as slice bounds and must first be normalized.  Normalization is
    defined as:
 
+
+
+
+
+
+
+
+Normington, et al.         Expires 29 May 2021                 [Page 11]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
+
+
    FUNCTION Normalize(i):
      IF i >= 0 THEN
        RETURN i
@@ -610,13 +627,6 @@ Detailed Semantics
 
    The result of the array indexing expression "[i]" is defined to be
    the result of the array slicing expression "[i:Normalize(i)+1:1]".
-
-
-
-Normington, et al.         Expires 21 May 2021                 [Page 11]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
-
 
    Slice expression parameters "start" and "end" are used to derive
    slice bounds "lower" and "upper".  The direction of the iteration,
@@ -641,6 +651,29 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
    and upper bounds.  In the following pseudocode, the "a(i)" construct
    expresses the 0-based indexing operation on the underlying array.
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Normington, et al.         Expires 29 May 2021                 [Page 12]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
+
+
    IF step > 0 THEN
 
      i = lower
@@ -661,18 +694,6 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
    When "step = 0", no elements are selected and the result array is
    empty.
-
-
-
-
-
-
-
-
-Normington, et al.         Expires 21 May 2021                 [Page 12]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
-
 
    An implementation MUST raise an error if any of the slice expression
    parameters does not fit in the implementation's representation of an
@@ -701,6 +722,14 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
 6.  References
 
+
+
+
+Normington, et al.         Expires 29 May 2021                 [Page 13]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
+
+
 6.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
@@ -722,13 +751,6 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
               May 2017, <https://www.rfc-editor.org/info/rfc8174>.
 
 6.2.  Informative References
-
-
-
-Normington, et al.         Expires 21 May 2021                 [Page 13]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
-
 
    [ECMA-262] Ecma International, "ECMAScript Language Specification,
               Standard ECMA-262, Third Edition", December 1999,
@@ -754,6 +776,16 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
               DOI 10.17487/RFC6901, April 2013,
               <https://www.rfc-editor.org/info/rfc6901>.
 
+
+
+
+
+
+Normington, et al.         Expires 29 May 2021                 [Page 14]
+
+Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
+
+
    [RFC8259]  Bray, T., Ed., "The JavaScript Object Notation (JSON) Data
               Interchange Format", STD 90, RFC 8259,
               DOI 10.17487/RFC8259, December 2017,
@@ -777,14 +809,6 @@ Authors' Addresses
    VMware, Inc.
    Winchester
    United Kingdom
-
-
-
-
-Normington, et al.         Expires 21 May 2021                 [Page 14]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
-
 
    Email: glyn.normington@gmail.com
 
@@ -813,28 +837,4 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Normington, et al.         Expires 21 May 2021                 [Page 15]
+Normington, et al.         Expires 29 May 2021                 [Page 15]

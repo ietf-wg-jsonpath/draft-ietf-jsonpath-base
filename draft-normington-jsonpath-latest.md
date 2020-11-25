@@ -372,10 +372,13 @@ single-quoted = sq-unescaped /
 escape = %x5C                 ; \
 
 HEXDIG =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
+                              ; case insensitive hex digit
 ~~~~
 
-Note: double-quoted strings follow JSON in {{RFC8259}}.
-Single-quoted strings follow an analogous pattern.
+Notes:
+1. double-quoted strings follow JSON in {{RFC8259}}.
+   Single-quoted strings follow an analogous pattern.
+2. `HEXDIG` includes A-F and a-f.
 
 
 ##### Semantics
@@ -425,22 +428,25 @@ An array index is a union element consisting of an integer (in base 10).
 ~~~~ abnf
 array-index = integer
 
-integer = [%x2D] (%x30 / (%x31-39 *%x30-39))
+integer = ["-"] ("0" / (%x31-39 *%x30-39))
                             ; optional - followed by 0 or
                             ; sequence of digits with no leading zero
+DIGIT1 = %x31-39            ; non-zero digit
 ~~~~
 
 Note: the syntax does not allow integers with leading zeros such as `01` and `-01`.
 
-An array slice is a union element consisting of two or three integers (in
-base 10 and which may be omitted) separated by colons.
+An array slice is a union element consisting of optional integers (in base 10) separated by colons.
 
 ~~~~ abnf
-array-slice = [ integer ] ws %x3A ws [ integer ]
-                   [ ws %x3A ws [ integer ] ]
-                            ; start:end or start:end:step
+array-slice = [ start ] ws ":" ws [ end ]
+                   [ ws ":" ws [ step ] ]
+start = integer
+end = integer
+step = integer
 ~~~~
 
+Note: the array slices `:` and `::` are both syntactically valid, as are `:2:2`, `2::2`, and `2:4:`.
 
 ##### Semantics
 {: numbered="false" toc="exclude"}
