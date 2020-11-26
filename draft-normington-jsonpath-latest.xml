@@ -67,7 +67,7 @@
     <abstract>
 
 
-<t>JSON Path defines a string syntax for identifying values
+<t>JSONPath defines a string syntax for identifying values
 within a JavaScript Object Notation (JSON) document.</t>
 
 
@@ -92,7 +92,7 @@ as an Internet Draft.</spanx></t>
 
 <section anchor="introduction" title="Introduction">
 
-<t>JSON Path, or rather JSONPath, was introduced by Stefan Goessner as a simple
+<t>JSONPath was introduced by Stefan Goessner as a simple
 form of XPath for JSON.
 See his original article <xref target="Goessner"/>.</t>
 
@@ -118,14 +118,14 @@ in ABNF as <spanx style="verb">%x2318</spanx>.</t>
 
 </section>
 </section>
-<section anchor="json-path-syntax-and-semantics" title="JSON Path Syntax and Semantics">
+<section anchor="jsonpath-syntax-and-semantics" title="JSONPath Syntax and Semantics">
 
 <section anchor="overview" title="Overview">
 
-<t>A JSON Path is a string which selects zero or more nodes of any JSON document.
-A valid JSON Path conforms to the ABNF syntax defined by this document.</t>
+<t>A JSONPath is a string which selects zero or more nodes of a piece of JSON.
+A valid JSONPath conforms to the ABNF syntax defined by this document.</t>
 
-<t>A JSON Path MUST be encoded using UTF-8. To parse a JSON Path according to
+<t>A JSONPath MUST be encoded using UTF-8. To parse a JSONPath according to
 the grammar in this document, its UTF-8 form SHOULD first be decoded into
 Unicode code points as described
 in <xref target="RFC3629"/>.</t>
@@ -133,8 +133,7 @@ in <xref target="RFC3629"/>.</t>
 </section>
 <section anchor="terminology" title="Terminology">
 
-<t>A JSON document is logically a tree of nodes with the document as the root
-node of the tree.</t>
+<t>A JSON value is logically a tree of nodes.</t>
 
 <t>Each node holds a JSON value (as defined by <xref target="RFC8259"/>) of one of the
 types object, array, number, string, or one of the literals <spanx style="verb">true</spanx>,
@@ -146,35 +145,35 @@ sometimes referred to as the type of the node.</t>
 <section anchor="implementation" title="Implementation">
 
 <t>An implementation of this specification, from now on referred to simply as
-"an implementation", SHOULD takes two inputs, a JSON Path and a JSON document,
+"an implementation", SHOULD takes two inputs, a JSONPath and a JSON value,
 and produce
-a possibly empty list of nodes of the JSON document which are selected by
-the JSON Path or an error (but not both).</t>
+a possibly empty list of nodes of the JSON value which are selected by
+the JSONPath or an error (but not both).</t>
 
 <t>If no node is selected and no error has occurred, an implementation MUST
 return an empty list of nodes.</t>
 
-<t>Syntax errors in the JSON Path SHOULD be detected before selection is attempted
-since these errors do not depend on the JSON document.
-Therefore, an implementation SHOULD take a JSON Path and produce an optional
+<t>Syntax errors in the JSONPath SHOULD be detected before selection is attempted
+since these errors do not depend on the JSON value.
+Therefore, an implementation SHOULD take a JSONPath and produce an optional
 syntax error and then,
-if and only if an error was not produced, SHOULD take a JSON document and
+if and only if an error was not produced, SHOULD take a JSON value and
 produce a list of nodes or an error (but not both).</t>
 
-<t>Alternatively, an implementation MAY take a JSON Path and a JSON document
+<t>Alternatively, an implementation MAY take a JSONPath and a JSON value
 and produce a list of nodes or an optional error (but not both).</t>
 
-<t>For any implementation, if a syntactically invalid JSON Path is provided,
+<t>For any implementation, if a syntactically invalid JSONPath is provided,
 the implementation MUST return an error.</t>
 
-<t>If a syntactially invalid JSON document is provided, any implementation SHOULD
+<t>If a syntactially invalid JSON value is provided, any implementation SHOULD
 return an error.</t>
 
 </section>
 <section anchor="syntax" title="Syntax">
 
-<t>Syntactically, a JSON Path consists of a root selector (<spanx style="verb">$</spanx>), which
-selects the root node of a JSON document, followed by a possibly empty
+<t>Syntactically, a JSONPath consists of a root selector (<spanx style="verb">$</spanx>), which
+selects the root node of a JSON value, followed by a possibly empty
 sequence of <spanx style="emph">selectors</spanx>.</t>
 
 <figure><artwork type="abnf"><![CDATA[
@@ -201,10 +200,10 @@ simply result in fewer nodes being selected.</t>
 <t>But a selector doesn't just act on a single node: each selector acts on a
 list of nodes and produces a list of nodes, as follows.</t>
 
-<t>After the root selector, the remainder of the JSON Path is processed by passing
+<t>After the root selector, the remainder of the JSONPath is processed by passing
 lists of nodes from one selector to the next ending up with a list of nodes
 which is the result of
-applying the JSON Path to the input JSON document.</t>
+applying the JSONPath to the input JSON value.</t>
 
 <t>Each selector acts on its input list of nodes as follows.
 For each node in
@@ -216,10 +215,10 @@ of selected nodes for each input node.</t>
 <t>A specific, non-normative example will make this clearer.
 Suppose the input
 document is: <spanx style="verb">{"a":[{"b":0},{"b":1},{"c":2}]}</spanx>.
-As we will see later, the JSON Path <spanx style="verb">$.a[*].b</spanx> selects the following list of nodes: <spanx style="verb">0</spanx>, <spanx style="verb">1</spanx>.
+As we will see later, the JSONPath <spanx style="verb">$.a[*].b</spanx> selects the following list of nodes: <spanx style="verb">0</spanx>, <spanx style="verb">1</spanx>.
 Let's walk through this in detail.</t>
 
-<t>The JSON Path consists of <spanx style="verb">$</spanx> followed by three selectors: <spanx style="verb">.a</spanx>, <spanx style="verb">[*]</spanx>, and <spanx style="verb">.b</spanx>.</t>
+<t>The JSONPath consists of <spanx style="verb">$</spanx> followed by three selectors: <spanx style="verb">.a</spanx>, <spanx style="verb">[*]</spanx>, and <spanx style="verb">.b</spanx>.</t>
 
 <t>Firstly, <spanx style="verb">$</spanx> selects the root node which is the input document.
 So the result is a list
@@ -239,7 +238,7 @@ The result is a list containing <spanx style="verb">0</spanx>, <spanx style="ver
 This is the concatenation of three lists, two of length one containing <spanx style="verb">0</spanx>, <spanx style="verb">1</spanx>, respectively, and one of length zero.</t>
 
 <t>As a consequence of this approach, if any of the selectors selects no nodes,
-then the whole JSON Path selects no nodes.</t>
+then the whole JSONPath selects no nodes.</t>
 
 <t>In what follows, the semantics of each selector are defined for each type
 of node.</t>
@@ -322,16 +321,16 @@ and selects the concatenation of the
 lists (in the order of the selectors) of nodes selected by the union elements.<!--  TODO: define whether duplicates are kept or removed.  --></t>
 
 </section>
-<section anchor="unionchild" title="Union Child">
+<section anchor="unionchild" title="Child">
 
 <section numbered="false" toc="exclude" anchor="syntax-3" title="Syntax">
 
-<t>A union child is a union element consisting of a quoted string.</t>
+<t>A child is a quoted string.</t>
 
 <figure><artwork type="abnf"><![CDATA[
-union-element = union-child ; see below for more alternatives
-union-child = %x22 *double-quoted %x22 / ; "string"
-              %x27 *single-quoted %x27   ; 'string'
+union-element = child ; see below for more alternatives
+child = %x22 *double-quoted %x22 / ; "string"
+        %x27 *single-quoted %x27   ; 'string'
 
 double-quoted = dq-unescaped /
           escape (
@@ -365,15 +364,18 @@ single-quoted = sq-unescaped /
 escape = %x5C                 ; \
 
 HEXDIG =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
+                              ; case insensitive hex digit
 ]]></artwork></figure>
 
-<t>Note: double-quoted strings follow JSON in <xref target="RFC8259"/>.
-Single-quoted strings follow an analogous pattern.</t>
+<t>Notes:
+1. double-quoted strings follow JSON in <xref target="RFC8259"/>.
+   Single-quoted strings follow an analogous pattern.
+2. <spanx style="verb">HEXDIG</spanx> includes A-F and a-f.</t>
 
 </section>
 <section numbered="false" toc="exclude" anchor="semantics-3" title="Semantics">
 
-<t>If the union child is a quoted string, the string MUST be converted to a
+<t>If the child is a quoted string, the string MUST be converted to a
 key by removing the surrounding quotes and
 replacing each escape sequence with its equivalent Unicode character, as
 in the table below:</t>
@@ -403,7 +405,7 @@ in the table below:</t>
       <c>U+XXXX</c>
 </texttable>
 
-<t>The union child selects the value corresponding to the key from any object
+<t>The child selects the value corresponding to the key from any object
 node with the key as a name.
 It selects no nodes from a node which is not an object.</t>
 
@@ -413,8 +415,7 @@ It selects no nodes from a node which is not an object.</t>
 
 <section numbered="false" toc="exclude" anchor="syntax-4" title="Syntax">
 
-<t>An array selector is a union element which selects zero or more elements
-of an array node.
+<t>An array selector selects zero or more elements of an array node.
 An array selector takes the form of an index, which selects at most one element,
 or a slice, which selects zero or more elements.</t>
 
@@ -422,26 +423,30 @@ or a slice, which selects zero or more elements.</t>
 union-element =/ array-index / array-slice
 ]]></artwork></figure>
 
-<t>An array index is a union element consisting of an integer (in base 10).</t>
+<t>An array index is an integer (in base 10).</t>
 
 <figure><artwork type="abnf"><![CDATA[
 array-index = integer
 
-integer = [%x2D] (%x30 / (%x31-39 *%x30-39))
+integer = ["-"] ("0" / (DIGIT1 *DIGIT))
                             ; optional - followed by 0 or
                             ; sequence of digits with no leading zero
+DIGIT1 = %x31-39            ; non-zero digit
 ]]></artwork></figure>
 
 <t>Note: the syntax does not allow integers with leading zeros such as <spanx style="verb">01</spanx> and <spanx style="verb">-01</spanx>.</t>
 
-<t>An array slice is a union element consisting of two or three integers (in
-base 10 and which may be omitted) separated by colons.</t>
+<t>An array slice consists of three optional integers (in base 10) separated by colons.</t>
 
 <figure><artwork type="abnf"><![CDATA[
-array-slice = [ integer ] ws %x3A ws [ integer ]
-                   [ ws %x3A ws [ integer ] ]
-                            ; start:end or start:end:step
+array-slice = [ start ] ws ":" ws [ end ]
+                   [ ws ":" ws [ step ] ]
+start = integer
+end = integer
+step = integer
 ]]></artwork></figure>
+
+<t>Note: the array slices <spanx style="verb">:</spanx> and <spanx style="verb">::</spanx> are both syntactically valid, as are <spanx style="verb">:2:2</spanx>, <spanx style="verb">2::2</spanx>, and <spanx style="verb">2:4:</spanx>.</t>
 
 </section>
 <section numbered="false" toc="exclude" anchor="semantics-4" title="Semantics">
@@ -789,148 +794,149 @@ be removed during conversion into an RFC by the RFC Editor.</t>
   </back>
 
 <!-- ##markdown-source:
-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
-38Eo8D8f4P6p+B8JE7DKZkgAAA==
+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
+1/2crUSB/z0Ho8D/2gD3c8X/Aln6UXNGSAAA
 
 -->
 
