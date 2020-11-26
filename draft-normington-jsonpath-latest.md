@@ -125,8 +125,6 @@ as an Internet Draft** (which needs to be fixed soon).
 
 This document picks up the popular JSONPath specification dated
 2007-02-21 and provides a more normative definition for it.
-It is intended as a submission to the IETF DISPATCH WG, in order to
-find the right way to complete standardization of this specification.
 In its current state, it is a strawman document showing what needs to
 be covered.
 
@@ -145,6 +143,10 @@ be covered.
 
 JSON is defined by {{RFC8259}}.
 
+JSONPath is not intended as a replacement, but as a more powerful
+companion, to JSON Pointer {{RFC6901}}. \[insert reference to section
+where the relationship is detailed.]
+
 
 ## Terminology
 
@@ -152,7 +154,6 @@ JSON is defined by {{RFC8259}}.
 
 The grammatical rules in this document are to be interpreted as ABNF,
 as described in {{-abnf}}.
-
 ABNF terminal values in this document define Unicode code points rather than
 their UTF-8 encoding.
 For example, the Unicode PLACE OF INTEREST SIGN (U+2318) would be defined
@@ -186,8 +187,6 @@ Position:
 : A JSON data item identical to or nested within the JSON data item to
   which the query is applied to, expressed either by the value of that
   data item or by providing a JSONPath Output Path.
-
-
 
 
 ## Inspired by XPath
@@ -368,6 +367,7 @@ member values with a constant.
 | `//*`                  | `$..*`                                    | all Elements in XML document. All members of JSON data item. |
 {: #tbl-example title="Example JSONPath expressions applied to the example JSON data item"}
 
+<!-- back to normington draft; not yet merged up where needed (e.g., terminology). -->
 
 # JSONPath Syntax and Semantics
 
@@ -842,10 +842,6 @@ TBD: Define a media type for JSON Path expressions.
 
 This section gives security considerations, as required by {{RFC3552}}.
 
-
-# Alternatives {#Alternatives}
-
-An analogous standard, JSON Pointer, is provided by {{RFC6901}}.
 
 
 --- back
