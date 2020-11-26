@@ -89,7 +89,7 @@ normative:
 --- abstract
 
 
-JSON Path defines a string syntax for identifying values
+JSONPath defines a string syntax for identifying values
 within a JavaScript Object Notation (JSON) document.
 
 --- note_
@@ -101,7 +101,7 @@ as an Internet Draft.**
 
 # Introduction
 
-JSON Path, or rather JSONPath, was introduced by Stefan Goessner as a simple
+JSONPath was introduced by Stefan Goessner as a simple
 form of XPath for JSON.
 See his original article {{Goessner}}.
 
@@ -122,14 +122,14 @@ in ABNF as `%x2318`.
 
 
 
-# JSON Path Syntax and Semantics
+# JSONPath Syntax and Semantics
 
 ## Overview
 
-A JSON Path is a string which selects zero or more nodes of any JSON document.
-A valid JSON Path conforms to the ABNF syntax defined by this document.
+A JSONPath is a string which selects zero or more nodes of a piece of JSON.
+A valid JSONPath conforms to the ABNF syntax defined by this document.
 
-A JSON Path MUST be encoded using UTF-8. To parse a JSON Path according to
+A JSONPath MUST be encoded using UTF-8. To parse a JSONPath according to
 the grammar in this document, its UTF-8 form SHOULD first be decoded into
 Unicode code points as described
 in {{RFC3629}}.
@@ -137,8 +137,7 @@ in {{RFC3629}}.
 
 ## Terminology
 
-A JSON document is logically a tree of nodes with the document as the root
-node of the tree.
+A JSON value is logically a tree of nodes.
 
 Each node holds a JSON value (as defined by {{RFC8259}}) of one of the
 types object, array, number, string, or one of the literals `true`,
@@ -150,35 +149,35 @@ sometimes referred to as the type of the node.
 ## Implementation
 
 An implementation of this specification, from now on referred to simply as
-"an implementation", SHOULD takes two inputs, a JSON Path and a JSON document,
+"an implementation", SHOULD takes two inputs, a JSONPath and a JSON value,
 and produce
-a possibly empty list of nodes of the JSON document which are selected by
-the JSON Path or an error (but not both).
+a possibly empty list of nodes of the JSON value which are selected by
+the JSONPath or an error (but not both).
 
 If no node is selected and no error has occurred, an implementation MUST
 return an empty list of nodes.
 
-Syntax errors in the JSON Path SHOULD be detected before selection is attempted
-since these errors do not depend on the JSON document.
-Therefore, an implementation SHOULD take a JSON Path and produce an optional
+Syntax errors in the JSONPath SHOULD be detected before selection is attempted
+since these errors do not depend on the JSON value.
+Therefore, an implementation SHOULD take a JSONPath and produce an optional
 syntax error and then,
-if and only if an error was not produced, SHOULD take a JSON document and
+if and only if an error was not produced, SHOULD take a JSON value and
 produce a list of nodes or an error (but not both).
 
-Alternatively, an implementation MAY take a JSON Path and a JSON document
+Alternatively, an implementation MAY take a JSONPath and a JSON value
 and produce a list of nodes or an optional error (but not both).
 
-For any implementation, if a syntactically invalid JSON Path is provided,
+For any implementation, if a syntactically invalid JSONPath is provided,
 the implementation MUST return an error.
 
-If a syntactially invalid JSON document is provided, any implementation SHOULD
+If a syntactially invalid JSON value is provided, any implementation SHOULD
 return an error.
 
 
 ## Syntax
 
-Syntactically, a JSON Path consists of a root selector (`$`), which
-selects the root node of a JSON document, followed by a possibly empty
+Syntactically, a JSONPath consists of a root selector (`$`), which
+selects the root node of a JSON value, followed by a possibly empty
 sequence of *selectors*.
 
 ~~~~ abnf
@@ -205,10 +204,10 @@ simply result in fewer nodes being selected.
 But a selector doesn't just act on a single node: each selector acts on a
 list of nodes and produces a list of nodes, as follows.
 
-After the root selector, the remainder of the JSON Path is processed by passing
+After the root selector, the remainder of the JSONPath is processed by passing
 lists of nodes from one selector to the next ending up with a list of nodes
 which is the result of
-applying the JSON Path to the input JSON document.
+applying the JSONPath to the input JSON value.
 
 Each selector acts on its input list of nodes as follows.
 For each node in
@@ -220,10 +219,10 @@ of selected nodes for each input node.
 A specific, non-normative example will make this clearer.
 Suppose the input
 document is: `{"a":[{"b":0},{"b":1},{"c":2}]}`.
-As we will see later, the JSON Path `$.a[*].b` selects the following list of nodes: `0`, `1`.
+As we will see later, the JSONPath `$.a[*].b` selects the following list of nodes: `0`, `1`.
 Let's walk through this in detail.
 
-The JSON Path consists of `$` followed by three selectors: `.a`, `[*]`, and `.b`.
+The JSONPath consists of `$` followed by three selectors: `.a`, `[*]`, and `.b`.
 
 Firstly, `$` selects the root node which is the input document.
 So the result is a list
@@ -243,7 +242,7 @@ The result is a list containing `0`, `1`.
 This is the concatenation of three lists, two of length one containing `0`, `1`, respectively, and one of length zero.
 
 As a consequence of this approach, if any of the selectors selects no nodes,
-then the whole JSON Path selects no nodes.
+then the whole JSONPath selects no nodes.
 
 In what follows, the semantics of each selector are defined for each type
 of node.
@@ -328,17 +327,17 @@ and selects the concatenation of the
 lists (in the order of the selectors) of nodes selected by the union elements.<!--  TODO: define whether duplicates are kept or removed.  -->
 
 
-#### Union Child {#unionchild}
+#### Child {#unionchild}
 
 ##### Syntax
 {: numbered="false" toc="exclude"}
 
-A union child is a union element consisting of a quoted string.
+A child is a quoted string.
 
 ~~~~ abnf
-union-element = union-child ; see below for more alternatives
-union-child = %x22 *double-quoted %x22 / ; "string"
-              %x27 *single-quoted %x27   ; 'string'
+union-element = child ; see below for more alternatives
+child = %x22 *double-quoted %x22 / ; "string"
+        %x27 *single-quoted %x27   ; 'string'
 
 double-quoted = dq-unescaped /
           escape (
@@ -384,7 +383,7 @@ Notes:
 ##### Semantics
 {: numbered="false" toc="exclude"}
 
-If the union child is a quoted string, the string MUST be converted to a
+If the child is a quoted string, the string MUST be converted to a
 key by removing the surrounding quotes and
 replacing each escape sequence with its equivalent Unicode character, as
 in the table below:
@@ -403,7 +402,7 @@ in the table below:
 | %x5C uXXXX      | U+XXXX            |
 {: title="Escape Sequence Replacements" cols="c c"}
 
-The union child selects the value corresponding to the key from any object
+The child selects the value corresponding to the key from any object
 node with the key as a name.
 It selects no nodes from a node which is not an object.
 
@@ -414,8 +413,7 @@ It selects no nodes from a node which is not an object.
 ##### Syntax
 {: numbered="false" toc="exclude"}
 
-An array selector is a union element which selects zero or more elements
-of an array node.
+An array selector selects zero or more elements of an array node.
 An array selector takes the form of an index, which selects at most one element,
 or a slice, which selects zero or more elements.
 
@@ -423,12 +421,12 @@ or a slice, which selects zero or more elements.
 union-element =/ array-index / array-slice
 ~~~~
 
-An array index is a union element consisting of an integer (in base 10).
+An array index is an integer (in base 10).
 
 ~~~~ abnf
 array-index = integer
 
-integer = ["-"] ("0" / (%x31-39 *%x30-39))
+integer = ["-"] ("0" / (DIGIT1 *DIGIT))
                             ; optional - followed by 0 or
                             ; sequence of digits with no leading zero
 DIGIT1 = %x31-39            ; non-zero digit
@@ -436,7 +434,7 @@ DIGIT1 = %x31-39            ; non-zero digit
 
 Note: the syntax does not allow integers with leading zeros such as `01` and `-01`.
 
-An array slice is a union element consisting of optional integers (in base 10) separated by colons.
+An array slice consists of three optional integers (in base 10) separated by colons.
 
 ~~~~ abnf
 array-slice = [ start ] ws ":" ws [ end ]
