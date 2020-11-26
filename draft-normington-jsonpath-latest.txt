@@ -2,12 +2,14 @@
 
 
 
-Internet Engineering Task Force                       G. Normington, Ed.
+JSONPath WG                                           G. Normington, Ed.
 Internet-Draft                                              VMware, Inc.
 Intended status: Standards Track                           E. Surov, Ed.
 Expires: 30 May 2021                             TheSoul Publishing Ltd.
                                                             M. Mikulicic
                                                             VMware, Inc.
+                                                              S. Gössner
+                                                 Fachhochschule Dortmund
                                                         26 November 2020
 
 
@@ -22,7 +24,18 @@ Abstract
 Note
 
    *This document is a work in progress and has not yet been published
-   as an Internet Draft.*
+   as an Internet Draft* (which needs to be fixed soon).
+
+Contributing
+
+   This document picks up the popular JSONPath specification dated
+   2007-02-21 and provides a more normative definition for it.  In its
+   current state, it is a strawman document showing what needs to be
+   covered.
+
+   Comments and issues can be directed at the github repository _insert
+   repo here_ as well as (for the time when the more permanent home is
+   being decided) at the dispatch@ietf.org mailing list.
 
 Status of This Memo
 
@@ -33,6 +46,17 @@ Status of This Memo
    Task Force (IETF).  Note that other groups may also distribute
    working documents as Internet-Drafts.  The list of current Internet-
    Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+
+
+
+
+
+
+Normington, et al.         Expires 30 May 2021                  [Page 1]
+
+Internet-Draft                  JSONPath                   November 2020
+
 
    Internet-Drafts are draft documents valid for a maximum of six months
    and may be updated, replaced, or obsoleted by other documents at any
@@ -50,14 +74,6 @@ Copyright Notice
    Provisions Relating to IETF Documents (https://trustee.ietf.org/
    license-info) in effect on the date of publication of this document.
    Please review these documents carefully, as they describe your rights
-
-
-
-Normington, et al.         Expires 30 May 2021                  [Page 1]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
-
-
    and restrictions with respect to this document.  Code Components
    extracted from this document must include Simplified BSD License text
    as described in Section 4.e of the Trust Legal Provisions and are
@@ -65,39 +81,55 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
 Table of Contents
 
-   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
-     1.1.  Requirements Language . . . . . . . . . . . . . . . . . .   2
-     1.2.  ABNF Syntax . . . . . . . . . . . . . . . . . . . . . . .   3
-   2.  JSONPath Syntax and Semantics . . . . . . . . . . . . . . . .   3
-     2.1.  Overview  . . . . . . . . . . . . . . . . . . . . . . . .   3
-     2.2.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   3
-     2.3.  Implementation  . . . . . . . . . . . . . . . . . . . . .   3
-     2.4.  Syntax  . . . . . . . . . . . . . . . . . . . . . . . . .   4
-     2.5.  Semantics . . . . . . . . . . . . . . . . . . . . . . . .   4
-     2.6.  Selectors . . . . . . . . . . . . . . . . . . . . . . . .   5
-       2.6.1.  Dot Child Selector  . . . . . . . . . . . . . . . . .   5
-       2.6.2.  Union Selector  . . . . . . . . . . . . . . . . . . .   6
-         2.6.2.1.  Syntax  . . . . . . . . . . . . . . . . . . . . .   6
-         2.6.2.2.  Semantics . . . . . . . . . . . . . . . . . . . .   7
-         2.6.2.3.  Child . . . . . . . . . . . . . . . . . . . . . .   7
-         2.6.2.4.  Array Selector  . . . . . . . . . . . . . . . . .   9
-   3.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  13
-   4.  Security Considerations . . . . . . . . . . . . . . . . . . .  13
-   5.  Alternatives  . . . . . . . . . . . . . . . . . . . . . . . .  13
-   6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  13
-     6.1.  Normative References  . . . . . . . . . . . . . . . . . .  13
-     6.2.  Informative References  . . . . . . . . . . . . . . . . .  13
-   Contributors  . . . . . . . . . . . . . . . . . . . . . . . . . .  14
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  14
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   3
+     1.1.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   3
+     1.2.  Inspired by XPath . . . . . . . . . . . . . . . . . . . .   4
+     1.3.  Overview of JSONPath Expressions  . . . . . . . . . . . .   5
+   2.  JSONPath Examples . . . . . . . . . . . . . . . . . . . . . .   7
+   3.  JSONPath Syntax and Semantics . . . . . . . . . . . . . . . .   9
+     3.1.  Overview  . . . . . . . . . . . . . . . . . . . . . . . .   9
+     3.2.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   9
+     3.3.  Implementation  . . . . . . . . . . . . . . . . . . . . .   9
+     3.4.  Syntax  . . . . . . . . . . . . . . . . . . . . . . . . .  10
+     3.5.  Semantics . . . . . . . . . . . . . . . . . . . . . . . .  10
+     3.6.  Selectors . . . . . . . . . . . . . . . . . . . . . . . .  11
+       3.6.1.  Dot Child Selector  . . . . . . . . . . . . . . . . .  11
+       3.6.2.  Union Selector  . . . . . . . . . . . . . . . . . . .  12
+         3.6.2.1.  Syntax  . . . . . . . . . . . . . . . . . . . . .  12
+         3.6.2.2.  Semantics . . . . . . . . . . . . . . . . . . . .  12
+         3.6.2.3.  Child . . . . . . . . . . . . . . . . . . . . . .  12
+         3.6.2.4.  Array Selector  . . . . . . . . . . . . . . . . .  14
+   4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  18
+   5.  Security Considerations . . . . . . . . . . . . . . . . . . .  18
+   6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  18
+     6.1.  Normative References  . . . . . . . . . . . . . . . . . .  18
+     6.2.  Informative References  . . . . . . . . . . . . . . . . .  18
+   Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .  19
+   Contributors  . . . . . . . . . . . . . . . . . . . . . . . . . .  19
+
+
+
+Normington, et al.         Expires 30 May 2021                  [Page 2]
+
+Internet-Draft                  JSONPath                   November 2020
+
+
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  20
 
 1.  Introduction
 
-   JSONPath was introduced by Stefan Goessner as a simple form of XPath
-   for JSON.  See his original article [Goessner].
+   This document picks up the popular JSONPath specification dated
+   2007-02-21 [JSONPath-orig] and provides a more normative definition
+   for it.  In its current state, it is a strawman document showing what
+   needs to be covered.
 
    JSON is defined by [RFC8259].
 
-1.1.  Requirements Language
+   JSONPath is not intended as a replacement, but as a more powerful
+   companion, to JSON Pointer [RFC6901]. [insert reference to section
+   where the relationship is detailed.]
+
+1.1.  Terminology
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
@@ -105,26 +137,322 @@ Table of Contents
    BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
    capitals, as shown here.
 
+   The grammatical rules in this document are to be interpreted as ABNF,
+   as described in [RFC5234].  ABNF terminal values in this document
+   define Unicode code points rather than their UTF-8 encoding.  For
+   example, the Unicode PLACE OF INTEREST SIGN (U+2318) would be defined
+   in ABNF as "%x2318".
+
+   The terminology of [RFC8259] applies.
+
+   Data Item:  A structure complying to the generic data model of JSON,
+      i.e., composed of containers such as arrays and maps (JSON
+      objects), and of atomic data such as null, true, false, numbers,
+      and text strings.
+
+   Object:  Used in its generic sense, e.g., for programming language
+      objects.  When a JSON Object as defined in [RFC8259] is meant, we
+      specifically say JSON Object.
+
+   Query:  Short name for JSONPath expression.
+
+   Argument:  Short name for the JSON data item a JSONPath expression is
+      applied to.
+
+   Output Path:  A simple form of JSONPath expression that identifies a
 
 
 
 
-Normington, et al.         Expires 30 May 2021                  [Page 2]
+
+Normington, et al.         Expires 30 May 2021                  [Page 3]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
+Internet-Draft                  JSONPath                   November 2020
 
 
-1.2.  ABNF Syntax
+      Position by providing a query that results in exactly that
+      position.  Similar to, but syntactically different from, a JSON
+      Pointer [RFC6901].
 
-   The syntax in this document conforms to ABNF as defined by [RFC5234].
+   Position:  A JSON data item identical to or nested within the JSON
+      data item to which the query is applied to, expressed either by
+      the value of that data item or by providing a JSONPath Output
+      Path.
 
-   ABNF terminal values in this document define Unicode code points
-   rather than their UTF-8 encoding.  For example, the Unicode PLACE OF
-   INTEREST SIGN (U+2318) would be defined in ABNF as "%x2318".
+1.2.  Inspired by XPath
 
-2.  JSONPath Syntax and Semantics
+   A frequently emphasized advantage of XML is the availability of
+   plenty tools to analyse, transform and selectively extract data out
+   of XML documents.  [XPath] is one of these powerful tools.
 
-2.1.  Overview
+   In 2007, the need for something solving the same class of problems
+   for the emerging JSON community became apparent, specifically for:
+
+   *  Finding data interactively and extracting them out of [RFC8259]
+      data items without special scripting.
+
+   *  Specifying the relevant parts of the JSON data in a request by a
+      client, so the server can reduce the data in the server response,
+      minimizing bandwidth usage.
+
+   So how does such a tool look like when done for JSON?  When defining
+   a JSONPath, how should expressions look like?
+
+   The XPath expression
+
+   /store/book[1]/title
+
+   looks like
+
+   x.store.book[0].title
+
+   or
+
+   x['store']['book'][0]['title']
+
+   in popular programming languages such as JavaScript, Python and PHP,
+   with a variable x holding the JSON data item.  Here we observe that
+   such languages already have a fundamentally XPath-like feature built
+   in.
+
+   The JSONPath tool in question should:
+
+   *  be naturally based on those language characteristics.
+
+
+
+Normington, et al.         Expires 30 May 2021                  [Page 4]
+
+Internet-Draft                  JSONPath                   November 2020
+
+
+   *  cover only essential parts of XPath 1.0.
+
+   *  be lightweight in code size and memory consumption.
+
+   *  be runtime efficient.
+
+1.3.  Overview of JSONPath Expressions
+
+   JSONPath expressions always apply to a JSON data item in the same way
+   as XPath expressions are used in combination with an XML document.
+   Since a JSON data item is usually anonymous and doesn't necessarily
+   have a "root member object", JSONPath used the abstract name "$" to
+   refer to the top level object of the data item.
+
+   JSONPath expressions can use the _dot-notation_
+
+   $.store.book[0].title
+
+   or the _bracket-notation_
+
+   $['store']['book'][0]['title']
+
+   for paths input to a JSONPath processor.  Where a JSONPath processor
+   uses JSONPath expressions for internal purposes or as output paths,
+   these will always be converted to the more general _bracket-
+   notation_.
+
+   JSONPath allows the wildcard symbol "*" for member names and array
+   indices.  It borrows the descendant operator ".." from [E4X] and the
+   array slice syntax proposal "[start:end:step]" [SLICE] from
+   ECMASCRIPT 4.
+
+   JSONPath can employ an _underlying scripting language_, expressions
+   of which, written in parentheses: "(<expr>)", can be used as an
+   alternative to explicit names or indices as in:
+
+   $.store.book[(@.length-1)].title
+
+   The symbol "@" is used for the current object.  Filter expressions
+   are supported via the syntax "?(<boolean expr>)" as in
+
+   $.store.book[?(@.price < 10)].title
+
+   Here is a complete overview and a side by side comparison of the
+   JSONPath syntax elements with its XPath counterparts.
+
+
+
+
+
+
+Normington, et al.         Expires 30 May 2021                  [Page 5]
+
+Internet-Draft                  JSONPath                   November 2020
+
+
+   +=======+==================+=======================================+
+   | XPath | JSONPath         | Description                           |
+   +=======+==================+=======================================+
+   | /     | $                | the root object/element               |
+   +-------+------------------+---------------------------------------+
+   | .     | @                | the current object/element            |
+   +-------+------------------+---------------------------------------+
+   | /     | "." or "[]"      | child operator                        |
+   +-------+------------------+---------------------------------------+
+   | ..    | n/a              | parent operator                       |
+   +-------+------------------+---------------------------------------+
+   | //    | ..               | nested descendants.  JSONPath borrows |
+   |       |                  | this syntax from E4X.                 |
+   +-------+------------------+---------------------------------------+
+   | *     | *                | wildcard.  All objects/elements       |
+   |       |                  | regardless of their names.            |
+   +-------+------------------+---------------------------------------+
+   | @     | n/a              | attribute access.  JSON data items    |
+   |       |                  | don't have attributes.                |
+   +-------+------------------+---------------------------------------+
+   | []    | []               | subscript operator.  XPath uses it to |
+   |       |                  | iterate over element collections and  |
+   |       |                  | for predicates.  In JavaScript and    |
+   |       |                  | JSON it is the native array operator. |
+   +-------+------------------+---------------------------------------+
+   | |     | [,]              | Union operator in XPath results in a  |
+   |       |                  | combination of node sets.  JSONPath   |
+   |       |                  | allows alternate names or array       |
+   |       |                  | indices as a set.                     |
+   +-------+------------------+---------------------------------------+
+   | n/a   | [start:end:step] | array slice operator borrowed from    |
+   |       |                  | ES4.                                  |
+   +-------+------------------+---------------------------------------+
+   | []    | ?()              | applies a filter (script) expression. |
+   +-------+------------------+---------------------------------------+
+   | n/a   | ()               | script expression, using the          |
+   |       |                  | underlying script engine.             |
+   +-------+------------------+---------------------------------------+
+   | ()    | n/a              | grouping in Xpath                     |
+   +-------+------------------+---------------------------------------+
+
+           Table 1: Overview over JSONPath, comparing to XPath
+
+   XPath has a lot more to offer (location paths in unabbreviated
+   syntax, operators and functions) than listed here.  Moreover there is
+   a significant difference how the subscript operator works in Xpath
+   and JSONPath:
+
+
+
+
+Normington, et al.         Expires 30 May 2021                  [Page 6]
+
+Internet-Draft                  JSONPath                   November 2020
+
+
+   *  Square brackets in XPath expressions always operate on the _node
+      set_ resulting from the previous path fragment.  Indices always
+      start at 1.
+
+   *  With JSONPath, square brackets operate on the _object_ or _array_
+      addressed by the previous path fragment.  Indices always start at
+      0.
+
+2.  JSONPath Examples
+
+   This section provides some more examples for JSONPath expressions.
+   The examples are based on a simple JSON data item patterned after a
+   typical XML example representing a bookstore (that also has
+   bicycles):
+
+   { "store": {
+       "book": [
+         { "category": "reference",
+           "author": "Nigel Rees",
+           "title": "Sayings of the Century",
+           "price": 8.95
+         },
+         { "category": "fiction",
+           "author": "Evelyn Waugh",
+           "title": "Sword of Honour",
+           "price": 12.99
+         },
+         { "category": "fiction",
+           "author": "Herman Melville",
+           "title": "Moby Dick",
+           "isbn": "0-553-21311-3",
+           "price": 8.99
+         },
+         { "category": "fiction",
+           "author": "J. R. R. Tolkien",
+           "title": "The Lord of the Rings",
+           "isbn": "0-395-19395-8",
+           "price": 22.99
+         }
+       ],
+       "bicycle": {
+         "color": "red",
+         "price": 19.95
+       }
+     }
+   }
+
+                      Figure 1: Example JSON data item
+
+
+
+Normington, et al.         Expires 30 May 2021                  [Page 7]
+
+Internet-Draft                  JSONPath                   November 2020
+
+
+   The examples in Table 2 presume an underlying script language that
+   allows obtaining the number of items in an array, testing for the
+   presence of a map member, and performing numeric comparisons of map
+   member values with a constant.
+
+   +======================+=========================+==================+
+   | XPath                | JSONPath                | Result           |
+   +======================+=========================+==================+
+   | /store/book/author   | $.store.book[*].author  | the authors of   |
+   |                      |                         | all books in     |
+   |                      |                         | the store        |
+   +----------------------+-------------------------+------------------+
+   | //author             | $..author               | all authors      |
+   +----------------------+-------------------------+------------------+
+   | /store/*             | $.store.*               | all things in    |
+   |                      |                         | store, which     |
+   |                      |                         | are some books   |
+   |                      |                         | and a red        |
+   |                      |                         | bicycle.         |
+   +----------------------+-------------------------+------------------+
+   | /store//price        | $.store..price          | the price of     |
+   |                      |                         | everything in    |
+   |                      |                         | the store.       |
+   +----------------------+-------------------------+------------------+
+   | //book[3]            | $..book[2]              | the third book   |
+   +----------------------+-------------------------+------------------+
+   | //book[last()]       | "$..book[(@.length-1)]" | the last book    |
+   |                      | "$..book[-1:]"          | in order.        |
+   +----------------------+-------------------------+------------------+
+   | //book[position()<3] | "$..book[0,1]"          | the first two    |
+   |                      | "$..book[:2]"           | books            |
+   +----------------------+-------------------------+------------------+
+   | //book[isbn]         | $..book[?(@.isbn)]      | filter all       |
+   |                      |                         | books with isbn  |
+   |                      |                         | number           |
+   +----------------------+-------------------------+------------------+
+   | //book[price<10]     | $..book[?(@.price<10)]  | filter all       |
+   |                      |                         | books cheapier   |
+   |                      |                         | than 10          |
+   +----------------------+-------------------------+------------------+
+   | //*                  | $..*                    | all Elements in  |
+   |                      |                         | XML document.    |
+   |                      |                         | All members of   |
+   |                      |                         | JSON data item.  |
+   +----------------------+-------------------------+------------------+
+
+     Table 2: Example JSONPath expressions applied to the example JSON
+                                 data item
+
+
+
+Normington, et al.         Expires 30 May 2021                  [Page 8]
+
+Internet-Draft                  JSONPath                   November 2020
+
+
+3.  JSONPath Syntax and Semantics
+
+3.1.  Overview
 
    A JSONPath is a string which selects zero or more nodes of a piece of
    JSON.  A valid JSONPath conforms to the ABNF syntax defined by this
@@ -134,7 +462,7 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
    according to the grammar in this document, its UTF-8 form SHOULD
    first be decoded into Unicode code points as described in [RFC3629].
 
-2.2.  Terminology
+3.2.  Terminology
 
    A JSON value is logically a tree of nodes.
 
@@ -143,7 +471,7 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
    "false", or "null".  The type of the JSON value held by a node is
    sometimes referred to as the type of the node.
 
-2.3.  Implementation
+3.3.  Implementation
 
    An implementation of this specification, from now on referred to
    simply as "an implementation", SHOULD takes two inputs, a JSONPath
@@ -161,15 +489,6 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
    produced, SHOULD take a JSON value and produce a list of nodes or an
    error (but not both).
 
-
-
-
-
-Normington, et al.         Expires 30 May 2021                  [Page 3]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
-
-
    Alternatively, an implementation MAY take a JSONPath and a JSON value
    and produce a list of nodes or an optional error (but not both).
 
@@ -179,7 +498,15 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
    If a syntactially invalid JSON value is provided, any implementation
    SHOULD return an error.
 
-2.4.  Syntax
+
+
+
+Normington, et al.         Expires 30 May 2021                  [Page 9]
+
+Internet-Draft                  JSONPath                   November 2020
+
+
+3.4.  Syntax
 
    Syntactically, a JSONPath consists of a root selector ("$"), which
    selects the root node of a JSON value, followed by a possibly empty
@@ -190,7 +517,7 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
    The syntax and semantics of each selector is defined below.
 
-2.5.  Semantics
+3.5.  Semantics
 
    The root selector "$" not only selects the root node of the input
    document, but it also produces as output a list consisting of one
@@ -216,16 +543,6 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
    list of nodes of a selector is the concatenation of the lists of
    selected nodes for each input node.
 
-
-
-
-
-
-Normington, et al.         Expires 30 May 2021                  [Page 4]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
-
-
    A specific, non-normative example will make this clearer.  Suppose
    the input document is: "{"a":[{"b":0},{"b":1},{"c":2}]}".  As we will
    see later, the JSONPath "$.a[*].b" selects the following list of
@@ -236,6 +553,14 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
    Firstly, "$" selects the root node which is the input document.  So
    the result is a list consisting of just the root node.
+
+
+
+
+Normington, et al.         Expires 30 May 2021                 [Page 10]
+
+Internet-Draft                  JSONPath                   November 2020
+
 
    Next, ".a" selects from any input node of type object and selects any
    value of the input node corresponding to the key ""a"".  The result
@@ -257,9 +582,9 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
    In what follows, the semantics of each selector are defined for each
    type of node.
 
-2.6.  Selectors
+3.6.  Selectors
 
-2.6.1.  Dot Child Selector
+3.6.1.  Dot Child Selector
 
 Syntax
 
@@ -267,20 +592,6 @@ Syntax
    asterisk ("*").
 
    A dot child name corresponds to a name in a JSON object.
-
-
-
-
-
-
-
-
-
-
-Normington, et al.         Expires 30 May 2021                  [Page 5]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
-
 
    selector = dot-child              ; see below for alternatives
    dot-child = %x2E dot-child-name / ; .<dot-child-name>
@@ -296,7 +607,16 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
    ALPHA = %x41-5A / %x61-7A         ; A-Z / a-z
 
    More general child names, such as the empty string, are supported by
-   "Union Child" (Section 2.6.2.3).
+   "Union Child" (Section 3.6.2.3).
+
+
+
+
+
+Normington, et al.         Expires 30 May 2021                 [Page 11]
+
+Internet-Draft                  JSONPath                   November 2020
+
 
    Note that the "dot-child-name" rule follows the philosophy of JSON
    strings and is allowed to contain bit sequences that cannot encode
@@ -319,24 +639,11 @@ Semantics
    elements of any array node.  It selects no nodes from number, string,
    or literal nodes.
 
-2.6.2.  Union Selector
+3.6.2.  Union Selector
 
-2.6.2.1.  Syntax
+3.6.2.1.  Syntax
 
    A union selector consists of one or more union elements.
-
-
-
-
-
-
-
-
-
-Normington, et al.         Expires 30 May 2021                  [Page 6]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
-
 
    selector =/ union
    union = %x5B ws union-elements ws %x5D ; [...]
@@ -345,13 +652,13 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
                     union-element ws %x2C ws union-elements
                                           ; ,-separated list
 
-2.6.2.2.  Semantics
+3.6.2.2.  Semantics
 
    A union selects any node which is selected by at least one of the
    union selectors and selects the concatenation of the lists (in the
    order of the selectors) of nodes selected by the union elements.
 
-2.6.2.3.  Child
+3.6.2.3.  Child
 
 Syntax
 
@@ -362,36 +669,9 @@ Syntax
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Normington, et al.         Expires 30 May 2021                  [Page 7]
+Normington, et al.         Expires 30 May 2021                 [Page 12]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
+Internet-Draft                  JSONPath                   November 2020
 
 
    union-element = child ; see below for more alternatives
@@ -445,9 +725,9 @@ Semantics
 
 
 
-Normington, et al.         Expires 30 May 2021                  [Page 8]
+Normington, et al.         Expires 30 May 2021                 [Page 13]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
+Internet-Draft                  JSONPath                   November 2020
 
 
                   +=================+===================+
@@ -474,13 +754,13 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
                   |    %x5C uXXXX   |       U+XXXX      |
                   +-----------------+-------------------+
 
-                   Table 1: Escape Sequence Replacements
+                   Table 3: Escape Sequence Replacements
 
    The child selects the value corresponding to the key from any object
    node with the key as a name.  It selects no nodes from a node which
    is not an object.
 
-2.6.2.4.  Array Selector
+3.6.2.4.  Array Selector
 
 Syntax
 
@@ -501,9 +781,9 @@ Syntax
 
 
 
-Normington, et al.         Expires 30 May 2021                  [Page 9]
+Normington, et al.         Expires 30 May 2021                 [Page 14]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
+Internet-Draft                  JSONPath                   November 2020
 
 
    Note: the syntax does not allow integers with leading zeros such as
@@ -557,9 +837,9 @@ Informal Introduction
 
 
 
-Normington, et al.         Expires 30 May 2021                 [Page 10]
+Normington, et al.         Expires 30 May 2021                 [Page 15]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
+Internet-Draft                  JSONPath                   November 2020
 
 
    When "step" is "0", no elements are selected.  This is the one case
@@ -594,7 +874,7 @@ Detailed Semantics
                     | step < 0  | len - 1 | -len - 1 |
                     +-----------+---------+----------+
 
-                       Table 2: Default array slice
+                       Table 4: Default array slice
                            start and end values
 
    Slice expression parameters "start" and "end" are not directly usable
@@ -613,9 +893,9 @@ Detailed Semantics
 
 
 
-Normington, et al.         Expires 30 May 2021                 [Page 11]
+Normington, et al.         Expires 30 May 2021                 [Page 16]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
+Internet-Draft                  JSONPath                   November 2020
 
 
    Slice expression parameters "start" and "end" are used to derive
@@ -669,9 +949,9 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
 
 
-Normington, et al.         Expires 30 May 2021                 [Page 12]
+Normington, et al.         Expires 30 May 2021                 [Page 17]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
+Internet-Draft                  JSONPath                   November 2020
 
 
    An implementation MUST raise an error if any of the slice expression
@@ -680,24 +960,13 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
    against an array whose size doesn't fit in the implementation's
    representation of an integer, the implementation MUST raise an error.
 
-3.  IANA Considerations
+4.  IANA Considerations
 
-   This memo includes no request to IANA.
+   TBD: Define a media type for JSON Path expressions.
 
-   All drafts are required to have an IANA considerations section (see
-   Guidelines for Writing an IANA Considerations Section in RFCs
-   [RFC5226] for a guide).  If the draft does not require IANA to do
-   anything, the section contains an explicit statement that this is the
-   case (as above).  If there are no requirements for IANA, the section
-   will be removed during conversion into an RFC by the RFC Editor.
-
-4.  Security Considerations
+5.  Security Considerations
 
    This section gives security considerations, as required by [RFC3552].
-
-5.  Alternatives
-
-   An analogous standard, JSON Pointer, is provided by [RFC6901].
 
 6.  References
 
@@ -721,13 +990,24 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/info/rfc8174>.
 
+   [RFC8259]  Bray, T., Ed., "The JavaScript Object Notation (JSON) Data
+              Interchange Format", STD 90, RFC 8259,
+              DOI 10.17487/RFC8259, December 2017,
+              <https://www.rfc-editor.org/info/rfc8259>.
+
 6.2.  Informative References
 
+   [E4X]      ISO, "Information technology — ECMAScript for XML (E4X)
+              specification", ISO/IEC 22537:2006 , 2006.
 
 
-Normington, et al.         Expires 30 May 2021                 [Page 13]
+
+
+
+
+Normington, et al.         Expires 30 May 2021                 [Page 18]
 
-Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
+Internet-Draft                  JSONPath                   November 2020
 
 
    [ECMA-262] Ecma International, "ECMAScript Language Specification,
@@ -736,7 +1016,8 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
               ECMA-ST-ARCH/ECMA-
               262,%203rd%20edition,%20December%201999.pdf>.
 
-   [Goessner] Stefan Gössner, "JSONPath - XPath for JSON", February
+   [JSONPath-orig]
+              Gössner, S., "JSONPath – XPath for JSON", 21 February
               2007, <https://goessner.net/articles/JsonPath/>.
 
    [RFC3552]  Rescorla, E. and B. Korver, "Guidelines for Writing RFC
@@ -744,25 +1025,32 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
               DOI 10.17487/RFC3552, July 2003,
               <https://www.rfc-editor.org/info/rfc3552>.
 
-   [RFC5226]  Narten, T. and H. Alvestrand, "Guidelines for Writing an
-              IANA Considerations Section in RFCs", RFC 5226,
-              DOI 10.17487/RFC5226, May 2008,
-              <https://www.rfc-editor.org/info/rfc5226>.
-
    [RFC6901]  Bryan, P., Ed., Zyp, K., and M. Nottingham, Ed.,
               "JavaScript Object Notation (JSON) Pointer", RFC 6901,
               DOI 10.17487/RFC6901, April 2013,
               <https://www.rfc-editor.org/info/rfc6901>.
 
-   [RFC8259]  Bray, T., Ed., "The JavaScript Object Notation (JSON) Data
-              Interchange Format", STD 90, RFC 8259,
-              DOI 10.17487/RFC8259, December 2017,
-              <https://www.rfc-editor.org/info/rfc8259>.
+   [SLICE]    "Slice notation", n.d.,
+              <https://github.com/tc39/proposal-slice-notation>.
+
+   [XPath]    Berglund, A., Boag, S., Chamberlin, D., Fernandez, M.,
+              Kay, M., Robie, J., and J. Simeon, "XML Path Language
+              (XPath) 2.0 (Second Edition)", World Wide Web Consortium
+              Recommendation REC-xpath20-20101214, 14 December 2010,
+              <https://www.w3.org/TR/2010/REC-xpath20-20101214>.
+
+Acknowledgements
+
+   This specification is based on Stefan Gössner's original online
+   article defining JSONPath [JSONPath-orig].
+
+   The books example was taken from http://coli.lili.uni-
+   bielefeld.de/~andreas/Seminare/sommer02/books.xml -- a dead link now.
 
 Contributors
 
    Carsten Bormann
-   Universitaet Bremen TZI
+   Universität Bremen TZI
    Postfach 330440
    D-28359 Bremen
    Germany
@@ -771,20 +1059,19 @@ Contributors
    Email: cabo@tzi.org
 
 
+
+
+Normington, et al.         Expires 30 May 2021                 [Page 19]
+
+Internet-Draft                  JSONPath                   November 2020
+
+
 Authors' Addresses
 
    Glyn Normington (editor)
    VMware, Inc.
    Winchester
    United Kingdom
-
-
-
-
-Normington, et al.         Expires 30 May 2021                 [Page 14]
-
-Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
-
 
    Email: glyn.normington@gmail.com
 
@@ -805,6 +1092,13 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
    Email: mmikulicic@gmail.com
 
 
+   Stefan Gössner
+   Fachhochschule Dortmund
+   Sonnenstraße 96
+   D-44139 Dortmund
+   Germany
+
+   Email: stefan.goessner@fh-dortmund.de
 
 
 
@@ -823,18 +1117,4 @@ Internet-Draft   JavaScript Object Notation (JSON) Path    November 2020
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Normington, et al.         Expires 30 May 2021                 [Page 15]
+Normington, et al.         Expires 30 May 2021                 [Page 20]
