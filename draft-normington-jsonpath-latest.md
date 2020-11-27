@@ -129,56 +129,34 @@ in ABNF as `%x2318`.
 A JSONPath is a string which selects zero or more nodes of a piece of JSON.
 A valid JSONPath conforms to the ABNF syntax defined by this document.
 
-A JSONPath MUST be encoded using UTF-8. To parse a JSONPath according to
-the grammar in this document, its UTF-8 form SHOULD first be decoded into
-Unicode code points as described
-in {{RFC3629}}.
+A JSONPath MUST be encoded using UTF-8. To parse a JSONPath according to the grammar in this document, its UTF-8 form SHOULD first be decoded into Unicode code points as described in {{RFC3629}}.
 
 
 ## Terminology
 
 A JSON value is logically a tree of nodes.
 
-Each node holds a JSON value (as defined by {{RFC8259}}) of one of the
-types object, array, number, string, or one of the literals `true`,
-`false`, or `null`.
-The type of the JSON value held by a node is
-sometimes referred to as the type of the node.
+Each node holds a JSON value (as defined by {{RFC8259}}) of one of the types object, array, number, string, or one of the literals `true`, `false`, or `null`. The type of the JSON value held by a node is sometimes referred to as the type of the node.
 
 
 ## Implementation
 
-An implementation of this specification, from now on referred to simply as
-"an implementation", SHOULD takes two inputs, a JSONPath and a JSON value,
-and produce
-a possibly empty list of nodes of the JSON value which are selected by
-the JSONPath or an error (but not both).
+An implementation of this specification, from now on referred to simply as "an implementation", SHOULD takes two inputs, a JSONPath and a JSON value, and produce a possibly empty list of nodes of the JSON value which are selected by the JSONPath or an error (but not both).
 
-If no node is selected and no error has occurred, an implementation MUST
-return an empty list of nodes.
+If no node is selected and no error has occurred, an implementation MUST return an empty list of nodes.
 
-Syntax errors in the JSONPath SHOULD be detected before selection is attempted
-since these errors do not depend on the JSON value.
-Therefore, an implementation SHOULD take a JSONPath and produce an optional
-syntax error and then,
-if and only if an error was not produced, SHOULD take a JSON value and
-produce a list of nodes or an error (but not both).
+Syntax errors in the JSONPath SHOULD be detected before selection is attempted since these errors do not depend on the JSON value. Therefore, an implementation SHOULD take a JSONPath and produce an optional syntax error and then, if and only if an error was not produced, SHOULD take a JSON value and produce a list of nodes or an error (but not both).
 
-Alternatively, an implementation MAY take a JSONPath and a JSON value
-and produce a list of nodes or an optional error (but not both).
+Alternatively, an implementation MAY take a JSONPath and a JSON value and produce a list of nodes or an optional error (but not both).
 
-For any implementation, if a syntactically invalid JSONPath is provided,
-the implementation MUST return an error.
+For any implementation, if a syntactically invalid JSONPath is provided, the implementation MUST return an error.
 
-If a syntactially invalid JSON value is provided, any implementation SHOULD
-return an error.
+If a syntactially invalid JSON value is provided, any implementation SHOULD return an error.
 
 
 ## Syntax
 
-Syntactically, a JSONPath consists of a root selector (`$`), which
-selects the root node of a JSON value, followed by a possibly empty
-sequence of *selectors*.
+Syntactically, a JSONPath consists of a root selector (`$`), which selects the root node of a JSON value, followed by a possibly empty sequence of *selectors*.
 
 ~~~~ abnf
 json-path = root-selector *selector
@@ -190,62 +168,31 @@ The syntax and semantics of each selector is defined below.
 
 ## Semantics
 
-The root selector `$` not only selects the root node of the input
-document, but it also produces as output a list consisting of one
-node: the input document.
+The root selector `$` not only selects the root node of the input document, but it also produces as output a list consisting of one node: the input document.
 
-A selector may select zero or more nodes for further processing.
-A syntactically valid selector MUST NOT produce errors.
-This means that some
-operations which might be considered erroneous, such as indexing beyond the
-end of an array,
-simply result in fewer nodes being selected.
+A selector may select zero or more nodes for further processing. A syntactically valid selector MUST NOT produce errors. This means that some operations which might be considered erroneous, such as indexing beyond the end of an array, simply result in fewer nodes being selected.
 
-But a selector doesn't just act on a single node: each selector acts on a
-list of nodes and produces a list of nodes, as follows.
+But a selector doesn't just act on a single node: each selector acts on a list of nodes and produces a list of nodes, as follows.
 
-After the root selector, the remainder of the JSONPath is processed by passing
-lists of nodes from one selector to the next ending up with a list of nodes
-which is the result of
-applying the JSONPath to the input JSON value.
+After the root selector, the remainder of the JSONPath is processed by passing lists of nodes from one selector to the next ending up with a list of nodes which is the result of applying the JSONPath to the input JSON value.
 
-Each selector acts on its input list of nodes as follows.
-For each node in
-the list, the selector selects zero or more nodes, each of which is a descendant
-of the node or the node itself.
-The output list of nodes of a selector is the concatenation of the lists
-of selected nodes for each input node.
+Each selector acts on its input list of nodes as follows. For each node in the list, the selector selects zero or more nodes, each of which is a descendant of the node or the node itself. The output list of nodes of a selector is the concatenation of the lists of selected nodes for each input node.
 
-A specific, non-normative example will make this clearer.
-Suppose the input
-document is: `{"a":[{"b":0},{"b":1},{"c":2}]}`.
-As we will see later, the JSONPath `$.a[*].b` selects the following list of nodes: `0`, `1`.
-Let's walk through this in detail.
+A specific, non-normative example will make this clearer. Suppose the input document is: `{"a":[{"b":0},{"b":1},{"c":2}]}`. As we will see later, the JSONPath `$.a[*].b` selects the following list of nodes: `0`, `1`. Let's walk through this in detail.
 
 The JSONPath consists of `$` followed by three selectors: `.a`, `[*]`, and `.b`.
 
-Firstly, `$` selects the root node which is the input document.
-So the result is a list
-consisting of just the root node.
+Firstly, `$` selects the root node which is the input document. So the result is a list consisting of just the root node.
 
-Next, `.a` selects from any input node of type object and selects any value of the input
-node corresponding to the key `"a"`.
-The result is again a list of one node: `[{"b":0},{"b":1},{"c":2}]`.
+Next, `.a` selects from any input node of type object and selects any value of the input node corresponding to the key `"a"`. The result is again a list of one node: `[{"b":0},{"b":1},{"c":2}]`.
 
-Next, `[*]` selects from any input node which is an array and selects all the elements
-of the input node.
-The result is a list of three nodes: `{"b":0}`, `{"b":1}`, and `{"c":2}`.
+Next, `[*]` selects from any input node which is an array and selects all the elements of the input node. The result is a list of three nodes: `{"b":0}`, `{"b":1}`, and `{"c":2}`.
 
-Finally, `.b` selects from any input node of type object with a key
-`b` and selects the value of the input node corresponding to that key.
-The result is a list containing `0`, `1`.
-This is the concatenation of three lists, two of length one containing `0`, `1`, respectively, and one of length zero.
+Finally, `.b` selects from any input node of type object with a key `b` and selects the value of the input node corresponding to that key. The result is a list containing `0`, `1`. This is the concatenation of three lists, two of length one containing `0`, `1`, respectively, and one of length zero.
 
-As a consequence of this approach, if any of the selectors selects no nodes,
-then the whole JSONPath selects no nodes.
+As a consequence of this approach, if any of the selectors selects no nodes, then the whole JSONPath selects no nodes.
 
-In what follows, the semantics of each selector are defined for each type
-of node.
+In what follows, the semantics of each selector are defined for each type of node.
 
 
 ## Selectors
@@ -255,8 +202,7 @@ of node.
 #### Syntax
 {: numbered="false" toc="exclude"}
 
-A dot child selector has a key known as a dot child name or a single asterisk
-(`*`).
+A dot child selector has a key known as a dot child name or a single asterisk (`*`).
 
 A dot child name corresponds to a name in a JSON object.
 
@@ -275,32 +221,20 @@ DIGIT =  %x30-39                  ; 0-9
 ALPHA = %x41-5A / %x61-7A         ; A-Z / a-z
 ~~~~
 
-More general child names, such as the empty string, are supported by "Union
-Child" ({{unionchild}}{: format="default"}).
+More general child names, such as the empty string, are supported by "Union Child" ({{unionchild}}{: format="default"}).
 
-Note that the `dot-child-name` rule follows the philosophy of JSON strings and is
-allowed to contain bit sequences that cannot encode Unicode characters (a
-single unpaired UTF-16 surrogate, for example).
-The behaviour of an implementation is undefined for child names which do
-not encode Unicode characters.
+Note that the `dot-child-name` rule follows the philosophy of JSON strings and is allowed to contain bit sequences that cannot encode Unicode characters (a single unpaired UTF-16 surrogate, for example). The behaviour of an implementation is undefined for child names which do not encode Unicode characters.
 
 
 #### Semantics
 {: numbered="false" toc="exclude"}
 
-A dot child name which is not a single asterisk (`*`) is considered to have a key.
-It selects the value corresponding to the key from any object node.
-It selects
-no nodes from a node which is not an object.
+A dot child name which is not a single asterisk (`*`) is considered to have a key. It selects the value corresponding to the key from any object node. It selects no nodes from a node which is not an object.
 
-The key of a dot child name is the sequence of Unicode characters contained
-in that name.
+The key of a dot child name is the sequence of Unicode characters contained in that name.
 
-A dot child name consisting of a single asterisk is a wild card. It selects
-all the values of any object node.
-It also selects all the elements of any array node.
-It selects no nodes from
-number, string, or literal nodes.
+A dot child name consisting of a single asterisk is a wild card. It selects all the values of any object node. It also selects all the elements of any array node.
+It selects no nodes from number, string, or literal nodes.
 
 
 
@@ -322,9 +256,7 @@ union-elements = union-element /
 
 #### Semantics
 
-A union selects any node which is selected by at least one of the union selectors
-and selects the concatenation of the
-lists (in the order of the selectors) of nodes selected by the union elements.<!--  TODO: define whether duplicates are kept or removed.  -->
+A union selects any node which is selected by at least one of the union selectors and selects the concatenation of the lists (in the order of the selectors) of nodes selected by the union elements.<!--  TODO: define whether duplicates are kept or removed.  -->
 
 
 #### Child {#unionchild}
@@ -383,10 +315,7 @@ Notes:
 ##### Semantics
 {: numbered="false" toc="exclude"}
 
-If the child is a quoted string, the string MUST be converted to a
-key by removing the surrounding quotes and
-replacing each escape sequence with its equivalent Unicode character, as
-in the table below:
+If the child is a quoted string, the string MUST be converted to a key by removing the surrounding quotes and replacing each escape sequence with its equivalent Unicode character, as in the table below:
 
 | Escape Sequence | Unicode Character |
 |:---------------:|:-----------------:|
@@ -402,9 +331,7 @@ in the table below:
 | %x5C uXXXX      | U+XXXX            |
 {: title="Escape Sequence Replacements" cols="c c"}
 
-The child selects the value corresponding to the key from any object
-node with the key as a name.
-It selects no nodes from a node which is not an object.
+The child selects the value corresponding to the key from any object node with the key as a name. It selects no nodes from a node which is not an object.
 
 
 
@@ -413,9 +340,7 @@ It selects no nodes from a node which is not an object.
 ##### Syntax
 {: numbered="false" toc="exclude"}
 
-An array selector selects zero or more elements of an array node.
-An array selector takes the form of an index, which selects at most one element,
-or a slice, which selects zero or more elements.
+An array selector selects zero or more elements of an array node. An array selector takes the form of an index, which selects at most one element, or a slice, which selects zero or more elements.
 
 ~~~~ abnf
 union-element =/ array-index / array-slice
@@ -454,55 +379,32 @@ Note: the array slices `:` and `::` are both syntactically valid, as are `:2:2`,
 
 This section is non-normative.
 
-Array indexing is a way of selecting a particular element of an array using
-a 0-based index.
-For example, the expression `[0]` selects the first element of a non-empty array.
+Array indexing is a way of selecting a particular element of an array using a 0-based index. For example, the expression `[0]` selects the first element of a non-empty array.
 
-Negative indices index from the end of an array.
-For example, the expression `[-2]` selects the last but one element of an array with at least two elements.
+Negative indices index from the end of an array. For example, the expression `[-2]` selects the last but one element of an array with at least two elements.
 
-Array slicing is inspired by the behaviour of the `Array.prototype.slice` method
-of the JavaScript language as defined by the ECMA-262 standard {{ECMA-262}},
-with the addition of the `step` parameter, which is inspired by the Python slice expression.
+Array slicing is inspired by the behaviour of the `Array.prototype.slice` method of the JavaScript language as defined by the ECMA-262 standard {{ECMA-262}}, with the addition of the `step` parameter, which is inspired by the Python slice expression.
 
-The array slice expression `[start:end:step]` selects elements at indices starting at `start`,
-incrementing by `step`, and ending with `end` (which is itself excluded).
-So, for example, the expression `[1:3]` (where `step` defaults to `1`)
-selects elements with indices `1` and `2` (in that order) whereas
-`[1:5:2]` selects elements with indices `1` and `3`.
+The array slice expression `[start:end:step]` selects elements at indices starting at `start`, incrementing by `step`, and ending with `end` (which is itself excluded).
+So, for example, the expression `[1:3]` (where `step` defaults to `1`) selects elements with indices `1` and `2` (in that order) whereas `[1:5:2]` selects elements with indices `1` and `3`.
 
-When `step` is negative, elements are selected in reverse order. Thus,
-for example, `[5:1:-2]` selects elements with indices `5` and `3`, in
-that order and `[::-1]` selects all the elements of an array in
-reverse order.
+When `step` is negative, elements are selected in reverse order. Thus, for example, `[5:1:-2]` selects elements with indices `5` and `3`, in that order and `[::-1]` selects all the elements of an array in reverse order.
 
-When `step` is `0`, no elements are selected.
-This is the one case which differs from the behaviour of Python, which
-raises an error in this case.
+When `step` is `0`, no elements are selected. This is the one case which differs from the behaviour of Python, which raises an error in this case.
 
-The following section specifies the behaviour fully, without depending on
-JavaScript or Python behaviour.
+The following section specifies the behaviour fully, without depending on JavaScript or Python behaviour.
 
 
 ###### Detailed Semantics
 {: numbered="false" toc="exclude"}
 
-An array selector is either an array slice or an array index, which is defined
-in terms of an array slice.
+An array selector is either an array slice or an array index, which is defined in terms of an array slice.
 
-A slice expression selects a subset of the elements of the input array, in
-the same order
-as the array or the reverse order, depending on the sign of the `step` parameter.
-It selects no nodes from a node which is not an array.
+A slice expression selects a subset of the elements of the input array, in the same order as the array or the reverse order, depending on the sign of the `step` parameter. It selects no nodes from a node which is not an array.
 
-A slice is defined by the two slice parameters, `start` and `end`, and
-an iteration delta, `step`.
-Each of these parameters is
-optional. `len` is the length of the input array.
+A slice is defined by the two slice parameters, `start` and `end`, and an iteration delta, `step`. Each of these parameters is optional. `len` is the length of the input array.
 
-The default value for `step` is `1`.
-The default values for `start` and `end` depend on the sign of `step`,
-as follows:
+The default value for `step` is `1`. The default values for `start` and `end` depend on the sign of `step`, as follows:
 
 | Condition    | start   | end      |
 |--------------|---------|----------|
@@ -510,8 +412,7 @@ as follows:
 | step < 0     | len - 1 | -len - 1 |
 {: title="Default array slice start and end values"}
 
-Slice expression parameters `start` and `end` are not directly usable
-as slice bounds and must first be normalized. Normalization is defined as:
+Slice expression parameters `start` and `end` are not directly usable as slice bounds and must first be normalized. Normalization is defined as:
 
 ~~~~
 FUNCTION Normalize(i):
@@ -522,13 +423,9 @@ FUNCTION Normalize(i):
   END IF
 ~~~~
 
-The result of the array indexing expression `[i]` is defined to be the result of the array
-slicing expression `[i:Normalize(i)+1:1]`.
+The result of the array indexing expression `[i]` is defined to be the result of the array slicing expression `[i:Normalize(i)+1:1]`.
 
-Slice expression parameters `start` and `end` are used to derive slice bounds `lower` and `upper`.
-The direction of the iteration, defined
-by the sign of `step`, determines which of the parameters is the lower bound and which
-is the upper bound:
+Slice expression parameters `start` and `end` are used to derive slice bounds `lower` and `upper`. The direction of the iteration, defined by the sign of `step`, determines which of the parameters is the lower bound and which is the upper bound:
 
 ~~~~
 FUNCTION Bounds(start, end, step, len):
@@ -546,10 +443,7 @@ FUNCTION Bounds(start, end, step, len):
   RETURN (lower, upper)
 ~~~~
 
-The slice expression selects elements with indices between the lower and
-upper bounds.
-In the following pseudocode, the `a(i)` construct expresses the
-0-based indexing operation on the underlying array.
+The slice expression selects elements with indices between the lower and upper bounds. In the following pseudocode, the `a(i)` construct expresses the 0-based indexing operation on the underlying array.
 
 ~~~~
 IF step > 0 THEN
@@ -573,13 +467,8 @@ END IF
 
 When `step = 0`, no elements are selected and the result array is empty.
 
-An implementation MUST raise an error if any of the slice expression parameters
-does not fit in
-the implementation's representation of an integer.
-If a successfully parsed slice expression is evaluated against an array whose
-size doesn't
-fit in the implementation's representation of an integer, the implementation
-MUST raise an error.
+An implementation MUST raise an error if any of the slice expression parameters does not fit in the implementation's representation of an integer. If a successfully parsed slice expression is evaluated against an array whose
+size doesn't fit in the implementation's representation of an integer, the implementation MUST raise an error.
 
 
 
@@ -591,14 +480,7 @@ MUST raise an error.
 
 This memo includes no request to IANA.
 
-All drafts are required to have an IANA considerations section (see
-[Guidelines for Writing an IANA Considerations Section in
-RFCs](#RFC5226){: format="default"} for a guide).
-If the draft does not require IANA to do
-anything, the section contains an explicit statement that this is the
-case (as above).
-If there are no requirements for IANA, the section will
-be removed during conversion into an RFC by the RFC Editor.
+All drafts are required to have an IANA considerations section (see [Guidelines for Writing an IANA Considerations Section in RFCs](#RFC5226){: format="default"} for a guide). If the draft does not require IANA to do anything, the section contains an explicit statement that this is the case (as above). If there are no requirements for IANA, the section will be removed during conversion into an RFC by the RFC Editor.
 
 
 # Security Considerations {#Security}
