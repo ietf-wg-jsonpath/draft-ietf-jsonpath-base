@@ -124,7 +124,7 @@ as an Internet Draft** (which needs to be fixed soon).
 --- note_Contributing
 
 This document picks up the popular JSONPath specification dated
-2007-02-21 and provides a more normative definition for it.
+2007-02-21 and provides a normative definition for it.
 In its current state, it is a strawman document showing what needs to
 be covered.
 
@@ -137,7 +137,7 @@ being decided) at the dispatch@ietf.org mailing list.
 # Introduction
 
 This document picks up the popular JSONPath specification dated
-2007-02-21 {{JSONPath-orig}} and provides a more normative definition for it.
+2007-02-21 {{JSONPath-orig}} and provides a normative definition for it.
 In its current state, it is a strawman document showing what needs to
 be covered.
 
@@ -145,7 +145,9 @@ JSON is defined by {{RFC8259}}.
 
 JSONPath is not intended as a replacement, but as a more powerful
 companion, to JSON Pointer {{RFC6901}}. \[insert reference to section
-where the relationship is detailed.]
+where the relationship is detailed.  The purposes of the two syntaxes
+are different. Pointer is for isolating a single location within a
+document. Path is a query syntax that can also be used to pull multiple locations.]
 
 
 ## Terminology
@@ -191,7 +193,10 @@ Position:
 
 ## Inspired by XPath
 
-A frequently emphasized advantage of XML is the availability of plenty tools to analyse, transform and selectively extract data out of XML documents. {{XPath}} is one of these powerful tools.
+A frequently emphasized advantage of XML is the availability of
+powerful tools to analyse, transform and selectively extract data from
+XML documents.
+{{XPath}} is one of these tools.
 
 In 2007, the need for something solving the same class of problems for
 the emerging JSON community became apparent, specifically for:
@@ -199,11 +204,11 @@ the emerging JSON community became apparent, specifically for:
 * Finding data interactively and extracting them out of {{-json}}
   data items without special scripting.
 * Specifying the relevant parts of the JSON data in a request by a
-  client, so the server can reduce the data in the server response,
+  client, so the server can reduce the amount of data in its response,
   minimizing bandwidth usage.
 
-So how does such a tool look like when done for JSON?
-When defining a JSONPath, how should expressions look like?
+So what does such a tool look like for JSON?
+When defining a JSONPath, how should expressions look?
 
 The XPath expression
 
@@ -255,17 +260,27 @@ or the *bracket–notation*
 $['store']['book'][0]['title']
 ~~~~
 
-for paths input to a JSONPath processor.  Where a JSONPath processor
-uses JSONPath expressions for internal purposes or as output paths,
+for paths input to a JSONPath processor.
+\[1]
+Where a JSONPath processor uses JSONPath expressions as output paths,
 these will always be converted to the more general *bracket–notation*.
+\[2]
+Bracket notation is more general than dot notation and can serve as a
+canonical form when a JSONPath processor uses JSONPath expressions as
+output paths.
+
 
 JSONPath allows the wildcard symbol `*` for member names and array
 indices. It borrows the descendant operator `..` from {{E4X}} and
 the array slice syntax proposal `[start:end:step]` {{SLICE}} from ECMASCRIPT 4.
 
-JSONPath can employ an *underlying scripting language*, expressions of
-which, written in parentheses: `(<expr>)`, can be used as an
-alternative to explicit names or indices as in:
+JSONPath was originally designed to employ an *underlying scripting
+language* for computing expressions.  The present specification
+defines a simple expression language that is independent from any
+scripting language in use on the platform.
+
+JSONPath can use expressions, written in parentheses: `(<expr>)`, as
+an alternative to explicit names or indices as in:
 
 ~~~~
 $.store.book[(@.length-1)].title
@@ -278,23 +293,23 @@ Filter expressions are supported via the syntax `?(<boolean expr>)` as in
 $.store.book[?(@.price < 10)].title
 ~~~~
 
-Here is a complete overview and a side by side comparison of the JSONPath syntax elements with its XPath counterparts.
+Here is a complete overview and a side by side comparison of the JSONPath syntax elements with their XPath counterparts.
 
-| XPath | JSONPath           | Description                                                                                                                                       |
-|-------|--------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
-| `/`   | `$`                | the root object/element                                                                                                                           |
-| `.`   | `@`                | the current object/element                                                                                                                        |
-| `/`   | `.` or `[]`        | child operator                                                                                                                                    |
-| `..`  | n/a                | parent operator                                                                                                                                   |
-| `//`  | `..`               | nested descendants. JSONPath borrows this syntax from E4X.                                                                               |
-| `*`   | `*`                | wildcard. All objects/elements regardless of their names.                                                                                         |
-| `@`   | n/a                | attribute access. JSON data items don't have attributes.                                                                                          |
-| `[]`  | `[]`               | subscript operator. XPath uses it to iterate over element collections and for predicates. In JavaScript and JSON it is the native array operator. |
-| `¦`   | `[,]`              | Union operator in XPath results in a combination of node sets. JSONPath allows alternate names or array indices as a set.                         |
-| n/a   | `[start:end:step]` | array slice operator borrowed from ES4.                                                                                                           |
-| `[]`  | `?()`              | applies a filter (script) expression.                                                                                                             |
-| n/a   | `()`               | script expression, using the underlying script engine.                                                                                            |
-| `()`  | n/a                | grouping in Xpath                                                                                                                                 |
+| XPath | JSONPath           | Description                                                                                                                           |
+|-------+--------------------+---------------------------------------------------------------------------------------------------------------------------------------|
+| `/`   | `$`                | the root object/element                                                                                                               |
+| `.`   | `@`                | the current object/element                                                                                                            |
+| `/`   | `.` or `[]`        | child operator                                                                                                                        |
+| `..`  | n/a                | parent operator                                                                                                                       |
+| `//`  | `..`               | nested descendants (JSONPath borrows this syntax from E4X)                                                                            |
+| `*`   | `*`                | wildcard: All objects/elements regardless of their names                                                                              |
+| `@`   | n/a                | attribute access: JSON data items do not have attributes                                                                              |
+| `[]`  | `[]`               | subscript operator: XPath uses it to iterate over element collections and for predicates; native array indexing as in JavaScript here |
+| `¦`   | `[,]`              | Union operator in XPath (results in a combination of node sets); JSONPath allows alternate names or array indices as a set             |
+| n/a   | `[start:end:step]` | array slice operator borrowed from ES4                                                                                                |
+| `[]`  | `?()`              | applies a filter (script) expression                                                                                                  |
+| n/a   | `()`               | expression engine                                                                                                                     |
+| `()`  | n/a                | grouping in Xpath                                                                                                                     |
 {: #tbl-overview title="Overview over JSONPath, comparing to XPath"}
 
 <!-- note that the weirdness about the vertical bar above is intentional -->
@@ -305,7 +320,8 @@ significant difference how the subscript operator works in Xpath and
 JSONPath:
 
 * Square brackets in XPath expressions always operate on the *node set* resulting from the previous path fragment. Indices always start at 1.
-* With JSONPath, square brackets operate on the *object* or *array* addressed by the previous path fragment. Indices always start at 0.
+* With JSONPath, square brackets operate on the *object* or *array*
+  addressed by the previous path fragment. Array indices always start at 0.
 
 # JSONPath Examples
 
@@ -348,19 +364,19 @@ typical XML example representing a bookstore (that also has bicycles):
 ~~~~
 {: fig-example-item title="Example JSON data item"}
 
-The examples in {{tbl-example}} presume an underlying script language
-that allows obtaining the number of items in an array, testing for the
-presence of a map member, and performing numeric comparisons of map
-member values with a constant.
+The examples in {{tbl-example}} use the expression mechanism to obtain
+the number of items in an array, to test for the presence of a map
+member, and to perform numeric comparisons of map member values with a
+constant.
 
 | XPath                  | JSONPath                                  | Result                                                       |
 |------------------------|-------------------------------------------|--------------------------------------------------------------|
 | `/store/book/author`   | `$.store.book[*].author`                  | the authors of all books in the store                        |
 | `//author`             | `$..author`                               | all authors                                                  |
 | `/store/*`             | `$.store.*`                               | all things in store, which are some books and a red bicycle. |
-| `/store//price`        | `$.store..price`                          | the price of everything in the store.                        |
+| `/store//price`        | `$.store..price`                          | the prices of everything in the store.                       |
 | `//book[3]`            | `$..book[2]`                              | the third book                                               |
-| `//book[last()]`       | `$..book[(@.length-1)]`<br>`$..book[-1:]` | the last book in order.                                      |
+| `//book[last()]`       | `$..book[(@.length-1)]`<br>`$..book[-1]`  | the last book in order.                                      |
 | `//book[position()<3]` | `$..book[0,1]`<br>`$..book[:2]`           | the first two books                                          |
 | `//book[isbn]`         | `$..book[?(@.isbn)]`                      | filter all books with isbn number                            |
 | `//book[price<10]`     | `$..book[?(@.price<10)]`                  | filter all books cheapier than 10                            |
