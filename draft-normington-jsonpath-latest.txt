@@ -5,12 +5,12 @@
 JSONPath WG                                           G. Normington, Ed.
 Internet-Draft                                              VMware, Inc.
 Intended status: Standards Track                           E. Surov, Ed.
-Expires: 30 May 2021                             TheSoul Publishing Ltd.
+Expires: 10 June 2021                            TheSoul Publishing Ltd.
                                                             M. Mikulicic
                                                             VMware, Inc.
                                                               S. Gössner
                                                  Fachhochschule Dortmund
-                                                        26 November 2020
+                                                         7 December 2020
 
 
                  JavaScript Object Notation (JSON) Path
@@ -29,7 +29,7 @@ Note
 Contributing
 
    This document picks up the popular JSONPath specification dated
-   2007-02-21 and provides a more normative definition for it.  In its
+   2007-02-21 and provides a normative definition for it.  In its
    current state, it is a strawman document showing what needs to be
    covered.
 
@@ -53,9 +53,9 @@ Status of This Memo
 
 
 
-Normington, et al.         Expires 30 May 2021                  [Page 1]
+Normington, et al.        Expires 10 June 2021                  [Page 1]
 
-Internet-Draft                  JSONPath                   November 2020
+Internet-Draft                  JSONPath                   December 2020
 
 
    Internet-Drafts are draft documents valid for a maximum of six months
@@ -63,7 +63,7 @@ Internet-Draft                  JSONPath                   November 2020
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 30 May 2021.
+   This Internet-Draft will expire on 10 June 2021.
 
 Copyright Notice
 
@@ -86,48 +86,51 @@ Table of Contents
      1.2.  Inspired by XPath . . . . . . . . . . . . . . . . . . . .   4
      1.3.  Overview of JSONPath Expressions  . . . . . . . . . . . .   5
    2.  JSONPath Examples . . . . . . . . . . . . . . . . . . . . . .   7
-   3.  JSONPath Syntax and Semantics . . . . . . . . . . . . . . . .   9
-     3.1.  Overview  . . . . . . . . . . . . . . . . . . . . . . . .   9
-     3.2.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   9
-     3.3.  Implementation  . . . . . . . . . . . . . . . . . . . . .   9
-     3.4.  Syntax  . . . . . . . . . . . . . . . . . . . . . . . . .  10
-     3.5.  Semantics . . . . . . . . . . . . . . . . . . . . . . . .  10
-     3.6.  Selectors . . . . . . . . . . . . . . . . . . . . . . . .  11
-       3.6.1.  Dot Child Selector  . . . . . . . . . . . . . . . . .  11
-       3.6.2.  Union Selector  . . . . . . . . . . . . . . . . . . .  12
-         3.6.2.1.  Syntax  . . . . . . . . . . . . . . . . . . . . .  12
-         3.6.2.2.  Semantics . . . . . . . . . . . . . . . . . . . .  12
-         3.6.2.3.  Child . . . . . . . . . . . . . . . . . . . . . .  12
-         3.6.2.4.  Array Selector  . . . . . . . . . . . . . . . . .  14
-   4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  18
-   5.  Security Considerations . . . . . . . . . . . . . . . . . . .  18
-   6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  18
-     6.1.  Normative References  . . . . . . . . . . . . . . . . . .  18
-     6.2.  Informative References  . . . . . . . . . . . . . . . . .  18
-   Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .  19
-   Contributors  . . . . . . . . . . . . . . . . . . . . . . . . . .  19
+   3.  JSONPath Syntax and Semantics . . . . . . . . . . . . . . . .  10
+     3.1.  Overview  . . . . . . . . . . . . . . . . . . . . . . . .  10
+     3.2.  Terminology . . . . . . . . . . . . . . . . . . . . . . .  10
+     3.3.  Implementation  . . . . . . . . . . . . . . . . . . . . .  10
+     3.4.  Syntax  . . . . . . . . . . . . . . . . . . . . . . . . .  11
+     3.5.  Semantics . . . . . . . . . . . . . . . . . . . . . . . .  11
+     3.6.  Selectors . . . . . . . . . . . . . . . . . . . . . . . .  12
+       3.6.1.  Dot Child Selector  . . . . . . . . . . . . . . . . .  12
+       3.6.2.  Union Selector  . . . . . . . . . . . . . . . . . . .  13
+         3.6.2.1.  Syntax  . . . . . . . . . . . . . . . . . . . . .  13
+         3.6.2.2.  Semantics . . . . . . . . . . . . . . . . . . . .  13
+         3.6.2.3.  Child . . . . . . . . . . . . . . . . . . . . . .  13
+         3.6.2.4.  Array Selector  . . . . . . . . . . . . . . . . .  15
+   4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  19
+   5.  Security Considerations . . . . . . . . . . . . . . . . . . .  19
+   6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  19
+     6.1.  Normative References  . . . . . . . . . . . . . . . . . .  19
+     6.2.  Informative References  . . . . . . . . . . . . . . . . .  19
+   Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .  20
+   Contributors  . . . . . . . . . . . . . . . . . . . . . . . . . .  20
 
 
 
-Normington, et al.         Expires 30 May 2021                  [Page 2]
+Normington, et al.        Expires 10 June 2021                  [Page 2]
 
-Internet-Draft                  JSONPath                   November 2020
+Internet-Draft                  JSONPath                   December 2020
 
 
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  20
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  21
 
 1.  Introduction
 
    This document picks up the popular JSONPath specification dated
-   2007-02-21 [JSONPath-orig] and provides a more normative definition
-   for it.  In its current state, it is a strawman document showing what
+   2007-02-21 [JSONPath-orig] and provides a normative definition for
+   it.  In its current state, it is a strawman document showing what
    needs to be covered.
 
    JSON is defined by [RFC8259].
 
    JSONPath is not intended as a replacement, but as a more powerful
    companion, to JSON Pointer [RFC6901]. [insert reference to section
-   where the relationship is detailed.]
+   where the relationship is detailed.  The purposes of the two syntaxes
+   are different.  Pointer is for isolating a single location within a
+   document.  Path is a query syntax that can also be used to pull
+   multiple locations.]
 
 1.1.  Terminology
 
@@ -159,17 +162,15 @@ Internet-Draft                  JSONPath                   November 2020
    Argument:  Short name for the JSON data item a JSONPath expression is
       applied to.
 
-   Output Path:  A simple form of JSONPath expression that identifies a
 
 
 
-
-
-Normington, et al.         Expires 30 May 2021                  [Page 3]
+Normington, et al.        Expires 10 June 2021                  [Page 3]
 
-Internet-Draft                  JSONPath                   November 2020
+Internet-Draft                  JSONPath                   December 2020
 
 
+   Output Path:  A simple form of JSONPath expression that identifies a
       Position by providing a query that results in exactly that
       position.  Similar to, but syntactically different from, a JSON
       Pointer [RFC6901].
@@ -182,8 +183,8 @@ Internet-Draft                  JSONPath                   November 2020
 1.2.  Inspired by XPath
 
    A frequently emphasized advantage of XML is the availability of
-   plenty tools to analyse, transform and selectively extract data out
-   of XML documents.  [XPath] is one of these powerful tools.
+   powerful tools to analyse, transform and selectively extract data
+   from XML documents.  [XPath] is one of these tools.
 
    In 2007, the need for something solving the same class of problems
    for the emerging JSON community became apparent, specifically for:
@@ -192,11 +193,11 @@ Internet-Draft                  JSONPath                   November 2020
       data items without special scripting.
 
    *  Specifying the relevant parts of the JSON data in a request by a
-      client, so the server can reduce the data in the server response,
-      minimizing bandwidth usage.
+      client, so the server can reduce the amount of data in its
+      response, minimizing bandwidth usage.
 
-   So how does such a tool look like when done for JSON?  When defining
-   a JSONPath, how should expressions look like?
+   So what does such a tool look like for JSON?  When defining a
+   JSONPath, how should expressions look?
 
    The XPath expression
 
@@ -217,14 +218,15 @@ Internet-Draft                  JSONPath                   November 2020
 
    The JSONPath tool in question should:
 
-   *  be naturally based on those language characteristics.
 
 
 
-Normington, et al.         Expires 30 May 2021                  [Page 4]
+Normington, et al.        Expires 10 June 2021                  [Page 4]
 
-Internet-Draft                  JSONPath                   November 2020
+Internet-Draft                  JSONPath                   December 2020
 
+
+   *  be naturally based on those language characteristics.
 
    *  cover only essential parts of XPath 1.0.
 
@@ -248,103 +250,106 @@ Internet-Draft                  JSONPath                   November 2020
 
    $['store']['book'][0]['title']
 
-   for paths input to a JSONPath processor.  Where a JSONPath processor
-   uses JSONPath expressions for internal purposes or as output paths,
-   these will always be converted to the more general _bracket-
-   notation_.
+   for paths input to a JSONPath processor. [1] Where a JSONPath
+   processor uses JSONPath expressions as output paths, these will
+   always be converted to the more general _bracket-notation_. [2]
+   Bracket notation is more general than dot notation and can serve as a
+   canonical form when a JSONPath processor uses JSONPath expressions as
+   output paths.
 
    JSONPath allows the wildcard symbol "*" for member names and array
    indices.  It borrows the descendant operator ".." from [E4X] and the
    array slice syntax proposal "[start:end:step]" [SLICE] from
    ECMASCRIPT 4.
 
-   JSONPath can employ an _underlying scripting language_, expressions
-   of which, written in parentheses: "(<expr>)", can be used as an
-   alternative to explicit names or indices as in:
+   JSONPath was originally designed to employ an _underlying scripting
+   language_ for computing expressions.  The present specification
+   defines a simple expression language that is independent from any
+   scripting language in use on the platform.
+
+   JSONPath can use expressions, written in parentheses: "(<expr>)", as
+   an alternative to explicit names or indices as in:
 
    $.store.book[(@.length-1)].title
 
    The symbol "@" is used for the current object.  Filter expressions
    are supported via the syntax "?(<boolean expr>)" as in
 
+
+
+Normington, et al.        Expires 10 June 2021                  [Page 5]
+
+Internet-Draft                  JSONPath                   December 2020
+
+
    $.store.book[?(@.price < 10)].title
 
    Here is a complete overview and a side by side comparison of the
-   JSONPath syntax elements with its XPath counterparts.
+   JSONPath syntax elements with their XPath counterparts.
 
-
-
-
-
-
-Normington, et al.         Expires 30 May 2021                  [Page 5]
-
-Internet-Draft                  JSONPath                   November 2020
-
-
-   +=======+==================+=======================================+
-   | XPath | JSONPath         | Description                           |
-   +=======+==================+=======================================+
-   | /     | $                | the root object/element               |
-   +-------+------------------+---------------------------------------+
-   | .     | @                | the current object/element            |
-   +-------+------------------+---------------------------------------+
-   | /     | "." or "[]"      | child operator                        |
-   +-------+------------------+---------------------------------------+
-   | ..    | n/a              | parent operator                       |
-   +-------+------------------+---------------------------------------+
-   | //    | ..               | nested descendants.  JSONPath borrows |
-   |       |                  | this syntax from E4X.                 |
-   +-------+------------------+---------------------------------------+
-   | *     | *                | wildcard.  All objects/elements       |
-   |       |                  | regardless of their names.            |
-   +-------+------------------+---------------------------------------+
-   | @     | n/a              | attribute access.  JSON data items    |
-   |       |                  | don't have attributes.                |
-   +-------+------------------+---------------------------------------+
-   | []    | []               | subscript operator.  XPath uses it to |
-   |       |                  | iterate over element collections and  |
-   |       |                  | for predicates.  In JavaScript and    |
-   |       |                  | JSON it is the native array operator. |
-   +-------+------------------+---------------------------------------+
-   | |     | [,]              | Union operator in XPath results in a  |
-   |       |                  | combination of node sets.  JSONPath   |
-   |       |                  | allows alternate names or array       |
-   |       |                  | indices as a set.                     |
-   +-------+------------------+---------------------------------------+
-   | n/a   | [start:end:step] | array slice operator borrowed from    |
-   |       |                  | ES4.                                  |
-   +-------+------------------+---------------------------------------+
-   | []    | ?()              | applies a filter (script) expression. |
-   +-------+------------------+---------------------------------------+
-   | n/a   | ()               | script expression, using the          |
-   |       |                  | underlying script engine.             |
-   +-------+------------------+---------------------------------------+
-   | ()    | n/a              | grouping in Xpath                     |
-   +-------+------------------+---------------------------------------+
+    +=======+==================+=====================================+
+    | XPath | JSONPath         | Description                         |
+    +=======+==================+=====================================+
+    | /     | $                | the root object/element             |
+    +-------+------------------+-------------------------------------+
+    | .     | @                | the current object/element          |
+    +-------+------------------+-------------------------------------+
+    | /     | "." or "[]"      | child operator                      |
+    +-------+------------------+-------------------------------------+
+    | ..    | n/a              | parent operator                     |
+    +-------+------------------+-------------------------------------+
+    | //    | ..               | nested descendants (JSONPath        |
+    |       |                  | borrows this syntax from E4X)       |
+    +-------+------------------+-------------------------------------+
+    | *     | *                | wildcard: All objects/elements      |
+    |       |                  | regardless of their names           |
+    +-------+------------------+-------------------------------------+
+    | @     | n/a              | attribute access: JSON data items   |
+    |       |                  | do not have attributes              |
+    +-------+------------------+-------------------------------------+
+    | []    | []               | subscript operator: XPath uses it   |
+    |       |                  | to iterate over element collections |
+    |       |                  | and for predicates; native array    |
+    |       |                  | indexing as in JavaScript here      |
+    +-------+------------------+-------------------------------------+
+    | |     | [,]              | Union operator in XPath (results in |
+    |       |                  | a combination of node sets);        |
+    |       |                  | JSONPath allows alternate names or  |
+    |       |                  | array indices as a set              |
+    +-------+------------------+-------------------------------------+
+    | n/a   | [start:end:step] | array slice operator borrowed from  |
+    |       |                  | ES4                                 |
+    +-------+------------------+-------------------------------------+
+    | []    | ?()              | applies a filter (script)           |
+    |       |                  | expression                          |
+    +-------+------------------+-------------------------------------+
+    | n/a   | ()               | expression engine                   |
+    +-------+------------------+-------------------------------------+
+    | ()    | n/a              | grouping in Xpath                   |
+    +-------+------------------+-------------------------------------+
 
            Table 1: Overview over JSONPath, comparing to XPath
+
+
+
+
+Normington, et al.        Expires 10 June 2021                  [Page 6]
+
+Internet-Draft                  JSONPath                   December 2020
+
 
    XPath has a lot more to offer (location paths in unabbreviated
    syntax, operators and functions) than listed here.  Moreover there is
    a significant difference how the subscript operator works in Xpath
    and JSONPath:
 
-
-
-
-Normington, et al.         Expires 30 May 2021                  [Page 6]
-
-Internet-Draft                  JSONPath                   November 2020
-
-
    *  Square brackets in XPath expressions always operate on the _node
       set_ resulting from the previous path fragment.  Indices always
       start at 1.
 
    *  With JSONPath, square brackets operate on the _object_ or _array_
-      addressed by the previous path fragment.  Indices always start at
-      0.
+      addressed by the previous path fragment.  Array indices always
+      start at 0.
 
 2.  JSONPath Examples
 
@@ -352,6 +357,42 @@ Internet-Draft                  JSONPath                   November 2020
    The examples are based on a simple JSON data item patterned after a
    typical XML example representing a bookstore (that also has
    bicycles):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Normington, et al.        Expires 10 June 2021                  [Page 7]
+
+Internet-Draft                  JSONPath                   December 2020
+
 
    { "store": {
        "book": [
@@ -387,17 +428,27 @@ Internet-Draft                  JSONPath                   November 2020
 
                       Figure 1: Example JSON data item
 
+   The examples in Table 2 use the expression mechanism to obtain the
+   number of items in an array, to test for the presence of a map
+   member, and to perform numeric comparisons of map member values with
+   a constant.
 
 
-Normington, et al.         Expires 30 May 2021                  [Page 7]
+
+
+
+
+
+
+
+
+
+
+
+Normington, et al.        Expires 10 June 2021                  [Page 8]
 
-Internet-Draft                  JSONPath                   November 2020
+Internet-Draft                  JSONPath                   December 2020
 
-
-   The examples in Table 2 presume an underlying script language that
-   allows obtaining the number of items in an array, testing for the
-   presence of a map member, and performing numeric comparisons of map
-   member values with a constant.
 
    +======================+=========================+==================+
    | XPath                | JSONPath                | Result           |
@@ -412,32 +463,33 @@ Internet-Draft                  JSONPath                   November 2020
    |                      |                         | store, which     |
    |                      |                         | are some books   |
    |                      |                         | and a red        |
-   |                      |                         | bicycle.         |
+   |                      |                         | bicycle          |
    +----------------------+-------------------------+------------------+
-   | /store//price        | $.store..price          | the price of     |
+   | /store//price        | $.store..price          | the prices of    |
    |                      |                         | everything in    |
-   |                      |                         | the store.       |
+   |                      |                         | the store        |
    +----------------------+-------------------------+------------------+
    | //book[3]            | $..book[2]              | the third book   |
    +----------------------+-------------------------+------------------+
    | //book[last()]       | "$..book[(@.length-1)]" | the last book    |
-   |                      | "$..book[-1:]"          | in order.        |
+   |                      | "$..book[-1]"           | in order         |
    +----------------------+-------------------------+------------------+
    | //book[position()<3] | "$..book[0,1]"          | the first two    |
    |                      | "$..book[:2]"           | books            |
    +----------------------+-------------------------+------------------+
    | //book[isbn]         | $..book[?(@.isbn)]      | filter all       |
-   |                      |                         | books with isbn  |
-   |                      |                         | number           |
+   |                      |                         | books with       |
+   |                      |                         | isbn number      |
    +----------------------+-------------------------+------------------+
    | //book[price<10]     | $..book[?(@.price<10)]  | filter all       |
-   |                      |                         | books cheapier   |
+   |                      |                         | books cheaper    |
    |                      |                         | than 10          |
    +----------------------+-------------------------+------------------+
-   | //*                  | $..*                    | all Elements in  |
-   |                      |                         | XML document.    |
-   |                      |                         | All members of   |
-   |                      |                         | JSON data item.  |
+   | //*                  | $..*                    | all elements     |
+   |                      |                         | in XML           |
+   |                      |                         | document; all    |
+   |                      |                         | members of       |
+   |                      |                         | JSON data item   |
    +----------------------+-------------------------+------------------+
 
      Table 2: Example JSONPath expressions applied to the example JSON
@@ -445,9 +497,13 @@ Internet-Draft                  JSONPath                   November 2020
 
 
 
-Normington, et al.         Expires 30 May 2021                  [Page 8]
+
+
+
+
+Normington, et al.        Expires 10 June 2021                  [Page 9]
 
-Internet-Draft                  JSONPath                   November 2020
+Internet-Draft                  JSONPath                   December 2020
 
 
 3.  JSONPath Syntax and Semantics
@@ -501,9 +557,9 @@ Internet-Draft                  JSONPath                   November 2020
 
 
 
-Normington, et al.         Expires 30 May 2021                  [Page 9]
+Normington, et al.        Expires 10 June 2021                 [Page 10]
 
-Internet-Draft                  JSONPath                   November 2020
+Internet-Draft                  JSONPath                   December 2020
 
 
 3.4.  Syntax
@@ -557,9 +613,9 @@ Internet-Draft                  JSONPath                   November 2020
 
 
 
-Normington, et al.         Expires 30 May 2021                 [Page 10]
+Normington, et al.        Expires 10 June 2021                 [Page 11]
 
-Internet-Draft                  JSONPath                   November 2020
+Internet-Draft                  JSONPath                   December 2020
 
 
    Next, ".a" selects from any input node of type object and selects any
@@ -613,9 +669,9 @@ Syntax
 
 
 
-Normington, et al.         Expires 30 May 2021                 [Page 11]
+Normington, et al.        Expires 10 June 2021                 [Page 12]
 
-Internet-Draft                  JSONPath                   November 2020
+Internet-Draft                  JSONPath                   December 2020
 
 
    Note that the "dot-child-name" rule follows the philosophy of JSON
@@ -669,9 +725,9 @@ Syntax
 
 
 
-Normington, et al.         Expires 30 May 2021                 [Page 12]
+Normington, et al.        Expires 10 June 2021                 [Page 13]
 
-Internet-Draft                  JSONPath                   November 2020
+Internet-Draft                  JSONPath                   December 2020
 
 
    union-element = child ; see below for more alternatives
@@ -725,9 +781,9 @@ Semantics
 
 
 
-Normington, et al.         Expires 30 May 2021                 [Page 13]
+Normington, et al.        Expires 10 June 2021                 [Page 14]
 
-Internet-Draft                  JSONPath                   November 2020
+Internet-Draft                  JSONPath                   December 2020
 
 
                   +=================+===================+
@@ -781,9 +837,9 @@ Syntax
 
 
 
-Normington, et al.         Expires 30 May 2021                 [Page 14]
+Normington, et al.        Expires 10 June 2021                 [Page 15]
 
-Internet-Draft                  JSONPath                   November 2020
+Internet-Draft                  JSONPath                   December 2020
 
 
    Note: the syntax does not allow integers with leading zeros such as
@@ -837,9 +893,9 @@ Informal Introduction
 
 
 
-Normington, et al.         Expires 30 May 2021                 [Page 15]
+Normington, et al.        Expires 10 June 2021                 [Page 16]
 
-Internet-Draft                  JSONPath                   November 2020
+Internet-Draft                  JSONPath                   December 2020
 
 
    When "step" is "0", no elements are selected.  This is the one case
@@ -893,9 +949,9 @@ Detailed Semantics
 
 
 
-Normington, et al.         Expires 30 May 2021                 [Page 16]
+Normington, et al.        Expires 10 June 2021                 [Page 17]
 
-Internet-Draft                  JSONPath                   November 2020
+Internet-Draft                  JSONPath                   December 2020
 
 
    Slice expression parameters "start" and "end" are used to derive
@@ -949,9 +1005,9 @@ Internet-Draft                  JSONPath                   November 2020
 
 
 
-Normington, et al.         Expires 30 May 2021                 [Page 17]
+Normington, et al.        Expires 10 June 2021                 [Page 18]
 
-Internet-Draft                  JSONPath                   November 2020
+Internet-Draft                  JSONPath                   December 2020
 
 
    An implementation MUST raise an error if any of the slice expression
@@ -1005,9 +1061,9 @@ Internet-Draft                  JSONPath                   November 2020
 
 
 
-Normington, et al.         Expires 30 May 2021                 [Page 18]
+Normington, et al.        Expires 10 June 2021                 [Page 19]
 
-Internet-Draft                  JSONPath                   November 2020
+Internet-Draft                  JSONPath                   December 2020
 
 
    [ECMA-262] Ecma International, "ECMAScript Language Specification,
@@ -1061,9 +1117,9 @@ Contributors
 
 
 
-Normington, et al.         Expires 30 May 2021                 [Page 19]
+Normington, et al.        Expires 10 June 2021                 [Page 20]
 
-Internet-Draft                  JSONPath                   November 2020
+Internet-Draft                  JSONPath                   December 2020
 
 
 Authors' Addresses
@@ -1117,4 +1173,4 @@ Authors' Addresses
 
 
 
-Normington, et al.         Expires 30 May 2021                 [Page 20]
+Normington, et al.        Expires 10 June 2021                 [Page 21]
