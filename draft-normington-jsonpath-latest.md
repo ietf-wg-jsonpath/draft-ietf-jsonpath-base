@@ -373,14 +373,14 @@ constant.
 |------------------------|-------------------------------------------|--------------------------------------------------------------|
 | `/store/book/author`   | `$.store.book[*].author`                  | the authors of all books in the store                        |
 | `//author`             | `$..author`                               | all authors                                                  |
-| `/store/*`             | `$.store.*`                               | all things in store, which are some books and a red bicycle. |
-| `/store//price`        | `$.store..price`                          | the prices of everything in the store.                       |
+| `/store/*`             | `$.store.*`                               | all things in store, which are some books and a red bicycle  |
+| `/store//price`        | `$.store..price`                          | the prices of everything in the store                        |
 | `//book[3]`            | `$..book[2]`                              | the third book                                               |
-| `//book[last()]`       | `$..book[(@.length-1)]`<br>`$..book[-1]`  | the last book in order.                                      |
+| `//book[last()]`       | `$..book[(@.length-1)]`<br>`$..book[-1]`  | the last book in order                                       |
 | `//book[position()<3]` | `$..book[0,1]`<br>`$..book[:2]`           | the first two books                                          |
 | `//book[isbn]`         | `$..book[?(@.isbn)]`                      | filter all books with isbn number                            |
-| `//book[price<10]`     | `$..book[?(@.price<10)]`                  | filter all books cheapier than 10                            |
-| `//*`                  | `$..*`                                    | all Elements in XML document. All members of JSON data item. |
+| `//book[price<10]`     | `$..book[?(@.price<10)]`                  | filter all books cheaper than 10                             |
+| `//*`                  | `$..*`                                    | all elements in XML document; all members of JSON data item  |
 {: #tbl-example title="Example JSONPath expressions applied to the example JSON data item"}
 
 <!-- back to normington draft; not yet merged up where needed (e.g., terminology). -->
