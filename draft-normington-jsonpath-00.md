@@ -1,7 +1,7 @@
 ---
 stand_alone: true
 ipr: trust200902
-docname: draft-normington-jsonpath-latest
+docname: draft-normington-jsonpath-00
 cat: std
 obsoletes: ''
 updates: ''
@@ -331,7 +331,7 @@ typical XML example representing a bookstore (that also has bicycles):
 
 ~~~~json
 { "store": {
-    "book": [ 
+    "book": [
       { "category": "reference",
         "author": "Nigel Rees",
         "title": "Sayings of the Century",
