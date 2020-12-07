@@ -453,7 +453,7 @@ sequence of *selectors*.
 
 ~~~~ abnf
 json-path = root-selector *selector
-root-selector = %x24               ; $ selects document root node
+root-selector = "$"               ; $ selects document root node
 ~~~~
 
 The syntax and semantics of each selector is defined below.
@@ -533,13 +533,13 @@ A dot child name corresponds to a name in a JSON object.
 
 ~~~~ abnf
 selector = dot-child              ; see below for alternatives
-dot-child = %x2E dot-child-name / ; .<dot-child-name>
-            %x2E %x2A             ; .*
+dot-child = "." dot-child-name / ; .<dot-child-name>
+            "." "*"             ; .*
 dot-child-name = 1*(
-                   %x2D /         ; -
+                   "-" /         ; -
                    DIGIT /
                    ALPHA /
-                   %x5F /         ; _
+                   "_" /         ; _
                    %x80-10FFFF    ; any non-ASCII Unicode character
                  )
 DIGIT =  %x30-39                  ; 0-9
@@ -583,10 +583,10 @@ A union selector consists of one or more union elements.
 
 ~~~~ abnf
 selector =/ union
-union = %x5B ws union-elements ws %x5D ; [...]
-ws = *%x20                             ; zero or more spaces
+union = "[" ws union-elements ws "]" ; [...]
+ws = *" "                             ; zero or more spaces
 union-elements = union-element /
-                 union-element ws %x2C ws union-elements
+                 union-element ws "," ws union-elements
                                        ; ,-separated list
 ~~~~
 
@@ -608,38 +608,38 @@ A child is a quoted string.
 ~~~~ abnf
 union-element = child ; see below for more alternatives
 child = %x22 *double-quoted %x22 / ; "string"
-        %x27 *single-quoted %x27   ; 'string'
+        "'" *single-quoted "'"   ; 'string'
 
 double-quoted = dq-unescaped /
           escape (
-              %x22 /          ; "    quotation mark  U+0022
-              %x2F /          ; /    solidus         U+002F
-              %x5C /          ; \    reverse solidus U+005C
-              %x62 /          ; b    backspace       U+0008
-              %x66 /          ; f    form feed       U+000C
-              %x6E /          ; n    line feed       U+000A
-              %x72 /          ; r    carriage return U+000D
-              %x74 /          ; t    tab             U+0009
-              %x75 4HEXDIG )  ; uXXXX                U+XXXX
+              %x22 /         ; "    quotation mark  U+0022
+              "/" /          ; /    solidus         U+002F
+              "\" /          ; \    reverse solidus U+005C
+              "b" /          ; b    backspace       U+0008
+              "f" /          ; f    form feed       U+000C
+              "n" /          ; n    line feed       U+000A
+              "r" /          ; r    carriage return U+000D
+              "t" /          ; t    tab             U+0009
+              "u" 4HEXDIG )  ; uXXXX                U+XXXX
 
 
-      dq-unescaped = %x20-21 / %x23-5B / %x5D-10FFFF
+dq-unescaped = %x20-21 / %x23-5B / %x5D-10FFFF
 
 single-quoted = sq-unescaped /
           escape (
-              %x27 /          ; '    apostrophe      U+0027
-              %x2F /          ; /    solidus         U+002F
-              %x5C /          ; \    reverse solidus U+005C
-              %x62 /          ; b    backspace       U+0008
-              %x66 /          ; f    form feed       U+000C
-              %x6E /          ; n    line feed       U+000A
-              %x72 /          ; r    carriage return U+000D
-              %x74 /          ; t    tab             U+0009
-              %x75 4HEXDIG )  ; uXXXX                U+XXXX
+              "'" /          ; '    apostrophe      U+0027
+              "/" /          ; /    solidus         U+002F
+              "\" /          ; \    reverse solidus U+005C
+              "b" /          ; b    backspace       U+0008
+              "f" /          ; f    form feed       U+000C
+              "n" /          ; n    line feed       U+000A
+              "r" /          ; r    carriage return U+000D
+              "t" /          ; t    tab             U+0009
+              "u" 4HEXDIG )  ; uXXXX                U+XXXX
 
-      sq-unescaped = %x20-26 / %x28-5B / %x5D-10FFFF
+sq-unescaped = %x20-26 / %x28-5B / %x5D-10FFFF
 
-escape = %x5C                 ; \
+escape = "\"                 ; \
 
 HEXDIG =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
                               ; case insensitive hex digit
@@ -659,18 +659,18 @@ key by removing the surrounding quotes and
 replacing each escape sequence with its equivalent Unicode character, as
 in the table below:
 
-| Escape Sequence | Unicode Character |
-|:---------------:|:-----------------:|
-| %x5C %x22       | U+0022            |
-| %x5C %x27       | U+0027            |
-| %x5C %x2F       | U+002F            |
-| %x5C %x5C       | U+005C            |
-| %x5C %x62       | U+0008            |
-| %x5C %x66       | U+000C            |
-| %x5C %x6E       | U+000A            |
-| %x5C %x72       | U+000D            |
-| %x5C %x74       | U+0009            |
-| %x5C uXXXX      | U+XXXX            |
+| Escape Sequence   | Unicode Character   |
+| :---------------: | :-----------------: |
+| "\" %x22          | U+0022              |
+| "\" "'"           | U+0027              |
+| "\" "/"           | U+002F              |
+| "\" "\"           | U+005C              |
+| "\" "b"           | U+0008              |
+| "\" "f"           | U+000C              |
+| "\" "n"           | U+000A              |
+| "\" "r"           | U+000D              |
+| "\" "t"           | U+0009              |
+| "\" uXXXX         | U+XXXX              |
 {: title="Escape Sequence Replacements" cols="c c"}
 
 The child selects the value corresponding to the key from any JSON object
