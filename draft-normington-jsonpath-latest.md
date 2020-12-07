@@ -166,13 +166,21 @@ The terminology of {{-json}} applies.
 
 Data Item:
 : A structure complying to the generic data model of JSON, i.e.,
-  composed of containers such as arrays and maps (JSON objects), and
-  of atomic data such as null, true, false, numbers, and text strings.
+  composed of containers, namely maps (JSON objects) and arrays, and
+  of atomic data, namely null, true, false, numbers, and text strings.
+  Also called a JSON value.
 
 Object:
 : Used in its generic sense, e.g., for programming language objects.
   When a JSON Object as defined in {{-json}} is meant, we specifically
   say JSON Object.
+
+Member:
+: A key/value pair in a map (JSON Object).  (Not itself a JSON value.)
+
+Element:
+: An item in an array.  (Also used with a distinct meaning in XML
+  context for XML elements.)
 
 Query:
 : Short name for JSONPath expression.
@@ -244,9 +252,8 @@ The JSONPath tool in question should:
 
 JSONPath expressions always apply to a JSON data item in the same way
 as XPath expressions are used in combination with an XML document.
-Since a JSON data item is usually anonymous and doesn't necessarily
-have a "root member object", JSONPath used the abstract name `$` to
-refer to the top level object of the data item.
+Since a JSON data item is anonymous JSONPath uses the abstract name `$` to
+refer to the top level data item of the argument.
 
 JSONPath expressions can use the *dot–notation*
 
@@ -263,7 +270,8 @@ $['store']['book'][0]['title']
 for paths input to a JSONPath processor.
 \[1]
 Where a JSONPath processor uses JSONPath expressions as output paths,
-these will always be converted to the more general *bracket–notation*.
+these will always be converted to normalized JSONPath expressions
+which employ the more general *bracket–notation*.
 \[2]
 Bracket notation is more general than dot notation and can serve as a
 canonical form when a JSONPath processor uses JSONPath expressions as
@@ -286,7 +294,7 @@ an alternative to explicit names or indices as in:
 $.store.book[(@.length-1)].title
 ~~~~
 
-The symbol `@` is used for the current object.
+The symbol `@` is used for the current item.
 Filter expressions are supported via the syntax `?(<boolean expr>)` as in
 
 ~~~~
@@ -297,15 +305,15 @@ Here is a complete overview and a side by side comparison of the JSONPath syntax
 
 | XPath | JSONPath           | Description                                                                                                                           |
 |-------+--------------------+---------------------------------------------------------------------------------------------------------------------------------------|
-| `/`   | `$`                | the root object/element                                                                                                               |
-| `.`   | `@`                | the current object/element                                                                                                            |
+| `/`   | `$`                | the root element/item                                                                                                                 |
+| `.`   | `@`                | the current element/item                                                                                                              |
 | `/`   | `.` or `[]`        | child operator                                                                                                                        |
 | `..`  | n/a                | parent operator                                                                                                                       |
 | `//`  | `..`               | nested descendants (JSONPath borrows this syntax from E4X)                                                                            |
-| `*`   | `*`                | wildcard: All objects/elements regardless of their names                                                                              |
+| `*`   | `*`                | wildcard: All elements/items regardless of their names                                                                         |
 | `@`   | n/a                | attribute access: JSON data items do not have attributes                                                                              |
 | `[]`  | `[]`               | subscript operator: XPath uses it to iterate over element collections and for predicates; native array indexing as in JavaScript here |
-| `¦`   | `[,]`              | Union operator in XPath (results in a combination of node sets); JSONPath allows alternate names or array indices as a set             |
+| `¦`   | `[,]`              | Union operator in XPath (results in a combination of node sets); JSONPath allows alternate names or array indices as a set            |
 | n/a   | `[start:end:step]` | array slice operator borrowed from ES4                                                                                                |
 | `[]`  | `?()`              | applies a filter (script) expression                                                                                                  |
 | n/a   | `()`               | expression engine                                                                                                                     |
@@ -320,7 +328,7 @@ significant difference how the subscript operator works in Xpath and
 JSONPath:
 
 * Square brackets in XPath expressions always operate on the *node set* resulting from the previous path fragment. Indices always start at 1.
-* With JSONPath, square brackets operate on the *object* or *array*
+* With JSONPath, square brackets operate on the *JSON object* or *array*
   addressed by the previous path fragment. Array indices always start at 0.
 
 # JSONPath Examples
@@ -403,7 +411,7 @@ in {{RFC3629}}.
 A JSON value is logically a tree of nodes.
 
 Each node holds a JSON value (as defined by {{RFC8259}}) of one of the
-types object, array, number, string, or one of the literals `true`,
+types JSON object, array, number, string, or one of the literals `true`,
 `false`, or `null`.
 The type of the JSON value held by a node is
 sometimes referred to as the type of the node.
@@ -491,7 +499,7 @@ Firstly, `$` selects the root node which is the input document.
 So the result is a list
 consisting of just the root node.
 
-Next, `.a` selects from any input node of type object and selects any value of the input
+Next, `.a` selects from any input node of type JSON object and selects any value of the input
 node corresponding to the key `"a"`.
 The result is again a list of one node: `[{"b":0},{"b":1},{"c":2}]`.
 
@@ -499,7 +507,7 @@ Next, `[*]` selects from any input node which is an array and selects all the el
 of the input node.
 The result is a list of three nodes: `{"b":0}`, `{"b":1}`, and `{"c":2}`.
 
-Finally, `.b` selects from any input node of type object with a key
+Finally, `.b` selects from any input node of type JSON object with a key
 `b` and selects the value of the input node corresponding to that key.
 The result is a list containing `0`, `1`.
 This is the concatenation of three lists, two of length one containing `0`, `1`, respectively, and one of length zero.
@@ -552,15 +560,15 @@ not encode Unicode characters.
 {: numbered="false" toc="exclude"}
 
 A dot child name which is not a single asterisk (`*`) is considered to have a key.
-It selects the value corresponding to the key from any object node.
+It selects the value corresponding to the key from any JSON object node.
 It selects
-no nodes from a node which is not an object.
+no nodes from a node which is not a JSON object.
 
 The key of a dot child name is the sequence of Unicode characters contained
 in that name.
 
 A dot child name consisting of a single asterisk is a wild card. It selects
-all the values of any object node.
+all the values of any JSON object node.
 It also selects all the elements of any array node.
 It selects no nodes from
 number, string, or literal nodes.
@@ -665,9 +673,9 @@ in the table below:
 | %x5C uXXXX      | U+XXXX            |
 {: title="Escape Sequence Replacements" cols="c c"}
 
-The child selects the value corresponding to the key from any object
+The child selects the value corresponding to the key from any JSON object
 node with the key as a name.
-It selects no nodes from a node which is not an object.
+It selects no nodes from a node which is not a JSON object.
 
 
 
