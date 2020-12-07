@@ -14,7 +14,7 @@ Expires: 10 June 2021                            TheSoul Publishing Ltd.
 
 
                  JavaScript Object Notation (JSON) Path
-                    draft-normington-jsonpath-latest
+                      draft-normington-jsonpath-00
 
 Abstract
 
