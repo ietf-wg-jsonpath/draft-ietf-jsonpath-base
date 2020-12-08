@@ -74,7 +74,7 @@ apt-get install -y xmlstarlet
  - copy the HTML file for use by github pages:
 
 ```
-xml2rfc ./draft-normington-jsonpath-latest.xml --text --html && aex draft-normington-jsonpath-latest.txt | bap -S path -q && cp draft-normington-jsonpath-latest.html docs/index.html
+xml2rfc ./draft-normington-jsonpath.xml --text --html && aex draft-normington-jsonpath.txt | bap -S path -q && cp draft-normington-jsonpath.html docs/index.html
 ```
 
 A script [gen.sh](scripts/gen.sh) is provided for convenience. You can also use [docker-gen.sh](scripts/docker-gen.sh)
