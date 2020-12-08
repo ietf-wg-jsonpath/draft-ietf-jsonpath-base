@@ -1,7 +1,7 @@
 ---
 stand_alone: true
 ipr: trust200902
-docname: draft-normington-jsonpath-00
+docname: draft-normington-jsonpath-latest
 cat: std
 obsoletes: ''
 updates: ''
@@ -252,7 +252,7 @@ The JSONPath tool in question should:
 
 JSONPath expressions always apply to a JSON data item in the same way
 as XPath expressions are used in combination with an XML document.
-Since a JSON data item is anonymous JSONPath uses the abstract name `$` to
+Since a JSON data item is anonymous, JSONPath uses the abstract name `$` to
 refer to the top level data item of the argument.
 
 JSONPath expressions can use the *dot–notation*
