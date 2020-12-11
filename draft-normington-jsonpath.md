@@ -196,7 +196,11 @@ Output Path:
 Position:
 : A JSON data item identical to or nested within the JSON data item to
   which the query is applied to, expressed either by the value of that
-  data item or by providing a JSONPath Output Path.
+  data item or by providing a Normalized Path Expression as a JSONPath Output Path.
+
+Normalized Path Expression:
+: A query in a normalized form that identifies exactly one Position in
+  an Argument; see {{overview}}.
 
 
 ## Inspired by XPath
@@ -248,7 +252,7 @@ The JSONPath tool in question should:
 * be lightweight in code size and memory consumption.
 * be runtime efficient.
 
-## Overview of JSONPath Expressions
+## Overview of JSONPath Expressions {#overview}
 
 JSONPath expressions always apply to a JSON data item in the same way
 as XPath expressions are used in combination with an XML document.
