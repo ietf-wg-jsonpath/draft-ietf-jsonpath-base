@@ -5,12 +5,12 @@
 JSONPath WG                                           G. Normington, Ed.
 Internet-Draft                                              VMware, Inc.
 Intended status: Standards Track                           E. Surov, Ed.
-Expires: 10 June 2021                            TheSoul Publishing Ltd.
+Expires: 26 June 2021                            TheSoul Publishing Ltd.
                                                             M. Mikulicic
                                                             VMware, Inc.
                                                               S. Gössner
                                                  Fachhochschule Dortmund
-                                                         7 December 2020
+                                                        23 December 2020
 
 
                  JavaScript Object Notation (JSON) Path
@@ -21,11 +21,6 @@ Abstract
    JSONPath defines a string syntax for identifying values within a
    JavaScript Object Notation (JSON) document.
 
-Note
-
-   *This document is a work in progress and has not yet been published
-   as an Internet Draft* (which needs to be fixed soon).
-
 Contributing
 
    This document picks up the popular JSONPath specification dated
@@ -33,9 +28,9 @@ Contributing
    current state, it is a strawman document showing what needs to be
    covered.
 
-   Comments and issues can be directed at the github repository _insert
-   repo here_ as well as (for the time when the more permanent home is
-   being decided) at the dispatch@ietf.org mailing list.
+   Comments and issues may be directed to this document's github
+   repository (https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-
+   jsonpath).
 
 Status of This Memo
 
@@ -47,23 +42,21 @@ Status of This Memo
    working documents as Internet-Drafts.  The list of current Internet-
    Drafts is at https://datatracker.ietf.org/drafts/current/.
 
-
-
-
-
-
-
-Normington, et al.        Expires 10 June 2021                  [Page 1]
-
-Internet-Draft                  JSONPath                   December 2020
-
-
    Internet-Drafts are draft documents valid for a maximum of six months
    and may be updated, replaced, or obsoleted by other documents at any
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 10 June 2021.
+   This Internet-Draft will expire on 26 June 2021.
+
+
+
+
+
+Normington, et al.        Expires 26 June 2021                  [Page 1]
+
+Internet-Draft                  JSONPath                   December 2020
+
 
 Copyright Notice
 
@@ -106,15 +99,20 @@ Table of Contents
      6.2.  Informative References  . . . . . . . . . . . . . . . . .  19
    Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .  20
    Contributors  . . . . . . . . . . . . . . . . . . . . . . . . . .  20
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  21
 
 
 
-Normington, et al.        Expires 10 June 2021                  [Page 2]
+
+
+
+
+
+
+Normington, et al.        Expires 26 June 2021                  [Page 2]
 
 Internet-Draft                  JSONPath                   December 2020
 
-
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  21
 
 1.  Introduction
 
@@ -162,15 +160,16 @@ Internet-Draft                  JSONPath                   December 2020
    Argument:  Short name for the JSON data item a JSONPath expression is
       applied to.
 
+   Output Path:  A simple form of JSONPath expression that identifies a
 
 
 
-Normington, et al.        Expires 10 June 2021                  [Page 3]
+
+Normington, et al.        Expires 26 June 2021                  [Page 3]
 
 Internet-Draft                  JSONPath                   December 2020
 
 
-   Output Path:  A simple form of JSONPath expression that identifies a
       Position by providing a query that results in exactly that
       position.  Similar to, but syntactically different from, a JSON
       Pointer [RFC6901].
@@ -218,15 +217,14 @@ Internet-Draft                  JSONPath                   December 2020
 
    The JSONPath tool in question should:
 
+   *  be naturally based on those language characteristics.
 
 
 
-Normington, et al.        Expires 10 June 2021                  [Page 4]
+Normington, et al.        Expires 26 June 2021                  [Page 4]
 
 Internet-Draft                  JSONPath                   December 2020
 
-
-   *  be naturally based on those language characteristics.
 
    *  cover only essential parts of XPath 1.0.
 
@@ -275,14 +273,14 @@ Internet-Draft                  JSONPath                   December 2020
    The symbol "@" is used for the current object.  Filter expressions
    are supported via the syntax "?(<boolean expr>)" as in
 
+   $.store.book[?(@.price < 10)].title
 
 
-Normington, et al.        Expires 10 June 2021                  [Page 5]
+
+Normington, et al.        Expires 26 June 2021                  [Page 5]
 
 Internet-Draft                  JSONPath                   December 2020
 
-
-   $.store.book[?(@.price < 10)].title
 
    Here is a complete overview and a side by side comparison of the
    JSONPath syntax elements with their XPath counterparts.
@@ -333,7 +331,9 @@ Internet-Draft                  JSONPath                   December 2020
 
 
 
-Normington, et al.        Expires 10 June 2021                  [Page 6]
+
+
+Normington, et al.        Expires 26 June 2021                  [Page 6]
 
 Internet-Draft                  JSONPath                   December 2020
 
@@ -389,7 +389,7 @@ Internet-Draft                  JSONPath                   December 2020
 
 
 
-Normington, et al.        Expires 10 June 2021                  [Page 7]
+Normington, et al.        Expires 26 June 2021                  [Page 7]
 
 Internet-Draft                  JSONPath                   December 2020
 
@@ -445,7 +445,7 @@ Internet-Draft                  JSONPath                   December 2020
 
 
 
-Normington, et al.        Expires 10 June 2021                  [Page 8]
+Normington, et al.        Expires 26 June 2021                  [Page 8]
 
 Internet-Draft                  JSONPath                   December 2020
 
@@ -501,7 +501,7 @@ Internet-Draft                  JSONPath                   December 2020
 
 
 
-Normington, et al.        Expires 10 June 2021                  [Page 9]
+Normington, et al.        Expires 26 June 2021                  [Page 9]
 
 Internet-Draft                  JSONPath                   December 2020
 
@@ -557,7 +557,7 @@ Internet-Draft                  JSONPath                   December 2020
 
 
 
-Normington, et al.        Expires 10 June 2021                 [Page 10]
+Normington, et al.        Expires 26 June 2021                 [Page 10]
 
 Internet-Draft                  JSONPath                   December 2020
 
@@ -613,7 +613,7 @@ Internet-Draft                  JSONPath                   December 2020
 
 
 
-Normington, et al.        Expires 10 June 2021                 [Page 11]
+Normington, et al.        Expires 26 June 2021                 [Page 11]
 
 Internet-Draft                  JSONPath                   December 2020
 
@@ -669,7 +669,7 @@ Syntax
 
 
 
-Normington, et al.        Expires 10 June 2021                 [Page 12]
+Normington, et al.        Expires 26 June 2021                 [Page 12]
 
 Internet-Draft                  JSONPath                   December 2020
 
@@ -725,7 +725,7 @@ Syntax
 
 
 
-Normington, et al.        Expires 10 June 2021                 [Page 13]
+Normington, et al.        Expires 26 June 2021                 [Page 13]
 
 Internet-Draft                  JSONPath                   December 2020
 
@@ -781,7 +781,7 @@ Semantics
 
 
 
-Normington, et al.        Expires 10 June 2021                 [Page 14]
+Normington, et al.        Expires 26 June 2021                 [Page 14]
 
 Internet-Draft                  JSONPath                   December 2020
 
@@ -837,7 +837,7 @@ Syntax
 
 
 
-Normington, et al.        Expires 10 June 2021                 [Page 15]
+Normington, et al.        Expires 26 June 2021                 [Page 15]
 
 Internet-Draft                  JSONPath                   December 2020
 
@@ -893,7 +893,7 @@ Informal Introduction
 
 
 
-Normington, et al.        Expires 10 June 2021                 [Page 16]
+Normington, et al.        Expires 26 June 2021                 [Page 16]
 
 Internet-Draft                  JSONPath                   December 2020
 
@@ -949,7 +949,7 @@ Detailed Semantics
 
 
 
-Normington, et al.        Expires 10 June 2021                 [Page 17]
+Normington, et al.        Expires 26 June 2021                 [Page 17]
 
 Internet-Draft                  JSONPath                   December 2020
 
@@ -1005,7 +1005,7 @@ Internet-Draft                  JSONPath                   December 2020
 
 
 
-Normington, et al.        Expires 10 June 2021                 [Page 18]
+Normington, et al.        Expires 26 June 2021                 [Page 18]
 
 Internet-Draft                  JSONPath                   December 2020
 
@@ -1061,7 +1061,7 @@ Internet-Draft                  JSONPath                   December 2020
 
 
 
-Normington, et al.        Expires 10 June 2021                 [Page 19]
+Normington, et al.        Expires 26 June 2021                 [Page 19]
 
 Internet-Draft                  JSONPath                   December 2020
 
@@ -1117,7 +1117,7 @@ Contributors
 
 
 
-Normington, et al.        Expires 10 June 2021                 [Page 20]
+Normington, et al.        Expires 26 June 2021                 [Page 20]
 
 Internet-Draft                  JSONPath                   December 2020
 
@@ -1173,4 +1173,4 @@ Authors' Addresses
 
 
 
-Normington, et al.        Expires 10 June 2021                 [Page 21]
+Normington, et al.        Expires 26 June 2021                 [Page 21]
