@@ -88,5 +88,5 @@ For ease of reading pull requests, push the PR branch to `master` of your fork. 
 github username/organisation is `xxx`, then rendered HTML will be available at:
 
 ```
-https://xxx.github.io/internet-draft/
+https://xxx.github.io/draft-ietf-jsonpath-jsonpath/
 ```
