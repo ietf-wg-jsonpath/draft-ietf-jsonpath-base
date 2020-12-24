@@ -116,11 +116,6 @@ normative:
 JSONPath defines a string syntax for identifying values
 within a JavaScript Object Notation (JSON) document.
 
---- note_
-
-**This document is a work in progress and has not yet been published
-as an Internet Draft** (which needs to be fixed soon).
-
 --- note_Contributing
 
 This document picks up the popular JSONPath specification dated
@@ -128,9 +123,8 @@ This document picks up the popular JSONPath specification dated
 In its current state, it is a strawman document showing what needs to
 be covered.
 
-Comments and issues can be directed at the github repository *insert
-repo here* as well as (for the time when the more permanent home is
-being decided) at the dispatch@ietf.org mailing list.
+Comments and issues may be directed to this document's
+[github repository](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-jsonpath).
 
 --- middle
 
@@ -331,7 +325,7 @@ typical XML example representing a bookstore (that also has bicycles):
 
 ~~~~json
 { "store": {
-    "book": [ 
+    "book": [
       { "category": "reference",
         "author": "Nigel Rees",
         "title": "Sayings of the Century",
