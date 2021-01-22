@@ -5,16 +5,16 @@
 JSONPath WG                                           G. Normington, Ed.
 Internet-Draft                                              VMware, Inc.
 Intended status: Standards Track                           E. Surov, Ed.
-Expires: 27 June 2021                            TheSoul Publishing Ltd.
-                                                            M. Mikulicic
-                                                            VMware, Inc.
+Expires: 26 July 2021                            TheSoul Publishing Ltd.
+                                                       M. Mikulicic, Ed.
+                                                        InfluxData, Inc.
                                                               S. Gössner
                                                  Fachhochschule Dortmund
-                                                        24 December 2020
+                                                         22 January 2021
 
 
                  JavaScript Object Notation (JSON) Path
-                    draft-normington-jsonpath-latest
+                    draft-ietf-jsonpath-base-latest
 
 Abstract
 
@@ -47,20 +47,20 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 27 June 2021.
+   This Internet-Draft will expire on 26 July 2021.
 
 
 
 
 
-Normington, et al.        Expires 27 June 2021                  [Page 1]
+Normington, et al.        Expires 26 July 2021                  [Page 1]
 
-Internet-Draft                  JSONPath                   December 2020
+Internet-Draft                  JSONPath                    January 2021
 
 
 Copyright Notice
 
-   Copyright (c) 2020 IETF Trust and the persons identified as the
+   Copyright (c) 2021 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Normington, et al.        Expires 27 June 2021                  [Page 2]
+Normington, et al.        Expires 26 July 2021                  [Page 2]
 
-Internet-Draft                  JSONPath                   December 2020
+Internet-Draft                  JSONPath                    January 2021
 
 
 1.  Introduction
@@ -165,9 +165,9 @@ Internet-Draft                  JSONPath                   December 2020
 
 
 
-Normington, et al.        Expires 27 June 2021                  [Page 3]
+Normington, et al.        Expires 26 July 2021                  [Page 3]
 
-Internet-Draft                  JSONPath                   December 2020
+Internet-Draft                  JSONPath                    January 2021
 
 
       Position by providing a query that results in exactly that
@@ -221,9 +221,9 @@ Internet-Draft                  JSONPath                   December 2020
 
 
 
-Normington, et al.        Expires 27 June 2021                  [Page 4]
+Normington, et al.        Expires 26 July 2021                  [Page 4]
 
-Internet-Draft                  JSONPath                   December 2020
+Internet-Draft                  JSONPath                    January 2021
 
 
    *  cover only essential parts of XPath 1.0.
@@ -277,9 +277,9 @@ Internet-Draft                  JSONPath                   December 2020
 
 
 
-Normington, et al.        Expires 27 June 2021                  [Page 5]
+Normington, et al.        Expires 26 July 2021                  [Page 5]
 
-Internet-Draft                  JSONPath                   December 2020
+Internet-Draft                  JSONPath                    January 2021
 
 
    Here is a complete overview and a side by side comparison of the
@@ -333,9 +333,9 @@ Internet-Draft                  JSONPath                   December 2020
 
 
 
-Normington, et al.        Expires 27 June 2021                  [Page 6]
+Normington, et al.        Expires 26 July 2021                  [Page 6]
 
-Internet-Draft                  JSONPath                   December 2020
+Internet-Draft                  JSONPath                    January 2021
 
 
    XPath has a lot more to offer (location paths in unabbreviated
@@ -389,9 +389,9 @@ Internet-Draft                  JSONPath                   December 2020
 
 
 
-Normington, et al.        Expires 27 June 2021                  [Page 7]
+Normington, et al.        Expires 26 July 2021                  [Page 7]
 
-Internet-Draft                  JSONPath                   December 2020
+Internet-Draft                  JSONPath                    January 2021
 
 
    { "store": {
@@ -445,9 +445,9 @@ Internet-Draft                  JSONPath                   December 2020
 
 
 
-Normington, et al.        Expires 27 June 2021                  [Page 8]
+Normington, et al.        Expires 26 July 2021                  [Page 8]
 
-Internet-Draft                  JSONPath                   December 2020
+Internet-Draft                  JSONPath                    January 2021
 
 
    +======================+=========================+==================+
@@ -501,9 +501,9 @@ Internet-Draft                  JSONPath                   December 2020
 
 
 
-Normington, et al.        Expires 27 June 2021                  [Page 9]
+Normington, et al.        Expires 26 July 2021                  [Page 9]
 
-Internet-Draft                  JSONPath                   December 2020
+Internet-Draft                  JSONPath                    January 2021
 
 
 3.  JSONPath Syntax and Semantics
@@ -557,9 +557,9 @@ Internet-Draft                  JSONPath                   December 2020
 
 
 
-Normington, et al.        Expires 27 June 2021                 [Page 10]
+Normington, et al.        Expires 26 July 2021                 [Page 10]
 
-Internet-Draft                  JSONPath                   December 2020
+Internet-Draft                  JSONPath                    January 2021
 
 
 3.4.  Syntax
@@ -613,9 +613,9 @@ Internet-Draft                  JSONPath                   December 2020
 
 
 
-Normington, et al.        Expires 27 June 2021                 [Page 11]
+Normington, et al.        Expires 26 July 2021                 [Page 11]
 
-Internet-Draft                  JSONPath                   December 2020
+Internet-Draft                  JSONPath                    January 2021
 
 
    Next, ".a" selects from any input node of type object and selects any
@@ -669,9 +669,9 @@ Syntax
 
 
 
-Normington, et al.        Expires 27 June 2021                 [Page 12]
+Normington, et al.        Expires 26 July 2021                 [Page 12]
 
-Internet-Draft                  JSONPath                   December 2020
+Internet-Draft                  JSONPath                    January 2021
 
 
    Note that the "dot-child-name" rule follows the philosophy of JSON
@@ -725,9 +725,9 @@ Syntax
 
 
 
-Normington, et al.        Expires 27 June 2021                 [Page 13]
+Normington, et al.        Expires 26 July 2021                 [Page 13]
 
-Internet-Draft                  JSONPath                   December 2020
+Internet-Draft                  JSONPath                    January 2021
 
 
    union-element = child ; see below for more alternatives
@@ -781,9 +781,9 @@ Semantics
 
 
 
-Normington, et al.        Expires 27 June 2021                 [Page 14]
+Normington, et al.        Expires 26 July 2021                 [Page 14]
 
-Internet-Draft                  JSONPath                   December 2020
+Internet-Draft                  JSONPath                    January 2021
 
 
                   +=================+===================+
@@ -837,9 +837,9 @@ Syntax
 
 
 
-Normington, et al.        Expires 27 June 2021                 [Page 15]
+Normington, et al.        Expires 26 July 2021                 [Page 15]
 
-Internet-Draft                  JSONPath                   December 2020
+Internet-Draft                  JSONPath                    January 2021
 
 
    Note: the syntax does not allow integers with leading zeros such as
@@ -893,9 +893,9 @@ Informal Introduction
 
 
 
-Normington, et al.        Expires 27 June 2021                 [Page 16]
+Normington, et al.        Expires 26 July 2021                 [Page 16]
 
-Internet-Draft                  JSONPath                   December 2020
+Internet-Draft                  JSONPath                    January 2021
 
 
    When "step" is "0", no elements are selected.  This is the one case
@@ -949,9 +949,9 @@ Detailed Semantics
 
 
 
-Normington, et al.        Expires 27 June 2021                 [Page 17]
+Normington, et al.        Expires 26 July 2021                 [Page 17]
 
-Internet-Draft                  JSONPath                   December 2020
+Internet-Draft                  JSONPath                    January 2021
 
 
    Slice expression parameters "start" and "end" are used to derive
@@ -1005,9 +1005,9 @@ Internet-Draft                  JSONPath                   December 2020
 
 
 
-Normington, et al.        Expires 27 June 2021                 [Page 18]
+Normington, et al.        Expires 26 July 2021                 [Page 18]
 
-Internet-Draft                  JSONPath                   December 2020
+Internet-Draft                  JSONPath                    January 2021
 
 
    An implementation MUST raise an error if any of the slice expression
@@ -1061,9 +1061,9 @@ Internet-Draft                  JSONPath                   December 2020
 
 
 
-Normington, et al.        Expires 27 June 2021                 [Page 19]
+Normington, et al.        Expires 26 July 2021                 [Page 19]
 
-Internet-Draft                  JSONPath                   December 2020
+Internet-Draft                  JSONPath                    January 2021
 
 
    [ECMA-262] Ecma International, "ECMAScript Language Specification,
@@ -1117,9 +1117,9 @@ Contributors
 
 
 
-Normington, et al.        Expires 27 June 2021                 [Page 20]
+Normington, et al.        Expires 26 July 2021                 [Page 20]
 
-Internet-Draft                  JSONPath                   December 2020
+Internet-Draft                  JSONPath                    January 2021
 
 
 Authors' Addresses
@@ -1140,8 +1140,8 @@ Authors' Addresses
    Email: esurov.tsp@gmail.com
 
 
-   Marko Mikulicic
-   VMware, Inc.
+   Marko Mikulicic (editor)
+   InfluxData, Inc.
    Pisa
    Italy
 
@@ -1173,4 +1173,4 @@ Authors' Addresses
 
 
 
-Normington, et al.        Expires 27 June 2021                 [Page 21]
+Normington, et al.        Expires 26 July 2021                 [Page 21]

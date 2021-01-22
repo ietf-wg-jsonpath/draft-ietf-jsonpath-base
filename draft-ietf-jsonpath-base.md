@@ -1,7 +1,7 @@
 ---
 stand_alone: true
 ipr: trust200902
-docname: draft-normington-jsonpath-latest
+docname: draft-ietf-jsonpath-base-latest
 cat: std
 obsoletes: ''
 updates: ''
@@ -19,7 +19,7 @@ abbrev: JSONPath
 area: ART
 wg: JSONPath WG
 kw: JSON
-date: 2020
+date: 2021
 
 author:
 - role: editor
@@ -44,9 +44,10 @@ author:
   country: Cyprus
   phone: ''
   email: esurov.tsp@gmail.com
-- ins: M. Mikulicic
+- role: editor
+  ins: M. Mikulicic
   name: Marko Mikulicic
-  org: VMware, Inc.
+  org: InfluxData, Inc.
   street: ''
   city: Pisa
   region: ''
