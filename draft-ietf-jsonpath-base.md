@@ -161,7 +161,7 @@ The terminology of {{-json}} applies.
 
 Data Item:
 : A structure complying to the generic data model of JSON, i.e.,
-  composed of containers, namely maps (JSON objects) and arrays, and
+  composed of containers, namely JSON objects and arrays, and
   of atomic data, namely null, true, false, numbers, and text strings.
   Also called a JSON value.
 
@@ -171,7 +171,7 @@ Object:
   say JSON Object.
 
 Member:
-: A key/value pair in a map (JSON Object).  (Not itself a JSON value.)
+: A key/value pair in a JSON object.  (Not itself a JSON value.)
 
 Element:
 : An item in an array.  (Also used with a distinct meaning in XML
@@ -372,8 +372,8 @@ typical XML example representing a bookstore (that also has bicycles):
 {: fig-example-item title="Example JSON data item"}
 
 The examples in {{tbl-example}} use the expression mechanism to obtain
-the number of items in an array, to test for the presence of a map
-member, and to perform numeric comparisons of map member values with a
+the number of items in an array, to test for the presence of a
+member in a JSON object, and to perform numeric comparisons of member values with a
 constant.
 
 | XPath                  | JSONPath                                  | Result                                                       |
