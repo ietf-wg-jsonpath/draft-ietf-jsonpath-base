@@ -394,7 +394,7 @@ constant.
 
 # JSONPath Syntax and Semantics
 
-## Overview
+## Overview {#synsem-overview}
 
 A JSONPath is a string which selects zero or more nodes of a piece of JSON.
 A valid JSONPath conforms to the ABNF syntax defined by this document.
