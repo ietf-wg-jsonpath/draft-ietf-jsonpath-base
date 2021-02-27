@@ -166,12 +166,15 @@ Data Item:
   Also called a JSON value.
 
 Object:
-: Used in its generic sense, e.g., for programming language objects.
-  When a JSON Object as defined in {{-json}} is meant, we specifically
-  say JSON Object.
+: A JSON object as defined in {{-json}}.
+  Never used in its generic sense, e.g., for programming language objects.
 
 Member:
-: A key/value pair in a JSON object.  (Not itself a JSON value.)
+: A name/value pair in a JSON object.  (Not itself a JSON value.)
+
+Name:
+: The name in a name/value pair constituting a member.  (Also known as
+  "key", "tag", or "label".)
 
 Element:
 : An item in an array.  (Also used with a distinct meaning in XML
@@ -327,7 +330,7 @@ significant difference how the subscript operator works in Xpath and
 JSONPath:
 
 * Square brackets in XPath expressions always operate on the *node set* resulting from the previous path fragment. Indices always start at 1.
-* With JSONPath, square brackets operate on the *JSON object* or *array*
+* With JSONPath, square brackets operate on the *object* or *array*
   addressed by the previous path fragment. Array indices always start at 0.
 
 # JSONPath Examples
@@ -373,7 +376,7 @@ typical XML example representing a bookstore (that also has bicycles):
 
 The examples in {{tbl-example}} use the expression mechanism to obtain
 the number of items in an array, to test for the presence of a
-member in a JSON object, and to perform numeric comparisons of member values with a
+member in a object, and to perform numeric comparisons of member values with a
 constant.
 
 | XPath                  | JSONPath                                  | Result                                                       |
@@ -410,7 +413,7 @@ in {{RFC3629}}.
 A JSON value is logically a tree of nodes.
 
 Each node holds a JSON value (as defined by {{RFC8259}}) of one of the
-types JSON object, array, number, string, or one of the literals `true`,
+types object, array, number, string, or one of the literals `true`,
 `false`, or `null`.
 The type of the JSON value held by a node is
 sometimes referred to as the type of the node.
@@ -498,7 +501,7 @@ Firstly, `$` selects the root node which is the input document.
 So the result is a list
 consisting of just the root node.
 
-Next, `.a` selects from any input node of type JSON object and selects any value of the input
+Next, `.a` selects from any input node of type object and selects any value of the input
 node corresponding to the key `"a"`.
 The result is again a list of one node: `[{"b":0},{"b":1},{"c":2}]`.
 
@@ -506,7 +509,7 @@ Next, `[*]` selects from any input node which is an array and selects all the el
 of the input node.
 The result is a list of three nodes: `{"b":0}`, `{"b":1}`, and `{"c":2}`.
 
-Finally, `.b` selects from any input node of type JSON object with a key
+Finally, `.b` selects from any input node of type object with a key
 `b` and selects the value of the input node corresponding to that key.
 The result is a list containing `0`, `1`.
 This is the concatenation of three lists, two of length one containing `0`, `1`, respectively, and one of length zero.
@@ -528,7 +531,7 @@ of node.
 A dot child selector has a key known as a dot child name or a single asterisk
 (`*`).
 
-A dot child name corresponds to a name in a JSON object.
+A dot child name corresponds to a name in a object.
 
 ~~~~ abnf
 selector = dot-child              ; see below for alternatives
@@ -559,15 +562,15 @@ not encode Unicode characters.
 {: numbered="false" toc="exclude"}
 
 A dot child name which is not a single asterisk (`*`) is considered to have a key.
-It selects the value corresponding to the key from any JSON object node.
+It selects the value corresponding to the key from any object node.
 It selects
-no nodes from a node which is not a JSON object.
+no nodes from a node which is not a object.
 
 The key of a dot child name is the sequence of Unicode characters contained
 in that name.
 
 A dot child name consisting of a single asterisk is a wild card. It selects
-all the values of any JSON object node.
+all the values of any object node.
 It also selects all the elements of any array node.
 It selects no nodes from
 number, string, or literal nodes.
@@ -672,9 +675,9 @@ in the table below:
 | "\" uXXXX         | U+XXXX              |
 {: title="Escape Sequence Replacements" cols="c c"}
 
-The child selects the value corresponding to the key from any JSON object
+The child selects the value corresponding to the key from any object
 node with the key as a name.
-It selects no nodes from a node which is not a JSON object.
+It selects no nodes from a node which is not a object.
 
 
 
