@@ -502,15 +502,15 @@ So the result is a list
 consisting of just the root node.
 
 Next, `.a` selects from any input node of type object and selects any value of the input
-node corresponding to the key `"a"`.
+node corresponding to the member name `"a"`.
 The result is again a list of one node: `[{"b":0},{"b":1},{"c":2}]`.
 
 Next, `[*]` selects from any input node which is an array and selects all the elements
 of the input node.
 The result is a list of three nodes: `{"b":0}`, `{"b":1}`, and `{"c":2}`.
 
-Finally, `.b` selects from any input node of type object with a key
-`b` and selects the value of the input node corresponding to that key.
+Finally, `.b` selects from any input node of type object with a member name
+`b` and selects the value of the input node corresponding to that name.
 The result is a list containing `0`, `1`.
 This is the concatenation of three lists, two of length one containing `0`, `1`, respectively, and one of length zero.
 
@@ -528,7 +528,7 @@ of node.
 #### Syntax
 {: numbered="false" toc="exclude"}
 
-A dot child selector has a key known as a dot child name or a single asterisk
+A dot child selector has a member name known as a dot child name or a single asterisk
 (`*`).
 
 A dot child name corresponds to a name in a object.
@@ -561,12 +561,13 @@ not encode Unicode characters.
 #### Semantics
 {: numbered="false" toc="exclude"}
 
-A dot child name which is not a single asterisk (`*`) is considered to have a key.
-It selects the value corresponding to the key from any object node.
+A dot child name which is not a single asterisk (`*`) is considered to
+have a member name.
+It selects the value corresponding to the name from any object node.
 It selects
 no nodes from a node which is not a object.
 
-The key of a dot child name is the sequence of Unicode characters contained
+The member name of a dot child name is the sequence of Unicode characters contained
 in that name.
 
 A dot child name consisting of a single asterisk is a wild card. It selects
@@ -657,7 +658,7 @@ Notes:
 {: numbered="false" toc="exclude"}
 
 If the child is a quoted string, the string MUST be converted to a
-key by removing the surrounding quotes and
+member name by removing the surrounding quotes and
 replacing each escape sequence with its equivalent Unicode character, as
 in the table below:
 
@@ -675,8 +676,8 @@ in the table below:
 | "\" uXXXX         | U+XXXX              |
 {: title="Escape Sequence Replacements" cols="c c"}
 
-The child selects the value corresponding to the key from any object
-node with the key as a name.
+The child selects the value corresponding to the member name from any object
+node that has a member with that name.
 It selects no nodes from a node which is not a object.
 
 
