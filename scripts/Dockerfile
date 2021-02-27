@@ -8,9 +8,9 @@ RUN apt-get update && apt-get install -y \
     flex \
     xmlstarlet
 
-RUN gem install kramdown-rfc2629
+RUN gem install kramdown-rfc2629 -v 1.3.17
 
-RUN pip3 install xml2rfc
+RUN pip3 install xml2rfc==3.3.0
 
 RUN git clone https://github.com/fenner/bap.git && \
     cd /bap && \

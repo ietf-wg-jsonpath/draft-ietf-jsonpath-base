@@ -2,7 +2,7 @@
 
 This repository is for the development of an Internet Draft for JSONPath. The draft is currently a work in progress.
 
-See the latest rendered version of the draft [here](https://jsonpath-standard.github.io/internet-draft/).
+See the latest rendered version of the draft [here](https://ietf-wg-jsonpath.github.io/draft-ietf-jsonpath-jsonpath/).
 
 Christoph Burgmer's [JSONPath Comparison project](https://github.com/cburgmer/json-path-comparison)
 publishes a [comparison](https://cburgmer.github.io/json-path-comparison/) of many existing
@@ -13,9 +13,6 @@ implementation which will inform the Internet Draft.
 
 All official discussion is on the [jsonpath@ietf.org mailing list](https://www.ietf.org/mailman/listinfo/jsonpath).
 See the [archive](https://mailarchive.ietf.org/arch/browse/jsonpath/) for previous posts.
-
-Informal discussions happen in slack. If you would like to join in, here is an
-[invitation](https://join.slack.com/t/jsonpath-standard/shared_invite/zt-fp521hp0-D7gmDcmOMK4UkrRRug~SQQ).
 
 ## License
 
@@ -74,7 +71,7 @@ apt-get install -y xmlstarlet
  - copy the HTML file for use by github pages:
 
 ```
-xml2rfc ./draft-normington-jsonpath.xml --text --html && aex draft-normington-jsonpath.txt | bap -S path -q && cp draft-normington-jsonpath.html docs/index.html
+xml2rfc ./draft-ietf-jsonpath-base.xml --text --html && aex draft-ietf-jsonpath-base.txt | bap -S path -q && cp draft-ietf-jsonpath-base.html docs/index.html
 ```
 
 A script [gen.sh](scripts/gen.sh) is provided for convenience. You can also use [docker-gen.sh](scripts/docker-gen.sh)
@@ -91,5 +88,5 @@ For ease of reading pull requests, push the PR branch to `master` of your fork. 
 github username/organisation is `xxx`, then rendered HTML will be available at:
 
 ```
-https://xxx.github.io/internet-draft/
+https://xxx.github.io/draft-ietf-jsonpath-jsonpath/
 ```
