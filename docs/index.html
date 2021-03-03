@@ -15,27 +15,26 @@ within a JavaScript Object Notation (JSON) document.
     " name="description">
 <meta content="xml2rfc 3.3.0" name="generator">
 <meta content="JSON" name="keyword">
-<meta content="draft-normington-jsonpath-latest" name="ietf.draft">
+<meta content="draft-ietf-jsonpath-base-latest" name="ietf.draft">
 <!-- Generator version information:
   xml2rfc 3.3.0
-    Python 3.8.5
+    Python 3.9.0
     appdirs 1.4.4
     ConfigArgParse 1.2.3
-    google-i18n-address 2.3.5
+    google-i18n-address 2.4.0
     html5lib 1.1
-    intervaltree 3.0.2
+    intervaltree 3.1.0
     Jinja2 2.11.2
     kitchen 1.2.6
-    lxml 4.5.2
-    pycairo 1.19.1
+    lxml 4.6.1
     pycountry 20.7.3
     pyflakes 2.2.0
     PyYAML 5.3.1
     requests 2.24.0
-    setuptools 49.2.0
+    setuptools 49.2.1
     six 1.15.0
 -->
-<link href="draft-normington-jsonpath.xml" rel="alternate" type="application/rfc+xml">
+<link href="draft-ietf-jsonpath-base.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
 <style type="text/css">/*
 
@@ -1173,11 +1172,11 @@ dt+dd:empty::before{
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">JSONPath</td>
-<td class="right">December 2020</td>
+<td class="right">March 2021</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Normington, et al.</td>
-<td class="center">Expires 11 June 2021</td>
+<td class="center">Expires 4 September 2021</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1187,15 +1186,15 @@ dt+dd:empty::before{
 <dt class="label-workgroup">Workgroup:</dt>
 <dd class="workgroup">JSONPath WG</dd>
 <dt class="label-internet-draft">Internet-Draft:</dt>
-<dd class="internet-draft">draft-normington-jsonpath-latest</dd>
+<dd class="internet-draft">draft-ietf-jsonpath-base-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2020-12-08" class="published">8 December 2020</time>
+<time datetime="2021-03-03" class="published">3 March 2021</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2021-06-11">11 June 2021</time></dd>
+<dd class="expires"><time datetime="2021-09-04">4 September 2021</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1209,8 +1208,9 @@ dt+dd:empty::before{
 <div class="org">TheSoul Publishing Ltd.</div>
 </div>
 <div class="author">
-      <div class="author-name">M. Mikulicic</div>
-<div class="org">VMware, Inc.</div>
+      <div class="author-name">M. Mikulicic, <span class="editor">Ed.</span>
+</div>
+<div class="org">InfluxData, Inc.</div>
 </div>
 <div class="author">
       <div class="author-name">S. Gössner</div>
@@ -1226,20 +1226,15 @@ dt+dd:empty::before{
 within a JavaScript Object Notation (JSON) document.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note" id="section-note.1">
-      <p id="section-note.1-1"><strong>This document is a work in progress and has not yet been published
-as an Internet Draft</strong> (which needs to be fixed soon).<a href="#section-note.1-1" class="pilcrow">¶</a></p>
-</section>
-<section class="note" id="section-note.2">
       <h2 id="name-contributing">
 <a href="#name-contributing" class="section-name selfRef">Contributing</a>
       </h2>
-<p id="section-note.2-1">This document picks up the popular JSONPath specification dated
+<p id="section-note.1-1">This document picks up the popular JSONPath specification dated
 2007-02-21 and provides a normative definition for it.
 In its current state, it is a strawman document showing what needs to
-be covered.<a href="#section-note.2-1" class="pilcrow">¶</a></p>
-<p id="section-note.2-2">Comments and issues can be directed at the github repository <em>insert
-repo here</em> as well as (for the time when the more permanent home is
-being decided) at the dispatch@ietf.org mailing list.<a href="#section-note.2-2" class="pilcrow">¶</a></p>
+be covered.<a href="#section-note.1-1" class="pilcrow">¶</a></p>
+<p id="section-note.1-2">Comments and issues may be directed to this document's
+<a href="https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-jsonpath">github repository</a>.<a href="#section-note.1-2" class="pilcrow">¶</a></p>
 </section>
 <div id="status-of-memo">
 <section id="section-boilerplate.1">
@@ -1260,7 +1255,7 @@ being decided) at the dispatch@ietf.org mailing list.<a href="#section-note.2-2"
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 11 June 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 4 September 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1269,7 +1264,7 @@ being decided) at the dispatch@ietf.org mailing list.<a href="#section-note.2-2"
 <a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
         </h2>
 <p id="section-boilerplate.2-1">
-            Copyright (c) 2020 IETF Trust and the persons identified as the
+            Copyright (c) 2021 IETF Trust and the persons identified as the
             document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.2-2">
             This document is subject to BCP 78 and the IETF Trust's Legal
@@ -1288,61 +1283,61 @@ being decided) at the dispatch@ietf.org mailing list.<a href="#section-note.2-2"
         <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents">
 <a href="#name-table-of-contents" class="section-name selfRef">Table of Contents</a>
         </h2>
-<nav class="toc"><ul class="toc compact ulEmpty">
-<li class="toc compact ulEmpty" id="section-toc.1-1.1">
+<nav class="toc"><ul class="ulEmpty compact toc">
+<li class="ulEmpty compact toc" id="section-toc.1-1.1">
             <p id="section-toc.1-1.1.1"><a href="#section-1" class="xref">1</a>.  <a href="#name-introduction" class="xref">Introduction</a><a href="#section-toc.1-1.1.1" class="pilcrow">¶</a></p>
-<ul class="toc compact ulEmpty">
-<li class="toc compact ulEmpty" id="section-toc.1-1.1.2.1">
+<ul class="ulEmpty compact toc">
+<li class="ulEmpty compact toc" id="section-toc.1-1.1.2.1">
                 <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="xref">1.1</a>.  <a href="#name-terminology" class="xref">Terminology</a><a href="#section-toc.1-1.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.1.2.2">
+              <li class="ulEmpty compact toc" id="section-toc.1-1.1.2.2">
                 <p id="section-toc.1-1.1.2.2.1" class="keepWithNext"><a href="#section-1.2" class="xref">1.2</a>.  <a href="#name-inspired-by-xpath" class="xref">Inspired by XPath</a><a href="#section-toc.1-1.1.2.2.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.1.2.3">
+              <li class="ulEmpty compact toc" id="section-toc.1-1.1.2.3">
                 <p id="section-toc.1-1.1.2.3.1" class="keepWithNext"><a href="#section-1.3" class="xref">1.3</a>.  <a href="#name-overview-of-jsonpath-expres" class="xref">Overview of JSONPath Expressions</a><a href="#section-toc.1-1.1.2.3.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.2">
+          <li class="ulEmpty compact toc" id="section-toc.1-1.2">
             <p id="section-toc.1-1.2.1"><a href="#section-2" class="xref">2</a>.  <a href="#name-jsonpath-examples" class="xref">JSONPath Examples</a><a href="#section-toc.1-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.3">
+          <li class="ulEmpty compact toc" id="section-toc.1-1.3">
             <p id="section-toc.1-1.3.1"><a href="#section-3" class="xref">3</a>.  <a href="#name-jsonpath-syntax-and-semanti" class="xref">JSONPath Syntax and Semantics</a><a href="#section-toc.1-1.3.1" class="pilcrow">¶</a></p>
-<ul class="toc compact ulEmpty">
-<li class="toc compact ulEmpty" id="section-toc.1-1.3.2.1">
+<ul class="ulEmpty compact toc">
+<li class="ulEmpty compact toc" id="section-toc.1-1.3.2.1">
                 <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="xref">3.1</a>.  <a href="#name-overview" class="xref">Overview</a><a href="#section-toc.1-1.3.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.3.2.2">
+              <li class="ulEmpty compact toc" id="section-toc.1-1.3.2.2">
                 <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="xref">3.2</a>.  <a href="#name-terminology-2" class="xref">Terminology</a><a href="#section-toc.1-1.3.2.2.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.3.2.3">
+              <li class="ulEmpty compact toc" id="section-toc.1-1.3.2.3">
                 <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="xref">3.3</a>.  <a href="#name-implementation" class="xref">Implementation</a><a href="#section-toc.1-1.3.2.3.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.3.2.4">
+              <li class="ulEmpty compact toc" id="section-toc.1-1.3.2.4">
                 <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="xref">3.4</a>.  <a href="#name-syntax" class="xref">Syntax</a><a href="#section-toc.1-1.3.2.4.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.3.2.5">
+              <li class="ulEmpty compact toc" id="section-toc.1-1.3.2.5">
                 <p id="section-toc.1-1.3.2.5.1"><a href="#section-3.5" class="xref">3.5</a>.  <a href="#name-semantics" class="xref">Semantics</a><a href="#section-toc.1-1.3.2.5.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.3.2.6">
+              <li class="ulEmpty compact toc" id="section-toc.1-1.3.2.6">
                 <p id="section-toc.1-1.3.2.6.1"><a href="#section-3.6" class="xref">3.6</a>.  <a href="#name-selectors" class="xref">Selectors</a><a href="#section-toc.1-1.3.2.6.1" class="pilcrow">¶</a></p>
-<ul class="toc compact ulEmpty">
-<li class="toc compact ulEmpty" id="section-toc.1-1.3.2.6.2.1">
+<ul class="ulEmpty compact toc">
+<li class="ulEmpty compact toc" id="section-toc.1-1.3.2.6.2.1">
                     <p id="section-toc.1-1.3.2.6.2.1.1"><a href="#section-3.6.1" class="xref">3.6.1</a>.  <a href="#name-dot-child-selector" class="xref">Dot Child Selector</a><a href="#section-toc.1-1.3.2.6.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                  <li class="toc compact ulEmpty" id="section-toc.1-1.3.2.6.2.2">
+                  <li class="ulEmpty compact toc" id="section-toc.1-1.3.2.6.2.2">
                     <p id="section-toc.1-1.3.2.6.2.2.1"><a href="#section-3.6.2" class="xref">3.6.2</a>.  <a href="#name-union-selector" class="xref">Union Selector</a><a href="#section-toc.1-1.3.2.6.2.2.1" class="pilcrow">¶</a></p>
-<ul class="toc compact ulEmpty">
-<li class="toc compact ulEmpty" id="section-toc.1-1.3.2.6.2.2.2.1">
+<ul class="ulEmpty compact toc">
+<li class="ulEmpty compact toc" id="section-toc.1-1.3.2.6.2.2.2.1">
                         <p id="section-toc.1-1.3.2.6.2.2.2.1.1"><a href="#section-3.6.2.1" class="xref">3.6.2.1</a>.  <a href="#name-syntax-3" class="xref">Syntax</a><a href="#section-toc.1-1.3.2.6.2.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                      <li class="toc compact ulEmpty" id="section-toc.1-1.3.2.6.2.2.2.2">
+                      <li class="ulEmpty compact toc" id="section-toc.1-1.3.2.6.2.2.2.2">
                         <p id="section-toc.1-1.3.2.6.2.2.2.2.1"><a href="#section-3.6.2.2" class="xref">3.6.2.2</a>.  <a href="#name-semantics-3" class="xref">Semantics</a><a href="#section-toc.1-1.3.2.6.2.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
-                      <li class="toc compact ulEmpty" id="section-toc.1-1.3.2.6.2.2.2.3">
+                      <li class="ulEmpty compact toc" id="section-toc.1-1.3.2.6.2.2.2.3">
                         <p id="section-toc.1-1.3.2.6.2.2.2.3.1"><a href="#section-3.6.2.3" class="xref">3.6.2.3</a>.  <a href="#name-child" class="xref">Child</a><a href="#section-toc.1-1.3.2.6.2.2.2.3.1" class="pilcrow">¶</a></p>
 </li>
-                      <li class="toc compact ulEmpty" id="section-toc.1-1.3.2.6.2.2.2.4">
+                      <li class="ulEmpty compact toc" id="section-toc.1-1.3.2.6.2.2.2.4">
                         <p id="section-toc.1-1.3.2.6.2.2.2.4.1"><a href="#section-3.6.2.4" class="xref">3.6.2.4</a>.  <a href="#name-array-selector" class="xref">Array Selector</a><a href="#section-toc.1-1.3.2.6.2.2.2.4.1" class="pilcrow">¶</a></p>
 </li>
                     </ul>
@@ -1351,30 +1346,30 @@ being decided) at the dispatch@ietf.org mailing list.<a href="#section-note.2-2"
 </li>
             </ul>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.4">
+          <li class="ulEmpty compact toc" id="section-toc.1-1.4">
             <p id="section-toc.1-1.4.1"><a href="#section-4" class="xref">4</a>.  <a href="#name-iana-considerations" class="xref">IANA Considerations</a><a href="#section-toc.1-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.5">
+          <li class="ulEmpty compact toc" id="section-toc.1-1.5">
             <p id="section-toc.1-1.5.1"><a href="#section-5" class="xref">5</a>.  <a href="#name-security-considerations" class="xref">Security Considerations</a><a href="#section-toc.1-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.6">
+          <li class="ulEmpty compact toc" id="section-toc.1-1.6">
             <p id="section-toc.1-1.6.1"><a href="#section-6" class="xref">6</a>.  <a href="#name-references" class="xref">References</a><a href="#section-toc.1-1.6.1" class="pilcrow">¶</a></p>
-<ul class="toc compact ulEmpty">
-<li class="toc compact ulEmpty" id="section-toc.1-1.6.2.1">
+<ul class="ulEmpty compact toc">
+<li class="ulEmpty compact toc" id="section-toc.1-1.6.2.1">
                 <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="xref">6.1</a>.  <a href="#name-normative-references" class="xref">Normative References</a><a href="#section-toc.1-1.6.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.6.2.2">
+              <li class="ulEmpty compact toc" id="section-toc.1-1.6.2.2">
                 <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="xref">6.2</a>.  <a href="#name-informative-references" class="xref">Informative References</a><a href="#section-toc.1-1.6.2.2.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.7">
+          <li class="ulEmpty compact toc" id="section-toc.1-1.7">
             <p id="section-toc.1-1.7.1"><a href="#section-appendix.a" class="xref"></a><a href="#name-acknowledgements" class="xref">Acknowledgements</a><a href="#section-toc.1-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.8">
+          <li class="ulEmpty compact toc" id="section-toc.1-1.8">
             <p id="section-toc.1-1.8.1"><a href="#section-appendix.b" class="xref"></a><a href="#name-contributors" class="xref">Contributors</a><a href="#section-toc.1-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.9">
+          <li class="ulEmpty compact toc" id="section-toc.1-1.9">
             <p id="section-toc.1-1.9.1"><a href="#section-appendix.c" class="xref"></a><a href="#name-authors-addresses" class="xref">Authors' Addresses</a><a href="#section-toc.1-1.9.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
@@ -1417,51 +1412,62 @@ in ABNF as <code>%x2318</code>.<a href="#section-1.1-2" class="pilcrow">¶</a></
           <dt id="section-1.1-4.1">Data Item:</dt>
           <dd style="margin-left: 1.5em" id="section-1.1-4.2">
   A structure complying to the generic data model of JSON, i.e.,
-composed of containers, namely maps (JSON objects) and arrays, and
+composed of containers, namely JSON objects and arrays, and
 of atomic data, namely null, true, false, numbers, and text strings.
 Also called a JSON value.<a href="#section-1.1-4.2" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
 <dt id="section-1.1-4.3">Object:</dt>
           <dd style="margin-left: 1.5em" id="section-1.1-4.4">
-  Used in its generic sense, e.g., for programming language objects.
-When a JSON Object as defined in <span>[<a href="#RFC8259" class="xref">RFC8259</a>]</span> is meant, we specifically
-say JSON Object.<a href="#section-1.1-4.4" class="pilcrow">¶</a>
+  A JSON object as defined in <span>[<a href="#RFC8259" class="xref">RFC8259</a>]</span>.
+Never used in its generic sense, e.g., for programming language objects.<a href="#section-1.1-4.4" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
 <dt id="section-1.1-4.5">Member:</dt>
           <dd style="margin-left: 1.5em" id="section-1.1-4.6">
-  A key/value pair in a map (JSON Object).  (Not itself a JSON value.)<a href="#section-1.1-4.6" class="pilcrow">¶</a>
+  A name/value pair in a JSON object.  (Not itself a JSON value.)<a href="#section-1.1-4.6" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.1-4.7">Element:</dt>
+<dt id="section-1.1-4.7">Name:</dt>
           <dd style="margin-left: 1.5em" id="section-1.1-4.8">
-  An item in an array.  (Also used with a distinct meaning in XML
-context for XML elements.)<a href="#section-1.1-4.8" class="pilcrow">¶</a>
+  The name in a name/value pair constituting a member.  (Also known as
+"key", "tag", or "label".)<a href="#section-1.1-4.8" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.1-4.9">Query:</dt>
+<dt id="section-1.1-4.9">Element:</dt>
           <dd style="margin-left: 1.5em" id="section-1.1-4.10">
-  Short name for JSONPath expression.<a href="#section-1.1-4.10" class="pilcrow">¶</a>
+  An item in an array.  (Also used with a distinct meaning in XML
+context for XML elements.)<a href="#section-1.1-4.10" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.1-4.11">Argument:</dt>
+<dt id="section-1.1-4.11">Query:</dt>
           <dd style="margin-left: 1.5em" id="section-1.1-4.12">
-  Short name for the JSON data item a JSONPath expression is applied to.<a href="#section-1.1-4.12" class="pilcrow">¶</a>
+  Short name for JSONPath expression.<a href="#section-1.1-4.12" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.1-4.13">Output Path:</dt>
+<dt id="section-1.1-4.13">Argument:</dt>
           <dd style="margin-left: 1.5em" id="section-1.1-4.14">
+  Short name for the JSON data item a JSONPath expression is applied to.<a href="#section-1.1-4.14" class="pilcrow">¶</a>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-1.1-4.15">Output Path:</dt>
+          <dd style="margin-left: 1.5em" id="section-1.1-4.16">
   A simple form of JSONPath expression that identifies a Position by
 providing a query that results in exactly that position.  Similar
-to, but syntactically different from, a JSON Pointer <span>[<a href="#RFC6901" class="xref">RFC6901</a>]</span>.<a href="#section-1.1-4.14" class="pilcrow">¶</a>
+to, but syntactically different from, a JSON Pointer <span>[<a href="#RFC6901" class="xref">RFC6901</a>]</span>.<a href="#section-1.1-4.16" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.1-4.15">Position:</dt>
-          <dd style="margin-left: 1.5em" id="section-1.1-4.16">
+<dt id="section-1.1-4.17">Position:</dt>
+          <dd style="margin-left: 1.5em" id="section-1.1-4.18">
   A JSON data item identical to or nested within the JSON data item to
 which the query is applied to, expressed either by the value of that
-data item or by providing a JSONPath Output Path.<a href="#section-1.1-4.16" class="pilcrow">¶</a>
+data item or by providing a Normalized Path Expression as a JSONPath Output Path.<a href="#section-1.1-4.18" class="pilcrow">¶</a>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-1.1-4.19">Normalized Path Expression:</dt>
+          <dd style="margin-left: 1.5em" id="section-1.1-4.20">
+  A query in a normalized form that identifies exactly one Position in
+an Argument; see <a href="#overview" class="xref">Section 1.3</a>.<a href="#section-1.1-4.20" class="pilcrow">¶</a>
 </dd>
         <dd class="break"></dd>
 </dl>
@@ -1524,7 +1530,7 @@ in.<a href="#section-1.2-11" class="pilcrow">¶</a></p>
         </ul>
 </section>
 </div>
-<div id="overview-of-jsonpath-expressions">
+<div id="overview">
 <section id="section-1.3">
         <h3 id="name-overview-of-jsonpath-expres">
 <a href="#section-1.3" class="section-number selfRef">1.3. </a><a href="#name-overview-of-jsonpath-expres" class="section-name selfRef">Overview of JSONPath Expressions</a>
@@ -1707,7 +1713,7 @@ JSONPath:<a href="#section-1.3-15" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-1.3-16.1">Square brackets in XPath expressions always operate on the <em>node set</em> resulting from the previous path fragment. Indices always start at 1.<a href="#section-1.3-16.1" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.3-16.2">With JSONPath, square brackets operate on the <em>JSON object</em> or <em>array</em>
+          <li class="normal" id="section-1.3-16.2">With JSONPath, square brackets operate on the <em>object</em> or <em>array</em>
 addressed by the previous path fragment. Array indices always start at 0.<a href="#section-1.3-16.2" class="pilcrow">¶</a>
 </li>
         </ul>
@@ -1763,8 +1769,8 @@ typical XML example representing a bookstore (that also has bicycles):<a href="#
 <a href="#name-example-json-data-item" class="selfRef">Example JSON data item</a>
         </figcaption></figure>
 <p id="section-2-3">The examples in <a href="#tbl-example" class="xref">Table 2</a> use the expression mechanism to obtain
-the number of items in an array, to test for the presence of a map
-member, and to perform numeric comparisons of map member values with a
+the number of items in an array, to test for the presence of a
+member in a object, and to perform numeric comparisons of member values with a
 constant.<a href="#section-2-3" class="pilcrow">¶</a></p>
 <span id="name-example-jsonpath-expression"></span><div id="tbl-example">
 <table class="center" id="table-2">
@@ -1880,7 +1886,7 @@ constant.<a href="#section-2-3" class="pilcrow">¶</a></p>
       <h2 id="name-jsonpath-syntax-and-semanti">
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-jsonpath-syntax-and-semanti" class="section-name selfRef">JSONPath Syntax and Semantics</a>
       </h2>
-<div id="overview">
+<div id="synsem-overview">
 <section id="section-3.1">
         <h3 id="name-overview">
 <a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-overview" class="section-name selfRef">Overview</a>
@@ -1900,7 +1906,7 @@ in <span>[<a href="#RFC3629" class="xref">RFC3629</a>]</span>.<a href="#section-
         </h3>
 <p id="section-3.2-1">A JSON value is logically a tree of nodes.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
 <p id="section-3.2-2">Each node holds a JSON value (as defined by <span>[<a href="#RFC8259" class="xref">RFC8259</a>]</span>) of one of the
-types JSON object, array, number, string, or one of the literals <code>true</code>,
+types object, array, number, string, or one of the literals <code>true</code>,
 <code>false</code>, or <code>null</code>.
 The type of the JSON value held by a node is
 sometimes referred to as the type of the node.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
@@ -1984,14 +1990,14 @@ Let's walk through this in detail.<a href="#section-3.5-6" class="pilcrow">¶</a
 <p id="section-3.5-8">Firstly, <code>$</code> selects the root node which is the input document.
 So the result is a list
 consisting of just the root node.<a href="#section-3.5-8" class="pilcrow">¶</a></p>
-<p id="section-3.5-9">Next, <code>.a</code> selects from any input node of type JSON object and selects any value of the input
-node corresponding to the key <code>"a"</code>.
+<p id="section-3.5-9">Next, <code>.a</code> selects from any input node of type object and selects any value of the input
+node corresponding to the member name <code>"a"</code>.
 The result is again a list of one node: <code>[{"b":0},{"b":1},{"c":2}]</code>.<a href="#section-3.5-9" class="pilcrow">¶</a></p>
 <p id="section-3.5-10">Next, <code>[*]</code> selects from any input node which is an array and selects all the elements
 of the input node.
 The result is a list of three nodes: <code>{"b":0}</code>, <code>{"b":1}</code>, and <code>{"c":2}</code>.<a href="#section-3.5-10" class="pilcrow">¶</a></p>
-<p id="section-3.5-11">Finally, <code>.b</code> selects from any input node of type JSON object with a key
-<code>b</code> and selects the value of the input node corresponding to that key.
+<p id="section-3.5-11">Finally, <code>.b</code> selects from any input node of type object with a member name
+<code>b</code> and selects the value of the input node corresponding to that name.
 The result is a list containing <code>0</code>, <code>1</code>.
 This is the concatenation of three lists, two of length one containing <code>0</code>, <code>1</code>, respectively, and one of length zero.<a href="#section-3.5-11" class="pilcrow">¶</a></p>
 <p id="section-3.5-12">As a consequence of this approach, if any of the selectors selects no nodes,
@@ -2015,9 +2021,9 @@ of node.<a href="#section-3.5-13" class="pilcrow">¶</a></p>
             <h5 id="name-syntax-2">
 <a href="#name-syntax-2" class="section-name selfRef">Syntax</a>
             </h5>
-<p id="section-3.6.1.1-1">A dot child selector has a key known as a dot child name or a single asterisk
+<p id="section-3.6.1.1-1">A dot child selector has a member name known as a dot child name or a single asterisk
 (<code>*</code>).<a href="#section-3.6.1.1-1" class="pilcrow">¶</a></p>
-<p id="section-3.6.1.1-2">A dot child name corresponds to a name in a JSON object.<a href="#section-3.6.1.1-2" class="pilcrow">¶</a></p>
+<p id="section-3.6.1.1-2">A dot child name corresponds to a name in a object.<a href="#section-3.6.1.1-2" class="pilcrow">¶</a></p>
 <div class="artwork art-text alignLeft art-abnf" id="section-3.6.1.1-3">
 <pre>
 selector = dot-child              ; see below for alternatives
@@ -2048,14 +2054,15 @@ not encode Unicode characters.<a href="#section-3.6.1.1-5" class="pilcrow">¶</a
             <h5 id="name-semantics-2">
 <a href="#name-semantics-2" class="section-name selfRef">Semantics</a>
             </h5>
-<p id="section-3.6.1.2-1">A dot child name which is not a single asterisk (<code>*</code>) is considered to have a key.
-It selects the value corresponding to the key from any JSON object node.
+<p id="section-3.6.1.2-1">A dot child name which is not a single asterisk (<code>*</code>) is considered to
+have a member name.
+It selects the value corresponding to the name from any object node.
 It selects
-no nodes from a node which is not a JSON object.<a href="#section-3.6.1.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.6.1.2-2">The key of a dot child name is the sequence of Unicode characters contained
+no nodes from a node which is not a object.<a href="#section-3.6.1.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.6.1.2-2">The member name of a dot child name is the sequence of Unicode characters contained
 in that name.<a href="#section-3.6.1.2-2" class="pilcrow">¶</a></p>
 <p id="section-3.6.1.2-3">A dot child name consisting of a single asterisk is a wild card. It selects
-all the values of any JSON object node.
+all the values of any object node.
 It also selects all the elements of any array node.
 It selects no nodes from
 number, string, or literal nodes.<a href="#section-3.6.1.2-3" class="pilcrow">¶</a></p>
@@ -2160,7 +2167,7 @@ HEXDIG =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
 <a href="#name-semantics-4" class="section-name selfRef">Semantics</a>
               </h6>
 <p id="section-3.6.2.3.2-1">If the child is a quoted string, the string MUST be converted to a
-key by removing the surrounding quotes and
+member name by removing the surrounding quotes and
 replacing each escape sequence with its equivalent Unicode character, as
 in the table below:<a href="#section-3.6.2.3.2-1" class="pilcrow">¶</a></p>
 <span id="name-escape-sequence-replacement"></span><table class="center" id="table-3">
@@ -2217,9 +2224,9 @@ in the table below:<a href="#section-3.6.2.3.2-1" class="pilcrow">¶</a></p>
                   </tr>
                 </tbody>
               </table>
-<p id="section-3.6.2.3.2-3">The child selects the value corresponding to the key from any JSON object
-node with the key as a name.
-It selects no nodes from a node which is not a JSON object.<a href="#section-3.6.2.3.2-3" class="pilcrow">¶</a></p>
+<p id="section-3.6.2.3.2-3">The child selects the value corresponding to the member name from any object
+node that has a member with that name.
+It selects no nodes from a node which is not a object.<a href="#section-3.6.2.3.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2570,8 +2577,8 @@ http://coli.lili.uni-bielefeld.de/~andreas/Seminare/sommer02/books.xml
 </div>
 </address>
 <address class="vcard">
-        <div dir="auto" class="left"><span class="fn nameRole">Marko Mikulicic</span></div>
-<div dir="auto" class="left"><span class="org">VMware, Inc.</span></div>
+        <div dir="auto" class="left"><span class="fn nameRole">Marko Mikulicic (<span class="role">editor</span>)</span></div>
+<div dir="auto" class="left"><span class="org">InfluxData, Inc.</span></div>
 <div dir="auto" class="left">
 <span class="locality">Pisa</span> </div>
 <div dir="auto" class="left"><span class="country-name">Italy</span></div>
