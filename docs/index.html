@@ -15,26 +15,27 @@ within a JavaScript Object Notation (JSON) document.
     " name="description">
 <meta content="xml2rfc 3.3.0" name="generator">
 <meta content="JSON" name="keyword">
-<meta content="draft-ietf-jsonpath-base-latest" name="ietf.draft">
+<meta content="draft-normington-jsonpath-latest" name="ietf.draft">
 <!-- Generator version information:
   xml2rfc 3.3.0
-    Python 3.6.9
+    Python 3.8.5
     appdirs 1.4.4
     ConfigArgParse 1.2.3
-    google-i18n-address 2.4.0
+    google-i18n-address 2.3.5
     html5lib 1.1
-    intervaltree 3.1.0
+    intervaltree 3.0.2
     Jinja2 2.11.2
     kitchen 1.2.6
-    lxml 4.6.2
+    lxml 4.5.2
+    pycairo 1.19.1
     pycountry 20.7.3
     pyflakes 2.2.0
-    PyYAML 5.4.1
-    requests 2.25.1
-    setuptools 39.0.1
-    six 1.11.0
+    PyYAML 5.3.1
+    requests 2.24.0
+    setuptools 49.2.0
+    six 1.15.0
 -->
-<link href="draft-ietf-jsonpath-base.xml" rel="alternate" type="application/rfc+xml">
+<link href="draft-normington-jsonpath.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
 <style type="text/css">/*
 
@@ -1172,11 +1173,11 @@ dt+dd:empty::before{
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">JSONPath</td>
-<td class="right">January 2021</td>
+<td class="right">December 2020</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Normington, et al.</td>
-<td class="center">Expires 26 July 2021</td>
+<td class="center">Expires 11 June 2021</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1186,15 +1187,15 @@ dt+dd:empty::before{
 <dt class="label-workgroup">Workgroup:</dt>
 <dd class="workgroup">JSONPath WG</dd>
 <dt class="label-internet-draft">Internet-Draft:</dt>
-<dd class="internet-draft">draft-ietf-jsonpath-base-latest</dd>
+<dd class="internet-draft">draft-normington-jsonpath-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2021-01-22" class="published">22 January 2021</time>
+<time datetime="2020-12-08" class="published">8 December 2020</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2021-07-26">26 July 2021</time></dd>
+<dd class="expires"><time datetime="2021-06-11">11 June 2021</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1208,9 +1209,8 @@ dt+dd:empty::before{
 <div class="org">TheSoul Publishing Ltd.</div>
 </div>
 <div class="author">
-      <div class="author-name">M. Mikulicic, <span class="editor">Ed.</span>
-</div>
-<div class="org">InfluxData, Inc.</div>
+      <div class="author-name">M. Mikulicic</div>
+<div class="org">VMware, Inc.</div>
 </div>
 <div class="author">
       <div class="author-name">S. Gössner</div>
@@ -1226,15 +1226,20 @@ dt+dd:empty::before{
 within a JavaScript Object Notation (JSON) document.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note" id="section-note.1">
+      <p id="section-note.1-1"><strong>This document is a work in progress and has not yet been published
+as an Internet Draft</strong> (which needs to be fixed soon).<a href="#section-note.1-1" class="pilcrow">¶</a></p>
+</section>
+<section class="note" id="section-note.2">
       <h2 id="name-contributing">
 <a href="#name-contributing" class="section-name selfRef">Contributing</a>
       </h2>
-<p id="section-note.1-1">This document picks up the popular JSONPath specification dated
+<p id="section-note.2-1">This document picks up the popular JSONPath specification dated
 2007-02-21 and provides a normative definition for it.
 In its current state, it is a strawman document showing what needs to
-be covered.<a href="#section-note.1-1" class="pilcrow">¶</a></p>
-<p id="section-note.1-2">Comments and issues may be directed to this document's
-<a href="https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-jsonpath">github repository</a>.<a href="#section-note.1-2" class="pilcrow">¶</a></p>
+be covered.<a href="#section-note.2-1" class="pilcrow">¶</a></p>
+<p id="section-note.2-2">Comments and issues can be directed at the github repository <em>insert
+repo here</em> as well as (for the time when the more permanent home is
+being decided) at the dispatch@ietf.org mailing list.<a href="#section-note.2-2" class="pilcrow">¶</a></p>
 </section>
 <div id="status-of-memo">
 <section id="section-boilerplate.1">
@@ -1255,7 +1260,7 @@ be covered.<a href="#section-note.1-1" class="pilcrow">¶</a></p>
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 26 July 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 11 June 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1264,7 +1269,7 @@ be covered.<a href="#section-note.1-1" class="pilcrow">¶</a></p>
 <a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
         </h2>
 <p id="section-boilerplate.2-1">
-            Copyright (c) 2021 IETF Trust and the persons identified as the
+            Copyright (c) 2020 IETF Trust and the persons identified as the
             document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.2-2">
             This document is subject to BCP 78 and the IETF Trust's Legal
@@ -1412,8 +1417,9 @@ in ABNF as <code>%x2318</code>.<a href="#section-1.1-2" class="pilcrow">¶</a></
           <dt id="section-1.1-4.1">Data Item:</dt>
           <dd style="margin-left: 1.5em" id="section-1.1-4.2">
   A structure complying to the generic data model of JSON, i.e.,
-composed of containers such as arrays and maps (JSON objects), and
-of atomic data such as null, true, false, numbers, and text strings.<a href="#section-1.1-4.2" class="pilcrow">¶</a>
+composed of containers, namely maps (JSON objects) and arrays, and
+of atomic data, namely null, true, false, numbers, and text strings.
+Also called a JSON value.<a href="#section-1.1-4.2" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
 <dt id="section-1.1-4.3">Object:</dt>
@@ -1423,28 +1429,39 @@ When a JSON Object as defined in <span>[<a href="#RFC8259" class="xref">RFC8259<
 say JSON Object.<a href="#section-1.1-4.4" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.1-4.5">Query:</dt>
+<dt id="section-1.1-4.5">Member:</dt>
           <dd style="margin-left: 1.5em" id="section-1.1-4.6">
-  Short name for JSONPath expression.<a href="#section-1.1-4.6" class="pilcrow">¶</a>
+  A key/value pair in a map (JSON Object).  (Not itself a JSON value.)<a href="#section-1.1-4.6" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.1-4.7">Argument:</dt>
+<dt id="section-1.1-4.7">Element:</dt>
           <dd style="margin-left: 1.5em" id="section-1.1-4.8">
-  Short name for the JSON data item a JSONPath expression is applied to.<a href="#section-1.1-4.8" class="pilcrow">¶</a>
+  An item in an array.  (Also used with a distinct meaning in XML
+context for XML elements.)<a href="#section-1.1-4.8" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.1-4.9">Output Path:</dt>
+<dt id="section-1.1-4.9">Query:</dt>
           <dd style="margin-left: 1.5em" id="section-1.1-4.10">
+  Short name for JSONPath expression.<a href="#section-1.1-4.10" class="pilcrow">¶</a>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-1.1-4.11">Argument:</dt>
+          <dd style="margin-left: 1.5em" id="section-1.1-4.12">
+  Short name for the JSON data item a JSONPath expression is applied to.<a href="#section-1.1-4.12" class="pilcrow">¶</a>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-1.1-4.13">Output Path:</dt>
+          <dd style="margin-left: 1.5em" id="section-1.1-4.14">
   A simple form of JSONPath expression that identifies a Position by
 providing a query that results in exactly that position.  Similar
-to, but syntactically different from, a JSON Pointer <span>[<a href="#RFC6901" class="xref">RFC6901</a>]</span>.<a href="#section-1.1-4.10" class="pilcrow">¶</a>
+to, but syntactically different from, a JSON Pointer <span>[<a href="#RFC6901" class="xref">RFC6901</a>]</span>.<a href="#section-1.1-4.14" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.1-4.11">Position:</dt>
-          <dd style="margin-left: 1.5em" id="section-1.1-4.12">
+<dt id="section-1.1-4.15">Position:</dt>
+          <dd style="margin-left: 1.5em" id="section-1.1-4.16">
   A JSON data item identical to or nested within the JSON data item to
 which the query is applied to, expressed either by the value of that
-data item or by providing a JSONPath Output Path.<a href="#section-1.1-4.12" class="pilcrow">¶</a>
+data item or by providing a JSONPath Output Path.<a href="#section-1.1-4.16" class="pilcrow">¶</a>
 </dd>
         <dd class="break"></dd>
 </dl>
@@ -1514,9 +1531,8 @@ in.<a href="#section-1.2-11" class="pilcrow">¶</a></p>
         </h3>
 <p id="section-1.3-1">JSONPath expressions always apply to a JSON data item in the same way
 as XPath expressions are used in combination with an XML document.
-Since a JSON data item is usually anonymous and doesn't necessarily
-have a "root member object", JSONPath used the abstract name <code>$</code> to
-refer to the top level object of the data item.<a href="#section-1.3-1" class="pilcrow">¶</a></p>
+Since a JSON data item is anonymous, JSONPath uses the abstract name <code>$</code> to
+refer to the top level data item of the argument.<a href="#section-1.3-1" class="pilcrow">¶</a></p>
 <p id="section-1.3-2">JSONPath expressions can use the <em>dot-notation</em><a href="#section-1.3-2" class="pilcrow">¶</a></p>
 <div class="artwork art-text alignLeft" id="section-1.3-3">
 <pre>
@@ -1532,7 +1548,8 @@ $['store']['book'][0]['title']
 <p id="section-1.3-6">for paths input to a JSONPath processor.
 [1]
 Where a JSONPath processor uses JSONPath expressions as output paths,
-these will always be converted to the more general <em>bracket-notation</em>.
+these will always be converted to normalized JSONPath expressions
+which employ the more general <em>bracket-notation</em>.
 [2]
 Bracket notation is more general than dot notation and can serve as a
 canonical form when a JSONPath processor uses JSONPath expressions as
@@ -1551,7 +1568,7 @@ an alternative to explicit names or indices as in:<a href="#section-1.3-9" class
 $.store.book[(@.length-1)].title
 </pre><a href="#section-1.3-10" class="pilcrow">¶</a>
 </div>
-<p id="section-1.3-11">The symbol <code>@</code> is used for the current object.
+<p id="section-1.3-11">The symbol <code>@</code> is used for the current item.
 Filter expressions are supported via the syntax <code>?(&lt;boolean expr&gt;)</code> as in<a href="#section-1.3-11" class="pilcrow">¶</a></p>
 <div class="artwork art-text alignLeft" id="section-1.3-12">
 <pre>
@@ -1580,7 +1597,7 @@ $.store.book[?(@.price &lt; 10)].title
               <td class="text-left" rowspan="1" colspan="1">
                 <code>$</code>
 </td>
-              <td class="text-left" rowspan="1" colspan="1">the root object/element</td>
+              <td class="text-left" rowspan="1" colspan="1">the root element/item</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">
@@ -1589,7 +1606,7 @@ $.store.book[?(@.price &lt; 10)].title
               <td class="text-left" rowspan="1" colspan="1">
                 <code>@</code>
 </td>
-              <td class="text-left" rowspan="1" colspan="1">the current object/element</td>
+              <td class="text-left" rowspan="1" colspan="1">the current element/item</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">
@@ -1623,7 +1640,7 @@ $.store.book[?(@.price &lt; 10)].title
               <td class="text-left" rowspan="1" colspan="1">
                 <code>*</code>
 </td>
-              <td class="text-left" rowspan="1" colspan="1">wildcard: All objects/elements regardless of their names</td>
+              <td class="text-left" rowspan="1" colspan="1">wildcard: All elements/items regardless of their names</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">
@@ -1690,7 +1707,7 @@ JSONPath:<a href="#section-1.3-15" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-1.3-16.1">Square brackets in XPath expressions always operate on the <em>node set</em> resulting from the previous path fragment. Indices always start at 1.<a href="#section-1.3-16.1" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.3-16.2">With JSONPath, square brackets operate on the <em>object</em> or <em>array</em>
+          <li class="normal" id="section-1.3-16.2">With JSONPath, square brackets operate on the <em>JSON object</em> or <em>array</em>
 addressed by the previous path fragment. Array indices always start at 0.<a href="#section-1.3-16.2" class="pilcrow">¶</a>
 </li>
         </ul>
@@ -1883,7 +1900,7 @@ in <span>[<a href="#RFC3629" class="xref">RFC3629</a>]</span>.<a href="#section-
         </h3>
 <p id="section-3.2-1">A JSON value is logically a tree of nodes.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
 <p id="section-3.2-2">Each node holds a JSON value (as defined by <span>[<a href="#RFC8259" class="xref">RFC8259</a>]</span>) of one of the
-types object, array, number, string, or one of the literals <code>true</code>,
+types JSON object, array, number, string, or one of the literals <code>true</code>,
 <code>false</code>, or <code>null</code>.
 The type of the JSON value held by a node is
 sometimes referred to as the type of the node.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
@@ -1926,7 +1943,7 @@ sequence of <em>selectors</em>.<a href="#section-3.4-1" class="pilcrow">¶</a></
 <div class="artwork art-text alignLeft art-abnf" id="section-3.4-2">
 <pre>
 json-path = root-selector *selector
-root-selector = %x24               ; $ selects document root node
+root-selector = "$"               ; $ selects document root node
 </pre><a href="#section-3.4-2" class="pilcrow">¶</a>
 </div>
 <p id="section-3.4-3">The syntax and semantics of each selector is defined below.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
@@ -1967,13 +1984,13 @@ Let's walk through this in detail.<a href="#section-3.5-6" class="pilcrow">¶</a
 <p id="section-3.5-8">Firstly, <code>$</code> selects the root node which is the input document.
 So the result is a list
 consisting of just the root node.<a href="#section-3.5-8" class="pilcrow">¶</a></p>
-<p id="section-3.5-9">Next, <code>.a</code> selects from any input node of type object and selects any value of the input
+<p id="section-3.5-9">Next, <code>.a</code> selects from any input node of type JSON object and selects any value of the input
 node corresponding to the key <code>"a"</code>.
 The result is again a list of one node: <code>[{"b":0},{"b":1},{"c":2}]</code>.<a href="#section-3.5-9" class="pilcrow">¶</a></p>
 <p id="section-3.5-10">Next, <code>[*]</code> selects from any input node which is an array and selects all the elements
 of the input node.
 The result is a list of three nodes: <code>{"b":0}</code>, <code>{"b":1}</code>, and <code>{"c":2}</code>.<a href="#section-3.5-10" class="pilcrow">¶</a></p>
-<p id="section-3.5-11">Finally, <code>.b</code> selects from any input node of type object with a key
+<p id="section-3.5-11">Finally, <code>.b</code> selects from any input node of type JSON object with a key
 <code>b</code> and selects the value of the input node corresponding to that key.
 The result is a list containing <code>0</code>, <code>1</code>.
 This is the concatenation of three lists, two of length one containing <code>0</code>, <code>1</code>, respectively, and one of length zero.<a href="#section-3.5-11" class="pilcrow">¶</a></p>
@@ -2004,13 +2021,13 @@ of node.<a href="#section-3.5-13" class="pilcrow">¶</a></p>
 <div class="artwork art-text alignLeft art-abnf" id="section-3.6.1.1-3">
 <pre>
 selector = dot-child              ; see below for alternatives
-dot-child = %x2E dot-child-name / ; .&lt;dot-child-name&gt;
-            %x2E %x2A             ; .*
+dot-child = "." dot-child-name / ; .&lt;dot-child-name&gt;
+            "." "*"             ; .*
 dot-child-name = 1*(
-                   %x2D /         ; -
+                   "-" /         ; -
                    DIGIT /
                    ALPHA /
-                   %x5F /         ; _
+                   "_" /         ; _
                    %x80-10FFFF    ; any non-ASCII Unicode character
                  )
 DIGIT =  %x30-39                  ; 0-9
@@ -2032,13 +2049,13 @@ not encode Unicode characters.<a href="#section-3.6.1.1-5" class="pilcrow">¶</a
 <a href="#name-semantics-2" class="section-name selfRef">Semantics</a>
             </h5>
 <p id="section-3.6.1.2-1">A dot child name which is not a single asterisk (<code>*</code>) is considered to have a key.
-It selects the value corresponding to the key from any object node.
+It selects the value corresponding to the key from any JSON object node.
 It selects
-no nodes from a node which is not an object.<a href="#section-3.6.1.2-1" class="pilcrow">¶</a></p>
+no nodes from a node which is not a JSON object.<a href="#section-3.6.1.2-1" class="pilcrow">¶</a></p>
 <p id="section-3.6.1.2-2">The key of a dot child name is the sequence of Unicode characters contained
 in that name.<a href="#section-3.6.1.2-2" class="pilcrow">¶</a></p>
 <p id="section-3.6.1.2-3">A dot child name consisting of a single asterisk is a wild card. It selects
-all the values of any object node.
+all the values of any JSON object node.
 It also selects all the elements of any array node.
 It selects no nodes from
 number, string, or literal nodes.<a href="#section-3.6.1.2-3" class="pilcrow">¶</a></p>
@@ -2060,10 +2077,10 @@ number, string, or literal nodes.<a href="#section-3.6.1.2-3" class="pilcrow">¶
 <div class="artwork art-text alignLeft art-abnf" id="section-3.6.2.1-2">
 <pre>
 selector =/ union
-union = %x5B ws union-elements ws %x5D ; [...]
-ws = *%x20                             ; zero or more spaces
+union = "[" ws union-elements ws "]" ; [...]
+ws = *" "                             ; zero or more spaces
 union-elements = union-element /
-                 union-element ws %x2C ws union-elements
+                 union-element ws "," ws union-elements
                                        ; ,-separated list
 </pre><a href="#section-3.6.2.1-2" class="pilcrow">¶</a>
 </div>
@@ -2094,38 +2111,38 @@ lists (in the order of the selectors) of nodes selected by the union elements.<a
 <pre>
 union-element = child ; see below for more alternatives
 child = %x22 *double-quoted %x22 / ; "string"
-        %x27 *single-quoted %x27   ; 'string'
+        "'" *single-quoted "'"   ; 'string'
 
 double-quoted = dq-unescaped /
           escape (
-              %x22 /          ; "    quotation mark  U+0022
-              %x2F /          ; /    solidus         U+002F
-              %x5C /          ; \    reverse solidus U+005C
-              %x62 /          ; b    backspace       U+0008
-              %x66 /          ; f    form feed       U+000C
-              %x6E /          ; n    line feed       U+000A
-              %x72 /          ; r    carriage return U+000D
-              %x74 /          ; t    tab             U+0009
-              %x75 4HEXDIG )  ; uXXXX                U+XXXX
+              %x22 /         ; "    quotation mark  U+0022
+              "/" /          ; /    solidus         U+002F
+              "\" /          ; \    reverse solidus U+005C
+              "b" /          ; b    backspace       U+0008
+              "f" /          ; f    form feed       U+000C
+              "n" /          ; n    line feed       U+000A
+              "r" /          ; r    carriage return U+000D
+              "t" /          ; t    tab             U+0009
+              "u" 4HEXDIG )  ; uXXXX                U+XXXX
 
 
-      dq-unescaped = %x20-21 / %x23-5B / %x5D-10FFFF
+dq-unescaped = %x20-21 / %x23-5B / %x5D-10FFFF
 
 single-quoted = sq-unescaped /
           escape (
-              %x27 /          ; '    apostrophe      U+0027
-              %x2F /          ; /    solidus         U+002F
-              %x5C /          ; \    reverse solidus U+005C
-              %x62 /          ; b    backspace       U+0008
-              %x66 /          ; f    form feed       U+000C
-              %x6E /          ; n    line feed       U+000A
-              %x72 /          ; r    carriage return U+000D
-              %x74 /          ; t    tab             U+0009
-              %x75 4HEXDIG )  ; uXXXX                U+XXXX
+              "'" /          ; '    apostrophe      U+0027
+              "/" /          ; /    solidus         U+002F
+              "\" /          ; \    reverse solidus U+005C
+              "b" /          ; b    backspace       U+0008
+              "f" /          ; f    form feed       U+000C
+              "n" /          ; n    line feed       U+000A
+              "r" /          ; r    carriage return U+000D
+              "t" /          ; t    tab             U+0009
+              "u" 4HEXDIG )  ; uXXXX                U+XXXX
 
-      sq-unescaped = %x20-26 / %x28-5B / %x5D-10FFFF
+sq-unescaped = %x20-26 / %x28-5B / %x5D-10FFFF
 
-escape = %x5C                 ; \
+escape = "\"                 ; \
 
 HEXDIG =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
                               ; case insensitive hex digit
@@ -2159,50 +2176,50 @@ in the table below:<a href="#section-3.6.2.3.2-1" class="pilcrow">¶</a></p>
                 </thead>
                 <tbody>
                   <tr>
-                    <td class="text-center" rowspan="1" colspan="1">%x5C %x22</td>
+                    <td class="text-center" rowspan="1" colspan="1">"" %x22</td>
                     <td class="text-center" rowspan="1" colspan="1">U+0022</td>
                   </tr>
                   <tr>
-                    <td class="text-center" rowspan="1" colspan="1">%x5C %x27</td>
+                    <td class="text-center" rowspan="1" colspan="1">"" "'"</td>
                     <td class="text-center" rowspan="1" colspan="1">U+0027</td>
                   </tr>
                   <tr>
-                    <td class="text-center" rowspan="1" colspan="1">%x5C %x2F</td>
+                    <td class="text-center" rowspan="1" colspan="1">"" "/"</td>
                     <td class="text-center" rowspan="1" colspan="1">U+002F</td>
                   </tr>
                   <tr>
-                    <td class="text-center" rowspan="1" colspan="1">%x5C %x5C</td>
+                    <td class="text-center" rowspan="1" colspan="1">"" ""</td>
                     <td class="text-center" rowspan="1" colspan="1">U+005C</td>
                   </tr>
                   <tr>
-                    <td class="text-center" rowspan="1" colspan="1">%x5C %x62</td>
+                    <td class="text-center" rowspan="1" colspan="1">"" "b"</td>
                     <td class="text-center" rowspan="1" colspan="1">U+0008</td>
                   </tr>
                   <tr>
-                    <td class="text-center" rowspan="1" colspan="1">%x5C %x66</td>
+                    <td class="text-center" rowspan="1" colspan="1">"" "f"</td>
                     <td class="text-center" rowspan="1" colspan="1">U+000C</td>
                   </tr>
                   <tr>
-                    <td class="text-center" rowspan="1" colspan="1">%x5C %x6E</td>
+                    <td class="text-center" rowspan="1" colspan="1">"" "n"</td>
                     <td class="text-center" rowspan="1" colspan="1">U+000A</td>
                   </tr>
                   <tr>
-                    <td class="text-center" rowspan="1" colspan="1">%x5C %x72</td>
+                    <td class="text-center" rowspan="1" colspan="1">"" "r"</td>
                     <td class="text-center" rowspan="1" colspan="1">U+000D</td>
                   </tr>
                   <tr>
-                    <td class="text-center" rowspan="1" colspan="1">%x5C %x74</td>
+                    <td class="text-center" rowspan="1" colspan="1">"" "t"</td>
                     <td class="text-center" rowspan="1" colspan="1">U+0009</td>
                   </tr>
                   <tr>
-                    <td class="text-center" rowspan="1" colspan="1">%x5C uXXXX</td>
+                    <td class="text-center" rowspan="1" colspan="1">"" uXXXX</td>
                     <td class="text-center" rowspan="1" colspan="1">U+XXXX</td>
                   </tr>
                 </tbody>
               </table>
-<p id="section-3.6.2.3.2-3">The child selects the value corresponding to the key from any object
+<p id="section-3.6.2.3.2-3">The child selects the value corresponding to the key from any JSON object
 node with the key as a name.
-It selects no nodes from a node which is not an object.<a href="#section-3.6.2.3.2-3" class="pilcrow">¶</a></p>
+It selects no nodes from a node which is not a JSON object.<a href="#section-3.6.2.3.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2553,8 +2570,8 @@ http://coli.lili.uni-bielefeld.de/~andreas/Seminare/sommer02/books.xml
 </div>
 </address>
 <address class="vcard">
-        <div dir="auto" class="left"><span class="fn nameRole">Marko Mikulicic (<span class="role">editor</span>)</span></div>
-<div dir="auto" class="left"><span class="org">InfluxData, Inc.</span></div>
+        <div dir="auto" class="left"><span class="fn nameRole">Marko Mikulicic</span></div>
+<div dir="auto" class="left"><span class="org">VMware, Inc.</span></div>
 <div dir="auto" class="left">
 <span class="locality">Pisa</span> </div>
 <div dir="auto" class="left"><span class="country-name">Italy</span></div>

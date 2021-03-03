@@ -161,13 +161,24 @@ The terminology of {{-json}} applies.
 
 Data Item:
 : A structure complying to the generic data model of JSON, i.e.,
-  composed of containers such as arrays and maps (JSON objects), and
-  of atomic data such as null, true, false, numbers, and text strings.
+  composed of containers, namely JSON objects and arrays, and
+  of atomic data, namely null, true, false, numbers, and text strings.
+  Also called a JSON value.
 
 Object:
-: Used in its generic sense, e.g., for programming language objects.
-  When a JSON Object as defined in {{-json}} is meant, we specifically
-  say JSON Object.
+: A JSON object as defined in {{-json}}.
+  Never used in its generic sense, e.g., for programming language objects.
+
+Member:
+: A name/value pair in a JSON object.  (Not itself a JSON value.)
+
+Name:
+: The name in a name/value pair constituting a member.  (Also known as
+  "key", "tag", or "label".)
+
+Element:
+: An item in an array.  (Also used with a distinct meaning in XML
+  context for XML elements.)
 
 Query:
 : Short name for JSONPath expression.
@@ -183,7 +194,11 @@ Output Path:
 Position:
 : A JSON data item identical to or nested within the JSON data item to
   which the query is applied to, expressed either by the value of that
-  data item or by providing a JSONPath Output Path.
+  data item or by providing a Normalized Path Expression as a JSONPath Output Path.
+
+Normalized Path Expression:
+: A query in a normalized form that identifies exactly one Position in
+  an Argument; see {{overview}}.
 
 
 ## Inspired by XPath
@@ -235,13 +250,12 @@ The JSONPath tool in question should:
 * be lightweight in code size and memory consumption.
 * be runtime efficient.
 
-## Overview of JSONPath Expressions
+## Overview of JSONPath Expressions {#overview}
 
 JSONPath expressions always apply to a JSON data item in the same way
 as XPath expressions are used in combination with an XML document.
-Since a JSON data item is usually anonymous and doesn't necessarily
-have a "root member object", JSONPath used the abstract name `$` to
-refer to the top level object of the data item.
+Since a JSON data item is anonymous, JSONPath uses the abstract name `$` to
+refer to the top level data item of the argument.
 
 JSONPath expressions can use the *dot–notation*
 
@@ -258,7 +272,8 @@ $['store']['book'][0]['title']
 for paths input to a JSONPath processor.
 \[1]
 Where a JSONPath processor uses JSONPath expressions as output paths,
-these will always be converted to the more general *bracket–notation*.
+these will always be converted to normalized JSONPath expressions
+which employ the more general *bracket–notation*.
 \[2]
 Bracket notation is more general than dot notation and can serve as a
 canonical form when a JSONPath processor uses JSONPath expressions as
@@ -281,7 +296,7 @@ an alternative to explicit names or indices as in:
 $.store.book[(@.length-1)].title
 ~~~~
 
-The symbol `@` is used for the current object.
+The symbol `@` is used for the current item.
 Filter expressions are supported via the syntax `?(<boolean expr>)` as in
 
 ~~~~
@@ -292,15 +307,15 @@ Here is a complete overview and a side by side comparison of the JSONPath syntax
 
 | XPath | JSONPath           | Description                                                                                                                           |
 |-------+--------------------+---------------------------------------------------------------------------------------------------------------------------------------|
-| `/`   | `$`                | the root object/element                                                                                                               |
-| `.`   | `@`                | the current object/element                                                                                                            |
+| `/`   | `$`                | the root element/item                                                                                                                 |
+| `.`   | `@`                | the current element/item                                                                                                              |
 | `/`   | `.` or `[]`        | child operator                                                                                                                        |
 | `..`  | n/a                | parent operator                                                                                                                       |
 | `//`  | `..`               | nested descendants (JSONPath borrows this syntax from E4X)                                                                            |
-| `*`   | `*`                | wildcard: All objects/elements regardless of their names                                                                              |
+| `*`   | `*`                | wildcard: All elements/items regardless of their names                                                                         |
 | `@`   | n/a                | attribute access: JSON data items do not have attributes                                                                              |
 | `[]`  | `[]`               | subscript operator: XPath uses it to iterate over element collections and for predicates; native array indexing as in JavaScript here |
-| `¦`   | `[,]`              | Union operator in XPath (results in a combination of node sets); JSONPath allows alternate names or array indices as a set             |
+| `¦`   | `[,]`              | Union operator in XPath (results in a combination of node sets); JSONPath allows alternate names or array indices as a set            |
 | n/a   | `[start:end:step]` | array slice operator borrowed from ES4                                                                                                |
 | `[]`  | `?()`              | applies a filter (script) expression                                                                                                  |
 | n/a   | `()`               | expression engine                                                                                                                     |
@@ -360,8 +375,8 @@ typical XML example representing a bookstore (that also has bicycles):
 {: fig-example-item title="Example JSON data item"}
 
 The examples in {{tbl-example}} use the expression mechanism to obtain
-the number of items in an array, to test for the presence of a map
-member, and to perform numeric comparisons of map member values with a
+the number of items in an array, to test for the presence of a
+member in a object, and to perform numeric comparisons of member values with a
 constant.
 
 | XPath                  | JSONPath                                  | Result                                                       |
@@ -382,7 +397,7 @@ constant.
 
 # JSONPath Syntax and Semantics
 
-## Overview
+## Overview {#synsem-overview}
 
 A JSONPath is a string which selects zero or more nodes of a piece of JSON.
 A valid JSONPath conforms to the ABNF syntax defined by this document.
@@ -440,7 +455,7 @@ sequence of *selectors*.
 
 ~~~~ abnf
 json-path = root-selector *selector
-root-selector = %x24               ; $ selects document root node
+root-selector = "$"               ; $ selects document root node
 ~~~~
 
 The syntax and semantics of each selector is defined below.
@@ -487,15 +502,15 @@ So the result is a list
 consisting of just the root node.
 
 Next, `.a` selects from any input node of type object and selects any value of the input
-node corresponding to the key `"a"`.
+node corresponding to the member name `"a"`.
 The result is again a list of one node: `[{"b":0},{"b":1},{"c":2}]`.
 
 Next, `[*]` selects from any input node which is an array and selects all the elements
 of the input node.
 The result is a list of three nodes: `{"b":0}`, `{"b":1}`, and `{"c":2}`.
 
-Finally, `.b` selects from any input node of type object with a key
-`b` and selects the value of the input node corresponding to that key.
+Finally, `.b` selects from any input node of type object with a member name
+`b` and selects the value of the input node corresponding to that name.
 The result is a list containing `0`, `1`.
 This is the concatenation of three lists, two of length one containing `0`, `1`, respectively, and one of length zero.
 
@@ -513,20 +528,20 @@ of node.
 #### Syntax
 {: numbered="false" toc="exclude"}
 
-A dot child selector has a key known as a dot child name or a single asterisk
+A dot child selector has a member name known as a dot child name or a single asterisk
 (`*`).
 
-A dot child name corresponds to a name in a JSON object.
+A dot child name corresponds to a name in a object.
 
 ~~~~ abnf
 selector = dot-child              ; see below for alternatives
-dot-child = %x2E dot-child-name / ; .<dot-child-name>
-            %x2E %x2A             ; .*
+dot-child = "." dot-child-name / ; .<dot-child-name>
+            "." "*"             ; .*
 dot-child-name = 1*(
-                   %x2D /         ; -
+                   "-" /         ; -
                    DIGIT /
                    ALPHA /
-                   %x5F /         ; _
+                   "_" /         ; _
                    %x80-10FFFF    ; any non-ASCII Unicode character
                  )
 DIGIT =  %x30-39                  ; 0-9
@@ -546,12 +561,13 @@ not encode Unicode characters.
 #### Semantics
 {: numbered="false" toc="exclude"}
 
-A dot child name which is not a single asterisk (`*`) is considered to have a key.
-It selects the value corresponding to the key from any object node.
+A dot child name which is not a single asterisk (`*`) is considered to
+have a member name.
+It selects the value corresponding to the name from any object node.
 It selects
-no nodes from a node which is not an object.
+no nodes from a node which is not a object.
 
-The key of a dot child name is the sequence of Unicode characters contained
+The member name of a dot child name is the sequence of Unicode characters contained
 in that name.
 
 A dot child name consisting of a single asterisk is a wild card. It selects
@@ -570,10 +586,10 @@ A union selector consists of one or more union elements.
 
 ~~~~ abnf
 selector =/ union
-union = %x5B ws union-elements ws %x5D ; [...]
-ws = *%x20                             ; zero or more spaces
+union = "[" ws union-elements ws "]" ; [...]
+ws = *" "                             ; zero or more spaces
 union-elements = union-element /
-                 union-element ws %x2C ws union-elements
+                 union-element ws "," ws union-elements
                                        ; ,-separated list
 ~~~~
 
@@ -595,38 +611,38 @@ A child is a quoted string.
 ~~~~ abnf
 union-element = child ; see below for more alternatives
 child = %x22 *double-quoted %x22 / ; "string"
-        %x27 *single-quoted %x27   ; 'string'
+        "'" *single-quoted "'"   ; 'string'
 
 double-quoted = dq-unescaped /
           escape (
-              %x22 /          ; "    quotation mark  U+0022
-              %x2F /          ; /    solidus         U+002F
-              %x5C /          ; \    reverse solidus U+005C
-              %x62 /          ; b    backspace       U+0008
-              %x66 /          ; f    form feed       U+000C
-              %x6E /          ; n    line feed       U+000A
-              %x72 /          ; r    carriage return U+000D
-              %x74 /          ; t    tab             U+0009
-              %x75 4HEXDIG )  ; uXXXX                U+XXXX
+              %x22 /         ; "    quotation mark  U+0022
+              "/" /          ; /    solidus         U+002F
+              "\" /          ; \    reverse solidus U+005C
+              "b" /          ; b    backspace       U+0008
+              "f" /          ; f    form feed       U+000C
+              "n" /          ; n    line feed       U+000A
+              "r" /          ; r    carriage return U+000D
+              "t" /          ; t    tab             U+0009
+              "u" 4HEXDIG )  ; uXXXX                U+XXXX
 
 
-      dq-unescaped = %x20-21 / %x23-5B / %x5D-10FFFF
+dq-unescaped = %x20-21 / %x23-5B / %x5D-10FFFF
 
 single-quoted = sq-unescaped /
           escape (
-              %x27 /          ; '    apostrophe      U+0027
-              %x2F /          ; /    solidus         U+002F
-              %x5C /          ; \    reverse solidus U+005C
-              %x62 /          ; b    backspace       U+0008
-              %x66 /          ; f    form feed       U+000C
-              %x6E /          ; n    line feed       U+000A
-              %x72 /          ; r    carriage return U+000D
-              %x74 /          ; t    tab             U+0009
-              %x75 4HEXDIG )  ; uXXXX                U+XXXX
+              "'" /          ; '    apostrophe      U+0027
+              "/" /          ; /    solidus         U+002F
+              "\" /          ; \    reverse solidus U+005C
+              "b" /          ; b    backspace       U+0008
+              "f" /          ; f    form feed       U+000C
+              "n" /          ; n    line feed       U+000A
+              "r" /          ; r    carriage return U+000D
+              "t" /          ; t    tab             U+0009
+              "u" 4HEXDIG )  ; uXXXX                U+XXXX
 
-      sq-unescaped = %x20-26 / %x28-5B / %x5D-10FFFF
+sq-unescaped = %x20-26 / %x28-5B / %x5D-10FFFF
 
-escape = %x5C                 ; \
+escape = "\"                 ; \
 
 HEXDIG =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
                               ; case insensitive hex digit
@@ -642,27 +658,27 @@ Notes:
 {: numbered="false" toc="exclude"}
 
 If the child is a quoted string, the string MUST be converted to a
-key by removing the surrounding quotes and
+member name by removing the surrounding quotes and
 replacing each escape sequence with its equivalent Unicode character, as
 in the table below:
 
-| Escape Sequence | Unicode Character |
-|:---------------:|:-----------------:|
-| %x5C %x22       | U+0022            |
-| %x5C %x27       | U+0027            |
-| %x5C %x2F       | U+002F            |
-| %x5C %x5C       | U+005C            |
-| %x5C %x62       | U+0008            |
-| %x5C %x66       | U+000C            |
-| %x5C %x6E       | U+000A            |
-| %x5C %x72       | U+000D            |
-| %x5C %x74       | U+0009            |
-| %x5C uXXXX      | U+XXXX            |
+| Escape Sequence   | Unicode Character   |
+| :---------------: | :-----------------: |
+| "\" %x22          | U+0022              |
+| "\" "'"           | U+0027              |
+| "\" "/"           | U+002F              |
+| "\" "\"           | U+005C              |
+| "\" "b"           | U+0008              |
+| "\" "f"           | U+000C              |
+| "\" "n"           | U+000A              |
+| "\" "r"           | U+000D              |
+| "\" "t"           | U+0009              |
+| "\" uXXXX         | U+XXXX              |
 {: title="Escape Sequence Replacements" cols="c c"}
 
-The child selects the value corresponding to the key from any object
-node with the key as a name.
-It selects no nodes from a node which is not an object.
+The child selects the value corresponding to the member name from any object
+node that has a member with that name.
+It selects no nodes from a node which is not a object.
 
 
 
