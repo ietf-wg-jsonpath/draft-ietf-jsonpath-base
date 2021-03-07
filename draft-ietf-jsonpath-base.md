@@ -1,7 +1,7 @@
 ---
 stand_alone: true
 ipr: trust200902
-docname: draft-ietf-jsonpath-base-latest
+docname: draft-ietf-jsonpath-base-00
 cat: std
 obsoletes: ''
 updates: ''
