@@ -168,8 +168,7 @@ Data Item:
 
   The term _node_ has the same meaning, but is used to emphasize the
   location of an item within the Argument, i.e., an item identical to
-  or nested within the JSON data item to which the query is applied
-  to.
+  or nested within the JSON data item to which the query is applied.
 
 Object:
 : A JSON object as defined in {{-json}}.
