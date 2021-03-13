@@ -164,6 +164,12 @@ Data Item:
   composed of containers, namely JSON objects and arrays, and
   of atomic data, namely null, true, false, numbers, and text strings.
   Also called a JSON value.
+  In this document, often abbreviated to _item_.
+
+  The term _node_ has the same meaning, but is used to emphasize the
+  location of an item within the Argument, i.e., an item identical to
+  or nested within the JSON data item to which the query is applied
+  to.
 
 Object:
 : A JSON object as defined in {{-json}}.
@@ -176,9 +182,19 @@ Name:
 : The name in a name/value pair constituting a member.  (Also known as
   "key", "tag", or "label".)
 
+Array:
+: A JSON array as defined in {{-json}}.
+  Never used in its generic sense, e.g., for programming language objects.
+
 Element:
 : An item in an array.  (Also used with a distinct meaning in XML
   context for XML elements.)
+
+Index:
+: An unsigned number that identifies a specific element in an array.
+  The term, in particular in the form indexing, is also sometimes used
+  for either an index or a member name, when both arrays and objects
+  can be fed to the indexing operation.
 
 Query:
 : Short name for JSONPath expression.
@@ -187,18 +203,9 @@ Argument:
 : Short name for the JSON data item a JSONPath expression is applied to.
 
 Output Path:
-: A simple form of JSONPath expression that identifies a Position by
-  providing a query that results in exactly that position.  Similar
+: A simple form of JSONPath expression that identifies a node by
+  providing a query that results in exactly that node.  Similar
   to, but syntactically different from, a JSON Pointer {{-pointer}}.
-
-Position:
-: A JSON data item identical to or nested within the JSON data item to
-  which the query is applied to, expressed either by the value of that
-  data item or by providing a Normalized Path Expression as a JSONPath Output Path.
-
-Normalized Path Expression:
-: A query in a normalized form that identifies exactly one Position in
-  an Argument; see {{overview}}.
 
 
 ## Inspired by XPath
@@ -272,7 +279,7 @@ $['store']['book'][0]['title']
 for paths input to a JSONPath processor.
 \[1]
 Where a JSONPath processor uses JSONPath expressions as output paths,
-these will always be converted to normalized JSONPath expressions
+these will always be converted to Output Paths
 which employ the more general *bracket–notation*.
 \[2]
 Bracket notation is more general than dot notation and can serve as a
@@ -785,7 +792,8 @@ as follows:
 {: title="Default array slice start and end values"}
 
 Slice expression parameters `start` and `end` are not directly usable
-as slice bounds and must first be normalized. Normalization is defined as:
+as slice bounds and must first be normalized.
+Normalization for this purpose is defined as:
 
 ~~~~
 FUNCTION Normalize(i):
