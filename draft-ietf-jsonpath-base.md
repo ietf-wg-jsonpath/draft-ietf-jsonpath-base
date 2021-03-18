@@ -190,7 +190,7 @@ Element:
   context for XML elements.)
 
 Index:
-: An unsigned number that identifies a specific element in an array.
+: A non-negative integer that identifies a specific element in an array.
   The term, in particular in the form indexing, is also sometimes used
   for either an index or a member name, when both arrays and objects
   can be fed to the indexing operation.
