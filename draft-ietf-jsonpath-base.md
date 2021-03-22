@@ -450,10 +450,9 @@ return an error.
 
 ## Syntax
 
-Syntactically, a JSONPath consists of either a root selector (`$`), which
-selects the root node of a JSON value, or a current item selector (`@`), which
-selects a child node of a JSON value, followed by a possibly empty sequence of
-*selectors*.
+Syntactically, a JSON Path consists of a start selector, which may either be the
+root selector $ or the current item selector @, followed by a possibly empty
+sequence of *selectors*.
 
 ~~~~ abnf
 json-path = start-selector *selector
@@ -531,7 +530,8 @@ When a child node is used as current item, the current item selector `@` selects
 it as starting node instead of the document root.
 
 The root selector `$` should be prefered to the current item selector `@` when
-a path relative to the current item is not required.
+a path relative to the current item is not required or when no current item can
+be defined
 
 In what follows, the semantics of each selector are defined for each type
 of node.
