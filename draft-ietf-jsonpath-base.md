@@ -201,12 +201,6 @@ Query:
 Argument:
 : Short name for the JSON data item a JSONPath expression is applied to.
 
-Nodelist:
-: Output of applying a query to an argument: a list of nodes within
-  that argument.
-  While this list can be represented in JSON, e.g. as an array, the
-  nodelist is an abstract concept unrelated to JSON data items.
-
 Output Path:
 : A simple form of JSONPath expression that identifies a node by
   providing a query that results in exactly that node.  Similar
