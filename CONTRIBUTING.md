@@ -16,6 +16,12 @@ You agree to comply with all applicable IETF policies and procedures, including,
 BCP 78, 79, the TLP, and the TLP rules regarding code components (e.g. being
 subject to a Simplified BSD License) in Contributions.
 
+## Conventions
+
+Basic conventions around source files formatting are captured in the `.editorconfig` file.
+Many editors support that file natively. Others (such as VS code) require a plugin, see https://editorconfig.org/.
+
+In the markdown file, the convention is to start a new line when starting a new sentence.
 
 ## Other Resources
 
