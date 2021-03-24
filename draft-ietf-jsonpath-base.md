@@ -453,7 +453,14 @@ the present specification.)
 
 ## Processing Model
 
-A valid JSONPath query is executed against a JSON value, the *Argument*, and
+In this specification, the semantics of a JSONPath query are defined
+in terms of a *processing model*.  That model is not prescriptive of
+the internal workings of an implementation:  Implementations may wish
+(or need) to design a different process that yields results that
+conform to the model.
+
+In the processing model,
+a valid JSONPath query is executed against a JSON value, the *Argument*, and
 produces a list of zero or more nodes of the JSON value which are
 selected by the JSONPath.
 (Note that the term JSON value also implies that this value complies
