@@ -17,8 +17,24 @@ $ make
 This requires that you have the necessary software installed.  See
 [the instructions](https://github.com/martinthomson/i-d-template/blob/master/doc/SETUP.md).
 
+## Community
+
+All official discussion is in [issues](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-jsonpath/issues),
+[pull requests](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-jsonpath/pulls), and the [jsonpath@ietf.org mailing list](https://www.ietf.org/mailman/listinfo/jsonpath).
+See the [archive](https://mailarchive.ietf.org/arch/browse/jsonpath/) for previous posts.
+
+## License
+
+See the draft for the copyright which is repeated in [LICENSE](./LICENSE).
 
 ## Contributing
 
 See the
 [guidelines for contributions](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-jsonpath/blob/main/CONTRIBUTING.md).
+
+## Comparing JSONPath Implementations
+
+Christoph Burgmer's [JSONPath Comparison project](https://github.com/cburgmer/json-path-comparison)
+publishes a [comparison](https://cburgmer.github.io/json-path-comparison/) of many existing
+implementations of JSONPath, calculates a consensus on various features, and proposes at least one
+implementation which will inform the Internet Draft.
