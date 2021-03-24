@@ -440,7 +440,7 @@ of JSONPath.
 A well-formed JSONPath query is valid if it also fulfills all semantic
 requirements posed by this document.
 
-Well-formedness and validity of JSONPath queries are independent of
+The well-formedness and validity of JSONPath queries are independent of
 the JSON value the query is applied to; no further errors can be
 raised during application of the query to a JSON value.
 
