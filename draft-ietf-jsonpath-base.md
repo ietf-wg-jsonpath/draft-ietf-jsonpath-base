@@ -180,9 +180,12 @@ Data Item:
   Also called a JSON value.
   In this document, often abbreviated to _item_.
 
-  The term _node_ has the same meaning, but is used to emphasize the
-  location of an item within the Argument, i.e., an item identical to
-  or nested within the JSON data item to which the query is applied.
+Node:
+: A Data Item, with an emphasis on the location of the item within the
+  Argument.  I.e., an item identical to or contained within the JSON
+  data item to which the query is applied.  A node can be viewed as a
+  combination of a (1) JSON value and (2) its location in the
+  argument; the latter can, if desired, be represented as an Output Path.
 
 Object:
 : A JSON object as defined in {{-json}}.
