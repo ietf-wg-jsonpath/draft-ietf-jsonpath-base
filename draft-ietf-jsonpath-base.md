@@ -14,7 +14,7 @@ pi:
   symrefs: 'true'
   sortrefs: 'true'
   comments: true
-title: JavaScript Object Notation (JSON) Path
+title: "JSONPath: Query expressions for JSON"
 abbrev: JSONPath
 area: ART
 wg: JSONPath WG
