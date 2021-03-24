@@ -2,9 +2,9 @@
 
 This is the working area for the IETF [JSONPATH Working Group](https://datatracker.ietf.org/wg/jsonpath/documents/) Internet-Draft, "JavaScript Object Notation (JSON) Path".
 
-* [Editor's Copy](https://ietf-wg-jsonpath.github.io/draft-ietf-jsonpath-jsonpath/#go.draft-ietf-jsonpath-base.html)
+* [Editor's Copy](https://ietf-wg-jsonpath.github.io/draft-ietf-jsonpath-base/#go.draft-ietf-jsonpath-base.html)
 * [Working Group Draft](https://datatracker.ietf.org/doc/html/draft-ietf-jsonpath-base)
-* [Compare Editor's Copy to Working Group Draft](https://ietf-wg-jsonpath.github.io/draft-ietf-jsonpath-jsonpath/#go.draft-ietf-jsonpath-base.diff)
+* [Compare Editor's Copy to Working Group Draft](https://ietf-wg-jsonpath.github.io/draft-ietf-jsonpath-base/#go.draft-ietf-jsonpath-base.diff)
 
 ## Building the Draft
 
@@ -19,8 +19,8 @@ This requires that you have the necessary software installed.  See
 
 ## Community
 
-All official discussion is in [issues](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-jsonpath/issues),
-[pull requests](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-jsonpath/pulls), and the [jsonpath@ietf.org mailing list](https://www.ietf.org/mailman/listinfo/jsonpath).
+All official discussion is in [issues](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues),
+[pull requests](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pulls), and the [jsonpath@ietf.org mailing list](https://www.ietf.org/mailman/listinfo/jsonpath).
 See the [archive](https://mailarchive.ietf.org/arch/browse/jsonpath/) for previous posts.
 
 ## License
@@ -30,7 +30,7 @@ See the draft for the copyright which is repeated in [LICENSE](./LICENSE).
 ## Contributing
 
 See the
-[guidelines for contributions](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-jsonpath/blob/main/CONTRIBUTING.md).
+[guidelines for contributions](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/blob/main/CONTRIBUTING.md).
 
 ## Comparing JSONPath Implementations
 
