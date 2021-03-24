@@ -25,7 +25,7 @@ author:
 - role: editor
   ins: G. Normington
   name: Glyn Normington
-  org: Retired
+  org: ''
   street: ''
   city: Winchester
   region: ''
