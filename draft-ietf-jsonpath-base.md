@@ -25,7 +25,7 @@ author:
 - role: editor
   ins: G. Normington
   name: Glyn Normington
-  org: VMware, Inc.
+  org: Retired
   street: ''
   city: Winchester
   region: ''
