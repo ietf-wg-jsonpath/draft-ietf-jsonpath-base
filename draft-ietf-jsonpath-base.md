@@ -451,7 +451,7 @@ raised during application of the query to a JSON value.
 query, e.g., because of resource depletion, but this is not modeled in
 the present specification.)
 
-> Discussion: are we ready for the error model defined here, i.e. one
+> Discussion (D1): are we ready for the error model defined here, i.e. one
 > that does not have runtime errors, but only compile time errors?
 
 ## Processing Model
@@ -491,7 +491,7 @@ as "current node".  Each of these function executions produces a
 result nodelist, which are then combined by algorithm *combine1* into
 the result of the selector.
 
-> Discussion: We haven't decided yet whether there is only one
+> Discussion (D2): We haven't decided yet whether there is only one
 > *combine1* or a choice, with for instance simple concatenation and
 > concatenation with duplicate removal, based on a definition of
 > duplicate, are candidates.
@@ -534,13 +534,13 @@ each of the nodes in its input nodelist and selects an output
 nodelist for each of them, as follows, which are then combined using
 the combine1 algorithm to form the result nodelist of the selector.
 
-> Discussion: Do we allow selectors that have their own combine1
+> Discussion (D3): Do we allow selectors that have their own combine1
 > variant, or can we always use the same?
 
 For each node in the list, the selector selects zero or more nodes,
 each of which is a descendant of the node or the node itself.
 
-> Discussion: Is that a common requirement?  Or can a selector also go
+> Discussion (D4): Is that a common requirement?  Or can a selector also go
 > up, or to the query Argument?
 
 For instance, with the Argument `{"a":[{"b":0},{"b":1},{"c":2}]}`, the
