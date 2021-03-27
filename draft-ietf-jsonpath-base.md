@@ -470,7 +470,7 @@ selected by the JSONPath.
 to the definitions in {{-json}}, i.e., is indeed a JSON value.)
 
 The JSONPath query is a sequence of zero or more *selectors*, each of
-which is applied to the result of the previous selector and leaves
+which is applied to the result of the previous selector and provides
 input to the next selector.
 These results and inputs take the form of a *nodelist*, i.e., a
 sequence of zero or more nodes.
