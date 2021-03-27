@@ -159,6 +159,20 @@ in ABNF as `%x2318`.
 
 The terminology of {{-json}} applies.
 
+For the purposes of this specification, a JSON value as defined by
+{{-json}} is also viewed as a tree of nodes.
+Each node holds a JSON value of one of the types defined in {{-json}};
+further nodes within the JSON value are the elements of arrays and the
+member values of JSON objects contained in the JSON value and are
+themselves JSON values of one of the types defined in {{-json}}.
+(The type of the JSON value held by a node is
+sometimes referred to as the type of the node.)
+
+A JSONPath query is applied to a JSON value that is supplied to it as
+its Argument.
+The node referring to the entirety of this JSON value is also
+referred to as its root node.
+
 Data Item:
 : A structure complying to the generic data model of JSON, i.e.,
   composed of containers, namely JSON objects and arrays, and
@@ -166,9 +180,12 @@ Data Item:
   Also called a JSON value.
   In this document, often abbreviated to _item_.
 
-  The term _node_ has the same meaning, but is used to emphasize the
-  location of an item within the Argument, i.e., an item identical to
-  or nested within the JSON data item to which the query is applied.
+Node:
+: A Data Item, with an emphasis on the location of the item within the
+  Argument.  I.e., an item identical to or contained within the JSON
+  data item to which the query is applied.  A node can be viewed as a
+  combination of a (1) JSON value and (2) its location in the
+  argument; the latter can, if desired, be represented as an Output Path.
 
 Object:
 : A JSON object as defined in {{-json}}.
@@ -200,6 +217,12 @@ Query:
 
 Argument:
 : Short name for the JSON data item a JSONPath expression is applied to.
+
+Nodelist:
+: Output of applying a query to an argument: a list of nodes within
+  that argument.
+  While this list can be represented in JSON, e.g. as an array, the
+  nodelist is an abstract concept unrelated to JSON data items.
 
 Output Path:
 : A simple form of JSONPath expression that identifies a node by
@@ -413,51 +436,77 @@ the grammar in this document, its UTF-8 form SHOULD first be decoded into
 Unicode code points as described
 in {{RFC3629}}.
 
+A string to be used as a JSONPath query needs to be *well-formed* and
+*valid*.
+A string is a well-formed JSONPath query if it conforms to the syntax
+of JSONPath.
+A well-formed JSONPath query is valid if it also fulfills all semantic
+requirements posed by this document.
 
-## Terminology
+The well-formedness and the validity of JSONPath queries are independent of
+the JSON value the query is applied to; no further errors can be
+raised during application of the query to a JSON value.
 
-A JSON value is logically a tree of nodes.
+(Obviously, an implementation can still fail when executing a JSONPath
+query, e.g., because of resource depletion, but this is not modeled in
+the present specification.)
 
-Each node holds a JSON value (as defined by {{RFC8259}}) of one of the
-types object, array, number, string, or one of the literals `true`,
-`false`, or `null`.
-The type of the JSON value held by a node is
-sometimes referred to as the type of the node.
+> Discussion (D1): are we ready for the error model defined here, i.e. one
+> that does not have runtime errors, but only compile time errors?
 
+## Processing Model
 
-## Implementation
+In this specification, the semantics of a JSONPath query are defined
+in terms of a *processing model*.  That model is not prescriptive of
+the internal workings of an implementation:  Implementations may wish
+(or need) to design a different process that yields results that
+conform to the model.
 
-An implementation of this specification, from now on referred to simply as
-"an implementation", SHOULD takes two inputs, a JSONPath and a JSON value,
-and produce
-a possibly empty list of nodes of the JSON value which are selected by
-the JSONPath or an error (but not both).
+In the processing model,
+a valid JSONPath query is executed against a JSON value, the *Argument*, and
+produces a list of zero or more nodes of the JSON value which are
+selected by the JSONPath.
+(Note that the term JSON value also implies that this value complies
+to the definitions in {{-json}}, i.e., is indeed a JSON value.)
 
-If no node is selected and no error has occurred, an implementation MUST
-return an empty list of nodes.
+The JSONPath query is a sequence of zero or more *selectors*, each of
+which is applied to the result of the previous selector and provides
+input to the next selector.
+These results and inputs take the form of a *nodelist*, i.e., a
+sequence of zero or more nodes.
 
-Syntax errors in the JSONPath SHOULD be detected before selection is attempted
-since these errors do not depend on the JSON value.
-Therefore, an implementation SHOULD take a JSONPath and produce an optional
-syntax error and then,
-if and only if an error was not produced, SHOULD take a JSON value and
-produce a list of nodes or an error (but not both).
+The nodelist going into the first selector contains a single node,
+holding the Argument.
+The nodelist resulting from the last selector is presented as the
+result of the query; depending on the specific API, it might be
+presented as an array of the JSON values at the nodes, an array of
+Output Paths referencing the nodes, or both — or some other
+representation as desired by the implementation.
+Note that the API must be capable of presenting an empty nodelist as
+the result of the query.
 
-Alternatively, an implementation MAY take a JSONPath and a JSON value
-and produce a list of nodes or an optional error (but not both).
+A selector performs its function on each of the nodes in its input
+nodelist, during such a function execution, such a node is referred to
+as "current node".  Each of these function executions produces a
+result nodelist, which are then combined by algorithm *combine1* into
+the result of the selector.
 
-For any implementation, if a syntactically invalid JSONPath is provided,
-the implementation MUST return an error.
+> Discussion (D2): We haven't decided yet whether there is only one
+> *combine1* or a choice, with for instance simple concatenation and
+> concatenation with duplicate removal, based on a definition of
+> duplicate, are candidates.
 
-If a syntactially invalid JSON value is provided, any implementation SHOULD
-return an error.
+The processing within a selector may execute nested JSONPath queries,
+which are in turn handled with the processing model defined here.
+Typically, the argument to that query will be the current node of the
+selector or a set of nodes subordinate to that current node.
 
 
 ## Syntax
 
 Syntactically, a JSONPath consists of a root selector (`$`), which
-selects the root node of a JSON value, followed by a possibly empty
-sequence of *selectors*.
+stands for a nodelist that contains the root node of the Argument,
+followed by a possibly empty sequence of *selectors*.
 
 ~~~~ abnf
 json-path = root-selector *selector
@@ -471,7 +520,7 @@ The syntax and semantics of each selector is defined below.
 
 The root selector `$` not only selects the root node of the input
 document, but it also produces as output a list consisting of one
-node: the input document.
+node: the input JSON value.
 
 A selector may select zero or more nodes for further processing.
 A syntactically valid selector MUST NOT produce errors.
@@ -480,32 +529,29 @@ operations which might be considered erroneous, such as indexing beyond the
 end of an array,
 simply result in fewer nodes being selected.
 
-But a selector doesn't just act on a single node: each selector acts on a
-list of nodes and produces a list of nodes, as follows.
+But a selector doesn't just act on a single node: a selector acts on
+each of the nodes in its input nodelist and selects an output
+nodelist for each of them, as follows, which are then combined using
+the combine1 algorithm to form the result nodelist of the selector.
 
-After the root selector, the remainder of the JSONPath is processed by passing
-lists of nodes from one selector to the next ending up with a list of nodes
-which is the result of
-applying the JSONPath to the input JSON value.
+> Discussion (D3): Do we allow selectors that have their own combine1
+> variant, or can we always use the same?
 
-Each selector acts on its input list of nodes as follows.
-For each node in
-the list, the selector selects zero or more nodes, each of which is a descendant
-of the node or the node itself.
-The output list of nodes of a selector is the concatenation of the lists
-of selected nodes for each input node.
+For each node in the list, the selector selects zero or more nodes,
+each of which is a descendant of the node or the node itself.
 
-A specific, non-normative example will make this clearer.
-Suppose the input
-document is: `{"a":[{"b":0},{"b":1},{"c":2}]}`.
-As we will see later, the JSONPath `$.a[*].b` selects the following list of nodes: `0`, `1`.
+> Discussion (D4): Is that a common requirement?  Or can a selector also go
+> up, or to the query Argument?
+
+For instance, with the Argument `{"a":[{"b":0},{"b":1},{"c":2}]}`, the
+JSONPath `$.a[*].b` selects the following list of nodes: `0`, `1`
+(denoted here by their value).
 Let's walk through this in detail.
 
 The JSONPath consists of `$` followed by three selectors: `.a`, `[*]`, and `.b`.
 
 Firstly, `$` selects the root node which is the input document.
-So the result is a list
-consisting of just the root node.
+So the result is a list consisting of just the root node.
 
 Next, `.a` selects from any input node of type object and selects any value of the input
 node corresponding to the member name `"a"`.
@@ -518,7 +564,8 @@ The result is a list of three nodes: `{"b":0}`, `{"b":1}`, and `{"c":2}`.
 Finally, `.b` selects from any input node of type object with a member name
 `b` and selects the value of the input node corresponding to that name.
 The result is a list containing `0`, `1`.
-This is the concatenation of three lists, two of length one containing `0`, `1`, respectively, and one of length zero.
+This is the concatenation of three lists, two of length one containing
+`0`, `1`, respectively, and one of length zero.
 
 As a consequence of this approach, if any of the selectors selects no nodes,
 then the whole JSONPath selects no nodes.
