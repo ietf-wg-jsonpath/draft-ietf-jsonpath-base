@@ -418,10 +418,10 @@ constant.
 | `//book[position()<3]` | `$..book[0,1]`<br>`$..book[:2]`           | the first two books                                          |
 | `//book[isbn]`         | `$..book[?(@.isbn)]`                      | filter all books with isbn number                            |
 | `//book[price<10]`     | `$..book[?(@.price<10)]`                  | filter all books cheaper than 10                             |
-| `//*`                  | `$..*`                                    | all elements in XML document; all member values contained in JSON value |
+| `//*`                  | `$..*`                                    | all elements in XML document; all member values and array elements contained in JSON value |
 {: #tbl-example title="Example JSONPath expressions applied to the example JSON value"}
 
-<!-- XXX: is $..* really just member values -->
+<!-- XXX: fine tune: is $..* really member values + array elements -->
 
 <!-- back to normington draft; not yet merged up where needed (e.g., terminology). -->
 
