@@ -717,16 +717,16 @@ in the table below:
 
 | Escape Sequence   | Unicode Character   |
 | :---------------: | :-----------------: |
-| "\" %x22          | U+0022              |
-| "\" "'"           | U+0027              |
-| "\" "/"           | U+002F              |
-| "\" "\"           | U+005C              |
-| "\" "b"           | U+0008              |
-| "\" "f"           | U+000C              |
-| "\" "n"           | U+000A              |
-| "\" "r"           | U+000D              |
-| "\" "t"           | U+0009              |
-| "\" uXXXX         | U+XXXX              |
+| "\\" %x22          | U+0022              |
+| "\\" "'"           | U+0027              |
+| "\\" "/"           | U+002F              |
+| "\\" "\"           | U+005C              |
+| "\\" "b"           | U+0008              |
+| "\\" "f"           | U+000C              |
+| "\\" "n"           | U+000A              |
+| "\\" "r"           | U+000D              |
+| "\\" "t"           | U+0009              |
+| "\\" uXXXX         | U+XXXX              |
 {: title="Escape Sequence Replacements" cols="c c"}
 
 The child selects the value corresponding to the member name from any object
