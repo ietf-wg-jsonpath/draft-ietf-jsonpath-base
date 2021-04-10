@@ -173,19 +173,17 @@ its Argument.
 The node referring to the entirety of this JSON value is also
 referred to as its root node.
 
-Data Item:
-: A structure complying to the generic data model of JSON, i.e.,
-  composed of containers, namely JSON objects and arrays, and
-  of atomic data, namely null, true, false, numbers, and text strings.
-  Also called a JSON value.
-  In this document, often abbreviated to _item_.
+JSON value:
+: As per {{-json}}, a structure complying to the generic data model of JSON, i.e.,
+  composed of components such as containers, namely JSON objects and arrays, and
+  atomic data, namely null, true, false, numbers, and text strings.
 
 Node:
-: A Data Item, with an emphasis on the location of the item within the
-  Argument.  I.e., an item identical to or contained within the JSON
-  data item to which the query is applied.  A node can be viewed as a
+: A JSON value, with an emphasis on its location within the
+  Argument.  I.e., a JSON value that is identical to or contained within the JSON
+  value to which the query is applied.  A node can be viewed as a
   combination of a (1) JSON value and (2) its location in the
-  argument; the latter can, if desired, be represented as an Output Path.
+  Argument; the latter can, if desired, be represented as an Output Path.
 
 Object:
 : A JSON object as defined in {{-json}}.
@@ -203,7 +201,7 @@ Array:
   Never used in its generic sense, e.g., for programming language objects.
 
 Element:
-: An item in an array.  (Also used with a distinct meaning in XML
+: A JSON value in an array.  (Also used with a distinct meaning in XML
   context for XML elements.)
 
 Index:
@@ -216,13 +214,13 @@ Query:
 : Short name for JSONPath expression.
 
 Argument:
-: Short name for the JSON data item a JSONPath expression is applied to.
+: Short name for the JSON value a JSONPath expression is applied to.
 
 Nodelist:
 : Output of applying a query to an argument: a list of nodes within
   that argument.
   While this list can be represented in JSON, e.g. as an array, the
-  nodelist is an abstract concept unrelated to JSON data items.
+  nodelist is an abstract concept unrelated to JSON values.
 
 Output Path:
 : A simple form of JSONPath expression that identifies a node by
@@ -241,7 +239,7 @@ In 2007, the need for something solving the same class of problems for
 the emerging JSON community became apparent, specifically for:
 
 * Finding data interactively and extracting them out of {{-json}}
-  data items without special scripting.
+  JSON values without special scripting.
 * Specifying the relevant parts of the JSON data in a request by a
   client, so the server can reduce the amount of data in its response,
   minimizing bandwidth usage.
@@ -268,7 +266,7 @@ x['store']['book'][0]['title']
 ~~~~
 
 in popular programming languages such as JavaScript, Python and PHP,
-with a variable x holding the JSON data item.  Here we observe that
+with a variable x holding the JSON value.  Here we observe that
 such languages already have a fundamentally XPath-like feature built
 in.
 
@@ -281,10 +279,10 @@ The JSONPath tool in question should:
 
 ## Overview of JSONPath Expressions {#overview}
 
-JSONPath expressions always apply to a JSON data item in the same way
+JSONPath expressions always apply to a JSON value in the same way
 as XPath expressions are used in combination with an XML document.
-Since a JSON data item is anonymous, JSONPath uses the abstract name `$` to
-refer to the top level data item of the argument.
+Since a JSON value is anonymous, JSONPath uses the abstract name `$` to
+refer to the entire JSON value ("root node") of the argument.
 
 JSONPath expressions can use the *dot–notation*
 
@@ -325,7 +323,7 @@ an alternative to explicit names or indices as in:
 $.store.book[(@.length-1)].title
 ~~~~
 
-The symbol `@` is used for the current item.
+The symbol `@` is used for the current node.
 Filter expressions are supported via the syntax `?(<boolean expr>)` as in
 
 ~~~~
@@ -336,13 +334,13 @@ Here is a complete overview and a side by side comparison of the JSONPath syntax
 
 | XPath | JSONPath           | Description                                                                                                                           |
 |-------+--------------------+---------------------------------------------------------------------------------------------------------------------------------------|
-| `/`   | `$`                | the root element/item                                                                                                                 |
-| `.`   | `@`                | the current element/item                                                                                                              |
+| `/`   | `$`                | the root element/node                                                                                                             |
+| `.`   | `@`                | the current element/node                                                                                                          |
 | `/`   | `.` or `[]`        | child operator                                                                                                                        |
 | `..`  | n/a                | parent operator                                                                                                                       |
 | `//`  | `..`               | nested descendants (JSONPath borrows this syntax from E4X)                                                                            |
-| `*`   | `*`                | wildcard: All elements/items regardless of their names                                                                         |
-| `@`   | n/a                | attribute access: JSON data items do not have attributes                                                                              |
+| `*`   | `*`                | wildcard: All elements/nodes regardless of their names                                                                     |
+| `@`   | n/a                | attribute access: JSON values do not have attributes                                                                         |
 | `[]`  | `[]`               | subscript operator: XPath uses it to iterate over element collections and for predicates; native array indexing as in JavaScript here |
 | `¦`   | `[,]`              | Union operator in XPath (results in a combination of node sets); JSONPath allows alternate names or array indices as a set            |
 | n/a   | `[start:end:step]` | array slice operator borrowed from ES4                                                                                                |
@@ -365,8 +363,9 @@ JSONPath:
 # JSONPath Examples
 
 This section provides some more examples for JSONPath expressions.
-The examples are based on a simple JSON data item patterned after a
-typical XML example representing a bookstore (that also has bicycles):
+The examples are based on the simple JSON value shown in
+{{fig-example-value}}, which was patterned after a
+typical XML example representing a bookstore (that also has bicycles).
 
 ~~~~json
 { "store": {
@@ -401,10 +400,10 @@ typical XML example representing a bookstore (that also has bicycles):
   }
 }
 ~~~~
-{: fig-example-item title="Example JSON data item"}
+{: #fig-example-value title="Example JSON value"}
 
 The examples in {{tbl-example}} use the expression mechanism to obtain
-the number of items in an array, to test for the presence of a
+the number of elements in an array, to test for the presence of a
 member in a object, and to perform numeric comparisons of member values with a
 constant.
 
@@ -419,8 +418,10 @@ constant.
 | `//book[position()<3]` | `$..book[0,1]`<br>`$..book[:2]`           | the first two books                                          |
 | `//book[isbn]`         | `$..book[?(@.isbn)]`                      | filter all books with isbn number                            |
 | `//book[price<10]`     | `$..book[?(@.price<10)]`                  | filter all books cheaper than 10                             |
-| `//*`                  | `$..*`                                    | all elements in XML document; all members of JSON data item  |
-{: #tbl-example title="Example JSONPath expressions applied to the example JSON data item"}
+| `//*`                  | `$..*`                                    | all elements in XML document; all member values and array elements contained in JSON value |
+{: #tbl-example title="Example JSONPath expressions applied to the example JSON value"}
+
+<!-- XXX: fine tune: is $..* really member values + array elements -->
 
 <!-- back to normington draft; not yet merged up where needed (e.g., terminology). -->
 
