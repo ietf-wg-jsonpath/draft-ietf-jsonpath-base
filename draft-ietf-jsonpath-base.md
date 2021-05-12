@@ -162,27 +162,6 @@ Additional terms used in this specification are defined below.
 Importantly "object" and "array" in particular do not take on a
 generic meaning, such as they would in a general programming context.
 
-For the purposes of this specification, a Value as defined by
-{{-json}} is also viewed as a tree of nodes.
-Each node, in turn, holds a Value.
-Further nodes within the Value are the elements of arrays and the
-member values of JSON objects contained in the Value and are
-themselves Values.
-(The type of the Value held by a node is
-may also be referred to as the type of the node.)
-
-A JSONPath query is applied to a Value that is supplied to it as
-its Argument.
-The node referring to the entirety of this Value is also
-referred to as its root node.
-
-Node:
-: A Value, with an emphasis on its location within the
-  Argument.  I.e., a Value that is identical to or contained within the JSON
-  value to which the query is applied.  A node can be viewed as a
-  combination of a (1) Value and (2) its location in the
-  Argument; the latter can, if desired, be represented as an Output Path.
-
 Member:
 : A name/value pair in a JSON object.  (Not itself a Value.)
 
@@ -206,6 +185,13 @@ Query:
 Argument:
 : Short name for the Value a JSONPath expression is applied to.
 
+Node:
+: A Value, with an emphasis on its location within the
+  Argument.  I.e., a Value that is identical to or contained within the JSON
+  value to which the query is applied.  A node can be viewed as a
+  combination of a (1) Value and (2) its location in the
+  Argument; the latter can, if desired, be represented as an Output Path.
+
 Nodelist:
 : Output of applying a query to an argument: a list of nodes within
   that argument.
@@ -216,6 +202,20 @@ Output Path:
 : A simple form of JSONPath expression that identifies a node by
   providing a query that results in exactly that node.  Similar
   to, but syntactically different from, a JSON Pointer {{-pointer}}.
+
+For the purposes of this specification, a Value as defined by
+{{-json}} is also viewed as a tree of nodes.
+Each node, in turn, holds a Value.
+Further nodes within the Value are the elements of arrays and the
+member values of JSON objects contained in the Value and are
+themselves Values.
+(The type of the Value held by a node is
+may also be referred to as the type of the node.)
+
+A JSONPath query is applied to a Value that is supplied to it as
+its Argument.
+The node referring to the entirety of this Value is also
+referred to as its root node.
 
 
 ## Inspired by XPath
