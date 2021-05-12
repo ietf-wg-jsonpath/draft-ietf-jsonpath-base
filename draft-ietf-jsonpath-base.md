@@ -186,17 +186,22 @@ Argument:
 : Short name for the Value a JSONPath expression is applied to.
 
 Node:
-: A Value, with an emphasis on its location within the
-  Argument.  I.e., a Value that is identical to or contained within the JSON
-  value to which the query is applied.  A node can be viewed as a
-  combination of a (1) Value and (2) its location in the
-  Argument; the latter can, if desired, be represented as an Output Path.
+: The pair of a Value along with its location within the Argument.
+
+Root Node:
+: The unique Node whose Value is the entire Argument.
 
 Nodelist:
-: Output of applying a query to an argument: a list of nodes within
-  that argument.
+: Output of applying a query to an Argument, manifested as a list of Nodes.
   While this list can be represented in JSON, e.g. as an array, the
-  nodelist is an abstract concept unrelated to JSON values.
+  Nodelist is an abstract concept unrelated to JSON values.
+
+<!--
+  I feel like the below definition should be for "normalized path,"
+  but maybe that deserves its own section that also declares any
+  location included in the output Nodelist MUST be normalized.
+  Requesting PR comments.
+-->
 
 Output Path:
 : A simple form of JSONPath expression that identifies a node by
