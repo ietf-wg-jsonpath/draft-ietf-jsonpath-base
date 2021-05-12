@@ -163,36 +163,37 @@ Importantly "object" and "array" in particular do not take on a
 generic meaning, such as they would in a general programming context.
 
 Member:
-: A name/value pair in a JSON object.  (Not itself a Value.)
+: A name/value pair in a JSON object.  (Not itself a value.)
 
 Name:
 : The name in a name/value pair constituting a member.  (Also known as
   "key", "tag", or "label".)
+  This is also used in {{-json}}, but that specification does not 
+  formally define it.
+  It is included here for completeness.
 
 Element:
-: A Value in an array.  (Also used with a distinct meaning in XML
+: A value in an array.  (Also used with a distinct meaning in XML
   context for XML elements.)
 
 Index:
 : A non-negative integer that identifies a specific element in an array.
-  The term, in particular in the form indexing, is also sometimes used
-  for either an index or a member name, when both arrays and objects
-  can be fed to the indexing operation.
 
 Query:
 : Short name for JSONPath expression.
 
 Argument:
-: Short name for the Value a JSONPath expression is applied to.
+: Short name for the value a JSONPath expression is applied to.
 
 Node:
-: The pair of a Value along with its location within the Argument.
+: The pair of a value along with its location within the argument.
 
 Root Node:
-: The unique Node whose Value is the entire Argument.
+: The unique node whose value is the entire argument.
 
 Nodelist:
-: Output of applying a query to an Argument, manifested as a list of Nodes.
+: A list of nodes.  <!-- ordered list?  Maybe TBD by issues #27 and #60 -->
+  The output of applying a query to an argument is manifested as a list of nodes.
   While this list can be represented in JSON, e.g. as an array, the
   Nodelist is an abstract concept unrelated to JSON values.
 
@@ -200,7 +201,7 @@ Nodelist:
   I feel like the below definition should be for "normalized path,"
   but maybe that deserves its own section that also declares any
   location included in the output Nodelist MUST be normalized.
-  Requesting PR comments.
+  (Also see line 290.) Requesting PR comments.
 -->
 
 Output Path:
@@ -208,20 +209,15 @@ Output Path:
   providing a query that results in exactly that node.  Similar
   to, but syntactically different from, a JSON Pointer {{-pointer}}.
 
-For the purposes of this specification, a Value as defined by
+For the purposes of this specification, a value as defined by
 {{-json}} is also viewed as a tree of nodes.
-Each node, in turn, holds a Value.
-Further nodes within the Value are the elements of arrays and the
-member values of JSON objects contained in the Value and are
-themselves Values.
-(The type of the Value held by a node is
+Each node, in turn, holds a value.
+Furthernodes within each value are the elements of Arrays and the
+member values of objects and are themselves Values.
+(The type of the value held by a node is
 may also be referred to as the type of the node.)
 
-A JSONPath query is applied to a Value that is supplied to it as
-its Argument.
-The node referring to the entirety of this Value is also
-referred to as its root node.
-
+A query is applied to an argument, and the output is a nodelist.
 
 ## Inspired by XPath
 
@@ -261,7 +257,7 @@ x['store']['book'][0]['title']
 ~~~~
 
 in popular programming languages such as JavaScript, Python and PHP,
-with a variable x holding the Value.  Here we observe that
+with a variable x holding the Argument.  Here we observe that
 such languages already have a fundamentally XPath-like feature built
 in.
 
@@ -277,7 +273,7 @@ The JSONPath tool in question should:
 JSONPath expressions always apply to a Value in the same way
 as XPath expressions are used in combination with an XML document.
 Since a Value is anonymous, JSONPath uses the abstract name `$` to
-refer to the entire Value ("root node") of the argument.
+refer to the root node of the argument.
 
 JSONPath expressions can use the *dot–notation*
 
@@ -459,20 +455,17 @@ the internal workings of an implementation:  Implementations may wish
 conform to the model.
 
 In the processing model,
-a valid JSONPath query is executed against a Value, the *Argument*, and
-produces a list of zero or more nodes of the Value which are
-selected by the JSONPath.
-(Note that the term Value also implies that this value complies
-to the definitions in {{-json}}, i.e., is indeed a Value.)
+a valid query is executed against a value, the *argument*, and
+produces a list of zero or more nodes of the value.
 
-The JSONPath query is a sequence of zero or more *selectors*, each of
+The query is a sequence of zero or more *selectors*, each of
 which is applied to the result of the previous selector and provides
 input to the next selector.
 These results and inputs take the form of a *nodelist*, i.e., a
 sequence of zero or more nodes.
 
 The nodelist going into the first selector contains a single node,
-holding the Argument.
+the argument.
 The nodelist resulting from the last selector is presented as the
 result of the query; depending on the specific API, it might be
 presented as an array of the JSON values at the nodes, an array of
@@ -483,8 +476,8 @@ the result of the query.
 
 A selector performs its function on each of the nodes in its input
 nodelist, during such a function execution, such a node is referred to
-as "current node".  Each of these function executions produces a
-result nodelist, which are then combined by algorithm *combine1* into
+as the "current node".  Each of these function executions produces a
+nodelist, which are then combined by algorithm *combine1* into
 the result of the selector.
 
 > Discussion (D2): We haven't decided yet whether there is only one
@@ -492,7 +485,7 @@ the result of the selector.
 > concatenation with duplicate removal, based on a definition of
 > duplicate, are candidates.
 
-The processing within a selector may execute nested JSONPath queries,
+The processing within a selector may execute nested queries,
 which are in turn handled with the processing model defined here.
 Typically, the argument to that query will be the current node of the
 selector or a set of nodes subordinate to that current node.
@@ -514,9 +507,9 @@ The syntax and semantics of each selector is defined below.
 
 ## Semantics
 
-The root selector `$` not only selects the root node of the input
-document, but it also produces as output a list consisting of one
-node: the input Value.
+The root selector `$` not only selects the Root node of the argument,
+but it also produces as output a list consisting of one
+node: the argument itself.
 
 A selector may select zero or more nodes for further processing.
 A syntactically valid selector MUST NOT produce errors.
@@ -546,7 +539,7 @@ Let's walk through this in detail.
 
 The JSONPath consists of `$` followed by three selectors: `.a`, `[*]`, and `.b`.
 
-Firstly, `$` selects the root node which is the input document.
+Firstly, `$` selects the root node which is the argument.
 So the result is a list consisting of just the root node.
 
 Next, `.a` selects from any input node of type object and selects any value of the input
