@@ -156,8 +156,9 @@ their UTF-8 encoding.
 For example, the Unicode PLACE OF INTEREST SIGN (U+2318) would be defined
 in ABNF as `%x2318`.
 
-
-The terminology of {{-json}} applies.
+The terminology of {{-json}} applies, including definitions for
+"value", "object", "array", "number", and "string".
+Additional terms used in this specification are defined below.
 
 For the purposes of this specification, a JSON value as defined by
 {{-json}} is also viewed as a tree of nodes.
@@ -173,11 +174,6 @@ its Argument.
 The node referring to the entirety of this JSON value is also
 referred to as its root node.
 
-JSON value:
-: As per {{-json}}, a structure complying to the generic data model of JSON, i.e.,
-  composed of components such as containers, namely JSON objects and arrays, and
-  atomic data, namely null, true, false, numbers, and text strings.
-
 Node:
 : A JSON value, with an emphasis on its location within the
   Argument.  I.e., a JSON value that is identical to or contained within the JSON
@@ -185,20 +181,12 @@ Node:
   combination of a (1) JSON value and (2) its location in the
   Argument; the latter can, if desired, be represented as an Output Path.
 
-Object:
-: A JSON object as defined in {{-json}}.
-  Never used in its generic sense, e.g., for programming language objects.
-
 Member:
 : A name/value pair in a JSON object.  (Not itself a JSON value.)
 
 Name:
 : The name in a name/value pair constituting a member.  (Also known as
   "key", "tag", or "label".)
-
-Array:
-: A JSON array as defined in {{-json}}.
-  Never used in its generic sense, e.g., for programming language objects.
 
 Element:
 : A JSON value in an array.  (Also used with a distinct meaning in XML
