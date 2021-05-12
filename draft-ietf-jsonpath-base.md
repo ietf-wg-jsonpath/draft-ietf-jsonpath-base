@@ -391,7 +391,7 @@ typical XML example representing a bookstore (that also has bicycles).
   }
 }
 ~~~~
-{: #fig-example-value title="Example Value"}
+{: #fig-example-value title="Example JSON value"}
 
 The examples in {{tbl-example}} use the expression mechanism to obtain
 the number of elements in an array, to test for the presence of a
