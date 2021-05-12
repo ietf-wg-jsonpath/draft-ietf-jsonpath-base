@@ -157,39 +157,41 @@ For example, the Unicode PLACE OF INTEREST SIGN (U+2318) would be defined
 in ABNF as `%x2318`.
 
 The terminology of {{-json}} applies, including definitions for
-"value", "object", "array", "number", and "string".
+"Value", "Object", "Array", "Number", and "String".
 Additional terms used in this specification are defined below.
+Importantly "object" and "array" in particular do not take on a
+generic meaning, such as they would in a general programming context.
 
-For the purposes of this specification, a JSON value as defined by
+For the purposes of this specification, a Value as defined by
 {{-json}} is also viewed as a tree of nodes.
-Each node holds a JSON value of one of the types defined in {{-json}};
-further nodes within the JSON value are the elements of arrays and the
-member values of JSON objects contained in the JSON value and are
-themselves JSON values of one of the types defined in {{-json}}.
-(The type of the JSON value held by a node is
-sometimes referred to as the type of the node.)
+Each node, in turn, holds a Value.
+Further nodes within the Value are the elements of arrays and the
+member values of JSON objects contained in the Value and are
+themselves Values.
+(The type of the Value held by a node is
+may also be referred to as the type of the node.)
 
-A JSONPath query is applied to a JSON value that is supplied to it as
+A JSONPath query is applied to a Value that is supplied to it as
 its Argument.
-The node referring to the entirety of this JSON value is also
+The node referring to the entirety of this Value is also
 referred to as its root node.
 
 Node:
-: A JSON value, with an emphasis on its location within the
-  Argument.  I.e., a JSON value that is identical to or contained within the JSON
+: A Value, with an emphasis on its location within the
+  Argument.  I.e., a Value that is identical to or contained within the JSON
   value to which the query is applied.  A node can be viewed as a
-  combination of a (1) JSON value and (2) its location in the
+  combination of a (1) Value and (2) its location in the
   Argument; the latter can, if desired, be represented as an Output Path.
 
 Member:
-: A name/value pair in a JSON object.  (Not itself a JSON value.)
+: A name/value pair in a JSON object.  (Not itself a Value.)
 
 Name:
 : The name in a name/value pair constituting a member.  (Also known as
   "key", "tag", or "label".)
 
 Element:
-: A JSON value in an array.  (Also used with a distinct meaning in XML
+: A Value in an array.  (Also used with a distinct meaning in XML
   context for XML elements.)
 
 Index:
@@ -202,7 +204,7 @@ Query:
 : Short name for JSONPath expression.
 
 Argument:
-: Short name for the JSON value a JSONPath expression is applied to.
+: Short name for the Value a JSONPath expression is applied to.
 
 Nodelist:
 : Output of applying a query to an argument: a list of nodes within
@@ -254,7 +256,7 @@ x['store']['book'][0]['title']
 ~~~~
 
 in popular programming languages such as JavaScript, Python and PHP,
-with a variable x holding the JSON value.  Here we observe that
+with a variable x holding the Value.  Here we observe that
 such languages already have a fundamentally XPath-like feature built
 in.
 
@@ -267,10 +269,10 @@ The JSONPath tool in question should:
 
 ## Overview of JSONPath Expressions {#overview}
 
-JSONPath expressions always apply to a JSON value in the same way
+JSONPath expressions always apply to a Value in the same way
 as XPath expressions are used in combination with an XML document.
-Since a JSON value is anonymous, JSONPath uses the abstract name `$` to
-refer to the entire JSON value ("root node") of the argument.
+Since a Value is anonymous, JSONPath uses the abstract name `$` to
+refer to the entire Value ("root node") of the argument.
 
 JSONPath expressions can use the *dot–notation*
 
@@ -351,7 +353,7 @@ JSONPath:
 # JSONPath Examples
 
 This section provides some more examples for JSONPath expressions.
-The examples are based on the simple JSON value shown in
+The examples are based on the simple Value shown in
 {{fig-example-value}}, which was patterned after a
 typical XML example representing a bookstore (that also has bicycles).
 
@@ -388,7 +390,7 @@ typical XML example representing a bookstore (that also has bicycles).
   }
 }
 ~~~~
-{: #fig-example-value title="Example JSON value"}
+{: #fig-example-value title="Example Value"}
 
 The examples in {{tbl-example}} use the expression mechanism to obtain
 the number of elements in an array, to test for the presence of a
@@ -406,8 +408,8 @@ constant.
 | `//book[position()<3]` | `$..book[0,1]`<br>`$..book[:2]`           | the first two books                                          |
 | `//book[isbn]`         | `$..book[?(@.isbn)]`                      | filter all books with isbn number                            |
 | `//book[price<10]`     | `$..book[?(@.price<10)]`                  | filter all books cheaper than 10                             |
-| `//*`                  | `$..*`                                    | all elements in XML document; all member values and array elements contained in JSON value |
-{: #tbl-example title="Example JSONPath expressions applied to the example JSON value"}
+| `//*`                  | `$..*`                                    | all elements in XML document; all member values and array elements contained in Value |
+{: #tbl-example title="Example JSONPath expressions applied to the example Value"}
 
 <!-- XXX: fine tune: is $..* really member values + array elements -->
 
@@ -433,8 +435,8 @@ A well-formed JSONPath query is valid if it also fulfills all semantic
 requirements posed by this document.
 
 The well-formedness and the validity of JSONPath queries are independent of
-the JSON value the query is applied to; no further errors can be
-raised during application of the query to a JSON value.
+the Value the query is applied to; no further errors can be
+raised during application of the query to a Value.
 
 (Obviously, an implementation can still fail when executing a JSONPath
 query, e.g., because of resource depletion, but this is not modeled in
@@ -452,11 +454,11 @@ the internal workings of an implementation:  Implementations may wish
 conform to the model.
 
 In the processing model,
-a valid JSONPath query is executed against a JSON value, the *Argument*, and
-produces a list of zero or more nodes of the JSON value which are
+a valid JSONPath query is executed against a Value, the *Argument*, and
+produces a list of zero or more nodes of the Value which are
 selected by the JSONPath.
-(Note that the term JSON value also implies that this value complies
-to the definitions in {{-json}}, i.e., is indeed a JSON value.)
+(Note that the term Value also implies that this value complies
+to the definitions in {{-json}}, i.e., is indeed a Value.)
 
 The JSONPath query is a sequence of zero or more *selectors*, each of
 which is applied to the result of the previous selector and provides
@@ -509,7 +511,7 @@ The syntax and semantics of each selector is defined below.
 
 The root selector `$` not only selects the root node of the input
 document, but it also produces as output a list consisting of one
-node: the input JSON value.
+node: the input Value.
 
 A selector may select zero or more nodes for further processing.
 A syntactically valid selector MUST NOT produce errors.
