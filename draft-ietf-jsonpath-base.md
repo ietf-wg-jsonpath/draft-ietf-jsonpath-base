@@ -201,7 +201,7 @@ Nodelist:
   I feel like the below definition should be for "normalized path,"
   but maybe that deserves its own section that also declares any
   location included in the output Nodelist MUST be normalized.
-  (Also see line 290.) Requesting PR comments.
+  (Also see line 291.) Requesting PR comments.
 -->
 
 Output Path:
