@@ -213,7 +213,7 @@ For the purposes of this specification, a value as defined by
 {{-json}} is also viewed as a tree of nodes.
 Each node, in turn, holds a value.
 Furthernodes within each value are the elements of Arrays and the
-member values of objects and are themselves Values.
+member values of objects and are themselves values.
 (The type of the value held by a node is
 may also be referred to as the type of the node.)
 
@@ -257,7 +257,7 @@ x['store']['book'][0]['title']
 ~~~~
 
 in popular programming languages such as JavaScript, Python and PHP,
-with a variable x holding the Argument.  Here we observe that
+with a variable x holding the argument.  Here we observe that
 such languages already have a fundamentally XPath-like feature built
 in.
 
@@ -270,9 +270,9 @@ The JSONPath tool in question should:
 
 ## Overview of JSONPath Expressions {#overview}
 
-JSONPath expressions always apply to a Value in the same way
+JSONPath expressions always apply to a value in the same way
 as XPath expressions are used in combination with an XML document.
-Since a Value is anonymous, JSONPath uses the abstract name `$` to
+Since a value is anonymous, JSONPath uses the abstract name `$` to
 refer to the root node of the argument.
 
 JSONPath expressions can use the *dot–notation*
@@ -354,7 +354,7 @@ JSONPath:
 # JSONPath Examples
 
 This section provides some more examples for JSONPath expressions.
-The examples are based on the simple Value shown in
+The examples are based on the simple JSON value shown in
 {{fig-example-value}}, which was patterned after a
 typical XML example representing a bookstore (that also has bicycles).
 
@@ -409,8 +409,8 @@ constant.
 | `//book[position()<3]` | `$..book[0,1]`<br>`$..book[:2]`           | the first two books                                          |
 | `//book[isbn]`         | `$..book[?(@.isbn)]`                      | filter all books with isbn number                            |
 | `//book[price<10]`     | `$..book[?(@.price<10)]`                  | filter all books cheaper than 10                             |
-| `//*`                  | `$..*`                                    | all elements in XML document; all member values and array elements contained in Value |
-{: #tbl-example title="Example JSONPath expressions applied to the example Value"}
+| `//*`                  | `$..*`                                    | all elements in XML document; all member values and array elements contained in input value |
+{: #tbl-example title="Example JSONPath expressions applied to the example JSON value"}
 
 <!-- XXX: fine tune: is $..* really member values + array elements -->
 
@@ -436,8 +436,8 @@ A well-formed JSONPath query is valid if it also fulfills all semantic
 requirements posed by this document.
 
 The well-formedness and the validity of JSONPath queries are independent of
-the Value the query is applied to; no further errors can be
-raised during application of the query to a Value.
+the value the query is applied to; no further errors can be
+raised during application of the query to a value.
 
 (Obviously, an implementation can still fail when executing a JSONPath
 query, e.g., because of resource depletion, but this is not modeled in
@@ -494,7 +494,7 @@ selector or a set of nodes subordinate to that current node.
 ## Syntax
 
 Syntactically, a JSONPath consists of a root selector (`$`), which
-stands for a nodelist that contains the root node of the Argument,
+stands for a nodelist that contains the root node of the argument,
 followed by a possibly empty sequence of *selectors*.
 
 ~~~~ abnf
@@ -530,9 +530,9 @@ For each node in the list, the selector selects zero or more nodes,
 each of which is a descendant of the node or the node itself.
 
 > Discussion (D4): Is that a common requirement?  Or can a selector also go
-> up, or to the query Argument?
+> up, or to the query argument?
 
-For instance, with the Argument `{"a":[{"b":0},{"b":1},{"c":2}]}`, the
+For instance, with the argument `{"a":[{"b":0},{"b":1},{"c":2}]}`, the
 JSONPath `$.a[*].b` selects the following list of nodes: `0`, `1`
 (denoted here by their value).
 Let's walk through this in detail.
