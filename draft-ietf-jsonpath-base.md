@@ -173,7 +173,7 @@ String:
   Single quotes are preferred.
 
 Member:
-: A name/value pair in a JSON object.  (Not itself a value.)
+: A name/value pair in an object.  (Not itself a value.)
 
 Name:
 : The name in a name/value pair constituting a member.  (Also known as
