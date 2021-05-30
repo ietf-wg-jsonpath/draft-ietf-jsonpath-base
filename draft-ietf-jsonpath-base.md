@@ -163,6 +163,11 @@ generic meaning, such as they would in a general programming context.
 
 Additional terms used in this specification are defined below.
 
+Value:
+: As per {{-json}}, a structure complying to the generic data model of JSON, i.e.,
+  composed of components such as containers, namely JSON objects and arrays, and
+  atomic data, namely null, true, false, numbers, and text strings.
+
 String:
 : A sequence of UTF-8 characters surrounded by either single quotes (`)
   or double quotes (").
