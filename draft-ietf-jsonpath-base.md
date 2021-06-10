@@ -615,7 +615,9 @@ root-selector  = %x24                 ; $
 ~~~~
 
 #### Semantics
-The Argument &mdash; the root JSON value &ndash; is anonymous by nature. By getting assigned the universal name `'$'` it becomes the root node. 
+{: numbered="false" toc="exclude"}
+
+The Argument &mdash; the root JSON value &ndash; is anonymous by nature. By getting assigned the universal name `'$'` it becomes the root node.
 
 
 ### Dot Selector
@@ -637,7 +639,7 @@ DIGIT           =  %x30-39              ; 0-9
 ALPHA           =  %x41-5A / %x61-7A    ; A-Z / a-z
 ~~~~
 
-Member names containing other ASCII characters than allowed by `dot-selector` &ndash; especially space `' '` and minus `'-'` characters MUST NOT be used with the `dot-selector`. Member names containing these might be addressed by the `index-selector` instead. 
+Member names containing other ASCII characters than allowed by `dot-selector` &ndash; especially space `' '` and minus `'-'` characters MUST NOT be used with the `dot-selector`. Member names containing these might be addressed by the `index-selector` instead.
 
 #### Semantics
 {: numbered="false" toc="exclude"}
@@ -684,12 +686,12 @@ Applying the `index-selector` to an object value, a `quoted-member-name` string 
 quoted-member-name  =  %x22 *double-quoted %x22 /       ; "string"
                        %x27 *single-quoted %x27         ; 'string'
 
-double-quoted       = unescaped /                       
+double-quoted       = unescaped /
                       %x27      /                       ; '
                       ESC %x22  /                       ; \"
-                      ESC escapable 
+                      ESC escapable
 
-single-quoted       = unescaped /                       
+single-quoted       = unescaped /
                       %x22      /                       ; "
                       ESC %x27  /                       ; \'
                       ESC escapable
@@ -720,7 +722,7 @@ Applying the `index-selector` to an array, a numerical `element-index` is requir
 ~~~~ abnf
 element-index   = int                             ; decimal integer
 
-int             = ["-"] ( "0" / (DIGIT1 *DIGIT) ) ; -  optional 
+int             = ["-"] ( "0" / (DIGIT1 *DIGIT) ) ; -  optional
 DIGIT1          = %x31-39                         ; 1-9 non-zero digit
 ~~~~
 
@@ -750,10 +752,9 @@ in the table below:
 | \\/                | U+002F              | slash (solidus)             |
 | \\\\               | U+005C              | backslash (reverse solidus) |
 | \\uXXXX            | U+XXXX              | unicode character           |
-
 {: title="Escape Sequence Replacements" cols="c c"}
 
-The `index-selector` applied with a `quoted-member-name` to an object selects the corresponding value from it, if and only if that object has a member with that name. 
+The `index-selector` applied with a `quoted-member-name` to an object selects the corresponding value from it, if and only if that object has a member with that name.
 Nothing is selected from a value which is not a object.
 
 Array indexing via `element-index` is a way of selecting a particular array element using a zero-based index.
@@ -793,7 +794,7 @@ slice-index    = ws [start] ws ":" ws [end] [ws ":" ws [step] ws]
 
 start          = int       ; included in selection
 end            = int       ; not included in selection
-step           = int       ; default: 1 
+step           = int       ; default: 1
 
 ws             = *( %x20 / ; Space
                     %x09 / ; Horizontal tab
@@ -867,7 +868,6 @@ as follows:
 |--------------|---------|----------|
 | step >= 0    | 0       | len      |
 | step < 0     | len - 1 | -len - 1 |
-
 {: title="Default array slice start and end values"}
 
 Slice expression parameters `start` and `end` are not directly usable
@@ -972,7 +972,7 @@ The union selector is syntactically related to the `index-selector`. It contains
 ~~~~ abnf
 union-selector = "[" ws union-entry 1*(ws "," ws union-enty) ws "]"
 
-union-entry    =  ( quoted-member-name / 
+union-entry    =  ( quoted-member-name /
                     element-index      /
                     slice-index
                   )
@@ -989,7 +989,7 @@ Possibly duplicate selected nodes are kept in the node list.
 
 #### Syntax
 
-The filter selector has the shape `'[?<expr]'`. It works via iterating over container values, i.e. arrays and objects. 
+The filter selector has the shape `'[?<expr]'`. It works via iterating over container values, i.e. arrays and objects.
 
 ~~~~ abnf
 filter-selector    = "[?" boolean-expr "]"
@@ -1018,8 +1018,8 @@ comparable   = number / quoted-string /             ; primitive ...
                rel-path-val /                       ; descendant value
                calc_val /                           ; calculated value
                json-path                            ; any value
-               
-rel-path-val = "@" *(dot-selector / index-selector) 
+
+rel-path-val = "@" *(dot-selector / index-selector)
 calc_val     = func "(" [rel-path-val / json-path] ")"
 func         = "index"
 ~~~~
@@ -1050,7 +1050,6 @@ Negation operator `neg-op` allows to test *falsiness* of values.
 | `false`| `!false`| `true` | &ndash;  |
 | Object | `!{}`<br>`!{a:0}` | `false`| always `false` |
 | Array | `![]`<br>`![0]` | `false`| always `false` |
-
 {: title="Test falsiness of JSON values" }
 
 Applying negation operator twice `'!!'` gives us *truthiness* of values.
