@@ -101,8 +101,8 @@ informative:
     title: >
       Proposed ECMAScript 4 Edition – Language Overview
     author:
-    - org: Adobe Systems Inc., The Mozilla Foundation, Opera Software 
-ASA, and others 
+    - org: >
+        Adobe Systems Inc., The Mozilla Foundation, Opera Software ASA, and others
     date: 2007
   SLICE:
     target: https://github.com/tc39/proposal-slice-notation
