@@ -584,7 +584,6 @@ selector = dot-child              ; see below for alternatives
 dot-child = "." dot-child-name / ; .<dot-child-name>
             "." "*"             ; .*
 dot-child-name = 1*(
-                   "-" /         ; -
                    DIGIT /
                    ALPHA /
                    "_" /         ; _
