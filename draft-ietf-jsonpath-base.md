@@ -156,77 +156,72 @@ their UTF-8 encoding.
 For example, the Unicode PLACE OF INTEREST SIGN (U+2318) would be defined
 in ABNF as `%x2318`.
 
+The terminology of {{-json}} applies except where clarified below.
+Definitions for "Object", "Array", and "Number" remain unchanged.
+Importantly "object" and "array" in particular do not take on a
+generic meaning, such as they would in a general programming context.
 
-The terminology of {{-json}} applies.
+Additional terms used in this specification are defined below.
 
-For the purposes of this specification, a JSON value as defined by
-{{-json}} is also viewed as a tree of nodes.
-Each node holds a JSON value of one of the types defined in {{-json}};
-further nodes within the JSON value are the elements of arrays and the
-member values of JSON objects contained in the JSON value and are
-themselves JSON values of one of the types defined in {{-json}}.
-(The type of the JSON value held by a node is
-sometimes referred to as the type of the node.)
-
-A JSONPath query is applied to a JSON value that is supplied to it as
-its Argument.
-The node referring to the entirety of this JSON value is also
-referred to as its root node.
-
-JSON value:
+Value:
 : As per {{-json}}, a structure complying to the generic data model of JSON, i.e.,
   composed of components such as containers, namely JSON objects and arrays, and
   atomic data, namely null, true, false, numbers, and text strings.
 
-Node:
-: A JSON value, with an emphasis on its location within the
-  Argument.  I.e., a JSON value that is identical to or contained within the JSON
-  value to which the query is applied.  A node can be viewed as a
-  combination of a (1) JSON value and (2) its location in the
-  Argument; the latter can, if desired, be represented as an Output Path.
-
-Object:
-: A JSON object as defined in {{-json}}.
-  Never used in its generic sense, e.g., for programming language objects.
-
 Member:
-: A name/value pair in a JSON object.  (Not itself a JSON value.)
+: A name/value pair in an object.  (Not itself a value.)
 
 Name:
 : The name in a name/value pair constituting a member.  (Also known as
   "key", "tag", or "label".)
-
-Array:
-: A JSON array as defined in {{-json}}.
-  Never used in its generic sense, e.g., for programming language objects.
+  This is also used in {{-json}}, but that specification does not
+  formally define it.
+  It is included here for completeness.
 
 Element:
-: A JSON value in an array.  (Also used with a distinct meaning in XML
+: A value in an array.  (Also used with a distinct meaning in XML
   context for XML elements.)
 
 Index:
 : A non-negative integer that identifies a specific element in an array.
-  The term, in particular in the form indexing, is also sometimes used
-  for either an index or a member name, when both arrays and objects
-  can be fed to the indexing operation.
 
 Query:
 : Short name for JSONPath expression.
 
 Argument:
-: Short name for the JSON value a JSONPath expression is applied to.
+: Short name for the value a JSONPath expression is applied to.
+
+Node:
+: The pair of a value along with its location within the argument.
+
+Root Node:
+: The unique node whose value is the entire argument.
 
 Nodelist:
-: Output of applying a query to an argument: a list of nodes within
-  that argument.
+: A list of nodes.  <!-- ordered list?  Maybe TBD by issues #27 and #60 -->
+  The output of applying a query to an argument is manifested as a list of nodes.
   While this list can be represented in JSON, e.g. as an array, the
   nodelist is an abstract concept unrelated to JSON values.
 
-Output Path:
+Normalized Path:
 : A simple form of JSONPath expression that identifies a node by
   providing a query that results in exactly that node.  Similar
   to, but syntactically different from, a JSON Pointer {{-pointer}}.
 
+<!--
+  Depending on the outcome of [?()] expression support discussions,
+  we may also need to define "boolean", "number", and perhaps others.
+-->
+
+For the purposes of this specification, a value as defined by
+{{-json}} is also viewed as a tree of nodes.
+Each node, in turn, holds a value.
+Further nodes within each value are the elements of arrays and the
+member values of objects and are themselves values.
+(The type of the value held by a node
+may also be referred to as the type of the node.)
+
+A query is applied to an argument, and the output is a nodelist.
 
 ## Inspired by XPath
 
@@ -266,7 +261,7 @@ x['store']['book'][0]['title']
 ~~~~
 
 in popular programming languages such as JavaScript, Python and PHP,
-with a variable x holding the JSON value.  Here we observe that
+with a variable x holding the argument.  Here we observe that
 such languages already have a fundamentally XPath-like feature built
 in.
 
@@ -279,10 +274,10 @@ The JSONPath tool in question should:
 
 ## Overview of JSONPath Expressions {#overview}
 
-JSONPath expressions always apply to a JSON value in the same way
+JSONPath expressions always apply to a value in the same way
 as XPath expressions are used in combination with an XML document.
-Since a JSON value is anonymous, JSONPath uses the abstract name `$` to
-refer to the entire JSON value ("root node") of the argument.
+Since a value is anonymous, JSONPath uses the abstract name `$` to
+refer to the root node of the argument.
 
 JSONPath expressions can use the *dot–notation*
 
@@ -418,7 +413,7 @@ constant.
 | `//book[position()<3]` | `$..book[0,1]`<br>`$..book[:2]`           | the first two books                                          |
 | `//book[isbn]`         | `$..book[?(@.isbn)]`                      | filter all books with isbn number                            |
 | `//book[price<10]`     | `$..book[?(@.price<10)]`                  | filter all books cheaper than 10                             |
-| `//*`                  | `$..*`                                    | all elements in XML document; all member values and array elements contained in JSON value |
+| `//*`                  | `$..*`                                    | all elements in XML document; all member values and array elements contained in input value |
 {: #tbl-example title="Example JSONPath expressions applied to the example JSON value"}
 
 <!-- XXX: fine tune: is $..* really member values + array elements -->
@@ -429,10 +424,10 @@ constant.
 
 ## Overview {#synsem-overview}
 
-A JSONPath is a string which selects zero or more nodes of a piece of JSON.
-A valid JSONPath conforms to the ABNF syntax defined by this document.
+A JSONPath query is a string which selects zero or more nodes of a piece of JSON.
+A valid query conforms to the ABNF syntax defined by this document.
 
-A JSONPath MUST be encoded using UTF-8. To parse a JSONPath according to
+A query MUST be encoded using UTF-8. To parse a query according to
 the grammar in this document, its UTF-8 form SHOULD first be decoded into
 Unicode code points as described
 in {{RFC3629}}.
@@ -445,8 +440,8 @@ A well-formed JSONPath query is valid if it also fulfills all semantic
 requirements posed by this document.
 
 The well-formedness and the validity of JSONPath queries are independent of
-the JSON value the query is applied to; no further errors can be
-raised during application of the query to a JSON value.
+the value the query is applied to; no further errors can be
+raised during application of the query to a value.
 
 (Obviously, an implementation can still fail when executing a JSONPath
 query, e.g., because of resource depletion, but this is not modeled in
@@ -464,20 +459,17 @@ the internal workings of an implementation:  Implementations may wish
 conform to the model.
 
 In the processing model,
-a valid JSONPath query is executed against a JSON value, the *Argument*, and
-produces a list of zero or more nodes of the JSON value which are
-selected by the JSONPath.
-(Note that the term JSON value also implies that this value complies
-to the definitions in {{-json}}, i.e., is indeed a JSON value.)
+a valid query is executed against a value, the *argument*, and
+produces a list of zero or more nodes of the value.
 
-The JSONPath query is a sequence of zero or more *selectors*, each of
+The query is a sequence of zero or more *selectors*, each of
 which is applied to the result of the previous selector and provides
 input to the next selector.
 These results and inputs take the form of a *nodelist*, i.e., a
 sequence of zero or more nodes.
 
 The nodelist going into the first selector contains a single node,
-holding the Argument.
+the argument.
 The nodelist resulting from the last selector is presented as the
 result of the query; depending on the specific API, it might be
 presented as an array of the JSON values at the nodes, an array of
@@ -488,8 +480,8 @@ the result of the query.
 
 A selector performs its function on each of the nodes in its input
 nodelist, during such a function execution, such a node is referred to
-as "current node".  Each of these function executions produces a
-result nodelist, which are then combined by algorithm *combine1* into
+as the "current node".  Each of these function executions produces a
+nodelist, which are then combined by algorithm *combine1* into
 the result of the selector.
 
 > Discussion (D2): We haven't decided yet whether there is only one
@@ -497,7 +489,7 @@ the result of the selector.
 > concatenation with duplicate removal, based on a definition of
 > duplicate, are candidates.
 
-The processing within a selector may execute nested JSONPath queries,
+The processing within a selector may execute nested queries,
 which are in turn handled with the processing model defined here.
 Typically, the argument to that query will be the current node of the
 selector or a set of nodes subordinate to that current node.
@@ -505,8 +497,8 @@ selector or a set of nodes subordinate to that current node.
 
 ## Syntax
 
-Syntactically, a JSONPath consists of a root selector (`$`), which
-stands for a nodelist that contains the root node of the Argument,
+Syntactically, a JSONPath query consists of a root selector (`$`), which
+stands for a nodelist that contains the root node of the argument,
 followed by a possibly empty sequence of *selectors*.
 
 ~~~~ abnf
@@ -519,9 +511,9 @@ The syntax and semantics of each selector is defined below.
 
 ## Semantics
 
-The root selector `$` not only selects the root node of the input
-document, but it also produces as output a list consisting of one
-node: the input JSON value.
+The root selector `$` not only selects the root node of the argument,
+but it also produces as output a list consisting of one
+node: the argument itself.
 
 A selector may select zero or more nodes for further processing.
 A syntactically valid selector MUST NOT produce errors.
@@ -542,16 +534,16 @@ For each node in the list, the selector selects zero or more nodes,
 each of which is a descendant of the node or the node itself.
 
 > Discussion (D4): Is that a common requirement?  Or can a selector also go
-> up, or to the query Argument?
+> up, or to the query argument?
 
-For instance, with the Argument `{"a":[{"b":0},{"b":1},{"c":2}]}`, the
-JSONPath `$.a[*].b` selects the following list of nodes: `0`, `1`
+For instance, with the argument `{"a":[{"b":0},{"b":1},{"c":2}]}`, the
+query `$.a[*].b` selects the following list of nodes: `0`, `1`
 (denoted here by their value).
 Let's walk through this in detail.
 
-The JSONPath consists of `$` followed by three selectors: `.a`, `[*]`, and `.b`.
+The query consists of `$` followed by three selectors: `.a`, `[*]`, and `.b`.
 
-Firstly, `$` selects the root node which is the input document.
+Firstly, `$` selects the root node which is the argument.
 So the result is a list consisting of just the root node.
 
 Next, `.a` selects from any input node of type object and selects any value of the input
@@ -569,7 +561,7 @@ This is the concatenation of three lists, two of length one containing
 `0`, `1`, respectively, and one of length zero.
 
 As a consequence of this approach, if any of the selectors selects no nodes,
-then the whole JSONPath selects no nodes.
+then the whole query selects no nodes.
 
 In what follows, the semantics of each selector are defined for each type
 of node.
@@ -919,7 +911,7 @@ MUST raise an error.
 
 # IANA Considerations {#IANA}
 
-TBD: Define a media type for JSON Path expressions.
+TBD: Define a media type for JSONPath expressions.
 
 # Security Considerations {#Security}
 
