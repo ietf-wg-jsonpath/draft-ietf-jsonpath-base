@@ -177,9 +177,6 @@ String:
   by single quotes (') does not need to be escaped.
   Single quotes are preferred.
 
-Member:
-: A name/value pair in an object.  (Not itself a value.)
-
 Name:
 : The name in a name/value pair constituting a member.  (Also known as
   "key", "tag", or "label".)
