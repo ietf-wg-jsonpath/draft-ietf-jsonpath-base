@@ -1009,7 +1009,8 @@ filter-selector    = "[?" boolean-expr "]"
 
 During iteration process each array element or object member is visited and its value — accessible via symbol `'@'` — or one of its descendants — uniquely defined by a relative path — is tested against a boolean expression `boolean-expr`.
 
-If the result is `true`, the current item, represented by `'@'`, is selected. In case of a `false` result, it is not.
+The current item is selected if and only if the result is `true`.
+
 
 ~~~~ abnf
 boolean-expr = *logical-expr
