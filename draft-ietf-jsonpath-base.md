@@ -83,7 +83,7 @@ informative:
   RFC6901: pointer
   JSONPath-orig:
     target: https://goessner.net/articles/JsonPath/
-    title: JSONPath – XPath for JSON
+    title: JSONPath — XPath for JSON
     author:
       name: Stefan Gössner
       org: Fachhochschule Dortmund
@@ -99,7 +99,7 @@ informative:
     date: 2006
   E4X-overview:
     title: >
-      Proposed ECMAScript 4 Edition – Language Overview
+      Proposed ECMAScript 4 Edition — Language Overview
     author:
     - org: Adobe Systems Inc., The Mozilla Foundation, Opera Software ASA, and others
     date: 2007
@@ -290,13 +290,13 @@ as XPath expressions are used in combination with an XML document.
 Since a value is anonymous, JSONPath uses the abstract name `$` to
 refer to the root node of the argument.
 
-JSONPath expressions can use the *dot–notation*
+JSONPath expressions can use the *dot notation*
 
 ~~~~
 $.store.book[0].title
 ~~~~
 
-or the *bracket–notation*
+or the *bracket notation*
 
 ~~~~
 $['store']['book'][0]['title']
@@ -306,7 +306,7 @@ for paths input to a JSONPath processor.
 \[1]
 Where a JSONPath processor uses JSONPath expressions as output paths,
 these will always be converted to Output Paths
-which employ the more general *bracket–notation*.
+which employ the more general *bracket notation*.
 \[2]
 Bracket notation is more general than dot notation and can serve as a
 canonical form when a JSONPath processor uses JSONPath expressions as
@@ -611,7 +611,8 @@ root-selector  = "$"
 
 #### Semantics
 {: unnumbered}
-The Argument &mdash; the root JSON value &ndash; is anonymous by nature. By getting assigned the universal name `'$'` it becomes the root node.
+The Argument — the root JSON value — is anonymous by nature.
+By getting assigned the universal name `'$'` it becomes the root node.
 
 
 ### Dot Selector
@@ -1005,7 +1006,7 @@ The filter selector has the form `'[?<expr>]'`. It works via iterating over cont
 filter-selector    = "[?" boolean-expr "]"
 ~~~~
 
-During iteration process each array element or object member is visited and its value &ndash; accessible via symbol `'@'` &ndash; or one of its descendants &ndash; uniquely defined by a relative path &ndash; is tested against a boolean expression `boolean-expr`.
+During iteration process each array element or object member is visited and its value — accessible via symbol `'@'` — or one of its descendants — uniquely defined by a relative path — is tested against a boolean expression `boolean-expr`.
 
 If the result is `true`, the current item, represented by `'@'`, is selected. In case of a `false` result, it is not.
 
@@ -1039,7 +1040,7 @@ Notes:
 * Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `'[?(<expr>)]'` is naturally contained in the current lean syntax `'[?<expr>]'` as a special case.
 * Comparisons are restricted to primitive values `number`, `string`, `true`, `false`, `null`. Comparisons with complex values will fail, i.e. no selection occurs.
 * Implicit type conversions during comparisons are not performed. So `"13 == '13'"` selects nothing.
-* A member or element value by itself is *falsy* only, if it does not exist. Otherwise it is *truthy*, resulting in its value. To be more specific explicit comparisons are necessary. This existence test &ndash; as an exception of the general rule &ndash; also works with complex values.
+* A member or element value by itself is *falsy* only, if it does not exist. Otherwise it is *truthy*, resulting in its value. To be more specific explicit comparisons are necessary. This existence test — as an exception of the general rule — also works with complex values.
 * Regular expression tests can be applied to `string` values only.
 * Containment tests work with arrays and objects.
 * Explicit boolean type conversion is done by the not operator `neg-op`.
@@ -1055,9 +1056,9 @@ Negation operator `neg-op` allows to test *falsiness* of values.
 |:----:|:---------:|:------:|:-------:|
 | Number |  `!0`   | `true` | `false` for non-zero number  |
 | String |  `!""`<br>`!''`  | `true` | `false` for non-empty string  |
-| `null` |  `!null`| `true` | &ndash;  |
-| `true` |  `!true`| `false`| &ndash;  |
-| `false`| `!false`| `true` | &ndash;  |
+| `null` |  `!null`| `true` | —  |
+| `true` |  `!true`| `false`| —  |
+| `false`| `!false`| `true` | —  |
 | Object | `!{}`<br>`!{a:0}` | `false`| always `false` |
 | Array | `![]`<br>`![0]` | `false`| always `false` |
 {: title="Test falsiness of JSON values" }
