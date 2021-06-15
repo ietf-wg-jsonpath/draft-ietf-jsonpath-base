@@ -633,7 +633,11 @@ DIGIT           =  %x30-39              ; 0-9
 ALPHA           =  %x41-5A / %x61-7A    ; A-Z / a-z
 ~~~~
 
-Member names containing other ASCII characters than allowed by `dot-selector` &ndash; especially space `' '` and minus `'-'` characters MUST NOT be used with the `dot-selector`. Member names containing these might be addressed by the `index-selector` instead.
+Member names containing other characters than allowed by
+`dot-selector` — such as space `' '` and minus `'-'`
+characters — MUST NOT be used with the `dot-selector`.
+(Such member names can be addressed by the
+`index-selector` instead.)
 
 #### Semantics
 {: unnumbered}
