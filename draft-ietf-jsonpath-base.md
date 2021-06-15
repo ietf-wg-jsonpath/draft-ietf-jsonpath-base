@@ -141,7 +141,7 @@ Comments and issues may be directed to this document's
 <!-- use as {: unnumbered} -->
 
 <!-- editorial issue: lots of complicated nesting of quotes, as in -->
-<!-- `"13 == '13'"` or `'$'`.  We probably should find a simpler style -->
+<!-- `"13 == '13'"` or `$`.  We probably should find a simpler style -->
 
 # Introduction
 
@@ -590,23 +590,23 @@ of node.
 
 A JSONPath query consists of a sequence of selectors. Valid selectors are
 
-  * Root selector `'$'`
-  * Dot selector `'.<name>'`, used with object member names exclusively.
-  * Dot wild card selector `'.*'`.
-  * Index selector `'[<index>]'`, where `<index>` is either an (possibly negative) array index or an object member name.
-  * Index wild card selector `'[*]'`.
-  * Array slice selector `'[<start>:<end>:<step>]'`, where `<start>`, `<end>`, `<step>` are integer literals.
-  * Nested descendants selector `'..'`.
-  * Union selector `'[<sel1>,<sel2>,...,<selN>]'`, holding a comma delimited list of selectors.
+  * Root selector `$`
+  * Dot selector `.<name>`, used with object member names exclusively.
+  * Dot wild card selector `.*`.
+  * Index selector `[<index>]`, where `<index>` is either an (possibly negative) array index or an object member name.
+  * Index wild card selector `[*]`.
+  * Array slice selector `[<start>:<end>:<step>]`, where `<start>`, `<end>`, `<step>` are integer literals.
+  * Nested descendants selector `..`.
+  * Union selector `[<sel1>,<sel2>,...,<selN>]`, holding a comma delimited list of selectors.
   * Filter selector `[?(<expr>)]`
-  * Current item selector `'@'`
+  * Current item selector `@`
 
 ### Root Selector
 
 #### Syntax
 {: unnumbered}
 
-Every valid JSONPath query MUST begin with the root selector named `'$'`.
+Every valid JSONPath query MUST begin with the root selector named `$`.
 
 ~~~~ abnf
 root-selector  = "$"
@@ -615,7 +615,7 @@ root-selector  = "$"
 #### Semantics
 {: unnumbered}
 The Argument — the root JSON value — is anonymous by nature.
-By getting assigned the universal name `'$'` it becomes the root node.
+By getting assigned the universal name `$` it becomes the root node.
 
 
 ### Dot Selector
@@ -623,7 +623,7 @@ By getting assigned the universal name `'$'` it becomes the root node.
 #### Syntax
 {: unnumbered}
 
-A dot selector starts with a dot `'.'` followed by an object's member name.
+A dot selector starts with a dot `.` followed by an object's member name.
 
 ~~~~ abnf
 dot-selector    = "." dot-member-name
@@ -638,7 +638,7 @@ ALPHA           =  %x41-5A / %x61-7A    ; A-Z / a-z
 ~~~~
 
 Member names containing other characters than allowed by
-`dot-selector` — such as space `' '` and minus `'-'`
+`dot-selector` — such as space ` ` and minus `-`
 characters — MUST NOT be used with the `dot-selector`.
 (Such member names can be addressed by the
 `index-selector` instead.)
@@ -659,7 +659,7 @@ not encode Unicode characters.
 #### Syntax
 {: unnumbered}
 
-The dot wild card selector has the form `'.*'`.
+The dot wild card selector has the form `.*`.
 
 ~~~~ abnf
 dot-wild-selector    = "." "*"            ;  dot followed by asterisk
@@ -680,7 +680,7 @@ string, or true/false/null) selects no value.
 #### Syntax
 {: unnumbered}
 
-An index selector `'[<index>]'` addresses a single object member value or a single array element value.
+An index selector `[<index>]` addresses a single object member value or a single array element value.
 
 ~~~~ abnf
 index-selector      = "[" (quoted-member-name / element-index) "]"
@@ -775,7 +775,7 @@ For example, selector `[-1]` selects the last and selector `[-2]` selects the la
 #### Syntax
 {: unnumbered}
 
-The index wild card selector has the form `'[*]'`.
+The index wild card selector has the form `[*]`.
 
 ~~~~ abnf
 index-wild-selector    = "[" "*" "]"  ;  asterisk enclosed by brackets
@@ -797,7 +797,7 @@ The `index-wild-selector` behaves identically to the `dot-wild-selector`.
 #### Syntax
 {: unnumbered}
 
-The array slice selector has the form `'[<start>:<end>:<step>]'`.
+The array slice selector has the form `[<start>:<end>:<step>]`.
 It selects elements starting at index `<start>`, ending at — but
 not including — `<end>`, while incrementing by `step`.
 
@@ -962,7 +962,7 @@ MUST raise an error.
 #### Syntax
 {: unnumbered}
 
-The descendant selector starts with a double dot `'..'` and can be
+The descendant selector starts with a double dot `..` and can be
 followed by an object member name (similar to the `dot-selector`),
 by an `index-selector` acting on objects or arrays, or by a wild card.
 
@@ -1006,13 +1006,13 @@ as many times in the node list.
 
 #### Syntax
 
-The filter selector has the form `'[?<expr>]'`. It works via iterating over container values, i.e. arrays and objects.
+The filter selector has the form `[?<expr>]`. It works via iterating over container values, i.e. arrays and objects.
 
 ~~~~ abnf
 filter-selector    = "[?" boolean-expr "]"
 ~~~~
 
-During iteration process each array element or object member is visited and its value — accessible via symbol `'@'` — or one of its descendants — uniquely defined by a relative path — is tested against a boolean expression `boolean-expr`.
+During iteration process each array element or object member is visited and its value — accessible via symbol `@` — or one of its descendants — uniquely defined by a relative path — is tested against a boolean expression `boolean-expr`.
 
 The current item is selected if and only if the result is `true`.
 
@@ -1044,7 +1044,7 @@ func         = "index"
 
 Notes:
 
-* Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `'[?(<expr>)]'` is naturally contained in the current lean syntax `'[?<expr>]'` as a special case.
+* Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `[?(<expr>)]` is naturally contained in the current lean syntax `[?<expr>]` as a special case.
 * Comparisons are restricted to primitive values `number`, `string`, `true`, `false`, `null`. Comparisons with complex values will fail, i.e. no selection occurs.
 <!-- issue: comparison with structured value -->
 * Types are not implicitly converted in comparisons.
@@ -1073,7 +1073,7 @@ Negation operator `neg-op` allows to test *falsiness* of values.
 | Array | `![]`<br>`![0]` | `false`| always `false` |
 {: title="Test falsiness of JSON values" }
 
-Applying negation operator twice `'!!'` gives us *truthiness* of values.
+Applying negation operator twice `!!` gives us *truthiness* of values.
 
 Some examples:
 
