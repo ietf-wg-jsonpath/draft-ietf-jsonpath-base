@@ -771,7 +771,7 @@ selects the node of the corresponding member value from it, if and only if that 
 Nothing is selected from a value which is not a object.
 
 Array indexing via `element-index` is a way of selecting a particular array element using a zero-based index.
-For example, selector `[0]` selects the first and selector `[4]` the fifth element of a sufficiently filled array.
+For example, selector `[0]` selects the first and selector `[4]` the fifth element of a sufficiently long array.
 
 A negative `element-index` counts from the array end.
 For example, selector `[-1]` selects the last and selector `[-2]` selects the last but one element of an array with at least two elements.
