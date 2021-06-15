@@ -1016,7 +1016,7 @@ func         = "index"
 
 Notes:
 
-* Parenthesis can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `'[?(<expr>)]'` is naturally contained in the current lean syntax `'[?<expr>]'` as a special case.
+* Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `'[?(<expr>)]'` is naturally contained in the current lean syntax `'[?<expr>]'` as a special case.
 * Comparisons are restricted to primitive values `number`, `string`, `true`, `false`, `null`. Comparisons with complex values will fail, i.e. no selection occurs.
 * Implicite type conversions during comparisons are not performed. So `"13 == '13'"` selects nothing.
 * A member or element value by itself is *falsy* only, if it does not exist. Otherwise it is *truthy*, resulting in its value. To be more specific explicite comparisons are necessary. This existence test &ndash; as an exception of the general rule &ndash; also works with complex values.
