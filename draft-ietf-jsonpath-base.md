@@ -44,17 +44,6 @@ author:
   country: Cyprus
   phone: ''
   email: esurov.tsp@gmail.com
-- role: editor
-  ins: M. Mikulicic
-  name: Marko Mikulicic
-  org: InfluxData, Inc.
-  street: ''
-  city: Pisa
-  region: ''
-  code: ''
-  country: IT
-  phone: ''
-  email: mmikulicic@gmail.com
 -
   name: Stefan Gössner
   org: Fachhochschule Dortmund
