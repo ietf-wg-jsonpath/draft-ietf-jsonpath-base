@@ -985,7 +985,7 @@ descendant-selector = ".." ( dot-member-name      /  ; ..<name>
 {: unnumbered}
 
 The `descendant-selector` is inspired by ECMAScript for XML (E4X). It
-selects the nodes of object member values and array elements in a recursive descent process.
+It selects the node and all its descendants..
 
 ### Union Selector
 
