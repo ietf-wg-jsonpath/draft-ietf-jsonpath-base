@@ -566,7 +566,9 @@ The query consists of `$` followed by three selectors: `.a`, `[*]`, and `.b`.
 Firstly, `$` selects the root node which is the argument.
 So the result is a list consisting of just the root node.
 
-Next, `.a` selects from any input node of type object and selects any value of the input
+Next, `.a` selects from any input node of type object and selects the
+node of any
+member value of the input
 node corresponding to the member name `"a"`.
 The result is again a list of one node: `[{"b":0},{"b":1},{"c":2}]`.
 
@@ -575,7 +577,7 @@ of the input node.
 The result is a list of three nodes: `{"b":0}`, `{"b":1}`, and `{"c":2}`.
 
 Finally, `.b` selects from any input node of type object with a member name
-`b` and selects the value of the input node corresponding to that name.
+`b` and selects the node of the member value of the input node corresponding to that name.
 The result is a list containing `0`, `1`.
 This is the concatenation of three lists, two of length one containing
 `0`, `1`, respectively, and one of length zero.
@@ -648,7 +650,7 @@ characters — MUST NOT be used with the `dot-selector`.
 #### Semantics
 {: unnumbered}
 
-The `dot-selector` selects the value corresponding to the member name from any JSON object. It selects no values from any other JSON value.
+The `dot-selector` selects the node of the member value corresponding to the member name from any JSON object. It selects no nodes from any other JSON value.
 
 <!-- Not true, as JSONPath queries are UTF-8 texts -->
 Note that the `dot-selector` follows the philosophy of JSON strings and is
@@ -672,10 +674,10 @@ dot-wild-selector    = "." "*"            ;  dot followed by asterisk
 {: unnumbered}
 
 A dot selector combined with a single asterisk is a wild card.
-It selects all member values of an object as well as all elements of
+It selects the nodes of all member values of an object as well as of all elements of
 an array.
 Applying the `dot-wild-selector` to a primitive JSON value (number,
-string, or true/false/null) selects no value.
+string, or true/false/null) selects no node.
 
 
 ### Index Selector
@@ -773,7 +775,8 @@ in the table below:
 | \\uXXXX            | U+XXXX              | unicode character           |
 {: title="Escape Sequence Replacements" cols="c c"}
 
-The `index-selector` applied with a `quoted-member-name` to an object selects the corresponding value from it, if and only if that object has a member with that name.
+The `index-selector` applied with a `quoted-member-name` to an object
+selects the node of the corresponding member value from it, if and only if that object has a member with that name.
 Nothing is selected from a value which is not a object.
 
 Array indexing via `element-index` is a way of selecting a particular array element using a zero-based index.
@@ -801,7 +804,7 @@ An index selector combined with a single asterisk is a wild card. It
 selects all member values of an object as well as all elements of an
 array.
 Applying the `index-wild-selector` to a primitive JSON value (such as
-a number, string, or true/false/null) selects no value.
+a number, string, or true/false/null) selects no node.
 
 The `index-wild-selector` behaves identically to the `dot-wild-selector`.
 
@@ -990,7 +993,8 @@ descendant-selector = ".." ( dot-member-name      /  ; ..<name>
 #### Semantics
 {: unnumbered}
 
-The `descendant-selector` is inspired by ECMAScript for XML (E4X). It selects object members and array elements in a recursive descent process.
+The `descendant-selector` is inspired by ECMAScript for XML (E4X). It
+selects the nodes of object member values and array elements in a recursive descent process.
 
 ### Union Selector
 
@@ -1074,7 +1078,7 @@ Notes:
 * Comparisons are restricted to primitive values `number`, `string`, `true`, `false`, `null`. Comparisons with complex values will fail, i.e. no selection occurs.
 <!-- issue: comparison with structured value -->
 * Types are not implicitly converted in comparisons.
-  So `"13 == '13'"` selects no value.
+  So `"13 == '13'"` selects no node.
 * A member or element value by itself is *falsy* only, if it does not exist. Otherwise it is *truthy*, resulting in its value. To be more specific explicit comparisons are necessary. This existence test — as an exception of the general rule — also works with complex values.
 * Regular expression tests can be applied to `string` values only.
 * Containment tests work with arrays and objects.
