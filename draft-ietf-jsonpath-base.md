@@ -171,7 +171,10 @@ For example, the Unicode PLACE OF INTEREST SIGN (U+2318) would be defined
 in ABNF as `%x2318`.
 
 The terminology of {{-json}} applies except where clarified below.
-Definitions for "Object", "Array", and "Number" remain unchanged.
+The terms "primitive" and "structured" are used to group
+the types as in {{Section 1 of -json}}.
+Definitions for "Object", "Array", "Number", and "String" remain
+unchanged.
 Importantly "object" and "array" in particular do not take on a
 generic meaning, such as they would in a general programming context.
 
@@ -1032,7 +1035,7 @@ as many times in the node list.
 
 #### Syntax
 
-The filter selector has the form `[?<expr>]`. It works via iterating over container values, i.e. arrays and objects.
+The filter selector has the form `[?<expr>]`. It works via iterating over structured values, i.e. arrays and objects.
 
 ~~~~ abnf
 filter-selector    = "[?" boolean-expr "]"
@@ -1075,7 +1078,7 @@ regex = <TO BE DEFINED>
 Notes:
 
 * Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `[?(<expr>)]` is naturally contained in the current lean syntax `[?<expr>]` as a special case.
-* Comparisons are restricted to primitive values `number`, `string`, `true`, `false`, `null`. Comparisons with complex values will fail, i.e. no selection occurs.
+* Comparisons are restricted to primitive values (such as number, string, `true`, `false`, `null`). Comparisons with complex values will fail, i.e. no selection occurs.
 <!-- issue: comparison with structured value -->
 * Types are not implicitly converted in comparisons.
   So `"13 == '13'"` selects no node.
