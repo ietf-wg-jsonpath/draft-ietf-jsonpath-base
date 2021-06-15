@@ -520,6 +520,7 @@ json-path = root-selector *(dot-selector        /
                             dot-wild-selector   /
                             index-selector      /
                             index-wild-selector /
+                            union-selector      /
                             slice-selector      /
                             descendant-selector /
                             filter-selector)
@@ -627,12 +628,13 @@ A dot selector starts with a dot `.` followed by an object's member name.
 
 ~~~~ abnf
 dot-selector    = "." dot-member-name
-dot-member-name = 1*(
-                      DIGIT /
+dot-member-name = name-first *name-char
+name-first =
                       ALPHA /
                       "_"   /           ; _
                       %x80-10FFFF       ; any non-ASCII Unicode character
-                    )
+name-char = DIGIT / name-first
+
 DIGIT           =  %x30-39              ; 0-9
 ALPHA           =  %x41-5A / %x61-7A    ; A-Z / a-z
 ~~~~
@@ -648,6 +650,7 @@ characters — MUST NOT be used with the `dot-selector`.
 
 The `dot-selector` selects the value corresponding to the member name from any JSON object. It selects no values from any other JSON value.
 
+<!-- Not true, as JSONPath queries are UTF-8 texts -->
 Note that the `dot-selector` follows the philosophy of JSON strings and is
 allowed to contain bit sequences that cannot encode Unicode characters (a
 single unpaired UTF-16 surrogate, for example).
@@ -689,8 +692,10 @@ index-selector      = "[" (quoted-member-name / element-index) "]"
 Applying the `index-selector` to an object value, a `quoted-member-name` string is required. JSONPath allows it to be enclosed in _single_ or _double_ quotes.
 
 ~~~~ abnf
-quoted-member-name  =  %x22 *double-quoted %x22 /       ; "string"
-                       %x27 *single-quoted %x27         ; 'string'
+quoted-member-name  = string-literal
+
+string-literal      = %x22 *double-quoted %x22 /       ; "string"
+                      %x27 *single-quoted %x27         ; 'string'
 
 double-quoted       = unescaped /
                       %x27      /                       ; '
@@ -709,18 +714,26 @@ unescaped           = %x20-21 /                         ; s. RFC 8259
                       %x28-5B /                         ; omit '
                       %x5D-10FFFF                       ; omit \
 
-escapable           = (
-                          b /         ;  BS backspace U+0008
-                          t /         ;  HT horizontal tab U+0009
-                          n /         ;  LF line feed U+000A
-                          f /         ;  FF form feed U+000C
-                          r /         ;  CR carriage return U+000D
-                          / /         ;  /  slash (solidus)
-                          \ /         ;  \  backslash (reverse solidus)
-                          u 4HEXDIG   ;  uXXXX      U+XXXX
+escapable           = ( %x62 / %x66 / %x6E / %x72 / %x74 / ; \b \f \n \r \t
+                          ; b /         ;  BS backspace U+0008
+                          ; t /         ;  HT horizontal tab U+0009
+                          ; n /         ;  LF line feed U+000A
+                          ; f /         ;  FF form feed U+000C
+                          ; r /         ;  CR carriage return U+000D
+                          "/" /          ;  /  slash (solidus)
+                          "\" /          ;  \  backslash (reverse solidus)
+                          (%x75 hexchar) ;  uXXXX      U+XXXX
                       )
-HEXDIG              = %x41-46 /           ;  A-F
-                      %x61-66             ;  a-f
+
+hexchar = non-surrogate / (high-surrogate "\" %x75 low-surrogate)
+non-surrogate = ((DIGIT / "A"/"B"/"C" / "E"/"F") 3HEXDIG) /
+                 ("D" %x30-37 2HEXDIG )
+high-surrogate = "D" ("8"/"9"/"A"/"B") 2HEXDIG
+low-surrogate = "D" ("C"/"D"/"E"/"F") 2HEXDIG
+
+HEXDIG = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
+
+; Task from 2021-06-15 interim: update ABNF later
 ~~~~
 
 Applying the `index-selector` to an array, a numerical `element-index` is required. JSONPath allows it to be negative.
@@ -733,10 +746,10 @@ DIGIT1          = %x31-39                         ; 1-9 non-zero digit
 ~~~~
 
 Notes:
-1. `double-quoted` strings follow JSON in {{RFC8259}}.
+1. `double-quoted` strings follow JSON in {{RFC8259}};
    `single-quoted` strings follow an analogous pattern.
-2. An `element-index` is an integer (in base 10).
-3. The syntax does not allow octal-like integers with leading zeros such as `01` or `-01`.
+2. An `element-index` is an integer (in base 10, as in JSON numbers).
+3. As in JSON numbers, the syntax does not allow octal-like integers with leading zeros such as `01` or `-01`.
 
 #### Semantics
 {: unnumbered}
@@ -1027,12 +1040,16 @@ The current item is selected if and only if the result is `true`.
 
 
 ~~~~ abnf
-boolean-expr = *logical-expr
-logical-expr = [neg-op] ["("] comp-expr *[logical-op comp-expr] [")"]
+
+
+boolean-expr = logical-expr
+logical-expr = ([neg-op] primary-expr) / logical-or-expr
 neg-op       = "!"                                  ; not operator
-logical-op   = "||" / "&&"                          ; logical operator
-comp-expr    = (rel-path-val /
-                calc-val) [(comp-op comparable /  ; comparison
+primary-expr = "(" logical-or-expr ")"
+logical-or-expr = logical-and-expr *["||" logical-and-expr]
+logical-and-expr = comp-expr *["&&" comp-expr]
+
+comp-expr    = (rel-path-val) [(comp-op comparable /  ; comparison
                             regex-op regex     /  ; RegEx test
                             in-op container )]    ; containment test
 comp-op      = "==" / "!=" /                        ; comparison ...
@@ -1040,15 +1057,15 @@ comp-op      = "==" / "!=" /                        ; comparison ...
                "<=" / ">="
 regex-op     = "~="                                 ; RegEx match
 in-op        = " in "                               ; in operator
-comparable   = number / quoted-string /             ; primitive ...
+comparable   = number / string-literal /            ; primitive ...
                true / false / null /                ; values only
                rel-path-val /                       ; descendant value
-               calc_val /                           ; calculated value
                json-path                            ; any value
 
 rel-path-val = "@" *(dot-selector / index-selector)
-calc_val     = func "(" [rel-path-val / json-path] ")"
-func         = "index"
+
+container = <TO BE DEFINED>
+regex = <TO BE DEFINED>
 ~~~~
 
 Notes:
@@ -1097,7 +1114,28 @@ Some examples:
 | `{"a":{"b":{5},c:0}}` | `$[?@.b==5 && !@.c]` | `[{"b":{5},c:0}]` | Existence  |
 
 
+# Expression Language
 
+> Task (T2): Separate out expression language.  For now, this section
+> is a repository for ABNF taken from {{-json}}.  This needs to be
+> deduplicated with definitions above.
+
+~~~~ abnf
+number = [ minus ] jsint [ frac ] [ exp ]
+decimal-point = %x2E       ; .
+digit1-9 = %x31-39         ; 1-9
+e = %x65 / %x45            ; e E
+exp = e [ minus / plus ] 1*DIGIT
+frac = decimal-point 1*DIGIT
+jsint = zero / ( digit1-9 *DIGIT )
+minus = %x2D               ; -
+plus = %x2B                ; +
+zero = %x30                ; 0
+
+false = %x66.61.6c.73.65   ; false
+null  = %x6e.75.6c.6c      ; null
+true  = %x74.72.75.65      ; true
+~~~~
 
 # IANA Considerations {#IANA}
 
