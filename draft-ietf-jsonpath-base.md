@@ -993,7 +993,8 @@ union-entry    =  ( quoted-member-name /
 
 A union selects any node which is selected by at least one of the union selectors and selects the concatenation of the
 lists (in the order of the selectors) of nodes selected by the union elements.
-Possibly duplicate selected nodes are kept in the node list.
+Note that any node selected in more than one of the union selectors is kept
+as many times in the node list.
 
 
 ### Filter Selector
