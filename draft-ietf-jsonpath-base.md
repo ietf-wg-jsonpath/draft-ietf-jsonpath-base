@@ -666,7 +666,7 @@ dot-wild-selector    = "." "*"            ;  dot followed by asterisk
 {: unnumbered}
 
 A dot selector combined with a single asterisk is a wild card.
-It selects the nodes of all member values of an object as well as of all elements of
+A `dot-wild-selector` acts as a wild card by selecting the nodes of all member values of an object as well as all element nodes of
 an array.
 Applying the `dot-wild-selector` to a primitive JSON value (number,
 string, or true/false/null) selects no node.
