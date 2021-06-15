@@ -1036,11 +1036,11 @@ Notes:
 
 * Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `'[?(<expr>)]'` is naturally contained in the current lean syntax `'[?<expr>]'` as a special case.
 * Comparisons are restricted to primitive values `number`, `string`, `true`, `false`, `null`. Comparisons with complex values will fail, i.e. no selection occurs.
-* Implicite type conversions during comparisons are not performed. So `"13 == '13'"` selects nothing.
-* A member or element value by itself is *falsy* only, if it does not exist. Otherwise it is *truthy*, resulting in its value. To be more specific explicite comparisons are necessary. This existence test &ndash; as an exception of the general rule &ndash; also works with complex values.
+* Implicit type conversions during comparisons are not performed. So `"13 == '13'"` selects nothing.
+* A member or element value by itself is *falsy* only, if it does not exist. Otherwise it is *truthy*, resulting in its value. To be more specific explicit comparisons are necessary. This existence test &ndash; as an exception of the general rule &ndash; also works with complex values.
 * Regular expression tests can be applied to `string` values only.
 * Containment tests work with arrays and objects.
-* Explicite boolean type conversion is done by the not operator `neg-op`.
+* Explicit boolean type conversion is done by the not operator `neg-op`.
 * The behaviour of operators is consistent with the 'C'-family of programming languages.
 
 #### Semantics
