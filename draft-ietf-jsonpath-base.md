@@ -655,7 +655,7 @@ not encode Unicode characters.
 #### Syntax
 {: unnumbered}
 
-The dot wild card selector has the shape `'.*'`.
+The dot wild card selector has the form `'.*'`.
 
 ~~~~ abnf
 dot-wild-selector    = "." "*"            ;  dot followed by asterisk
@@ -771,7 +771,7 @@ For example, selector `[-1]` selects the last and selector `[-2]` selects the la
 #### Syntax
 {: unnumbered}
 
-The index wild card selector has the shape `'[*]'`.
+The index wild card selector has the form `'[*]'`.
 
 ~~~~ abnf
 index-wild-selector    = "[" "*" "]"  ;  asterisk enclosed by brackets
@@ -787,7 +787,7 @@ An index selector combined with a single asterisk is a wild card. It selects all
 #### Syntax
 {: unnumbered}
 
-The array slice selector has the shape `'[<start>:<end>:<step>]'`. It selects elements starting at index `<start>`, ending at &ndash; not including &ndash; `<end>`, while incrementing by `step`.
+The array slice selector has the form `'[<start>:<end>:<step>]'`. It selects elements starting at index `<start>`, ending at &ndash; not including &ndash; `<end>`, while incrementing by `step`.
 
 ~~~~ abnf
 slice-selector = "[" slice-index "]"
@@ -991,7 +991,7 @@ Possibly duplicate selected nodes are kept in the node list.
 
 #### Syntax
 
-The filter selector has the shape `'[?<expr>]'`. It works via iterating over container values, i.e. arrays and objects.
+The filter selector has the form `'[?<expr>]'`. It works via iterating over container values, i.e. arrays and objects.
 
 ~~~~ abnf
 filter-selector    = "[?" boolean-expr "]"
