@@ -64,6 +64,16 @@ contributor:
   country: Germany
   phone: +49-421-218-63921
   email: cabo@tzi.org
+-
+  name: Marko Mikulicic
+  org: InfluxData, Inc.
+  street: ''
+  city: Pisa
+  region: ''
+  code: ''
+  country: IT
+  phone: ''
+  email: mmikulicic@gmail.com
 
 informative:
   RFC3552: seccons
@@ -160,7 +170,7 @@ For example, the Unicode PLACE OF INTEREST SIGN (U+2318) would be defined
 in ABNF as `%x2318`.
 
 The terminology of {{-json}} applies except where clarified below.
-The terms "primitive" and "structured" are used to group
+The terms "Primitive" and "Structured" are used to group
 the types as in {{Section 1 of -json}}.
 Definitions for "Object", "Array", "Number", and "String" remain
 unchanged.
@@ -548,6 +558,8 @@ each of which is a descendant of the node or the node itself.
 > Discussion (D4): Is that a common requirement?  Or can a selector also go
 > up, or to the query argument?
 
+<!-- To do: Define "descendants" (making sure that member values are, but member names aren't). -->
+
 For instance, with the argument `{"a":[{"b":0},{"b":1},{"c":2}]}`, the
 query `$.a[*].b` selects the following list of nodes: `0`, `1`
 (denoted here by their value).
@@ -601,7 +613,7 @@ A JSONPath query consists of a sequence of selectors. Valid selectors are
 #### Syntax
 {: unnumbered}
 
-Every valid JSONPath query MUST begin with the root selector named `$`.
+Every valid JSONPath query MUST begin with the root selector `$`.
 
 ~~~~ abnf
 root-selector  = "$"
@@ -609,8 +621,9 @@ root-selector  = "$"
 
 #### Semantics
 {: unnumbered}
-The Argument — the root JSON value — is anonymous by nature.
-By getting assigned the universal name `$` it becomes the root node.
+
+The Argument — the root JSON value — becomes the root node, which is
+addressed by the root selector `$`.
 
 
 ### Dot Selector
@@ -792,7 +805,7 @@ index-wild-selector    = "[" "*" "]"  ;  asterisk enclosed by brackets
 {: unnumbered}
 
 An `index-wild-selector`
-selects all member values of an object as well as all elements of an
+selects the nodes of all member values of an object as well as of all elements of an
 array.
 Applying the `index-wild-selector` to a primitive JSON value (such as
 a number, string, or true/false/null) selects no node.
@@ -1062,6 +1075,8 @@ rel-path-val = "@" *(dot-selector / index-selector)
 container = <TO BE DEFINED>
 regex = <TO BE DEFINED>
 ~~~~
+
+<!-- To do: We also need absolute path values such as $.foo. -->
 
 Notes:
 
