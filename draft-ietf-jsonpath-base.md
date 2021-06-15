@@ -592,7 +592,7 @@ A JSONPath query consists of a sequence of selectors. Valid selectors are
   * Index wild card selector `[*]`.
   * Array slice selector `[<start>:<end>:<step>]`, where `<start>`, `<end>`, `<step>` are integer literals.
   * Nested descendants selector `..`.
-  * Union selector `[<sel1>,<sel2>,...,<selN>]`, holding a comma delimited list of selectors.
+  * Union selector `[<sel1>,<sel2>,...,<selN>]`, holding a comma delimited list of index, index wild card, array slice, and filter selectors.
   * Filter selector `[?(<expr>)]`
   * Current item selector `@`
 
