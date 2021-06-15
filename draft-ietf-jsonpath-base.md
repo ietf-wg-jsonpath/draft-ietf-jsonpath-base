@@ -793,7 +793,9 @@ The `index-wild-selector` behaves identically to the `dot-wild-selector`.
 #### Syntax
 {: unnumbered}
 
-The array slice selector has the form `'[<start>:<end>:<step>]'`. It selects elements starting at index `<start>`, ending at &ndash; not including &ndash; `<end>`, while incrementing by `step`.
+The array slice selector has the form `'[<start>:<end>:<step>]'`.
+It selects elements starting at index `<start>`, ending at — but
+not including — `<end>`, while incrementing by `step`.
 
 ~~~~ abnf
 slice-selector = "[" slice-index "]"
