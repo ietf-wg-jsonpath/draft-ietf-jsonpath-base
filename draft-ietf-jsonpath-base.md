@@ -791,7 +791,7 @@ index-wild-selector    = "[" "*" "]"  ;  asterisk enclosed by brackets
 #### Semantics
 {: unnumbered}
 
-An index selector combined with a single asterisk is a wild card. It
+An `index-wild-selector`
 selects all member values of an object as well as all elements of an
 array.
 Applying the `index-wild-selector` to a primitive JSON value (such as
