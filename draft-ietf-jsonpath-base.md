@@ -660,7 +660,11 @@ dot-wild-selector    = "." "*"            ;  dot followed by asterisk
 #### Semantics
 {: unnumbered}
 
-A dot selector combined with a single asterisk is a wild card. It selects all member values of an object as well as all elements of an array. Applying the `dot-wild-selector` to primitive JSON values, as number, string, or literal, does nothing.
+A dot selector combined with a single asterisk is a wild card.
+It selects all member values of an object as well as all elements of
+an array.
+Applying the `dot-wild-selector` to a primitive JSON value (number,
+string, or true/false/null) selects no value.
 
 
 ### Index Selector
