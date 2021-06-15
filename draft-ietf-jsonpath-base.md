@@ -676,7 +676,7 @@ string, or true/false/null) selects no node.
 #### Syntax
 {: unnumbered}
 
-An index selector `[<index>]` addresses a single object member value or a single array element value.
+An index selector `[<index>]` addresses at most one object member value or at most one array element value.
 
 ~~~~ abnf
 index-selector      = "[" (quoted-member-name / element-index) "]"
