@@ -140,6 +140,9 @@ Comments and issues may be directed to this document's
 {:unnumbered: numbered="false" toc="exclude"}
 <!-- use as {: unnumbered} -->
 
+<!-- editorial issue: lots of complicated nesting of quotes, as in -->
+<!-- `"13 == '13'"` or `'$'`.  We probably should find a simpler style -->
+
 # Introduction
 
 This document picks up the popular JSONPath specification dated
@@ -1041,12 +1044,15 @@ Notes:
 
 * Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `'[?(<expr>)]'` is naturally contained in the current lean syntax `'[?<expr>]'` as a special case.
 * Comparisons are restricted to primitive values `number`, `string`, `true`, `false`, `null`. Comparisons with complex values will fail, i.e. no selection occurs.
-* Implicit type conversions during comparisons are not performed. So `"13 == '13'"` selects nothing.
+<!-- issue: comparison with structured value -->
+* Types are not implicitly converted in comparisons.
+  So `"13 == '13'"` selects no value.
 * A member or element value by itself is *falsy* only, if it does not exist. Otherwise it is *truthy*, resulting in its value. To be more specific explicit comparisons are necessary. This existence test — as an exception of the general rule — also works with complex values.
 * Regular expression tests can be applied to `string` values only.
 * Containment tests work with arrays and objects.
 * Explicit boolean type conversion is done by the not operator `neg-op`.
 * The behaviour of operators is consistent with the 'C'-family of programming languages.
+<!-- need to clarify -->
 
 #### Semantics
 
