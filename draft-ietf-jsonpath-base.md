@@ -136,6 +136,10 @@ Comments and issues may be directed to this document's
 
 --- middle
 
+<!-- define an ALD to simplify below -->
+{:unnumbered: numbered="false" toc="exclude"}
+<!-- use as {: unnumbered} -->
+
 # Introduction
 
 This document picks up the popular JSONPath specification dated
@@ -597,7 +601,7 @@ A JSONPath query consists of a sequence of selectors. Valid selectors are
 ### Root Selector
 
 #### Syntax
-{: numbered="false" toc="exclude"}
+{: unnumbered}
 
 Every valid JSONPath query MUST begin with the root selector named `'$'`.
 
@@ -606,14 +610,14 @@ root-selector  = "$"
 ~~~~
 
 #### Semantics
-{: numbered="false" toc="exclude"}
+{: unnumbered}
 The Argument &mdash; the root JSON value &ndash; is anonymous by nature. By getting assigned the universal name `'$'` it becomes the root node.
 
 
 ### Dot Selector
 
 #### Syntax
-{: numbered="false" toc="exclude"}
+{: unnumbered}
 
 A dot selector starts with a dot `'.'` followed by an object's member name.
 
@@ -632,7 +636,7 @@ ALPHA           =  %x41-5A / %x61-7A    ; A-Z / a-z
 Member names containing other ASCII characters than allowed by `dot-selector` &ndash; especially space `' '` and minus `'-'` characters MUST NOT be used with the `dot-selector`. Member names containing these might be addressed by the `index-selector` instead.
 
 #### Semantics
-{: numbered="false" toc="exclude"}
+{: unnumbered}
 
 The `dot-selector` selects the value corresponding to the member name from any JSON object. It selects no values from any other JSON value.
 
@@ -645,7 +649,7 @@ not encode Unicode characters.
 ### Dot Wild Card Selector
 
 #### Syntax
-{: numbered="false" toc="exclude"}
+{: unnumbered}
 
 The dot wild card selector has the shape `'.*'`.
 
@@ -654,7 +658,7 @@ dot-wild-selector    = "." "*"            ;  dot followed by asterisk
 ~~~~
 
 #### Semantics
-{: numbered="false" toc="exclude"}
+{: unnumbered}
 
 A dot selector combined with a single asterisk is a wild card. It selects all member values of an object as well as all elements of an array. Applying the `dot-wild-selector` to primitive JSON values, as number, string, or literal, does nothing.
 
@@ -662,7 +666,7 @@ A dot selector combined with a single asterisk is a wild card. It selects all me
 ### Index Selector
 
 #### Syntax
-{: numbered="false" toc="exclude"}
+{: unnumbered}
 
 An index selector `'[<index>]'` addresses a single object member value or a single array element value.
 
@@ -723,7 +727,7 @@ Notes:
 3. The syntax does not allow octal-like integers with leading zeros such as `01` or `-01`.
 
 #### Semantics
-{: numbered="false" toc="exclude"}
+{: unnumbered}
 
 A `quoted-member-name` string MUST be converted to a
 member name by removing the surrounding quotes and
@@ -757,7 +761,7 @@ For example, selector `[-1]` selects the last and selector `[-2]` selects the la
 ### Index Wild Card Selector
 
 #### Syntax
-{: numbered="false" toc="exclude"}
+{: unnumbered}
 
 The index wild card selector has the shape `'[*]'`.
 
@@ -766,14 +770,14 @@ index-wild-selector    = "[" "*" "]"  ;  asterisk enclosed by brackets
 ~~~~
 
 #### Semantics
-{: numbered="false" toc="exclude"}
+{: unnumbered}
 
 An index selector combined with a single asterisk is a wild card. It selects all member values of an object as well as all elements of an array. Applying the `index-wild-selector` to primitive JSON values, as number, string, or literal, does nothing. The `index-wild-selector` behaves identically to the `dot-wild-selector`.
 
 ### Array Slice Selector
 
 #### Syntax
-{: numbered="false" toc="exclude"}
+{: unnumbered}
 
 The array slice selector has the shape `'[<start>:<end>:<step>]'`. It selects elements starting at index `<start>`, ending at &ndash; not including &ndash; `<end>`, while incrementing by `step`.
 
@@ -795,13 +799,13 @@ ws             = *( %x20 / ; Space
 The `slice-selector` consists of three optional decimal integers separated by colons.
 
 #### Semantics
-{: numbered="false" toc="exclude"}
+{: unnumbered}
 
 The `slice-selector` was inspired by the slice operator of ECMAScript 4 (ES4), which was deprecated in 2014 and later adopted by Python.
 
 
 ##### Informal Introduction
-{: numbered="false" toc="exclude"}
+{: unnumbered}
 
 This section is non-normative.
 
@@ -835,7 +839,7 @@ The following section specifies the behaviour fully, without depending on
 JavaScript or Python behaviour.
 
 ##### Detailed Semantics
-{: numbered="false" toc="exclude"}
+{: unnumbered}
 
 An array selector is either an array slice or an array index, which is defined
 in terms of an array slice.
@@ -936,7 +940,7 @@ MUST raise an error.
 ### Descendant Selector
 
 #### Syntax
-{: numbered="false" toc="exclude"}
+{: unnumbered}
 
 The descendant selector starts with a double dot `'..'`. It can be used in place of the normal `dot-selector`. So it will usually be followed by an object member name. As an extension to that natural rule it might also be followed by an `index-selector` acting on objects or arrays.
 
@@ -949,7 +953,7 @@ descendant-selector = ".." ( dot-member-name      /  ; ..<name>
 ~~~~
 
 #### Semantics
-{: numbered="false" toc="exclude"}
+{: unnumbered}
 
 The `descendant-selector` is inspired by ECMAScript for XML (E4X). It selects object members and array elements in a recursive descent process.
 
