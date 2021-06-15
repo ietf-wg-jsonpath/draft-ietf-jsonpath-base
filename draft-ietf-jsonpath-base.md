@@ -962,7 +962,9 @@ MUST raise an error.
 #### Syntax
 {: unnumbered}
 
-The descendant selector starts with a double dot `'..'`. It can be used in place of the normal `dot-selector`. So it will usually be followed by an object member name. As an extension to that natural rule it might also be followed by an `index-selector` acting on objects or arrays.
+The descendant selector starts with a double dot `'..'` and can be
+followed by an object member name (similar to the `dot-selector`),
+by an `index-selector` acting on objects or arrays, or by a wild card.
 
 ~~~~ abnf
 descendant-selector = ".." ( dot-member-name      /  ; ..<name>
