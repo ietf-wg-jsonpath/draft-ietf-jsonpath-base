@@ -841,7 +841,8 @@ The `slice-selector` consists of three optional decimal integers separated by co
 #### Semantics
 {: unnumbered}
 
-The `slice-selector` was inspired by the slice operator of ECMAScript 4 (ES4), which was deprecated in 2014 and later adopted by Python.
+The `slice-selector` was inspired by the slice operator of ECMAScript
+4 (ES4), which was deprecated in 2014, and that of Python.
 
 
 ##### Informal Introduction
