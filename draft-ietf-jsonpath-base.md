@@ -44,17 +44,6 @@ author:
   country: Cyprus
   phone: ''
   email: esurov.tsp@gmail.com
-- role: editor
-  ins: M. Mikulicic
-  name: Marko Mikulicic
-  org: InfluxData, Inc.
-  street: ''
-  city: Pisa
-  region: ''
-  code: ''
-  country: IT
-  phone: ''
-  email: mmikulicic@gmail.com
 -
   name: Stefan Gössner
   org: Fachhochschule Dortmund
@@ -75,6 +64,16 @@ contributor:
   country: Germany
   phone: +49-421-218-63921
   email: cabo@tzi.org
+-
+  name: Marko Mikulicic
+  org: InfluxData, Inc.
+  street: ''
+  city: Pisa
+  region: ''
+  code: ''
+  country: IT
+  phone: ''
+  email: mmikulicic@gmail.com
 
 informative:
   RFC3552: seccons
@@ -83,7 +82,7 @@ informative:
   RFC6901: pointer
   JSONPath-orig:
     target: https://goessner.net/articles/JsonPath/
-    title: JSONPath – XPath for JSON
+    title: JSONPath — XPath for JSON
     author:
       name: Stefan Gössner
       org: Fachhochschule Dortmund
@@ -97,6 +96,12 @@ informative:
     seriesinfo:
       ISO/IEC 22537:2006
     date: 2006
+  E4X-overview:
+    title: >
+      Proposed ECMAScript 4 Edition — Language Overview
+    author:
+    - org: Adobe Systems Inc., The Mozilla Foundation, Opera Software ASA, and others
+    date: 2007
   SLICE:
     target: https://github.com/tc39/proposal-slice-notation
     title: Slice notation
@@ -112,6 +117,7 @@ normative:
   RFC5234: abnf
   RFC8259: json
 
+...
 --- abstract
 
 JSONPath defines a string syntax for identifying values
@@ -128,6 +134,13 @@ Comments and issues may be directed to this document's
 [github repository](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-jsonpath).
 
 --- middle
+
+<!-- define an ALD to simplify below -->
+{:unnumbered: numbered="false" toc="exclude"}
+<!-- use as {: unnumbered} -->
+
+<!-- editorial issue: lots of complicated nesting of quotes, as in -->
+<!-- `"13 == '13'"` or `$`.  We probably should find a simpler style -->
 
 # Introduction
 
@@ -157,7 +170,10 @@ For example, the Unicode PLACE OF INTEREST SIGN (U+2318) would be defined
 in ABNF as `%x2318`.
 
 The terminology of {{-json}} applies except where clarified below.
-Definitions for "Object", "Array", and "Number" remain unchanged.
+The terms "Primitive" and "Structured" are used to group
+the types as in {{Section 1 of -json}}.
+Definitions for "Object", "Array", "Number", and "String" remain
+unchanged.
 Importantly "object" and "array" in particular do not take on a
 generic meaning, such as they would in a general programming context.
 
@@ -279,13 +295,13 @@ as XPath expressions are used in combination with an XML document.
 Since a value is anonymous, JSONPath uses the abstract name `$` to
 refer to the root node of the argument.
 
-JSONPath expressions can use the *dot–notation*
+JSONPath expressions can use the *dot notation*
 
 ~~~~
 $.store.book[0].title
 ~~~~
 
-or the *bracket–notation*
+or the *bracket notation*
 
 ~~~~
 $['store']['book'][0]['title']
@@ -295,7 +311,7 @@ for paths input to a JSONPath processor.
 \[1]
 Where a JSONPath processor uses JSONPath expressions as output paths,
 these will always be converted to Output Paths
-which employ the more general *bracket–notation*.
+which employ the more general *bracket notation*.
 \[2]
 Bracket notation is more general than dot notation and can serve as a
 canonical form when a JSONPath processor uses JSONPath expressions as
@@ -328,7 +344,7 @@ $.store.book[?(@.price < 10)].title
 Here is a complete overview and a side by side comparison of the JSONPath syntax elements with their XPath counterparts.
 
 | XPath | JSONPath           | Description                                                                                                                           |
-|-------+--------------------+---------------------------------------------------------------------------------------------------------------------------------------|
+|-------|--------------------|---------------------------------------------------------------------------------------------------------------------------------------|
 | `/`   | `$`                | the root element/node                                                                                                             |
 | `.`   | `@`                | the current element/node                                                                                                          |
 | `/`   | `.` or `[]`        | child operator                                                                                                                        |
@@ -502,8 +518,14 @@ stands for a nodelist that contains the root node of the argument,
 followed by a possibly empty sequence of *selectors*.
 
 ~~~~ abnf
-json-path = root-selector *selector
-root-selector = "$"               ; $ selects document root node
+json-path = root-selector *(dot-selector        /
+                            dot-wild-selector   /
+                            index-selector      /
+                            index-wild-selector /
+                            union-selector      /
+                            slice-selector      /
+                            descendant-selector /
+                            filter-selector)
 ~~~~
 
 The syntax and semantics of each selector is defined below.
@@ -536,6 +558,8 @@ each of which is a descendant of the node or the node itself.
 > Discussion (D4): Is that a common requirement?  Or can a selector also go
 > up, or to the query argument?
 
+<!-- To do: Define "descendants" (making sure that member values are, but member names aren't). -->
+
 For instance, with the argument `{"a":[{"b":0},{"b":1},{"c":2}]}`, the
 query `$.a[*].b` selects the following list of nodes: `0`, `1`
 (denoted here by their value).
@@ -546,7 +570,9 @@ The query consists of `$` followed by three selectors: `.a`, `[*]`, and `.b`.
 Firstly, `$` selects the root node which is the argument.
 So the result is a list consisting of just the root node.
 
-Next, `.a` selects from any input node of type object and selects any value of the input
+Next, `.a` selects from any input node of type object and selects the
+node of any
+member value of the input
 node corresponding to the member name `"a"`.
 The result is again a list of one node: `[{"b":0},{"b":1},{"c":2}]`.
 
@@ -555,7 +581,7 @@ of the input node.
 The result is a list of three nodes: `{"b":0}`, `{"b":1}`, and `{"c":2}`.
 
 Finally, `.b` selects from any input node of type object with a member name
-`b` and selects the value of the input node corresponding to that name.
+`b` and selects the node of the member value of the input node corresponding to that name.
 The result is a list containing `0`, `1`.
 This is the concatenation of three lists, two of length one containing
 `0`, `1`, respectively, and one of length zero.
@@ -569,207 +595,258 @@ of node.
 
 ## Selectors
 
-### Dot Child Selector
+A JSONPath query consists of a sequence of selectors. Valid selectors are
+
+  * Root selector `$`
+  * Dot selector `.<name>`, used with object member names exclusively.
+  * Dot wild card selector `.*`.
+  * Index selector `[<index>]`, where `<index>` is either an (possibly negative) array index or an object member name.
+  * Index wild card selector `[*]`.
+  * Array slice selector `[<start>:<end>:<step>]`, where `<start>`, `<end>`, `<step>` are integer literals.
+  * Nested descendants selector `..`.
+  * Union selector `[<sel1>,<sel2>,...,<selN>]`, holding a comma delimited list of index, index wild card, array slice, and filter selectors.
+  * Filter selector `[?(<expr>)]`
+  * Current item selector `@`
+
+### Root Selector
 
 #### Syntax
-{: numbered="false" toc="exclude"}
+{: unnumbered}
 
-A dot child selector has a member name known as a dot child name or a single asterisk
-(`*`).
-
-A dot child name corresponds to a name in a object.
+Every valid JSONPath query MUST begin with the root selector `$`.
 
 ~~~~ abnf
-selector = dot-child              ; see below for alternatives
-dot-child = "." dot-child-name / ; .<dot-child-name>
-            "." "*"             ; .*
-dot-child-name = 1*(
-                   DIGIT /
-                   ALPHA /
-                   "_" /         ; _
-                   %x80-10FFFF    ; any non-ASCII Unicode character
-                 )
-DIGIT =  %x30-39                  ; 0-9
-ALPHA = %x41-5A / %x61-7A         ; A-Z / a-z
+root-selector  = "$"
 ~~~~
 
-More general child names, such as the empty string, are supported by "Union
-Child" ({{unionchild}}{: format="default"}).
+#### Semantics
+{: unnumbered}
 
-Note that the `dot-child-name` rule follows the philosophy of JSON strings and is
+The Argument — the root JSON value — becomes the root node, which is
+addressed by the root selector `$`.
+
+
+### Dot Selector
+
+#### Syntax
+{: unnumbered}
+
+A dot selector starts with a dot `.` followed by an object's member name.
+
+~~~~ abnf
+dot-selector    = "." dot-member-name
+dot-member-name = name-first *name-char
+name-first =
+                      ALPHA /
+                      "_"   /           ; _
+                      %x80-10FFFF       ; any non-ASCII Unicode character
+name-char = DIGIT / name-first
+
+DIGIT           =  %x30-39              ; 0-9
+ALPHA           =  %x41-5A / %x61-7A    ; A-Z / a-z
+~~~~
+
+Member names containing other characters than allowed by
+`dot-selector` — such as space ` ` and minus `-`
+characters — MUST NOT be used with the `dot-selector`.
+(Such member names can be addressed by the
+`index-selector` instead.)
+
+#### Semantics
+{: unnumbered}
+
+The `dot-selector` selects the node of the member value corresponding to the member name from any JSON object. It selects no nodes from any other JSON value.
+
+<!-- Not true, as JSONPath queries are UTF-8 texts -->
+Note that the `dot-selector` follows the philosophy of JSON strings and is
 allowed to contain bit sequences that cannot encode Unicode characters (a
 single unpaired UTF-16 surrogate, for example).
-The behaviour of an implementation is undefined for child names which do
+The behaviour of an implementation is undefined for member names which do
 not encode Unicode characters.
 
-
-#### Semantics
-{: numbered="false" toc="exclude"}
-
-A dot child name which is not a single asterisk (`*`) is considered to
-have a member name.
-It selects the value corresponding to the name from any object node.
-It selects
-no nodes from a node which is not a object.
-
-The member name of a dot child name is the sequence of Unicode characters contained
-in that name.
-
-A dot child name consisting of a single asterisk is a wild card. It selects
-all the values of any object node.
-It also selects all the elements of any array node.
-It selects no nodes from
-number, string, or literal nodes.
-
-
-
-### Union Selector
+### Dot Wild Card Selector
 
 #### Syntax
+{: unnumbered}
 
-A union selector consists of one or more union elements.
+The dot wild card selector has the form `.*`.
 
 ~~~~ abnf
-selector =/ union
-union = "[" ws union-elements ws "]" ; [...]
-ws = *" "                             ; zero or more spaces
-union-elements = union-element /
-                 union-element ws "," ws union-elements
-                                       ; ,-separated list
+dot-wild-selector    = "." "*"            ;  dot followed by asterisk
 ~~~~
 
-
 #### Semantics
+{: unnumbered}
 
-A union selects any node which is selected by at least one of the union selectors
-and selects the concatenation of the
-lists (in the order of the selectors) of nodes selected by the union elements.<!--  TODO: define whether duplicates are kept or removed.  -->
+A `dot-wild-selector` acts as a wild card by selecting the nodes of all member values of an object as well as all element nodes of
+an array.
+Applying the `dot-wild-selector` to a primitive JSON value (number,
+string, or true/false/null) selects no node.
 
 
-#### Child {#unionchild}
+### Index Selector
 
-##### Syntax
-{: numbered="false" toc="exclude"}
+#### Syntax
+{: unnumbered}
 
-A child is a quoted string.
+An index selector `[<index>]` addresses at most one object member value or at most one array element value.
 
 ~~~~ abnf
-union-element = child ; see below for more alternatives
-child = %x22 *double-quoted %x22 / ; "string"
-        "'" *single-quoted "'"   ; 'string'
+index-selector      = "[" (quoted-member-name / element-index) "]"
+~~~~
 
-double-quoted = dq-unescaped /
-          escape (
-              %x22 /         ; "    quotation mark  U+0022
-              "/" /          ; /    solidus         U+002F
-              "\" /          ; \    reverse solidus U+005C
-              "b" /          ; b    backspace       U+0008
-              "f" /          ; f    form feed       U+000C
-              "n" /          ; n    line feed       U+000A
-              "r" /          ; r    carriage return U+000D
-              "t" /          ; t    tab             U+0009
-              "u" 4HEXDIG )  ; uXXXX                U+XXXX
+Applying the `index-selector` to an object value, a `quoted-member-name` string is required. JSONPath allows it to be enclosed in _single_ or _double_ quotes.
 
+~~~~ abnf
+quoted-member-name  = string-literal
 
-dq-unescaped = %x20-21 / %x23-5B / %x5D-10FFFF
+string-literal      = %x22 *double-quoted %x22 /       ; "string"
+                      %x27 *single-quoted %x27         ; 'string'
 
-single-quoted = sq-unescaped /
-          escape (
-              "'" /          ; '    apostrophe      U+0027
-              "/" /          ; /    solidus         U+002F
-              "\" /          ; \    reverse solidus U+005C
-              "b" /          ; b    backspace       U+0008
-              "f" /          ; f    form feed       U+000C
-              "n" /          ; n    line feed       U+000A
-              "r" /          ; r    carriage return U+000D
-              "t" /          ; t    tab             U+0009
-              "u" 4HEXDIG )  ; uXXXX                U+XXXX
+double-quoted       = unescaped /
+                      %x27      /                       ; '
+                      ESC %x22  /                       ; \"
+                      ESC escapable
 
-sq-unescaped = %x20-26 / %x28-5B / %x5D-10FFFF
+single-quoted       = unescaped /
+                      %x22      /                       ; "
+                      ESC %x27  /                       ; \'
+                      ESC escapable
 
-escape = "\"                 ; \
+ESC                 = %x5C                              ; \  backslash
 
-HEXDIG =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
-                              ; case insensitive hex digit
+unescaped           = %x20-21 /                         ; s. RFC 8259
+                      %x23-26 /                         ; omit "
+                      %x28-5B /                         ; omit '
+                      %x5D-10FFFF                       ; omit \
+
+escapable           = ( %x62 / %x66 / %x6E / %x72 / %x74 / ; \b \f \n \r \t
+                          ; b /         ;  BS backspace U+0008
+                          ; t /         ;  HT horizontal tab U+0009
+                          ; n /         ;  LF line feed U+000A
+                          ; f /         ;  FF form feed U+000C
+                          ; r /         ;  CR carriage return U+000D
+                          "/" /          ;  /  slash (solidus)
+                          "\" /          ;  \  backslash (reverse solidus)
+                          (%x75 hexchar) ;  uXXXX      U+XXXX
+                      )
+
+hexchar = non-surrogate / (high-surrogate "\" %x75 low-surrogate)
+non-surrogate = ((DIGIT / "A"/"B"/"C" / "E"/"F") 3HEXDIG) /
+                 ("D" %x30-37 2HEXDIG )
+high-surrogate = "D" ("8"/"9"/"A"/"B") 2HEXDIG
+low-surrogate = "D" ("C"/"D"/"E"/"F") 2HEXDIG
+
+HEXDIG = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
+
+; Task from 2021-06-15 interim: update ABNF later
+~~~~
+
+Applying the `index-selector` to an array, a numerical `element-index` is required. JSONPath allows it to be negative.
+
+~~~~ abnf
+element-index   = int                             ; decimal integer
+
+int             = ["-"] ( "0" / (DIGIT1 *DIGIT) ) ; -  optional
+DIGIT1          = %x31-39                         ; 1-9 non-zero digit
 ~~~~
 
 Notes:
-1. double-quoted strings follow JSON in {{RFC8259}}.
-   Single-quoted strings follow an analogous pattern.
-2. `HEXDIG` includes A-F and a-f.
+1. `double-quoted` strings follow JSON in {{RFC8259}};
+   `single-quoted` strings follow an analogous pattern.
+2. An `element-index` is an integer (in base 10, as in JSON numbers).
+3. As in JSON numbers, the syntax does not allow octal-like integers with leading zeros such as `01` or `-01`.
 
+#### Semantics
+{: unnumbered}
 
-##### Semantics
-{: numbered="false" toc="exclude"}
-
-If the child is a quoted string, the string MUST be converted to a
+A `quoted-member-name` string MUST be converted to a
 member name by removing the surrounding quotes and
 replacing each escape sequence with its equivalent Unicode character, as
 in the table below:
 
-| Escape Sequence   | Unicode Character   |
-| :---------------: | :-----------------: |
-| "\\" %x22          | U+0022              |
-| "\\" "'"           | U+0027              |
-| "\\" "/"           | U+002F              |
-| "\\" "\\"          | U+005C              |
-| "\\" "b"           | U+0008              |
-| "\\" "f"           | U+000C              |
-| "\\" "n"           | U+000A              |
-| "\\" "r"           | U+000D              |
-| "\\" "t"           | U+0009              |
-| "\\" uXXXX         | U+XXXX              |
+| Escape Sequence    | Unicode Character   |  Description                |
+| :----------------: | :-----------------: |:--------------------------- |
+| \\b                | U+0008              | BS backspace                |
+| \\t                | U+0009              | HT horizontal tab           |
+| \\n                | U+000A              | LF line feed                |
+| \\f                | U+000C              | FF form feed                |
+| \\r                | U+000D              | CR carriage return          |
+| \\"                | U+0022              | quotation mark              |
+| \\'                | U+0027              | apostrophe                  |
+| \\/                | U+002F              | slash (solidus)             |
+| \\\\               | U+005C              | backslash (reverse solidus) |
+| \\uXXXX            | U+XXXX              | unicode character           |
 {: title="Escape Sequence Replacements" cols="c c"}
 
-The child selects the value corresponding to the member name from any object
-node that has a member with that name.
-It selects no nodes from a node which is not a object.
+The `index-selector` applied with a `quoted-member-name` to an object
+selects the node of the corresponding member value from it, if and only if that object has a member with that name.
+Nothing is selected from a value which is not a object.
+
+Array indexing via `element-index` is a way of selecting a particular array element using a zero-based index.
+For example, selector `[0]` selects the first and selector `[4]` the fifth element of a sufficiently long array.
+
+A negative `element-index` counts from the array end.
+For example, selector `[-1]` selects the last and selector `[-2]` selects the last but one element of an array with at least two elements.
 
 
+### Index Wild Card Selector
 
-#### Array Selector
+#### Syntax
+{: unnumbered}
 
-##### Syntax
-{: numbered="false" toc="exclude"}
-
-An array selector selects zero or more elements of an array node.
-An array selector takes the form of an index, which selects at most one element,
-or a slice, which selects zero or more elements.
-
-~~~~ abnf
-union-element =/ array-index / array-slice
-~~~~
-
-An array index is an integer (in base 10).
+The index wild card selector has the form `[*]`.
 
 ~~~~ abnf
-array-index = integer
-
-integer = ["-"] ("0" / (DIGIT1 *DIGIT))
-                            ; optional - followed by 0 or
-                            ; sequence of digits with no leading zero
-DIGIT1 = %x31-39            ; non-zero digit
+index-wild-selector    = "[" "*" "]"  ;  asterisk enclosed by brackets
 ~~~~
 
-Note: the syntax does not allow integers with leading zeros such as `01` and `-01`.
+#### Semantics
+{: unnumbered}
 
-An array slice consists of three optional integers (in base 10) separated by colons.
+An `index-wild-selector`
+selects the nodes of all member values of an object as well as of all elements of an
+array.
+Applying the `index-wild-selector` to a primitive JSON value (such as
+a number, string, or true/false/null) selects no node.
+
+The `index-wild-selector` behaves identically to the `dot-wild-selector`.
+
+### Array Slice Selector
+
+#### Syntax
+{: unnumbered}
+
+The array slice selector has the form `[<start>:<end>:<step>]`.
+It selects elements starting at index `<start>`, ending at — but
+not including — `<end>`, while incrementing by `step`.
 
 ~~~~ abnf
-array-slice = [ start ] ws ":" ws [ end ]
-                   [ ws ":" ws [ step ] ]
-start = integer
-end = integer
-step = integer
+slice-selector = "[" slice-index "]"
+
+slice-index    = ws [start] ws ":" ws [end] [ws ":" ws [step] ws]
+
+start          = int       ; included in selection
+end            = int       ; not included in selection
+step           = int       ; default: 1
+
+ws             = *( %x20 / ; Space
+                    %x09 / ; Horizontal tab
+                    %x0A / ; Line feed or New line
+                    %x0D ) ; Carriage return
 ~~~~
 
-Note: the array slices `:` and `::` are both syntactically valid, as are `:2:2`, `2::2`, and `2:4:`.
+The `slice-selector` consists of three optional decimal integers separated by colons.
 
-##### Semantics
-{: numbered="false" toc="exclude"}
+#### Semantics
+{: unnumbered}
 
-###### Informal Introduction
-{: numbered="false" toc="exclude"}
+The `slice-selector` was inspired by the slice operator of ECMAScript
+4 (ES4), which was deprecated in 2014, and that of Python.
+
+
+##### Informal Introduction
+{: unnumbered}
 
 This section is non-normative.
 
@@ -802,9 +879,8 @@ raises an error in this case.
 The following section specifies the behaviour fully, without depending on
 JavaScript or Python behaviour.
 
-
-###### Detailed Semantics
-{: numbered="false" toc="exclude"}
+##### Detailed Semantics
+{: unnumbered}
 
 An array selector is either an array slice or an array index, which is defined
 in terms of an array slice.
@@ -902,11 +978,174 @@ size doesn't
 fit in the implementation's representation of an integer, the implementation
 MUST raise an error.
 
+### Descendant Selector
+
+#### Syntax
+{: unnumbered}
+
+The descendant selector starts with a double dot `..` and can be
+followed by an object member name (similar to the `dot-selector`),
+by an `index-selector` acting on objects or arrays, or by a wild card.
+
+~~~~ abnf
+descendant-selector = ".." ( dot-member-name      /  ; ..<name>
+                             index-selector       /  ; ..[<index>]
+                             index-wild-selector  /  ; ..[*]
+                             "*"                     ; ..*
+                           )
+~~~~
+
+#### Semantics
+{: unnumbered}
+
+The `descendant-selector` is inspired by ECMAScript for XML (E4X).
+It selects the node and all its descendants.
+
+### Union Selector
+
+#### Syntax
+
+The union selector is syntactically related to the `index-selector`. It contains multiple, comma separated entries.
+
+~~~~ abnf
+union-selector = "[" ws union-entry 1*(ws "," ws union-entry) ws "]"
+
+union-entry    =  ( quoted-member-name /
+                    element-index      /
+                    slice-index
+                  )
+~~~~
+
+> Task (T1): This, besides slice-index, is currently one of only two
+> places in the document that mentions whitespace.  Whitespace needs
+> to be handled throughout the ABNF syntax.  Room Consensus at the
+> 2021-06-15 interim was that JSONPath generally is generous with
+> allowing insignificant whitespace throughout.  Minimizing the impact
+> of the many whitespace insertion points by choosing a rule name such
+> as "S" was mentioned.  Some conventions will probably help with
+> minimizing the number of places where S needs to be inserted.
+
+#### Semantics
+
+A union selects any node which is selected by at least one of the union selectors and selects the concatenation of the
+lists (in the order of the selectors) of nodes selected by the union elements.
+Note that any node selected in more than one of the union selectors is kept
+as many times in the node list.
 
 
+### Filter Selector
+
+#### Syntax
+
+The filter selector has the form `[?<expr>]`. It works via iterating over structured values, i.e. arrays and objects.
+
+~~~~ abnf
+filter-selector    = "[?" boolean-expr "]"
+~~~~
+
+During iteration process each array element or object member is visited and its value — accessible via symbol `@` — or one of its descendants — uniquely defined by a relative path — is tested against a boolean expression `boolean-expr`.
+
+The current item is selected if and only if the result is `true`.
 
 
+~~~~ abnf
 
+
+boolean-expr = logical-expr
+logical-expr = ([neg-op] primary-expr) / logical-or-expr
+neg-op       = "!"                                  ; not operator
+primary-expr = "(" logical-or-expr ")"
+logical-or-expr = logical-and-expr *["||" logical-and-expr]
+logical-and-expr = comp-expr *["&&" comp-expr]
+
+comp-expr    = (rel-path-val /
+                json-path) [(comp-op comparable / ; comparison
+                            regex-op regex     /  ; RegEx test
+                            in-op container )]    ; containment test
+comp-op      = "==" / "!=" /                        ; comparison ...
+               "<"  / ">"  /                        ; operators
+               "<=" / ">="
+regex-op     = "~="                                 ; RegEx match
+in-op        = " in "                               ; in operator
+comparable   = number / string-literal /            ; primitive ...
+               true / false / null /                ; values only
+               rel-path-val /                       ; descendant value
+               json-path                            ; any value
+
+rel-path-val = "@" *(dot-selector / index-selector)
+
+container = <TO BE DEFINED>
+regex = <TO BE DEFINED>
+~~~~
+
+Notes:
+
+* Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `[?(<expr>)]` is naturally contained in the current lean syntax `[?<expr>]` as a special case.
+* Comparisons are restricted to primitive values (such as number, string, `true`, `false`, `null`). Comparisons with complex values will fail, i.e. no selection occurs.
+<!-- issue: comparison with structured value -->
+* Types are not implicitly converted in comparisons.
+  So `"13 == '13'"` selects no node.
+* A member or element value by itself is *falsy* only, if it does not exist. Otherwise it is *truthy*, resulting in its value. To be more specific explicit comparisons are necessary. This existence test — as an exception of the general rule — also works with complex values.
+* Regular expression tests can be applied to `string` values only.
+* Containment tests work with arrays and objects.
+* Explicit boolean type conversion is done by the not operator `neg-op`.
+* The behaviour of operators is consistent with the 'C'-family of programming languages.
+<!-- need to clarify -->
+
+#### Semantics
+
+The `filter-selector` works with arrays and objects exclusively. Its result might be a list of *zero*, *one*, *multiple* or *all* of their element or member values then. Applied to other value types, it will select nothing.
+
+Negation operator `neg-op` allows to test *falsiness* of values.
+
+| Type |  Negation | Result | Comment |
+|:----:|:---------:|:------:|:-------:|
+| Number |  `!0`   | `true` | `false` for non-zero number  |
+| String |  `!""`<br>`!''`  | `true` | `false` for non-empty string  |
+| `null` |  `!null`| `true` | —  |
+| `true` |  `!true`| `false`| —  |
+| `false`| `!false`| `true` | —  |
+| Object | `!{}`<br>`!{a:0}` | `false`| always `false` |
+| Array | `![]`<br>`![0]` | `false`| always `false` |
+{: title="Test falsiness of JSON values" }
+
+Applying negation operator twice `!!` gives us *truthiness* of values.
+
+Some examples:
+
+| JSON |  Query | Result | Comment |
+|:----|:---------:|:------:|:-------|
+| `{"a":1,"b":2}`<br>`[2,3,4]` | `$[?@]` | `[1,2]`<br>`[2,3,4]` | Same as `$.*` or `$[*]`  |
+| `./.` | `$[?@==2]` | `[2]`<br>`[2]` | Select by value.  |
+| `{"a":{"b":{"c":{}}}` | `$[?@.b]`<br>`$[?@.b.c]` | `[{"b":{"c":{}}]` | Existence  |
+| `{"key":false}` | `$[?index(@)=='key']`<br>`$[?index(@)==0]` | `[false]`<br>`[]` | Select object member |
+| `[3,4,5]` | `$[?index(@)==2]`<br>`$[?index(@)==17]` | `[5]`<br>`[]` | Select array element |
+| `{"col":"red"}` | `$[?@ in ['red','green','blue']]` | `["red"]` | Containment |
+| `{"a":{"b":{5},c:0}}` | `$[?@.b==5 && !@.c]` | `[{"b":{5},c:0}]` | Existence  |
+
+
+# Expression Language
+
+> Task (T2): Separate out expression language.  For now, this section
+> is a repository for ABNF taken from {{-json}}.  This needs to be
+> deduplicated with definitions above.
+
+~~~~ abnf
+number = [ minus ] jsint [ frac ] [ exp ]
+decimal-point = %x2E       ; .
+digit1-9 = %x31-39         ; 1-9
+e = %x65 / %x45            ; e E
+exp = e [ minus / plus ] 1*DIGIT
+frac = decimal-point 1*DIGIT
+jsint = zero / ( digit1-9 *DIGIT )
+minus = %x2D               ; -
+plus = %x2B                ; +
+zero = %x30                ; 0
+
+false = %x66.61.6c.73.65   ; false
+null  = %x6e.75.6c.6c      ; null
+true  = %x74.72.75.65      ; true
+~~~~
 
 # IANA Considerations {#IANA}
 
