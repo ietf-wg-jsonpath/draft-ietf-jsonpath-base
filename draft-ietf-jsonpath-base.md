@@ -1057,7 +1057,8 @@ primary-expr = "(" logical-or-expr ")"
 logical-or-expr = logical-and-expr *["||" logical-and-expr]
 logical-and-expr = comp-expr *["&&" comp-expr]
 
-comp-expr    = (rel-path-val) [(comp-op comparable /  ; comparison
+comp-expr    = (rel-path-val /
+                json-path) [(comp-op comparable / ; comparison
                             regex-op regex     /  ; RegEx test
                             in-op container )]    ; containment test
 comp-op      = "==" / "!=" /                        ; comparison ...
@@ -1075,8 +1076,6 @@ rel-path-val = "@" *(dot-selector / index-selector)
 container = <TO BE DEFINED>
 regex = <TO BE DEFINED>
 ~~~~
-
-<!-- To do: We also need absolute path values such as $.foo. -->
 
 Notes:
 
