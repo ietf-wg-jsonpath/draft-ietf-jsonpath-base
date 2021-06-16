@@ -998,8 +998,8 @@ descendant-selector = ".." ( dot-member-name      /  ; ..<name>
 #### Semantics
 {: unnumbered}
 
-The `descendant-selector` is inspired by ECMAScript for XML (E4X). It
-It selects the node and all its descendants..
+The `descendant-selector` is inspired by ECMAScript for XML (E4X).
+It selects the node and all its descendants.
 
 ### Union Selector
 
