@@ -2,11 +2,12 @@
 
 
 
-JSONPath WG                                              C. Bormann, Ed.
-Internet-Draft                                    Universität Bremen TZI
-Intended status: Standards Track                         S. Gössner, Ed.
-Expires: 7 January 2022                          Fachhochschule Dortmund
-                                                      G. Normington, Ed.
+JSONPath WG                                              S. Gössner, Ed.
+Internet-Draft                                   Fachhochschule Dortmund
+Intended status: Standards Track                      G. Normington, Ed.
+Expires: 7 January 2022                                                 
+                                                         C. Bormann, Ed.
+                                                  Universität Bremen TZI
                                                              6 July 2021
 
 
@@ -1221,7 +1222,10 @@ Semantics
               DOI 10.17487/RFC3552, July 2003,
               <https://datatracker.ietf.org/doc/html/rfc3552>.
 
-   [RFC6901]  "*** BROKEN REFERENCE ***".
+   [RFC6901]  Bryan, P., Ed., Zyp, K., and M. Nottingham, Ed.,
+              "JavaScript Object Notation (JSON) Pointer", RFC 6901,
+              DOI 10.17487/RFC6901, April 2013,
+              <https://datatracker.ietf.org/doc/html/rfc6901>.
 
    [SLICE]    "Slice notation", n.d.,
               <https://github.com/tc39/proposal-slice-notation>.
@@ -1260,16 +1264,6 @@ Contributors
 
 Authors' Addresses
 
-   Carsten Bormann (editor)
-   Universität Bremen TZI
-   Postfach 330440
-   D-28359 Bremen
-   Germany
-
-   Phone: +49-421-218-63921
-   Email: cabo@tzi.org
-
-
    Stefan Gössner (editor)
    Fachhochschule Dortmund
    Sonnenstraße 96
@@ -1284,3 +1278,13 @@ Authors' Addresses
    United Kingdom
 
    Email: glyn.normington@gmail.com
+
+
+   Carsten Bormann (editor)
+   Universität Bremen TZI
+   Postfach 330440
+   D-28359 Bremen
+   Germany
+
+   Phone: +49-421-218-63921
+   Email: cabo@tzi.org

@@ -5,9 +5,9 @@
 <meta content="Common,Latin" name="scripts">
 <meta content="initial-scale=1.0" name="viewport">
 <title>JSONPath: Query expressions for JSON</title>
-<meta content="Carsten Bormann" name="author">
 <meta content="Stefan Gössner" name="author">
 <meta content="Glyn Normington" name="author">
+<meta content="Carsten Bormann" name="author">
 <meta content="
        JSONPath defines a string syntax for identifying values
 within a JavaScript Object Notation (JSON) document. 
@@ -843,7 +843,7 @@ address div.right {
 <td class="right">July 2021</td>
 </tr></thead>
 <tfoot><tr>
-<td class="left">Bormann, et al.</td>
+<td class="left">Gössner, et al.</td>
 <td class="center">Expires 7 January 2022</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
@@ -866,11 +866,6 @@ address div.right {
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
-      <div class="author-name">C. Bormann, <span class="editor">Ed.</span>
-</div>
-<div class="org">Universität Bremen TZI</div>
-</div>
-<div class="author">
       <div class="author-name">S. Gössner, <span class="editor">Ed.</span>
 </div>
 <div class="org">Fachhochschule Dortmund</div>
@@ -878,6 +873,11 @@ address div.right {
 <div class="author">
       <div class="author-name">G. Normington, <span class="editor">Ed.</span>
 </div>
+</div>
+<div class="author">
+      <div class="author-name">C. Bormann, <span class="editor">Ed.</span>
+</div>
+<div class="org">Universität Bremen TZI</div>
 </div>
 </dd>
 </dl>
@@ -946,81 +946,81 @@ be covered.<a href="#section-note.1-1" class="pilcrow">¶</a></p>
         <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents">
 <a href="#name-table-of-contents" class="section-name selfRef">Table of Contents</a>
         </h2>
-<nav class="toc"><ul class="compact toc ulEmpty ulBare">
-<li class="compact toc ulEmpty ulBare" id="section-toc.1-1.1">
+<nav class="toc"><ul class="ulEmpty compact toc ulBare">
+<li class="ulEmpty compact toc ulBare" id="section-toc.1-1.1">
             <p id="section-toc.1-1.1.1"><a href="#section-1" class="xref">1</a>.  <a href="#name-introduction" class="xref">Introduction</a></p>
-<ul class="compact toc ulEmpty ulBare">
-<li class="compact toc ulEmpty ulBare" id="section-toc.1-1.1.2.1">
+<ul class="compact ulEmpty toc ulBare">
+<li class="compact ulEmpty toc ulBare" id="section-toc.1-1.1.2.1">
                 <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="xref">1.1</a>.  <a href="#name-terminology" class="xref">Terminology</a></p>
 </li>
-              <li class="compact toc ulEmpty ulBare" id="section-toc.1-1.1.2.2">
+              <li class="compact ulEmpty toc ulBare" id="section-toc.1-1.1.2.2">
                 <p id="section-toc.1-1.1.2.2.1" class="keepWithNext"><a href="#section-1.2" class="xref">1.2</a>.  <a href="#name-inspired-by-xpath" class="xref">Inspired by XPath</a></p>
 </li>
-              <li class="compact toc ulEmpty ulBare" id="section-toc.1-1.1.2.3">
+              <li class="compact ulEmpty toc ulBare" id="section-toc.1-1.1.2.3">
                 <p id="section-toc.1-1.1.2.3.1" class="keepWithNext"><a href="#section-1.3" class="xref">1.3</a>.  <a href="#name-overview-of-jsonpath-expres" class="xref">Overview of JSONPath Expressions</a></p>
 </li>
             </ul>
 </li>
-          <li class="compact toc ulEmpty ulBare" id="section-toc.1-1.2">
+          <li class="ulEmpty compact toc ulBare" id="section-toc.1-1.2">
             <p id="section-toc.1-1.2.1"><a href="#section-2" class="xref">2</a>.  <a href="#name-jsonpath-examples" class="xref">JSONPath Examples</a></p>
 </li>
-          <li class="compact toc ulEmpty ulBare" id="section-toc.1-1.3">
+          <li class="ulEmpty compact toc ulBare" id="section-toc.1-1.3">
             <p id="section-toc.1-1.3.1"><a href="#section-3" class="xref">3</a>.  <a href="#name-jsonpath-syntax-and-semanti" class="xref">JSONPath Syntax and Semantics</a></p>
-<ul class="compact toc ulEmpty ulBare">
-<li class="compact toc ulEmpty ulBare" id="section-toc.1-1.3.2.1">
+<ul class="compact ulEmpty toc ulBare">
+<li class="compact ulEmpty toc ulBare" id="section-toc.1-1.3.2.1">
                 <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="xref">3.1</a>.  <a href="#name-overview" class="xref">Overview</a></p>
 </li>
-              <li class="compact toc ulEmpty ulBare" id="section-toc.1-1.3.2.2">
+              <li class="compact ulEmpty toc ulBare" id="section-toc.1-1.3.2.2">
                 <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="xref">3.2</a>.  <a href="#name-processing-model" class="xref">Processing Model</a></p>
 </li>
-              <li class="compact toc ulEmpty ulBare" id="section-toc.1-1.3.2.3">
+              <li class="compact ulEmpty toc ulBare" id="section-toc.1-1.3.2.3">
                 <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="xref">3.3</a>.  <a href="#name-syntax" class="xref">Syntax</a></p>
 </li>
-              <li class="compact toc ulEmpty ulBare" id="section-toc.1-1.3.2.4">
+              <li class="compact ulEmpty toc ulBare" id="section-toc.1-1.3.2.4">
                 <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="xref">3.4</a>.  <a href="#name-semantics" class="xref">Semantics</a></p>
 </li>
-              <li class="compact toc ulEmpty ulBare" id="section-toc.1-1.3.2.5">
+              <li class="compact ulEmpty toc ulBare" id="section-toc.1-1.3.2.5">
                 <p id="section-toc.1-1.3.2.5.1"><a href="#section-3.5" class="xref">3.5</a>.  <a href="#name-selectors" class="xref">Selectors</a></p>
-<ul class="compact toc ulEmpty ulBare">
-<li class="compact toc ulEmpty ulBare" id="section-toc.1-1.3.2.5.2.1">
+<ul class="compact ulEmpty toc ulBare">
+<li class="compact ulEmpty toc ulBare" id="section-toc.1-1.3.2.5.2.1">
                     <p id="section-toc.1-1.3.2.5.2.1.1"><a href="#section-3.5.1" class="xref">3.5.1</a>.  <a href="#name-root-selector" class="xref">Root Selector</a></p>
 </li>
-                  <li class="compact toc ulEmpty ulBare" id="section-toc.1-1.3.2.5.2.2">
+                  <li class="compact ulEmpty toc ulBare" id="section-toc.1-1.3.2.5.2.2">
                     <p id="section-toc.1-1.3.2.5.2.2.1"><a href="#section-3.5.2" class="xref">3.5.2</a>.  <a href="#name-dot-selector" class="xref">Dot Selector</a></p>
 </li>
-                  <li class="compact toc ulEmpty ulBare" id="section-toc.1-1.3.2.5.2.3">
+                  <li class="compact ulEmpty toc ulBare" id="section-toc.1-1.3.2.5.2.3">
                     <p id="section-toc.1-1.3.2.5.2.3.1"><a href="#section-3.5.3" class="xref">3.5.3</a>.  <a href="#name-dot-wild-card-selector" class="xref">Dot Wild Card Selector</a></p>
 </li>
-                  <li class="compact toc ulEmpty ulBare" id="section-toc.1-1.3.2.5.2.4">
+                  <li class="compact ulEmpty toc ulBare" id="section-toc.1-1.3.2.5.2.4">
                     <p id="section-toc.1-1.3.2.5.2.4.1"><a href="#section-3.5.4" class="xref">3.5.4</a>.  <a href="#name-index-selector" class="xref">Index Selector</a></p>
 </li>
-                  <li class="compact toc ulEmpty ulBare" id="section-toc.1-1.3.2.5.2.5">
+                  <li class="compact ulEmpty toc ulBare" id="section-toc.1-1.3.2.5.2.5">
                     <p id="section-toc.1-1.3.2.5.2.5.1"><a href="#section-3.5.5" class="xref">3.5.5</a>.  <a href="#name-index-wild-card-selector" class="xref">Index Wild Card Selector</a></p>
 </li>
-                  <li class="compact toc ulEmpty ulBare" id="section-toc.1-1.3.2.5.2.6">
+                  <li class="compact ulEmpty toc ulBare" id="section-toc.1-1.3.2.5.2.6">
                     <p id="section-toc.1-1.3.2.5.2.6.1"><a href="#section-3.5.6" class="xref">3.5.6</a>.  <a href="#name-array-slice-selector" class="xref">Array Slice Selector</a></p>
 </li>
-                  <li class="compact toc ulEmpty ulBare" id="section-toc.1-1.3.2.5.2.7">
+                  <li class="compact ulEmpty toc ulBare" id="section-toc.1-1.3.2.5.2.7">
                     <p id="section-toc.1-1.3.2.5.2.7.1"><a href="#section-3.5.7" class="xref">3.5.7</a>.  <a href="#name-descendant-selector" class="xref">Descendant Selector</a></p>
 </li>
-                  <li class="compact toc ulEmpty ulBare" id="section-toc.1-1.3.2.5.2.8">
+                  <li class="compact ulEmpty toc ulBare" id="section-toc.1-1.3.2.5.2.8">
                     <p id="section-toc.1-1.3.2.5.2.8.1"><a href="#section-3.5.8" class="xref">3.5.8</a>.  <a href="#name-union-selector" class="xref">Union Selector</a></p>
-<ul class="compact toc ulEmpty ulBare">
-<li class="compact toc ulEmpty ulBare" id="section-toc.1-1.3.2.5.2.8.2.1">
+<ul class="compact ulEmpty toc ulBare">
+<li class="compact ulEmpty toc ulBare" id="section-toc.1-1.3.2.5.2.8.2.1">
                         <p id="section-toc.1-1.3.2.5.2.8.2.1.1"><a href="#section-3.5.8.1" class="xref">3.5.8.1</a>.  <a href="#name-syntax-9" class="xref">Syntax</a></p>
 </li>
-                      <li class="compact toc ulEmpty ulBare" id="section-toc.1-1.3.2.5.2.8.2.2">
+                      <li class="compact ulEmpty toc ulBare" id="section-toc.1-1.3.2.5.2.8.2.2">
                         <p id="section-toc.1-1.3.2.5.2.8.2.2.1"><a href="#section-3.5.8.2" class="xref">3.5.8.2</a>.  <a href="#name-semantics-9" class="xref">Semantics</a></p>
 </li>
                     </ul>
 </li>
-                  <li class="compact toc ulEmpty ulBare" id="section-toc.1-1.3.2.5.2.9">
+                  <li class="compact ulEmpty toc ulBare" id="section-toc.1-1.3.2.5.2.9">
                     <p id="section-toc.1-1.3.2.5.2.9.1"><a href="#section-3.5.9" class="xref">3.5.9</a>.  <a href="#name-filter-selector" class="xref">Filter Selector</a></p>
-<ul class="compact toc ulEmpty ulBare">
-<li class="compact toc ulEmpty ulBare" id="section-toc.1-1.3.2.5.2.9.2.1">
+<ul class="compact ulEmpty toc ulBare">
+<li class="compact ulEmpty toc ulBare" id="section-toc.1-1.3.2.5.2.9.2.1">
                         <p id="section-toc.1-1.3.2.5.2.9.2.1.1"><a href="#section-3.5.9.1" class="xref">3.5.9.1</a>.  <a href="#name-syntax-10" class="xref">Syntax</a></p>
 </li>
-                      <li class="compact toc ulEmpty ulBare" id="section-toc.1-1.3.2.5.2.9.2.2">
+                      <li class="compact ulEmpty toc ulBare" id="section-toc.1-1.3.2.5.2.9.2.2">
                         <p id="section-toc.1-1.3.2.5.2.9.2.2.1"><a href="#section-3.5.9.2" class="xref">3.5.9.2</a>.  <a href="#name-semantics-10" class="xref">Semantics</a></p>
 </li>
                     </ul>
@@ -1029,33 +1029,33 @@ be covered.<a href="#section-note.1-1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="compact toc ulEmpty ulBare" id="section-toc.1-1.4">
+          <li class="ulEmpty compact toc ulBare" id="section-toc.1-1.4">
             <p id="section-toc.1-1.4.1"><a href="#section-4" class="xref">4</a>.  <a href="#name-expression-language" class="xref">Expression Language</a></p>
 </li>
-          <li class="compact toc ulEmpty ulBare" id="section-toc.1-1.5">
+          <li class="ulEmpty compact toc ulBare" id="section-toc.1-1.5">
             <p id="section-toc.1-1.5.1"><a href="#section-5" class="xref">5</a>.  <a href="#name-iana-considerations" class="xref">IANA Considerations</a></p>
 </li>
-          <li class="compact toc ulEmpty ulBare" id="section-toc.1-1.6">
+          <li class="ulEmpty compact toc ulBare" id="section-toc.1-1.6">
             <p id="section-toc.1-1.6.1"><a href="#section-6" class="xref">6</a>.  <a href="#name-security-considerations" class="xref">Security Considerations</a></p>
 </li>
-          <li class="compact toc ulEmpty ulBare" id="section-toc.1-1.7">
+          <li class="ulEmpty compact toc ulBare" id="section-toc.1-1.7">
             <p id="section-toc.1-1.7.1"><a href="#section-7" class="xref">7</a>.  <a href="#name-references" class="xref">References</a></p>
-<ul class="compact toc ulEmpty ulBare">
-<li class="compact toc ulEmpty ulBare" id="section-toc.1-1.7.2.1">
+<ul class="compact ulEmpty toc ulBare">
+<li class="compact ulEmpty toc ulBare" id="section-toc.1-1.7.2.1">
                 <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="xref">7.1</a>.  <a href="#name-normative-references" class="xref">Normative References</a></p>
 </li>
-              <li class="compact toc ulEmpty ulBare" id="section-toc.1-1.7.2.2">
+              <li class="compact ulEmpty toc ulBare" id="section-toc.1-1.7.2.2">
                 <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="xref">7.2</a>.  <a href="#name-informative-references" class="xref">Informative References</a></p>
 </li>
             </ul>
 </li>
-          <li class="compact toc ulEmpty ulBare" id="section-toc.1-1.8">
+          <li class="ulEmpty compact toc ulBare" id="section-toc.1-1.8">
             <p id="section-toc.1-1.8.1"><a href="#appendix-A" class="xref"></a><a href="#name-acknowledgements" class="xref">Acknowledgements</a></p>
 </li>
-          <li class="compact toc ulEmpty ulBare" id="section-toc.1-1.9">
+          <li class="ulEmpty compact toc ulBare" id="section-toc.1-1.9">
             <p id="section-toc.1-1.9.1"><a href="#appendix-B" class="xref"></a><a href="#name-contributors" class="xref">Contributors</a></p>
 </li>
-          <li class="compact toc ulEmpty ulBare" id="section-toc.1-1.10">
+          <li class="ulEmpty compact toc ulBare" id="section-toc.1-1.10">
             <p id="section-toc.1-1.10.1"><a href="#appendix-C" class="xref"></a><a href="#name-authors-addresses" class="xref">Authors' Addresses</a></p>
 </li>
         </ul>
@@ -2749,7 +2749,7 @@ true  = %x74.72.75.65      ; true
 <dd class="break"></dd>
 <dt id="RFC6901">[RFC6901]</dt>
         <dd>
-<span class="refTitle">"*** BROKEN REFERENCE ***"</span>. </dd>
+<span class="refAuthor">Bryan, P., Ed.</span>, <span class="refAuthor">Zyp, K.</span>, and <span class="refAuthor">M. Nottingham, Ed.</span>, <span class="refTitle">"JavaScript Object Notation (JSON) Pointer"</span>, <span class="seriesInfo">RFC 6901</span>, <span class="seriesInfo">DOI 10.17487/RFC6901</span>, <time datetime="2013-04" class="refDate">April 2013</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/rfc6901">https://datatracker.ietf.org/doc/html/rfc6901</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="SLICE">[SLICE]</dt>
         <dd>
@@ -2808,23 +2808,6 @@ http://coli.lili.uni-bielefeld.de/~andreas/Seminare/sommer02/books.xml
 <a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
       </h2>
 <address class="vcard">
-        <div dir="auto" class="left"><span class="fn nameRole">Carsten Bormann (<span class="role">editor</span>)</span></div>
-<div dir="auto" class="left"><span class="org">Universität Bremen TZI</span></div>
-<div dir="auto" class="left"><span class="street-address">Postfach 330440</span></div>
-<div dir="auto" class="left">
-<span class="postal-code">D-28359</span> <span class="locality">Bremen</span>
-</div>
-<div dir="auto" class="left"><span class="country-name">Germany</span></div>
-<div class="tel">
-<span>Phone:</span>
-<a href="tel:+49-421-218-63921" class="tel">+49-421-218-63921</a>
-</div>
-<div class="email">
-<span>Email:</span>
-<a href="mailto:cabo@tzi.org" class="email">cabo@tzi.org</a>
-</div>
-</address>
-<address class="vcard">
         <div dir="auto" class="left"><span class="fn nameRole">Stefan Gössner (<span class="role">editor</span>)</span></div>
 <div dir="auto" class="left"><span class="org">Fachhochschule Dortmund</span></div>
 <div dir="auto" class="left"><span class="street-address">Sonnenstraße 96</span></div>
@@ -2844,6 +2827,23 @@ http://coli.lili.uni-bielefeld.de/~andreas/Seminare/sommer02/books.xml
 <div class="email">
 <span>Email:</span>
 <a href="mailto:glyn.normington@gmail.com" class="email">glyn.normington@gmail.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Carsten Bormann (<span class="role">editor</span>)</span></div>
+<div dir="auto" class="left"><span class="org">Universität Bremen TZI</span></div>
+<div dir="auto" class="left"><span class="street-address">Postfach 330440</span></div>
+<div dir="auto" class="left">
+<span class="postal-code">D-28359</span> <span class="locality">Bremen</span>
+</div>
+<div dir="auto" class="left"><span class="country-name">Germany</span></div>
+<div class="tel">
+<span>Phone:</span>
+<a href="tel:+49-421-218-63921" class="tel">+49-421-218-63921</a>
+</div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:cabo@tzi.org" class="email">cabo@tzi.org</a>
 </div>
 </address>
 </section>
