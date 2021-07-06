@@ -22,8 +22,17 @@ kw: JSON
 date: 2021
 
 author:
-- role: editor
-  ins: G. Normington
+-
+  role: editor
+  name: Stefan Gössner
+  org: Fachhochschule Dortmund
+  city: Dortmund
+  code: D-44139
+  street: Sonnenstraße 96
+  country: Germany
+  email: stefan.goessner@fh-dortmund.de
+-
+  role: editor
   name: Glyn Normington
   org: ''
   street: ''
@@ -33,28 +42,8 @@ author:
   country: UK
   phone: ''
   email: glyn.normington@gmail.com
-- role: editor
-  ins: E. Surov
-  name: Edward Surov
-  org: TheSoul Publishing Ltd.
-  street: ''
-  city: Limassol
-  region: ''
-  code: ''
-  country: Cyprus
-  phone: ''
-  email: esurov.tsp@gmail.com
 -
-  name: Stefan Gössner
-  org: Fachhochschule Dortmund
-  city: Dortmund
-  code: D-44139
-  street: Sonnenstraße 96
-  country: Germany
-  email: stefan.goessner@fh-dortmund.de
-
-contributor:
--
+  role: editor
   name: Carsten Bormann
   org: Universität Bremen TZI
   orgascii: Universitaet Bremen TZI
@@ -64,6 +53,8 @@ contributor:
   country: Germany
   phone: +49-421-218-63921
   email: cabo@tzi.org
+
+contributor:
 -
   name: Marko Mikulicic
   org: InfluxData, Inc.
@@ -74,6 +65,16 @@ contributor:
   country: IT
   phone: ''
   email: mmikulicic@gmail.com
+-
+  name: Edward Surov
+  org: TheSoul Publishing Ltd.
+  street: ''
+  city: Limassol
+  region: ''
+  code: ''
+  country: Cyprus
+  phone: ''
+  email: esurov.tsp@gmail.com
 
 informative:
   RFC3552: seccons
