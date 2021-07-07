@@ -548,9 +548,6 @@ to form the result nodelist of the selector.
 For each node in the list, the selector selects zero or more nodes,
 each of which is a descendant of the node or the node itself.
 
-> Discussion (D4): Is that a common requirement?  Or can a selector also go
-> up, or to the query argument?
-
 <!-- To do: Define "descendants" (making sure that member values are, but member names aren't). -->
 
 For instance, with the argument `{"a":[{"b":0},{"b":1},{"c":2}]}`, the
