@@ -447,6 +447,10 @@ Table of Contents
    JSONPath query, e.g., because of resource depletion, but this is not
    modeled in the present specification.)
 
+      Discussion (D1): are we ready for the error model defined here,
+      i.e. one that does not have runtime errors, but only compile time
+      errors?
+
 3.2.  Processing Model
 
    In this specification, the semantics of a JSONPath query are defined
