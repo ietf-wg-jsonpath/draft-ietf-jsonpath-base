@@ -946,8 +946,8 @@ be covered.<a href="#section-note.1-1" class="pilcrow">¶</a></p>
         <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents">
 <a href="#name-table-of-contents" class="section-name selfRef">Table of Contents</a>
         </h2>
-<nav class="toc"><ul class="ulEmpty compact ulBare toc">
-<li class="ulEmpty compact ulBare toc" id="section-toc.1-1.1">
+<nav class="toc"><ul class="toc compact ulEmpty ulBare">
+<li class="toc compact ulEmpty ulBare" id="section-toc.1-1.1">
             <p id="section-toc.1-1.1.1"><a href="#section-1" class="xref">1</a>.  <a href="#name-introduction" class="xref">Introduction</a></p>
 <ul class="ulEmpty toc compact ulBare">
 <li class="ulEmpty toc compact ulBare" id="section-toc.1-1.1.2.1">
@@ -961,10 +961,10 @@ be covered.<a href="#section-note.1-1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="ulEmpty compact ulBare toc" id="section-toc.1-1.2">
+          <li class="toc compact ulEmpty ulBare" id="section-toc.1-1.2">
             <p id="section-toc.1-1.2.1"><a href="#section-2" class="xref">2</a>.  <a href="#name-jsonpath-examples" class="xref">JSONPath Examples</a></p>
 </li>
-          <li class="ulEmpty compact ulBare toc" id="section-toc.1-1.3">
+          <li class="toc compact ulEmpty ulBare" id="section-toc.1-1.3">
             <p id="section-toc.1-1.3.1"><a href="#section-3" class="xref">3</a>.  <a href="#name-jsonpath-syntax-and-semanti" class="xref">JSONPath Syntax and Semantics</a></p>
 <ul class="ulEmpty toc compact ulBare">
 <li class="ulEmpty toc compact ulBare" id="section-toc.1-1.3.2.1">
@@ -1029,16 +1029,16 @@ be covered.<a href="#section-note.1-1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="ulEmpty compact ulBare toc" id="section-toc.1-1.4">
+          <li class="toc compact ulEmpty ulBare" id="section-toc.1-1.4">
             <p id="section-toc.1-1.4.1"><a href="#section-4" class="xref">4</a>.  <a href="#name-expression-language" class="xref">Expression Language</a></p>
 </li>
-          <li class="ulEmpty compact ulBare toc" id="section-toc.1-1.5">
+          <li class="toc compact ulEmpty ulBare" id="section-toc.1-1.5">
             <p id="section-toc.1-1.5.1"><a href="#section-5" class="xref">5</a>.  <a href="#name-iana-considerations" class="xref">IANA Considerations</a></p>
 </li>
-          <li class="ulEmpty compact ulBare toc" id="section-toc.1-1.6">
+          <li class="toc compact ulEmpty ulBare" id="section-toc.1-1.6">
             <p id="section-toc.1-1.6.1"><a href="#section-6" class="xref">6</a>.  <a href="#name-security-considerations" class="xref">Security Considerations</a></p>
 </li>
-          <li class="ulEmpty compact ulBare toc" id="section-toc.1-1.7">
+          <li class="toc compact ulEmpty ulBare" id="section-toc.1-1.7">
             <p id="section-toc.1-1.7.1"><a href="#section-7" class="xref">7</a>.  <a href="#name-references" class="xref">References</a></p>
 <ul class="ulEmpty toc compact ulBare">
 <li class="ulEmpty toc compact ulBare" id="section-toc.1-1.7.2.1">
@@ -1049,13 +1049,13 @@ be covered.<a href="#section-note.1-1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="ulEmpty compact ulBare toc" id="section-toc.1-1.8">
+          <li class="toc compact ulEmpty ulBare" id="section-toc.1-1.8">
             <p id="section-toc.1-1.8.1"><a href="#appendix-A" class="xref"></a><a href="#name-acknowledgements" class="xref">Acknowledgements</a></p>
 </li>
-          <li class="ulEmpty compact ulBare toc" id="section-toc.1-1.9">
+          <li class="toc compact ulEmpty ulBare" id="section-toc.1-1.9">
             <p id="section-toc.1-1.9.1"><a href="#appendix-B" class="xref"></a><a href="#name-contributors" class="xref">Contributors</a></p>
 </li>
-          <li class="ulEmpty compact ulBare toc" id="section-toc.1-1.10">
+          <li class="toc compact ulEmpty ulBare" id="section-toc.1-1.10">
             <p id="section-toc.1-1.10.1"><a href="#appendix-C" class="xref"></a><a href="#name-authors-addresses" class="xref">Authors' Addresses</a></p>
 </li>
         </ul>
@@ -1630,11 +1630,6 @@ raised during application of the query to a value.<a href="#section-3.1-4" class
 <p id="section-3.1-5">(Obviously, an implementation can still fail when executing a JSONPath
 query, e.g., because of resource depletion, but this is not modeled in
 the present specification.)<a href="#section-3.1-5" class="pilcrow">¶</a></p>
-<ul class="ulEmpty normal">
-<li class="ulEmpty normal" id="section-3.1-6.1">Discussion (D1): are we ready for the error model defined here, i.e. one
-that does not have runtime errors, but only compile time errors?<a href="#section-3.1-6.1" class="pilcrow">¶</a>
-</li>
-        </ul>
 </section>
 </div>
 <div id="processing-model">
@@ -1717,35 +1712,30 @@ each of the nodes in its input nodelist and concatenates the resultant nodelists
 to form the result nodelist of the selector.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
 <p id="section-3.4-4">For each node in the list, the selector selects zero or more nodes,
 each of which is a descendant of the node or the node itself.<a href="#section-3.4-4" class="pilcrow">¶</a></p>
-<ul class="ulEmpty normal">
-<li class="ulEmpty normal" id="section-3.4-5.1">Discussion (D4): Is that a common requirement?  Or can a selector also go
-up, or to the query argument?<a href="#section-3.4-5.1" class="pilcrow">¶</a>
-</li>
-        </ul>
-<p id="section-3.4-6">For instance, with the argument <code>{"a":[{"b":0},{"b":1},{"c":2}]}</code>, the
+<p id="section-3.4-5">For instance, with the argument <code>{"a":[{"b":0},{"b":1},{"c":2}]}</code>, the
 query <code>$.a[*].b</code> selects the following list of nodes: <code>0</code>, <code>1</code>
 (denoted here by their value).
-Let's walk through this in detail.<a href="#section-3.4-6" class="pilcrow">¶</a></p>
-<p id="section-3.4-7">The query consists of <code>$</code> followed by three selectors: <code>.a</code>, <code>[*]</code>, and <code>.b</code>.<a href="#section-3.4-7" class="pilcrow">¶</a></p>
-<p id="section-3.4-8">Firstly, <code>$</code> selects the root node which is the argument.
-So the result is a list consisting of just the root node.<a href="#section-3.4-8" class="pilcrow">¶</a></p>
-<p id="section-3.4-9">Next, <code>.a</code> selects from any input node of type object and selects the
+Let's walk through this in detail.<a href="#section-3.4-5" class="pilcrow">¶</a></p>
+<p id="section-3.4-6">The query consists of <code>$</code> followed by three selectors: <code>.a</code>, <code>[*]</code>, and <code>.b</code>.<a href="#section-3.4-6" class="pilcrow">¶</a></p>
+<p id="section-3.4-7">Firstly, <code>$</code> selects the root node which is the argument.
+So the result is a list consisting of just the root node.<a href="#section-3.4-7" class="pilcrow">¶</a></p>
+<p id="section-3.4-8">Next, <code>.a</code> selects from any input node of type object and selects the
 node of any
 member value of the input
 node corresponding to the member name <code>"a"</code>.
-The result is again a list of one node: <code>[{"b":0},{"b":1},{"c":2}]</code>.<a href="#section-3.4-9" class="pilcrow">¶</a></p>
-<p id="section-3.4-10">Next, <code>[*]</code> selects from any input node which is an array and selects all the elements
+The result is again a list of one node: <code>[{"b":0},{"b":1},{"c":2}]</code>.<a href="#section-3.4-8" class="pilcrow">¶</a></p>
+<p id="section-3.4-9">Next, <code>[*]</code> selects from any input node which is an array and selects all the elements
 of the input node.
-The result is a list of three nodes: <code>{"b":0}</code>, <code>{"b":1}</code>, and <code>{"c":2}</code>.<a href="#section-3.4-10" class="pilcrow">¶</a></p>
-<p id="section-3.4-11">Finally, <code>.b</code> selects from any input node of type object with a member name
+The result is a list of three nodes: <code>{"b":0}</code>, <code>{"b":1}</code>, and <code>{"c":2}</code>.<a href="#section-3.4-9" class="pilcrow">¶</a></p>
+<p id="section-3.4-10">Finally, <code>.b</code> selects from any input node of type object with a member name
 <code>b</code> and selects the node of the member value of the input node corresponding to that name.
 The result is a list containing <code>0</code>, <code>1</code>.
 This is the concatenation of three lists, two of length one containing
-<code>0</code>, <code>1</code>, respectively, and one of length zero.<a href="#section-3.4-11" class="pilcrow">¶</a></p>
-<p id="section-3.4-12">As a consequence of this approach, if any of the selectors selects no nodes,
-then the whole query selects no nodes.<a href="#section-3.4-12" class="pilcrow">¶</a></p>
-<p id="section-3.4-13">In what follows, the semantics of each selector are defined for each type
-of node.<a href="#section-3.4-13" class="pilcrow">¶</a></p>
+<code>0</code>, <code>1</code>, respectively, and one of length zero.<a href="#section-3.4-10" class="pilcrow">¶</a></p>
+<p id="section-3.4-11">As a consequence of this approach, if any of the selectors selects no nodes,
+then the whole query selects no nodes.<a href="#section-3.4-11" class="pilcrow">¶</a></p>
+<p id="section-3.4-12">In what follows, the semantics of each selector are defined for each type
+of node.<a href="#section-3.4-12" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="selectors">
@@ -2324,8 +2314,8 @@ union-entry    =  ( quoted-member-name /
                   )
 </pre><a href="#section-3.5.8.1-2" class="pilcrow">¶</a>
 </div>
-<ul class="ulEmpty normal">
-<li class="ulEmpty normal" id="section-3.5.8.1-3.1">Task (T1): This, besides slice-index, is currently one of only two
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.5.8.1-3.1">Task (T1): This, besides slice-index, is currently one of only two
 places in the document that mentions whitespace.  Whitespace needs
 to be handled throughout the ABNF syntax.  Room Consensus at the
 2021-06-15 interim was that JSONPath generally is generous with
@@ -2636,8 +2626,8 @@ So <code>"13 == '13'"</code> selects no node.<a href="#section-3.5.9.1-7.3" clas
       <h2 id="name-expression-language">
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-expression-language" class="section-name selfRef">Expression Language</a>
       </h2>
-<ul class="ulEmpty normal">
-<li class="ulEmpty normal" id="section-4-1.1">Task (T2): Separate out expression language.  For now, this section
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4-1.1">Task (T2): Separate out expression language.  For now, this section
 is a repository for ABNF taken from <span>[<a href="#RFC8259" class="xref">RFC8259</a>]</span>.  This needs to be
 deduplicated with definitions above.<a href="#section-4-1.1" class="pilcrow">¶</a>
 </li>

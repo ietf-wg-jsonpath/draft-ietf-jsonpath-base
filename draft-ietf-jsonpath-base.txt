@@ -447,10 +447,6 @@ Table of Contents
    JSONPath query, e.g., because of resource depletion, but this is not
    modeled in the present specification.)
 
-      Discussion (D1): are we ready for the error model defined here,
-      i.e. one that does not have runtime errors, but only compile time
-      errors?
-
 3.2.  Processing Model
 
    In this specification, the semantics of a JSONPath query are defined
@@ -523,9 +519,6 @@ Table of Contents
 
    For each node in the list, the selector selects zero or more nodes,
    each of which is a descendant of the node or the node itself.
-
-      Discussion (D4): Is that a common requirement?  Or can a selector
-      also go up, or to the query argument?
 
    For instance, with the argument "{"a":[{"b":0},{"b":1},{"c":2}]}",
    the query "$.a[*].b" selects the following list of nodes: "0", "1"
