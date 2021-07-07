@@ -498,13 +498,8 @@ the result of the query.
 A selector performs its function on each of the nodes in its input
 nodelist, during such a function execution, such a node is referred to
 as the "current node".  Each of these function executions produces a
-nodelist, which are then combined by algorithm *combine1* into
+nodelist, which are then concatenated into
 the result of the selector.
-
-> Discussion (D2): We haven't decided yet whether there is only one
-> *combine1* or a choice, with for instance simple concatenation and
-> concatenation with duplicate removal, based on a definition of
-> duplicate, are candidates.
 
 The processing within a selector may execute nested queries,
 which are in turn handled with the processing model defined here.
@@ -546,12 +541,9 @@ end of an array,
 simply result in fewer nodes being selected.
 
 But a selector doesn't just act on a single node: a selector acts on
-each of the nodes in its input nodelist and selects an output
-nodelist for each of them, as follows, which are then combined using
-the combine1 algorithm to form the result nodelist of the selector.
+each of the nodes in its input nodelist and concatenates the resultant nodelists
+to form the result nodelist of the selector.
 
-> Discussion (D3): Do we allow selectors that have their own combine1
-> variant, or can we always use the same?
 
 For each node in the list, the selector selects zero or more nodes,
 each of which is a descendant of the node or the node itself.
