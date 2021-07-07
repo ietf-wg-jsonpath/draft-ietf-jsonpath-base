@@ -2,13 +2,13 @@
 
 
 
-JSONPath WG                                           G. Normington, Ed.
-Internet-Draft                                                          
-Intended status: Standards Track                           E. Surov, Ed.
-Expires: 18 December 2021                        TheSoul Publishing Ltd.
-                                                              S. Gössner
-                                                 Fachhochschule Dortmund
-                                                            16 June 2021
+JSONPath WG                                              S. Gössner, Ed.
+Internet-Draft                                   Fachhochschule Dortmund
+Intended status: Standards Track                      G. Normington, Ed.
+Expires: 8 January 2022                                                 
+                                                         C. Bormann, Ed.
+                                                  Universität Bremen TZI
+                                                             7 July 2021
 
 
                   JSONPath: Query expressions for JSON
@@ -45,7 +45,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 18 December 2021.
+   This Internet-Draft will expire on 8 January 2022.
 
 Copyright Notice
 
@@ -1246,16 +1246,6 @@ Acknowledgements
 
 Contributors
 
-   Carsten Bormann
-   Universität Bremen TZI
-   Postfach 330440
-   D-28359 Bremen
-   Germany
-
-   Phone: +49-421-218-63921
-   Email: cabo@tzi.org
-
-
    Marko Mikulicic
    InfluxData, Inc.
    Pisa
@@ -1264,7 +1254,24 @@ Contributors
    Email: mmikulicic@gmail.com
 
 
+   Edward Surov
+   TheSoul Publishing Ltd.
+   Limassol
+   Cyprus
+
+   Email: esurov.tsp@gmail.com
+
+
 Authors' Addresses
+
+   Stefan Gössner (editor)
+   Fachhochschule Dortmund
+   Sonnenstraße 96
+   D-44139 Dortmund
+   Germany
+
+   Email: stefan.goessner@fh-dortmund.de
+
 
    Glyn Normington (editor)
    Winchester
@@ -1273,18 +1280,11 @@ Authors' Addresses
    Email: glyn.normington@gmail.com
 
 
-   Edward Surov (editor)
-   TheSoul Publishing Ltd.
-   Limassol
-   Cyprus
-
-   Email: esurov.tsp@gmail.com
-
-
-   Stefan Gössner
-   Fachhochschule Dortmund
-   Sonnenstraße 96
-   D-44139 Dortmund
+   Carsten Bormann (editor)
+   Universität Bremen TZI
+   Postfach 330440
+   D-28359 Bremen
    Germany
 
-   Email: stefan.goessner@fh-dortmund.de
+   Phone: +49-421-218-63921
+   Email: cabo@tzi.org
