@@ -464,9 +464,6 @@ raised during application of the query to a value.
 query, e.g., because of resource depletion, but this is not modeled in
 the present specification.)
 
-> Discussion (D1): are we ready for the error model defined here, i.e. one
-> that does not have runtime errors, but only compile time errors?
-
 ## Processing Model
 
 In this specification, the semantics of a JSONPath query are defined
