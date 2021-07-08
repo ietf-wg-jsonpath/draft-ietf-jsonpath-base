@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-06-29T00:56:57.018754+00:00",
+  "timestamp": "2021-07-08T00:59:38.626711+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -11280,7 +11280,7 @@
       "labels": [],
       "body": "*Draft not yet ready for merge or complete*\r\nSee also GH #59 ",
       "createdAt": "2021-03-19T12:12:14Z",
-      "updatedAt": "2021-03-25T08:58:22Z",
+      "updatedAt": "2021-07-06T08:49:57Z",
       "baseRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
       "baseRefName": "main",
       "baseRefOid": "be226f10a48856c7a1721387a76dfb7cb377e039",
@@ -11305,6 +11305,13 @@
           "body": "@bettio wrote:\r\n\r\n> As a summary I'm aiming to address with this PR:\r\n> \r\n> * [x]  allowing `@` at the beginning of an expression\r\n> * [x]  `@` at the beginning of an expression defaults to document root\r\n> * [x]  `@` at the beginning of an expression can be != `$` on certain use-cases\r\n> \r\nFair enough, it can be left open what the current node is initialized to, I have no objection.\r\n\r\nDaniel ",
           "createdAt": "2021-03-21T22:07:10Z",
           "updatedAt": "2021-03-21T22:07:10Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@bettio What are your plans for this PR? Thanks.",
+          "createdAt": "2021-07-06T08:49:57Z",
+          "updatedAt": "2021-07-06T08:49:57Z"
         }
       ],
       "reviews": [
@@ -11534,7 +11541,7 @@
             "abbreviatedOid": "79412af"
           },
           "author": "gregsdennis",
-          "authorAssociation": "CONTRIBUTOR",
+          "authorAssociation": "COLLABORATOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2021-03-19T19:49:37Z",
@@ -11594,7 +11601,7 @@
             "abbreviatedOid": "79412af"
           },
           "author": "gregsdennis",
-          "authorAssociation": "CONTRIBUTOR",
+          "authorAssociation": "COLLABORATOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2021-03-21T05:51:28Z",
@@ -11674,7 +11681,7 @@
             "abbreviatedOid": "79412af"
           },
           "author": "gregsdennis",
-          "authorAssociation": "CONTRIBUTOR",
+          "authorAssociation": "COLLABORATOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2021-03-21T12:00:45Z",
@@ -11854,7 +11861,7 @@
             "abbreviatedOid": "79412af"
           },
           "author": "gregsdennis",
-          "authorAssociation": "CONTRIBUTOR",
+          "authorAssociation": "COLLABORATOR",
           "state": "CHANGES_REQUESTED",
           "body": "",
           "createdAt": "2021-03-22T00:25:40Z",
@@ -11932,7 +11939,7 @@
             "abbreviatedOid": "79412af"
           },
           "author": "gregsdennis",
-          "authorAssociation": "CONTRIBUTOR",
+          "authorAssociation": "COLLABORATOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2021-03-22T04:56:16Z",
@@ -12052,7 +12059,7 @@
             "abbreviatedOid": "79412af"
           },
           "author": "gregsdennis",
-          "authorAssociation": "CONTRIBUTOR",
+          "authorAssociation": "COLLABORATOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2021-03-22T10:31:45Z",
@@ -17277,6 +17284,342 @@
           ]
         }
       ]
+    },
+    {
+      "number": 104,
+      "id": "MDExOlB1bGxSZXF1ZXN0Njg0MTk0NTkz",
+      "title": "Close discussion D1",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/104",
+      "state": "MERGED",
+      "author": "glyn",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Here's a chance to actually have the discussion if anyone wants to.",
+      "createdAt": "2021-07-06T09:08:16Z",
+      "updatedAt": "2021-07-07T11:11:54Z",
+      "baseRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
+      "baseRefName": "main",
+      "baseRefOid": "dd2a88eb04038b8d40c61534dc6dac6d4f07fd5b",
+      "headRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
+      "headRefName": "discussion-d1",
+      "headRefOid": "6e69a78765984aaabb4a0e277dc2a0ef2674f2ee",
+      "closedAt": "2021-07-07T11:11:51Z",
+      "mergedAt": "2021-07-07T11:11:51Z",
+      "mergedBy": "glyn",
+      "mergeCommit": {
+        "oid": "8c99e5028c27ae49690182902125c2ca9b613867"
+      },
+      "comments": [
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "Well, I'm certainly ready for this model.\r\n",
+          "createdAt": "2021-07-06T09:15:01Z",
+          "updatedAt": "2021-07-06T09:15:01Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I'm good with the approach described in the text.  As long as a string can be parsed as a Path, it should evaluate.  I can't see a case where processing a valid path against a value would produce an error; merely empty result sets.\r\n\r\nThis means that the only errors should be syntax errors, correct?",
+          "createdAt": "2021-07-06T10:16:10Z",
+          "updatedAt": "2021-07-06T10:16:10Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> This means that the only errors should be syntax errors, correct?\r\n\r\nI think so.",
+          "createdAt": "2021-07-06T10:29:38Z",
+          "updatedAt": "2021-07-06T10:29:38Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "May I encourage reviewers who are in favour of this PR to approve it?",
+          "createdAt": "2021-07-06T10:30:12Z",
+          "updatedAt": "2021-07-06T10:30:12Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I was awaiting a bit more discussion.",
+          "createdAt": "2021-07-06T10:34:24Z",
+          "updatedAt": "2021-07-06T10:34:24Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Ok, I've requested a review from Stefan.",
+          "createdAt": "2021-07-06T10:36:27Z",
+          "updatedAt": "2021-07-06T10:36:27Z"
+        },
+        {
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> are we ready for the error model defined here, i.e. one\r\n> that does not have runtime errors, but only compile time errors?\r\n\r\nYes absolutely ... I like that clean concept a lot.",
+          "createdAt": "2021-07-06T12:15:50Z",
+          "updatedAt": "2021-07-06T12:15:50Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njk5ODc5NjYy",
+          "commit": {
+            "abbreviatedOid": "6e69a78"
+          },
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-07-06T12:16:34Z",
+          "updatedAt": "2021-07-06T12:16:34Z",
+          "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzAwMzM3MDQz",
+          "commit": {
+            "abbreviatedOid": "6e69a78"
+          },
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-07-06T20:05:27Z",
+          "updatedAt": "2021-07-06T20:05:27Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 105,
+      "id": "MDExOlB1bGxSZXF1ZXN0Njg0MTk4ODky",
+      "title": "Nail down combine1",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/105",
+      "state": "MERGED",
+      "author": "glyn",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2021-07-06T09:14:02Z",
+      "updatedAt": "2021-07-07T11:11:27Z",
+      "baseRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
+      "baseRefName": "main",
+      "baseRefOid": "dd2a88eb04038b8d40c61534dc6dac6d4f07fd5b",
+      "headRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
+      "headRefName": "nail-down-combine1",
+      "headRefOid": "274933b1aa151e92508480e9fb98c8bdb9e87ddb",
+      "closedAt": "2021-07-07T11:11:24Z",
+      "mergedAt": "2021-07-07T11:11:24Z",
+      "mergedBy": "glyn",
+      "mergeCommit": {
+        "oid": "b1f4de76e17e95d7a87d535c3c5f0d7cf3180fc8"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzAwMzM1NDE3",
+          "commit": {
+            "abbreviatedOid": "274933b"
+          },
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "I agree with this. Concatenation seems to always be the appropriate action here.",
+          "createdAt": "2021-07-06T20:03:18Z",
+          "updatedAt": "2021-07-06T20:03:18Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 106,
+      "id": "MDExOlB1bGxSZXF1ZXN0Njg0MjAxMjM2",
+      "title": "Close discussion D4",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/106",
+      "state": "MERGED",
+      "author": "glyn",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Here's a chance to actually have the discussion if anyone wants to.",
+      "createdAt": "2021-07-06T09:17:08Z",
+      "updatedAt": "2021-07-07T11:11:40Z",
+      "baseRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
+      "baseRefName": "main",
+      "baseRefOid": "dd2a88eb04038b8d40c61534dc6dac6d4f07fd5b",
+      "headRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
+      "headRefName": "discussion-d4",
+      "headRefOid": "a2393e73d20b2ce375cb54c0d412d2c9f680d955",
+      "closedAt": "2021-07-07T11:11:37Z",
+      "mergedAt": "2021-07-07T11:11:37Z",
+      "mergedBy": "glyn",
+      "mergeCommit": {
+        "oid": "f9d7b3a1eb8d743d3f8cdba8acba8cff997c9a18"
+      },
+      "comments": [
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "One related question is whether the selector can use $ internally (still returning nodes within the current node).",
+          "createdAt": "2021-07-06T09:19:16Z",
+          "updatedAt": "2021-07-06T09:19:16Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> One related question is whether the selector can use $ internally (still returning nodes within the current node).\r\n\r\nI am in favour of supporting `$` inside filter expressions as a way to access the root node of the argument, but I don't think that should block this PR as the context of the discussion seems to be which nodes are selected. As you point out, using `$` in a filter expression doesn't select the root node - it selects nodes within the current node as usual.",
+          "createdAt": "2021-07-06T09:44:32Z",
+          "updatedAt": "2021-07-06T09:44:32Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I agree.  Paths like `$.foo[?(@.bar < $.baz)]` should be allowed, but wouldn't select anything that is not a descendent of `$.foo`.  Here the `$.baz` provides a basis for comparison used to select the current node `@` in the iteration.\r\n\r\nI see no value (for an initial release anyway) in allowing selection of ancestor nodes.  If a use case and syntax for it are later defined, I'm happy to release that as a follow-up version.",
+          "createdAt": "2021-07-06T10:20:35Z",
+          "updatedAt": "2021-07-06T10:20:35Z"
+        },
+        {
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "yes ... using `$` in a logical expression is valid and does no harm.",
+          "createdAt": "2021-07-06T12:09:41Z",
+          "updatedAt": "2021-07-06T12:09:41Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@goessner yes, but the issue at hand here is whether there is a mechanism that can select ancestor or cousin nodes.  I think we're in agreement that that there is no such mechanism.",
+          "createdAt": "2021-07-06T20:04:54Z",
+          "updatedAt": "2021-07-06T20:04:54Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njk5ODczODQw",
+          "commit": {
+            "abbreviatedOid": "a2393e7"
+          },
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-07-06T12:09:59Z",
+          "updatedAt": "2021-07-06T12:09:59Z",
+          "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzAwMzQ3OTgz",
+          "commit": {
+            "abbreviatedOid": "a2393e7"
+          },
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "Indeed, we seem to be in agreement.",
+          "createdAt": "2021-07-06T20:20:13Z",
+          "updatedAt": "2021-07-06T20:20:13Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 107,
+      "id": "MDExOlB1bGxSZXF1ZXN0Njg0MjA4OTQz",
+      "title": "Clarify editors & authors",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/107",
+      "state": "MERGED",
+      "author": "glyn",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2021-07-06T09:27:26Z",
+      "updatedAt": "2021-07-07T11:11:11Z",
+      "baseRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
+      "baseRefName": "main",
+      "baseRefOid": "dd2a88eb04038b8d40c61534dc6dac6d4f07fd5b",
+      "headRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
+      "headRefName": "authorship",
+      "headRefOid": "3269be6265e67ddb1b20a3baff27bbbc4ec7086f",
+      "closedAt": "2021-07-07T11:11:08Z",
+      "mergedAt": "2021-07-07T11:11:08Z",
+      "mergedBy": "glyn",
+      "mergeCommit": {
+        "oid": "c4238561691b048f5e00af7592bc67f016daa2d3"
+      },
+      "comments": [
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "I think Stefan should be first author, and I wouldn't mind to be last.",
+          "createdAt": "2021-07-06T13:36:49Z",
+          "updatedAt": "2021-07-06T13:36:49Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> I think Stefan should be first author, and I wouldn't mind to be last.\r\n\r\nOk, thanks. Updated.",
+          "createdAt": "2021-07-06T15:02:02Z",
+          "updatedAt": "2021-07-06T15:02:02Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzAwMDc0OTA0",
+          "commit": {
+            "abbreviatedOid": "3269be6"
+          },
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "Thank you.",
+          "createdAt": "2021-07-06T15:09:31Z",
+          "updatedAt": "2021-07-06T15:09:31Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 108,
+      "id": "MDExOlB1bGxSZXF1ZXN0Njg0MjY0MTUz",
+      "title": "Fix invalid link",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/108",
+      "state": "CLOSED",
+      "author": "glyn",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Without this `make` fails with:\r\n\r\ndraft-ietf-jsonpath-base.xml(0): Error: IDREF attribute target references an unknown ID \"_json\", at None",
+      "createdAt": "2021-07-06T10:46:46Z",
+      "updatedAt": "2021-07-06T14:59:41Z",
+      "baseRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
+      "baseRefName": "main",
+      "baseRefOid": "dd2a88eb04038b8d40c61534dc6dac6d4f07fd5b",
+      "headRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
+      "headRefName": "fix-invalid-link",
+      "headRefOid": "1f2e1e8fc5bdbffd95e1d957401cbd2b236d675b",
+      "closedAt": "2021-07-06T14:59:41Z",
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "Where are you getting this?\r\nYou may want to do a `gem update` when you see an error like this.\r\n",
+          "createdAt": "2021-07-06T13:30:53Z",
+          "updatedAt": "2021-07-06T13:30:53Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Where are you getting this?\r\n\r\nWhen I issue `make` locally.\r\n\r\n> You may want to do a `gem update` when you see an error like this.\r\n\r\nI did and the problem went away. Thanks!\r\n\r\n",
+          "createdAt": "2021-07-06T14:59:41Z",
+          "updatedAt": "2021-07-06T14:59:41Z"
+        }
+      ],
+      "reviews": []
     }
   ]
 }
