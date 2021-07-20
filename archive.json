@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-07-08T00:59:38.626711+00:00",
+  "timestamp": "2021-07-20T01:05:18.887041+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -2520,7 +2520,7 @@
       "labels": [],
       "body": "(This was original raised in #54 and now being split out)\r\n\r\n\r\n> Related to that, it would be helpful to determine if JSONPath filters\r\napply to both JSON objects and arrays, or only to JSON arrays.\r\n*(Daniel P)*\r\n\r\n> I would support restricting filters to arrays, if others agree.\r\n*(Glyn Normington)*\r\n\r\nI tend to let implementations and their \"normative force of the factual\" decide here or in doubt agree to Glyn's restriction to arrays.\r\n\r\nI am very unhappy with confusing `$..book[(@.length-1)]`, where `'@'` addresses the array itself and implies that array has a `length` property. In filter expression examples `'@'` more consistently addresses the current array element.\r\n\r\nThe invocation of 'the underlying scripting engine' wasn't meant a serious normative aspect, but rather a quick and dirty solution for JavaScript and PHP implementations at that time.\r\n\r\n\r\n### Corner Case\r\n\r\n> Consider this perfectly legal JSON object\r\n>\r\n> ```{ \"ab\": 0,  \"'a.b\": 1,  \"a-b\": 2, \"a\": { \"b\": 3 } }```\r\n>\r\n>So `$.ab` is 0, `$.a.b` is 3, `$['a.b']` is 1, `$['a-b']` is 2. You'd like to say `$.a-b` but lots of libraries will refuse it because `\"a-b\"` is not a legal JavaScript \"name\" construct, that's why you have to say `$['a-b']`.\r\n>\r\n> But suppose your library would accept `$.a-b`.  Then `$.a-b` and `$['a-b']` would be synonyms, but `$.a.b` and `$['a.b']` wouldn't.\r\n*(Tim Bray)*\r\n\r\nHmm ... this seems to be a hint to better exclude `'-'` from dot-child-selector syntax. I think I have read more discussion about that, currently don't know where.\r\n",
       "createdAt": "2021-03-10T15:07:12Z",
-      "updatedAt": "2021-06-25T07:02:38Z",
+      "updatedAt": "2021-07-18T21:32:51Z",
       "closedAt": null,
       "comments": [
         {
@@ -2648,6 +2648,13 @@
           "body": "If you look at the rest of the post, he shares his code where you can see that he's literally just interpolating user input into the expression and using the negation operator to invert the filter.\n\nThis is why he says the `!=` doesn't work for him.  I suppose he could do something like `<expr> == false`, but that's kinda weird, too.",
           "createdAt": "2021-06-25T07:02:38Z",
           "updatedAt": "2021-06-25T07:02:38Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We received an [SO question](https://stackoverflow.com/q/68432349/878701) that works be helped by the `in` operator, but the other direction.\n\nThe asker wants a path that can identity paths to arrays that contain two values.  Such a query could be\n\n```\n$[?('PERSON A' in @ && 'PERSON B' in @)]\n```\n\nreturning paths instead of values (so they can get the keys).\n\nThis iterates over the values in the top-level object (which are themselves arrays) and uses the `in` operator to determine if specific values are in the arrays.",
+          "createdAt": "2021-07-18T21:26:50Z",
+          "updatedAt": "2021-07-18T21:32:51Z"
         }
       ]
     },
@@ -4526,6 +4533,58 @@
           "body": "My preference is _pre-order_ traversal (node then descendants).",
           "createdAt": "2021-06-22T11:22:12Z",
           "updatedAt": "2021-06-27T06:04:14Z"
+        }
+      ]
+    },
+    {
+      "number": 109,
+      "id": "MDU6SXNzdWU5NDc0ODA1MjY=",
+      "title": "filtering w/o child selection",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/109",
+      "state": "OPEN",
+      "author": "grzegorz-herman",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "First of all, thanks for the standardization efforts!\r\n\r\nUnless I am missing something, the current draft (https://datatracker.ietf.org/doc/html/draft-ietf-jsonpath-base-01) allows filtering only in the context of child selection. I understand the semantics of `[?(<predicate>)]` as follows:\r\n\r\n* we have a current list of *items* (as produced by selectors earlier on the path),\r\n* for each of the items, we examine its *subitems* - elements if it is an array, values if it is an object, none otherwise,\r\n* we evaluate `<predicate>` on each subitem (with the special selector `@` denoting the subitem),\r\n* the resulting list consists of those *subitems* for which the predicate evaluates to (something) true.\r\n\r\nThe problem I see is that there seems absolutely no way to filter the current list of *items*. In some situations, one can work around it, but sometimes not. Assume I have a value\r\n```\r\n{\r\n  \"a\": { \"v\": true, \"w\": true },\r\n  \"b\": { \"v\": false, \"w\": true },\r\n  \"c\": { \"v\": true, \"w\": false },\r\n  \"d\": { \"v\": true, \"w\": true }\r\n}\r\n```\r\nand I would like to select those of subobjects with keys \"a\", \"b\" or \"c\" (but not \"d\") whose element \"v\" is true (i.e., the resulting list should contain `{ \"v\": true, \"w\": true }` and `{ \"v\": true, \"w\": false }`). I cannot apply the filtering at the top level, as it would include the key \"d\", I cannot apply it one level below as it would have to include \"w\", and there are no other levels.\r\n\r\nImagine that we had an independent filtering selector, say `{<predicate>}`, with the semantics of evaluating `<predicate>` on each current *item* (with `@` denoting the item) and leaving those which satisfy it (note: I am not proposing this exact syntax here, just the semantics). Then I could intuitively solve the example above with `$['a','b','c']{@.v}`.\r\n\r\n(as a side note, with the above the syntax `[?(<predicate>)]` would become equivalent to `[*]{<predicate>}`)\r\n\r\nSome implementations (jayway IIRC) actually \u201csolve\u201d the problem above by applying the filtering predicate in `[?(...)]` to *items or subitems*, apparently depending on whether the items are arrays or not. IMO following this path in the standard is a bad idea, as it can quickly become confusing (what if the list contains a mixture of arrays, objects, and primitives?).\r\n\r\nPlease, consider adding an independent filtering selector to the standard!\r\n\r\n(as another side note, binding the \u201ccurrent item\u201d `@` is currently also attached to filtering, do you think it could be worthwhile to make it independent as well?)",
+      "createdAt": "2021-07-19T09:57:14Z",
+      "updatedAt": "2021-07-20T00:31:45Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "You can already do this in the existing syntax:\n\n```\n$['a','b','c'][?(@.v)]\n```\n\nThis first selects the nodes under `a`, `b`, and `c`.  Then from that resulting set, all the values which have `v = true`. It produces the following nodes:\n\n- `$.a`\n- `$.c`\n\nThe one thing we _don't_ have a syntax for is negative selection, e.g. selecting everything _except_ `d`.  Interestingly [this SO question](https://stackoverflow.com/q/68436665/878701) recently popped up asking for something similar.",
+          "createdAt": "2021-07-19T10:42:32Z",
+          "updatedAt": "2021-07-19T10:55:28Z"
+        },
+        {
+          "author": "grzegorz-herman",
+          "authorAssociation": "NONE",
+          "body": "@gregsdennis, IMO what you suggest might work only by accident (or deliberate extension of the semantics by some implementations), but according to the wording of the current draft it should not. Please correct my reasoning in the following:\r\n* \u201ca selector acts on each of the nodes in its input nodelist and concatenates the resultant nodelists to form the result nodelist of the selector\u201d (3.4, third paragraph) - we will thus be working with nodelists (not to be confused with arrays);\r\n* \u201cThe root selector \"$\" [...] produces as output a list consisting of one node: the argument itself.\u201d (3.4, first paragraph) - the first nodelist has one element, the node with the whole document;\r\n* \u201cA union [...] selects the concatenation of the lists (in the order of the selectors) of nodes selected by the union elements.\u201d (3.5.8.2). The nodelists for each of the indices \"a\", \"b\" and \"c\" each consist of a single entry (the appropriate subobject of the root), and thus the nodelist after this selector contains these three subobjects;\r\n* \u201cDuring iteration process each array element or object member is visited and its value -- accessible via symbol \"@\" -- [...] is tested against a boolean expression\u201d (3.5.9.1, second paragraph) - for each of the three nodes in the current nodelist (root subobjects keyed by \"a\", \"b\" and \"c\"), the items bound to `@` by the filter are the *values* in the node, which are all booleans; none of them contains a member named \"v\", and thus the resulting nodelist is empty.\r\n",
+          "createdAt": "2021-07-19T11:05:29Z",
+          "updatedAt": "2021-07-19T11:05:29Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yeah, I think you're right. Mine would return nothing.\n\nWhat you're looking for is more along the lines of\n\n```\n$[?(@.v)]\n```\n\nexcept that it omits `$.d`.\n\nWe _have_ discussed allowing `@` to have access to the key value.  There's a proposal somewhere for a function like `key(@)` within an expression to capture a key when iterating over objects.  We didn't go into that deeply because we decided to postpone defining functions for now.\n\n_If_ such a thing were to be supported, you could do\n\n```\n$[?(key(@) != 'd' && @.v)]\n```",
+          "createdAt": "2021-07-19T11:15:32Z",
+          "updatedAt": "2021-07-19T19:59:42Z"
+        },
+        {
+          "author": "grzegorz-herman",
+          "authorAssociation": "NONE",
+          "body": "Thanks for the answer. Yes, the examples in the draft (Table 6) have the function `index` which seems to be doing that. However, from the point of view of pure semantics, this solution feels more like a workaround: why should I use some special function to filter on the key, when there is a dedicated \u201ccore\u201d syntax for selecting subobjects by key.\r\n\r\nAnd then, even such key-accessing function would not allow to write a path with the desired semantics of \u201cselect the whole (root) object *if* it satisfies the given predicate\u201d, as there would be no place where the initial singleton nodelist could be made into an array to be filtered.\r\n\r\nPlease note, that I am not looking for a solution to any specific problem. My actual use case needs a special JSONPath implementation anyway, so I have simply extended what is currently in the draft by independent filtering (using the `{<predicate>}` syntax). I am just very much into programming languages, and I hope my somewhat \u201cpurist\u201d remarks might help to make the standard even better.\r\n\r\nBy the way, I would be interested to learn how much the standardization effort here is (only) aimed at codifying what the existing implementations are doing, or, in another terms, how strong the requirement of backwards compatibility with *status quo* is. I see some possibilities for streamlining the semantics, but things could potentially break here and there, so I am uncertain if it even makes sense to share those here.",
+          "createdAt": "2021-07-19T20:35:50Z",
+          "updatedAt": "2021-07-19T20:35:50Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "You'd probably be interested in reviewing our [charter](https://datatracker.ietf.org/wg/jsonpath/about/) and that there's an existing project to [compare various implementations' levels of support](https://cburgmer.github.io/json-path-comparison/).\r\n\r\nIn summary, we are interested in not breaking existing implementations as much as possible, but that's secondary to creating a query language that makes sense.  For example, @goessner's original blog post mentions that expressions are to support the syntax of the environment in which that they're run (e.g. Javascript, Python, etc.).  However we determined that this doesn't support interoperability well, so we have to define our own syntax for expressions.",
+          "createdAt": "2021-07-20T00:31:44Z",
+          "updatedAt": "2021-07-20T00:31:44Z"
         }
       ]
     }
