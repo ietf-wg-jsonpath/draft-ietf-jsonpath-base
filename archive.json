@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-07-20T01:05:18.887041+00:00",
+  "timestamp": "2021-07-25T01:02:55.259231+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -4522,9 +4522,9 @@
         "glyn"
       ],
       "labels": [],
-      "body": "At today's meeting, I agreed to submit a PR to float the idea of partial determinism for the descendants operator, even though the consensus seems to be against any determinism for that operator. Given the descendants operator PR https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/102 isn't yet merged, I'll start with an issue to capture discussion and avoid rebasing effort.\r\n\r\nWe probably don't want to _force_ any determinism on implementations, so the idea is to provide a recommendation for implementations which want to provide partial determinism and use \"SHOULD\" language so the recommendation is optional. Then implementations which opt in will agree on the ordering recommentations.\r\n\r\nThe benefits of partial determinism are:\r\n* improved predictability and interoperation\r\n* relative ease for JSONPath users writing tests, as there are fewer possible outputs.\r\n\r\nIn PR https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/102 there are no constraints on the non-determinism of the descendants operator:\r\n> The `descendant-selector` is inspired by ECMAScript for XML (E4X). It selects object members and array elements in a recursive descent process.\r\n\r\n(See also a [suggested improvement](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/102/files#r651871638) to the above text.)\r\n\r\nWe agreed in issue https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/60 to allow non-determinism in the order in which objects are iterated and the same should be true when the descendants operator encounters an object. But there are other details of the ordering which could be tied down:\r\n* arrays SHOULD be visited in array order\r\n* nodes SHOULD be visited strictly before their descendants (so-called _pre-order_ traversal).\r\n\r\n(_Post-order_ traversal, in which nodes are visited strictly after their descendants, would be an equally valid alternative.)\r\n\r\nOne of the reasons given at today's meeting for allowing full non-determinism was for parallel processing, so it would be interesting to discuss what constraints the above rules produce on parallel processing. The order of collection of the results seems to be more significant than whether or not parallel processing is used.",
+      "body": "At today's meeting, I agreed to submit a PR to float the idea of partial determinism for the descendants operator, even though the consensus seems to be against any determinism for that operator. Given the descendants operator PR https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/102 isn't yet merged, I'll start with an issue to capture discussion and avoid rebasing effort.\r\n\r\nWe probably don't want to _force_ any determinism on implementations, so the idea is to provide a recommendation for implementations which want to provide partial determinism and use \"SHOULD\" language so the recommendation is optional. Then implementations which opt in will agree on the ordering recommentations.\r\n\r\nThe benefits of partial determinism are:\r\n* improved predictability and interoperation\r\n* relative ease for JSONPath users writing tests, as there are fewer possible outputs.\r\n\r\nIn PR https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/102 there are no constraints on the non-determinism of the descendants operator:\r\n> The `descendant-selector` is inspired by ECMAScript for XML (E4X). It selects the node and all its descendants.\r\n\r\nWe agreed in issue https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/60 to allow non-determinism in the order in which objects are iterated and the same should be true when the descendants operator encounters an object. But there are other details of the ordering which could be tied down:\r\n* arrays SHOULD be visited in array order\r\n* nodes SHOULD be visited strictly before their descendants (so-called _pre-order_ traversal).\r\n\r\n(_Post-order_ traversal, in which nodes are visited strictly after their descendants, would be an equally valid alternative.)\r\n\r\nOne of the reasons given at today's meeting for allowing full non-determinism was for parallel processing, so it would be interesting to discuss what constraints the above rules produce on parallel processing. The order of collection of the results seems to be more significant than whether or not parallel processing is used.",
       "createdAt": "2021-06-15T15:13:00Z",
-      "updatedAt": "2021-06-27T06:06:31Z",
+      "updatedAt": "2021-07-24T05:52:10Z",
       "closedAt": null,
       "comments": [
         {
@@ -4533,6 +4533,34 @@
           "body": "My preference is _pre-order_ traversal (node then descendants).",
           "createdAt": "2021-06-22T11:22:12Z",
           "updatedAt": "2021-06-27T06:04:14Z"
+        },
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "Except that I don't know what's \"SHOULD\" about that, I agree with these partial ordering guidelines.\r\n\r\nIf we want to introduce different compliance levels, that is fine, but it SHOULD :-) not be coupled to using the term SHOULD vs. MUST.\r\n\"Full compliance requires...\"\r\nvs. \"For conditional compliance, at least...\"",
+          "createdAt": "2021-07-23T14:40:17Z",
+          "updatedAt": "2021-07-23T14:40:17Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I probably misunderstood [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119), or applied it atypically. I am comfortable with using @cabo's compliance level language instead.",
+          "createdAt": "2021-07-23T15:22:56Z",
+          "updatedAt": "2021-07-23T15:22:56Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We need to be careful here that we don't optimize for tests.  It seems to be a focus of this discussion that we want to make verification of output in the test suite easier.\n\nRather, we need to focus on supportability and interoperability.  If that aligns with running the test, that's good.  But don't let making running the tests easier at the cost of making things significantly more difficult for implementors.\n\nIt's non-trivial, but also not very complex, to verify unordered sets of nodes in output.",
+          "createdAt": "2021-07-23T21:58:26Z",
+          "updatedAt": "2021-07-23T21:58:26Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "More significant than complications for the JSONPath test suite is the\namount of non-determinism that tests of code which uses JSONPath will have\nto accommodate.\n\nOn Fri, 23 Jul 2021 at 22:58, Greg Dennis ***@***.***> wrote:\n\n> We need to be careful here that we don't optimize for tests. It seems to\n> be a focus of this discussion that we want to make verification of output\n> in the test suite easier.\n>\n> Rather, we need to focus on supportability and interoperability. If that\n> aligns with running the test, that's good. But don't let making running the\n> tests easier at the cost of making things significantly more difficult for\n> implementors.\n>\n> It's non-trivial, but also not very complex, to verify unordered sets of\n> nodes in output.\n>\n> \u2014\n> You are receiving this because you were assigned.\n> Reply to this email directly, view it on GitHub\n> <https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/103#issuecomment-885934149>,\n> or unsubscribe\n> <https://github.com/notifications/unsubscribe-auth/AAAXF2NMGQ3XYRKQODEWNGDTZHQY3ANCNFSM46XPPL6Q>\n> .\n>\n",
+          "createdAt": "2021-07-24T05:52:10Z",
+          "updatedAt": "2021-07-24T05:52:10Z"
         }
       ]
     },
@@ -4585,6 +4613,37 @@
           "body": "You'd probably be interested in reviewing our [charter](https://datatracker.ietf.org/wg/jsonpath/about/) and that there's an existing project to [compare various implementations' levels of support](https://cburgmer.github.io/json-path-comparison/).\r\n\r\nIn summary, we are interested in not breaking existing implementations as much as possible, but that's secondary to creating a query language that makes sense.  For example, @goessner's original blog post mentions that expressions are to support the syntax of the environment in which that they're run (e.g. Javascript, Python, etc.).  However we determined that this doesn't support interoperability well, so we have to define our own syntax for expressions.",
           "createdAt": "2021-07-20T00:31:44Z",
           "updatedAt": "2021-07-20T00:31:44Z"
+        }
+      ]
+    },
+    {
+      "number": 110,
+      "id": "MDU6SXNzdWU5NTE2MTUyODQ=",
+      "title": "Support arbitrarily structured filter predicates",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/110",
+      "state": "OPEN",
+      "author": "glyn",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The filter syntax currently requires predicates to be expressed in (something close to) disjunctive normal form (OR of ANDs), but this is likely to be inconvenient when the intention of the filter is expressed in a different way (e.g. as an AND or ORs or as a nested predicate with ANDs and ORs at various levels).\r\n\r\nThe JSONPath comparison project doesn't yet test these more complex predicates, although some, possibly most, implementations allow them.\r\n\r\nThe standard could allow arbitrarily structured predicates via syntax along these lines:\r\n```\r\nfilter-selector ::= \"[?(\" boolean-expr \")]\"\r\n\r\nboolean-expr ::= logical-and-expr |\r\n                 logical-and-expr \"||\" boolean-expr\r\n\r\nlogical-and-expr ::= basic-filter |\r\n                     basic-filter \"&&\" logical-and-expr\r\n\r\nbasic-filter ::= \"!\" basic filter |\r\n                 \"(\" boolean-expr \")\" |\r\n                 comp-expr\r\n```\r\n\r\nFor example, this would allow filters such as:\r\n```\r\n?(@.b && (@.c || @.d))\r\n```\r\nand\r\n```\r\n?(@.b && (@.c || @.d && @.e))\r\n```\r\n(where the semantics could, in line with mathematical convention and many programming languages, define `&&` to bind more tightly than `||`).\r\n\r\nNote: the comparison project's [Proposal A](https://github.com/cburgmer/json-path-comparison/tree/master/proposals/Proposal_A) restricts the syntax so that brackets are _required_ instead of making `&&` bind more tightly than `||`. This is a clever approach but is probably not suitable for the standard because it is rather unconventional.",
+      "createdAt": "2021-07-23T14:09:53Z",
+      "updatedAt": "2021-07-23T21:49:23Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "I don't have a problem with requiring parentheses instead of creating an elaborate precedence hierarchy (or at least partially instead of).\r\n\r\nI also don't have a problem with arbitrary nesting here.",
+          "createdAt": "2021-07-23T14:36:59Z",
+          "updatedAt": "2021-07-23T14:36:59Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> where the semantics could, in line with mathematical convention and many programming languages, define `&&` to bind more tightly than `||`\n\nFor clarity, this is because `&&` is a multiplicative operation whereas `||` is additive.  Standard order of operations then apply.\n\nI don't know any programming language where this is reversed.  I'm not opposed to requiring `()`, however.",
+          "createdAt": "2021-07-23T21:49:23Z",
+          "updatedAt": "2021-07-23T21:49:23Z"
         }
       ]
     }
