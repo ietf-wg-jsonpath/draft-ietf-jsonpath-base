@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-07-25T01:02:55.259231+00:00",
+  "timestamp": "2021-07-27T01:02:05.070449+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -4524,7 +4524,7 @@
       "labels": [],
       "body": "At today's meeting, I agreed to submit a PR to float the idea of partial determinism for the descendants operator, even though the consensus seems to be against any determinism for that operator. Given the descendants operator PR https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/102 isn't yet merged, I'll start with an issue to capture discussion and avoid rebasing effort.\r\n\r\nWe probably don't want to _force_ any determinism on implementations, so the idea is to provide a recommendation for implementations which want to provide partial determinism and use \"SHOULD\" language so the recommendation is optional. Then implementations which opt in will agree on the ordering recommentations.\r\n\r\nThe benefits of partial determinism are:\r\n* improved predictability and interoperation\r\n* relative ease for JSONPath users writing tests, as there are fewer possible outputs.\r\n\r\nIn PR https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/102 there are no constraints on the non-determinism of the descendants operator:\r\n> The `descendant-selector` is inspired by ECMAScript for XML (E4X). It selects the node and all its descendants.\r\n\r\nWe agreed in issue https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/60 to allow non-determinism in the order in which objects are iterated and the same should be true when the descendants operator encounters an object. But there are other details of the ordering which could be tied down:\r\n* arrays SHOULD be visited in array order\r\n* nodes SHOULD be visited strictly before their descendants (so-called _pre-order_ traversal).\r\n\r\n(_Post-order_ traversal, in which nodes are visited strictly after their descendants, would be an equally valid alternative.)\r\n\r\nOne of the reasons given at today's meeting for allowing full non-determinism was for parallel processing, so it would be interesting to discuss what constraints the above rules produce on parallel processing. The order of collection of the results seems to be more significant than whether or not parallel processing is used.",
       "createdAt": "2021-06-15T15:13:00Z",
-      "updatedAt": "2021-07-24T05:52:10Z",
+      "updatedAt": "2021-07-26T18:51:26Z",
       "closedAt": null,
       "comments": [
         {
@@ -4561,6 +4561,13 @@
           "body": "More significant than complications for the JSONPath test suite is the\namount of non-determinism that tests of code which uses JSONPath will have\nto accommodate.\n\nOn Fri, 23 Jul 2021 at 22:58, Greg Dennis ***@***.***> wrote:\n\n> We need to be careful here that we don't optimize for tests. It seems to\n> be a focus of this discussion that we want to make verification of output\n> in the test suite easier.\n>\n> Rather, we need to focus on supportability and interoperability. If that\n> aligns with running the test, that's good. But don't let making running the\n> tests easier at the cost of making things significantly more difficult for\n> implementors.\n>\n> It's non-trivial, but also not very complex, to verify unordered sets of\n> nodes in output.\n>\n> \u2014\n> You are receiving this because you were assigned.\n> Reply to this email directly, view it on GitHub\n> <https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/103#issuecomment-885934149>,\n> or unsubscribe\n> <https://github.com/notifications/unsubscribe-auth/AAAXF2NMGQ3XYRKQODEWNGDTZHQY3ANCNFSM46XPPL6Q>\n> .\n>\n",
           "createdAt": "2021-07-24T05:52:10Z",
           "updatedAt": "2021-07-24T05:52:10Z"
+        },
+        {
+          "author": "timbray",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I recommend checking out the language around interoperability in 8259. Something like that might work here.",
+          "createdAt": "2021-07-26T18:51:25Z",
+          "updatedAt": "2021-07-26T18:51:25Z"
         }
       ]
     },
@@ -4576,7 +4583,7 @@
       "labels": [],
       "body": "First of all, thanks for the standardization efforts!\r\n\r\nUnless I am missing something, the current draft (https://datatracker.ietf.org/doc/html/draft-ietf-jsonpath-base-01) allows filtering only in the context of child selection. I understand the semantics of `[?(<predicate>)]` as follows:\r\n\r\n* we have a current list of *items* (as produced by selectors earlier on the path),\r\n* for each of the items, we examine its *subitems* - elements if it is an array, values if it is an object, none otherwise,\r\n* we evaluate `<predicate>` on each subitem (with the special selector `@` denoting the subitem),\r\n* the resulting list consists of those *subitems* for which the predicate evaluates to (something) true.\r\n\r\nThe problem I see is that there seems absolutely no way to filter the current list of *items*. In some situations, one can work around it, but sometimes not. Assume I have a value\r\n```\r\n{\r\n  \"a\": { \"v\": true, \"w\": true },\r\n  \"b\": { \"v\": false, \"w\": true },\r\n  \"c\": { \"v\": true, \"w\": false },\r\n  \"d\": { \"v\": true, \"w\": true }\r\n}\r\n```\r\nand I would like to select those of subobjects with keys \"a\", \"b\" or \"c\" (but not \"d\") whose element \"v\" is true (i.e., the resulting list should contain `{ \"v\": true, \"w\": true }` and `{ \"v\": true, \"w\": false }`). I cannot apply the filtering at the top level, as it would include the key \"d\", I cannot apply it one level below as it would have to include \"w\", and there are no other levels.\r\n\r\nImagine that we had an independent filtering selector, say `{<predicate>}`, with the semantics of evaluating `<predicate>` on each current *item* (with `@` denoting the item) and leaving those which satisfy it (note: I am not proposing this exact syntax here, just the semantics). Then I could intuitively solve the example above with `$['a','b','c']{@.v}`.\r\n\r\n(as a side note, with the above the syntax `[?(<predicate>)]` would become equivalent to `[*]{<predicate>}`)\r\n\r\nSome implementations (jayway IIRC) actually \u201csolve\u201d the problem above by applying the filtering predicate in `[?(...)]` to *items or subitems*, apparently depending on whether the items are arrays or not. IMO following this path in the standard is a bad idea, as it can quickly become confusing (what if the list contains a mixture of arrays, objects, and primitives?).\r\n\r\nPlease, consider adding an independent filtering selector to the standard!\r\n\r\n(as another side note, binding the \u201ccurrent item\u201d `@` is currently also attached to filtering, do you think it could be worthwhile to make it independent as well?)",
       "createdAt": "2021-07-19T09:57:14Z",
-      "updatedAt": "2021-07-20T00:31:45Z",
+      "updatedAt": "2021-07-26T13:47:00Z",
       "closedAt": null,
       "comments": [
         {
@@ -4613,6 +4620,13 @@
           "body": "You'd probably be interested in reviewing our [charter](https://datatracker.ietf.org/wg/jsonpath/about/) and that there's an existing project to [compare various implementations' levels of support](https://cburgmer.github.io/json-path-comparison/).\r\n\r\nIn summary, we are interested in not breaking existing implementations as much as possible, but that's secondary to creating a query language that makes sense.  For example, @goessner's original blog post mentions that expressions are to support the syntax of the environment in which that they're run (e.g. Javascript, Python, etc.).  However we determined that this doesn't support interoperability well, so we have to define our own syntax for expressions.",
           "createdAt": "2021-07-20T00:31:44Z",
           "updatedAt": "2021-07-20T00:31:44Z"
+        },
+        {
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@grzegorz-herman :  You are correctly pointing to a certain insufficiency of JSONPath here.\r\n\r\nI would like to elaborate here a little more. Both arguments ...\r\n\r\n```json\r\n{\r\n    \"a\": 1,\r\n    \"b\": 2,\r\n    \"c\": 3\r\n}\r\n```\r\n```json\r\n[\r\n    1,\r\n    2,\r\n    3\r\n]\r\n```\r\nwill select against the query `$[?(@)]` the identical value list `[1,2,3]`, different node lists though.\r\nSo this conforms to the spec ...\r\n\r\n>  During iteration process **each** array element or object member is\r\n   visited and its **value** -- accessible via symbol \"@\" -- or one of its\r\n   descendants -- uniquely defined by a relative path -- is tested\r\n   against a boolean expression \"boolean-expr\".\r\n\r\nSo it is vitally important for `@` to give us each *value* in order to build a relative path as in `@.v` above.\r\n\r\nNote that this has nothing to do with the fact, that we are iterating over the root node. The enability to filter during iteration against the index is inherent.\r\n```json\r\n{\r\n    \"obj\": {\r\n        \"a\": 1,\r\n        \"b\": 2,\r\n        \"c\": 3\r\n    }\r\n}\r\n```\r\nalso won't work via `$.obj[?(@ != 'd')]` or `$[?(@[*] != 'd')]` (useless anyway).\r\n\r\nWe simply have no mechanism yet to get the node-index during iteration. \r\n\r\nImagine, we had the symbol `\u00a7` for giving us the node-index instead of the node value during iteration, we could write `$.obj[?(\u00a7 != 'd')]` but not `$[?(\u00a7[*] != 'd')]` even if `\u00a7` would be so smart to resolve correctly, if it occurs at the start of a relative path. Also we probably might need to have a complement function `value` then. So I see no use value in introducing a new syntax element here.\r\n\r\n@grzegorz-herman:  In this context I do not understand ...\r\n\r\n> ... why should I use some special function to filter on the key, when there is a dedicated \u201ccore\u201d syntax for selecting subobjects by key?\r\n\r\n... as `@` is unable to be resolved to its index (key).\r\n\r\nHaving functions like `index` in our expression language seems to get increased importance through discussions like this. `$.obj[?(index(@) != 'd')]` would obviously do what we want.\r\n\r\n... do I miss out here something ?\r\n\r\nThanks\r\n\r\n--  \r\nsg",
+          "createdAt": "2021-07-26T13:47:00Z",
+          "updatedAt": "2021-07-26T13:47:00Z"
         }
       ]
     },
@@ -4628,7 +4642,7 @@
       "labels": [],
       "body": "The filter syntax currently requires predicates to be expressed in (something close to) disjunctive normal form (OR of ANDs), but this is likely to be inconvenient when the intention of the filter is expressed in a different way (e.g. as an AND or ORs or as a nested predicate with ANDs and ORs at various levels).\r\n\r\nThe JSONPath comparison project doesn't yet test these more complex predicates, although some, possibly most, implementations allow them.\r\n\r\nThe standard could allow arbitrarily structured predicates via syntax along these lines:\r\n```\r\nfilter-selector ::= \"[?(\" boolean-expr \")]\"\r\n\r\nboolean-expr ::= logical-and-expr |\r\n                 logical-and-expr \"||\" boolean-expr\r\n\r\nlogical-and-expr ::= basic-filter |\r\n                     basic-filter \"&&\" logical-and-expr\r\n\r\nbasic-filter ::= \"!\" basic filter |\r\n                 \"(\" boolean-expr \")\" |\r\n                 comp-expr\r\n```\r\n\r\nFor example, this would allow filters such as:\r\n```\r\n?(@.b && (@.c || @.d))\r\n```\r\nand\r\n```\r\n?(@.b && (@.c || @.d && @.e))\r\n```\r\n(where the semantics could, in line with mathematical convention and many programming languages, define `&&` to bind more tightly than `||`).\r\n\r\nNote: the comparison project's [Proposal A](https://github.com/cburgmer/json-path-comparison/tree/master/proposals/Proposal_A) restricts the syntax so that brackets are _required_ instead of making `&&` bind more tightly than `||`. This is a clever approach but is probably not suitable for the standard because it is rather unconventional.",
       "createdAt": "2021-07-23T14:09:53Z",
-      "updatedAt": "2021-07-23T21:49:23Z",
+      "updatedAt": "2021-07-26T15:07:03Z",
       "closedAt": null,
       "comments": [
         {
@@ -4644,6 +4658,13 @@
           "body": "> where the semantics could, in line with mathematical convention and many programming languages, define `&&` to bind more tightly than `||`\n\nFor clarity, this is because `&&` is a multiplicative operation whereas `||` is additive.  Standard order of operations then apply.\n\nI don't know any programming language where this is reversed.  I'm not opposed to requiring `()`, however.",
           "createdAt": "2021-07-23T21:49:23Z",
           "updatedAt": "2021-07-23T21:49:23Z"
+        },
+        {
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "If the fact that `&&`binds more tightly than `||` must be made explicite in the ABNF, it should be done. Using pairs of parentheses should be arbitrary.",
+          "createdAt": "2021-07-26T15:07:03Z",
+          "updatedAt": "2021-07-26T15:07:03Z"
         }
       ]
     }
