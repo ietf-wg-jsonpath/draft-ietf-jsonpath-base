@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-07-27T01:02:05.070449+00:00",
+  "timestamp": "2021-07-29T00:59:44.948706+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -4642,7 +4642,7 @@
       "labels": [],
       "body": "The filter syntax currently requires predicates to be expressed in (something close to) disjunctive normal form (OR of ANDs), but this is likely to be inconvenient when the intention of the filter is expressed in a different way (e.g. as an AND or ORs or as a nested predicate with ANDs and ORs at various levels).\r\n\r\nThe JSONPath comparison project doesn't yet test these more complex predicates, although some, possibly most, implementations allow them.\r\n\r\nThe standard could allow arbitrarily structured predicates via syntax along these lines:\r\n```\r\nfilter-selector ::= \"[?(\" boolean-expr \")]\"\r\n\r\nboolean-expr ::= logical-and-expr |\r\n                 logical-and-expr \"||\" boolean-expr\r\n\r\nlogical-and-expr ::= basic-filter |\r\n                     basic-filter \"&&\" logical-and-expr\r\n\r\nbasic-filter ::= \"!\" basic filter |\r\n                 \"(\" boolean-expr \")\" |\r\n                 comp-expr\r\n```\r\n\r\nFor example, this would allow filters such as:\r\n```\r\n?(@.b && (@.c || @.d))\r\n```\r\nand\r\n```\r\n?(@.b && (@.c || @.d && @.e))\r\n```\r\n(where the semantics could, in line with mathematical convention and many programming languages, define `&&` to bind more tightly than `||`).\r\n\r\nNote: the comparison project's [Proposal A](https://github.com/cburgmer/json-path-comparison/tree/master/proposals/Proposal_A) restricts the syntax so that brackets are _required_ instead of making `&&` bind more tightly than `||`. This is a clever approach but is probably not suitable for the standard because it is rather unconventional.",
       "createdAt": "2021-07-23T14:09:53Z",
-      "updatedAt": "2021-07-26T15:07:03Z",
+      "updatedAt": "2021-07-27T10:52:14Z",
       "closedAt": null,
       "comments": [
         {
@@ -4665,6 +4665,34 @@
           "body": "If the fact that `&&`binds more tightly than `||` must be made explicite in the ABNF, it should be done. Using pairs of parentheses should be arbitrary.",
           "createdAt": "2021-07-26T15:07:03Z",
           "updatedAt": "2021-07-26T15:07:03Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Agreed. Is there a preferred way to specify operator precedence in ABNF? The examples I've seen use a textual ordered list which won't help parser generators...",
+          "createdAt": "2021-07-27T06:42:18Z",
+          "updatedAt": "2021-07-27T06:42:18Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The [C# spec (pdf)](https://www.ecma-international.org/wp-content/uploads/ECMA-334_5th_edition_december_2017.pdf) doesn't use ANBF, but it is pretty clear by using prose and a table.  See section 12.4.2.\r\n\r\n> When an expression contains multiple operators, the precedence of the operators controls the order in which the individual operators are evaluated. [_Note:_ For example, the expression `x + y * z` is evaluated as `x + (y * z)` because the `*` operator has higher precedence than the binary `+` operator. _end note_] The precedence of an operator is established by the definition of its associated grammar production. [_Note:_ For example, an additive-expression consists of a sequence of multiplicative-expressions separated by `+` or `-` operators, thus giving the `+` and `-` operators lower precedence than the `*`, `/`, and `%` operators. _end note_]\r\n> \r\n> [_Note:_ The following table summarizes all operators in order of precedence from highest to lowest:\r\n> \r\n> |Subclause|Category|Operators|\r\n> |---|---|---|\r\n> |\u00a712.7|Primary|`x.y f(x) a[x] x++ x-- new typeof default checked unchecked delegate`|\r\n> |\u00a712.8|Unary|`+ - ! ~ ++x --x (T)x await x`|\r\n> |\u00a712.9|Multiplicative|`* / %`|\r\n> |\u00a712.9|Additive|`+ -`|\r\n> |\u00a712.10|Shift|`<< >>`|\r\n> |\u00a712.11|Relational and<br>type-testing|`< > <= >= is as`|\r\n> |\u00a712.11|Equality|`== !=`|\r\n> |\u00a712.12|Logical AND|`&`|\r\n> |\u00a712.12|Logical XOR|`^`|\r\n> |\u00a712.12|Logical OR|`\\|`|\r\n> |\u00a712.13|Conditional AND|`&&`|\r\n> |\u00a712.13|Conditional OR|`\\|\\|`|\r\n> |\u00a712.14|Null coalescing|`??`|\r\n> |\u00a712.15|Conditional|`?:`|\r\n> |\u00a712.18<br>and<br>\u00a712.16|Assignment and<br>lambda expression|`= *= /= %= += -= <<= >>= &= ^= \\|= =>`|\r\n> \r\n> _end note_]\r\n\r\nThere's also a bit more about associativity, but I figured this was enough.",
+          "createdAt": "2021-07-27T10:08:36Z",
+          "updatedAt": "2021-07-27T10:08:52Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Interesting. Does anyone know if ABNF parser generators infer operator\nprecedence from the structure of the productions?\n\nOn Tue, 27 Jul 2021, 11:08 Greg Dennis, ***@***.***> wrote:\n\n> The C# spec (pdf)\n> <https://www.ecma-international.org/wp-content/uploads/ECMA-334_5th_edition_december_2017.pdf>\n> doesn't use ANBF, but it is pretty clear by using prose and table. See\n> section 12.4.2.\n>\n> When an expression contains multiple operators, the precedence of the\n> operators controls the order in which the individual operators are\n> evaluated. [*Note:* For example, the expression x + y * z is evaluated as x\n> + (y * z) because the * operator has higher precedence than the binary +\n> operator. *end note*] The precedence of an operator is established by the\n> definition of its associated grammar production. [*Note:* For example, an\n> additive-expression consists of a sequence of multiplicative-expressions\n> separated by + or - operators, thus giving the + and - operators lower\n> precedence than the *, /, and % operators. *end note*]\n>\n> [*Note:* The following table summarizes all operators in order of\n> precedence from highest to lowest:\n> Subclause Category Operators\n> \u00a712.7 Primary x.y f(x) a[x] x++ x-- new typeof default checked unchecked\n> delegate\n> \u00a712.8 Unary + - ! ~ ++x --x (T)x await x\n> \u00a712.9 Multiplicative * / %\n> \u00a712.9 Additive + -\n> \u00a712.10 Shift << >>\n> \u00a712.11 Relational and\n> type-testing < > <= >= is as\n> \u00a712.11 Equality == !=\n> \u00a712.12 Logical AND &\n> \u00a712.12 Logical XOR ^\n> \u00a712.12 Logical OR |\n> \u00a712.13 Conditional AND &&\n> \u00a712.13 Conditional OR ||\n> \u00a712.14 Null coalescing ??\n> \u00a712.15 Conditional ?:\n> \u00a712.18\n> and\n> \u00a712.16 Assignment and\n> lambda expression = *= /= %= += -= <<= >>= &= ^= |= =>\n>\n> *end note*]\n>\n> There's also a bit more about associativity, but I figured this was enough.\n>\n> \u2014\n> You are receiving this because you authored the thread.\n> Reply to this email directly, view it on GitHub\n> <https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/110#issuecomment-887385549>,\n> or unsubscribe\n> <https://github.com/notifications/unsubscribe-auth/AAAXF2NKFVNLICN7IHHRZ4TTZ2AS5ANCNFSM5A4CRLWA>\n> .\n>\n",
+          "createdAt": "2021-07-27T10:15:29Z",
+          "updatedAt": "2021-07-27T10:15:29Z"
+        },
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "On 2021-07-27, at 12:15, Glyn Normington ***@***.***> wrote:\n> \n> Interesting. Does anyone know if ABNF parser generators infer operator\n> precedence from the structure of the productions?\n\nI would venture to say that is a near-universal property of BNF-based parser generators.\n\nStrictly speaking, BNF provides only a Boolean output: word is in language or it is not.  But in reality, people use BNF for parsing, and build the parse tree along the structure of the BNF productions that was used for matching.  That may be ambiguous even when the language created by the BNF isn\u2019t, and that\u2019s one reason why we have all these variants like LL(1) and LR(k) etc.  \n\nThe parse tree is then used to build an \u201cabstract syntax tree\u201d, ast, in many cases by attaching actions to the productions in the grammar.\n\nGr\u00fc\u00dfe, Carsten\n\n",
+          "createdAt": "2021-07-27T10:52:13Z",
+          "updatedAt": "2021-07-27T10:52:13Z"
         }
       ]
     }
