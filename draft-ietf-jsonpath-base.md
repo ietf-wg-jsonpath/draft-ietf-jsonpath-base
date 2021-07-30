@@ -1036,28 +1036,30 @@ The current item is selected if and only if the result is `true`.
 
 
 ~~~~ abnf
+boolean-expr     = logical-or-expr / logical-and-expr
+logical-or-expr  = logical-and-expr "||" boolean-expr ; disjunction
+                                                      ; binds less tightly than conjunction
+logical-and-expr = basic-filter /
+                   basic-filter "&&" logical-and-expr ; conjunction
+                                                      ; binds more tightly than disjunction
 
-
-boolean-expr = logical-expr
-logical-expr = ([neg-op] primary-expr) / logical-or-expr
-neg-op       = "!"                                  ; not operator
-primary-expr = "(" logical-or-expr ")"
-logical-or-expr = logical-and-expr *["||" logical-and-expr]
-logical-and-expr = comp-expr *["&&" comp-expr]
+basic-filter = comp-expr / paren-expr / ([neg-op] paren-expr)
+paren-expr   = "(" boolean-expr ")"                   ; parenthesized expression
+neg-op       = "!"                                    ; not operator
 
 comp-expr    = (rel-path-val /
-                json-path) [(comp-op comparable / ; comparison
-                            regex-op regex     /  ; RegEx test
-                            in-op container )]    ; containment test
-comp-op      = "==" / "!=" /                        ; comparison ...
-               "<"  / ">"  /                        ; operators
+                json-path) [(comp-op comparable /     ; comparison
+                            regex-op regex     /      ; RegEx test
+                            in-op container )]        ; containment test
+comp-op      = "==" / "!=" /                          ; comparison ...
+               "<"  / ">"  /                          ; operators
                "<=" / ">="
-regex-op     = "~="                                 ; RegEx match
-in-op        = " in "                               ; in operator
-comparable   = number / string-literal /            ; primitive ...
-               true / false / null /                ; values only
-               rel-path-val /                       ; descendant value
-               json-path                            ; any value
+regex-op     = "~="                                   ; RegEx match
+in-op        = " in "                                 ; in operator
+comparable   = number / string-literal /              ; primitive ...
+               true / false / null /                  ; values only
+               rel-path-val /                         ; descendant value
+               json-path                              ; any value
 
 rel-path-val = "@" *(dot-selector / index-selector)
 
