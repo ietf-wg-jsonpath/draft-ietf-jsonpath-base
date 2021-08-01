@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-07-29T00:59:44.948706+00:00",
+  "timestamp": "2021-08-01T01:09:09.411750+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -4524,7 +4524,7 @@
       "labels": [],
       "body": "At today's meeting, I agreed to submit a PR to float the idea of partial determinism for the descendants operator, even though the consensus seems to be against any determinism for that operator. Given the descendants operator PR https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/102 isn't yet merged, I'll start with an issue to capture discussion and avoid rebasing effort.\r\n\r\nWe probably don't want to _force_ any determinism on implementations, so the idea is to provide a recommendation for implementations which want to provide partial determinism and use \"SHOULD\" language so the recommendation is optional. Then implementations which opt in will agree on the ordering recommentations.\r\n\r\nThe benefits of partial determinism are:\r\n* improved predictability and interoperation\r\n* relative ease for JSONPath users writing tests, as there are fewer possible outputs.\r\n\r\nIn PR https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/102 there are no constraints on the non-determinism of the descendants operator:\r\n> The `descendant-selector` is inspired by ECMAScript for XML (E4X). It selects the node and all its descendants.\r\n\r\nWe agreed in issue https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/60 to allow non-determinism in the order in which objects are iterated and the same should be true when the descendants operator encounters an object. But there are other details of the ordering which could be tied down:\r\n* arrays SHOULD be visited in array order\r\n* nodes SHOULD be visited strictly before their descendants (so-called _pre-order_ traversal).\r\n\r\n(_Post-order_ traversal, in which nodes are visited strictly after their descendants, would be an equally valid alternative.)\r\n\r\nOne of the reasons given at today's meeting for allowing full non-determinism was for parallel processing, so it would be interesting to discuss what constraints the above rules produce on parallel processing. The order of collection of the results seems to be more significant than whether or not parallel processing is used.",
       "createdAt": "2021-06-15T15:13:00Z",
-      "updatedAt": "2021-07-26T18:51:26Z",
+      "updatedAt": "2021-07-30T15:55:23Z",
       "closedAt": null,
       "comments": [
         {
@@ -4568,6 +4568,20 @@
           "body": "I recommend checking out the language around interoperability in 8259. Something like that might work here.",
           "createdAt": "2021-07-26T18:51:25Z",
           "updatedAt": "2021-07-26T18:51:25Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I'm having a hard time judging the consensus, or lack of it, here. Regardless of the detailed language, please could interested parties indicate which of these options they favour:\r\n\r\nA.  Don't tie down the non-determinism of `..` at all\r\nB. Require `..` to visit arrays in array order and visit nodes before their descendants\r\nC. Some other option involving B with the option of A or A with the option of B, using some kind of language TBD.\r\n\r\n/cc @goessner ",
+          "createdAt": "2021-07-30T13:48:32Z",
+          "updatedAt": "2021-07-30T13:48:32Z"
+        },
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "> I recommend checking out the language around interoperability in 8259. Something like that might work here.\n\nI\u2019m not sure you actually mean that, but for me that would be about the worst result we could arrive at.\n\n8259 was worked on in a politicized context, which simply didn\u2019t allow us to clean it up.  There barely was the courage to finally say that interchanging JSON implies UTF-8, which was at least some progress.\nBut there was no way to clarify the data model issues, and this is why JSON in practice essentially has been reduced to I-JSON, which is not bad at all, but really different from what JSON originally promised to be.\n\nI\u2019d prefer if we don\u2019t need an I-JSONPath document to clean up the interoperability issues left in JSONPath-base.\n\nGiven that we have JSON and I-JSON, it may be useful to acknowledge (or violently reject! \u2014 we get to choose) the emergence of multiple levels/classes of interoperability with JSONPath, too.\n\nGr\u00fc\u00dfe, Carsten\n\n",
+          "createdAt": "2021-07-30T15:55:23Z",
+          "updatedAt": "2021-07-30T15:55:23Z"
         }
       ]
     },
@@ -11440,21 +11454,21 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NTk2NTAzOTAx",
       "title": "WIP: allow relative paths",
       "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/75",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "bettio",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "*Draft not yet ready for merge or complete*\r\nSee also GH #59 ",
       "createdAt": "2021-03-19T12:12:14Z",
-      "updatedAt": "2021-07-06T08:49:57Z",
+      "updatedAt": "2021-07-29T09:52:16Z",
       "baseRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
       "baseRefName": "main",
       "baseRefOid": "be226f10a48856c7a1721387a76dfb7cb377e039",
       "headRepository": "bettio/draft-ietf-jsonpath-jsonpath",
       "headRefName": "allow-relative-paths",
       "headRefOid": "dc74b539c4eb1d664b6b9d89d3b573661a1cd899",
-      "closedAt": null,
+      "closedAt": "2021-07-29T09:52:16Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
@@ -11479,6 +11493,13 @@
           "body": "@bettio What are your plans for this PR? Thanks.",
           "createdAt": "2021-07-06T08:49:57Z",
           "updatedAt": "2021-07-06T08:49:57Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing as there was no response. Please re-open if you would like to continue working on this PR.",
+          "createdAt": "2021-07-29T09:52:16Z",
+          "updatedAt": "2021-07-29T09:52:16Z"
         }
       ],
       "reviews": [
@@ -17787,6 +17808,213 @@
         }
       ],
       "reviews": []
+    },
+    {
+      "number": 111,
+      "id": "MDExOlB1bGxSZXF1ZXN0NzAwMzQ0Mzk4",
+      "title": "Support arbitrary predicate structure",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/111",
+      "state": "OPEN",
+      "author": "glyn",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/110",
+      "createdAt": "2021-07-30T14:38:25Z",
+      "updatedAt": "2021-07-31T21:45:54Z",
+      "baseRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
+      "baseRefName": "main",
+      "baseRefOid": "8c99e5028c27ae49690182902125c2ca9b613867",
+      "headRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
+      "headRefName": "pred",
+      "headRefOid": "4534203dfc02161fb19af69814fbdda844cfc676",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzE5NTg3MTIx",
+          "commit": {
+            "abbreviatedOid": "4534203"
+          },
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-07-31T16:30:05Z",
+          "updatedAt": "2021-07-31T16:30:05Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "this is very clean and seems to manage binding preference for `and` ... great.",
+              "createdAt": "2021-07-31T16:30:05Z",
+              "updatedAt": "2021-07-31T16:30:05Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzE5NTg3ODc2",
+          "commit": {
+            "abbreviatedOid": "4534203"
+          },
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-07-31T16:42:08Z",
+          "updatedAt": "2021-07-31T16:42:09Z",
+          "comments": [
+            {
+              "originalPosition": 21,
+              "body": "We could select\r\n```\r\n[?(@.audio && !@.video)]\r\n```\r\nusing implicit existance test. Requiring parentheses here, i.e. `!(@.video)` would be tedious.\r\n\r\nThis brings up another issue ... see below ...\r\n",
+              "createdAt": "2021-07-31T16:42:09Z",
+              "updatedAt": "2021-07-31T16:42:29Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzE5NTg4MzU4",
+          "commit": {
+            "abbreviatedOid": "4534203"
+          },
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-07-31T16:50:14Z",
+          "updatedAt": "2021-07-31T16:50:14Z",
+          "comments": [
+            {
+              "originalPosition": 46,
+              "body": "`rel-path-val` and `json-path` ...\r\n* are in fact valid ... hmm ... `defined-expr` or something ... indicating existence.\r\n* naming should be harmonized ... `rel-path-val` =>  `rel-path` or `rel-json-path`",
+              "createdAt": "2021-07-31T16:50:14Z",
+              "updatedAt": "2021-07-31T16:50:14Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzE5NTg4ODUw",
+          "commit": {
+            "abbreviatedOid": "4534203"
+          },
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-07-31T16:59:58Z",
+          "updatedAt": "2021-07-31T16:59:58Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "`basic-filter` breaks the naming rule (not communicated though) of having `xxx-expr` and `yyy-op` exclusively here.\r\n\r\n`basic-expr` or something would fit better, I think.\r\n",
+              "createdAt": "2021-07-31T16:59:58Z",
+              "updatedAt": "2021-07-31T16:59:58Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzE5NTg4OTMz",
+          "commit": {
+            "abbreviatedOid": "4534203"
+          },
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-07-31T17:01:30Z",
+          "updatedAt": "2021-07-31T17:01:58Z",
+          "comments": [
+            {
+              "originalPosition": 48,
+              "body": "significant improvement overall ... thanks",
+              "createdAt": "2021-07-31T17:01:31Z",
+              "updatedAt": "2021-07-31T17:01:58Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzE5NTkyNzU2",
+          "commit": {
+            "abbreviatedOid": "4534203"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-07-31T17:39:33Z",
+          "updatedAt": "2021-07-31T17:39:33Z",
+          "comments": [
+            {
+              "originalPosition": 21,
+              "body": "Good point. I'd like to avoid confusing possibilities such as:\r\n```\r\n[?(!@.foo == bar)]\r\n```\r\nbut I agree that it shouldn't be necessary to wrap existence terms in parentheses merely in order to negate them.",
+              "createdAt": "2021-07-31T17:39:33Z",
+              "updatedAt": "2021-07-31T17:39:33Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzE5NTkyODQ3",
+          "commit": {
+            "abbreviatedOid": "4534203"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-07-31T17:41:15Z",
+          "updatedAt": "2021-07-31T17:41:15Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "Thanks for explaining the naming rule, which I hadn't noticed. I'll do some renaming.",
+              "createdAt": "2021-07-31T17:41:15Z",
+              "updatedAt": "2021-07-31T17:41:16Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzE5NTkyODcy",
+          "commit": {
+            "abbreviatedOid": "4534203"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-07-31T17:41:49Z",
+          "updatedAt": "2021-07-31T17:41:50Z",
+          "comments": [
+            {
+              "originalPosition": 46,
+              "body": "Let me mull that over and try to improve matters.",
+              "createdAt": "2021-07-31T17:41:49Z",
+              "updatedAt": "2021-07-31T17:41:50Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzE5NjA1MTk4",
+          "commit": {
+            "abbreviatedOid": "4534203"
+          },
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "Agree with comments posted already, and added one of my own.",
+          "createdAt": "2021-07-31T21:44:51Z",
+          "updatedAt": "2021-07-31T21:45:54Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "Eventually, we'll want other-type expressions here, such as `4*(5+6)`.",
+              "createdAt": "2021-07-31T21:44:51Z",
+              "updatedAt": "2021-07-31T21:45:54Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
