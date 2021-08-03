@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-08-01T01:09:09.411750+00:00",
+  "timestamp": "2021-08-03T01:05:11.323878+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -17821,7 +17821,7 @@
       "labels": [],
       "body": "Fixes https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/110",
       "createdAt": "2021-07-30T14:38:25Z",
-      "updatedAt": "2021-07-31T21:45:54Z",
+      "updatedAt": "2021-08-02T23:28:06Z",
       "baseRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
       "baseRefName": "main",
       "baseRefOid": "8c99e5028c27ae49690182902125c2ca9b613867",
@@ -17832,7 +17832,22 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks for the various comments. I've been busy with other things, but intend to come back before too long, absorb those comments, and push up some changes.",
+          "createdAt": "2021-08-02T20:29:01Z",
+          "updatedAt": "2021-08-02T20:29:01Z"
+        },
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "On 2. Aug 2021, at 20:53, Greg Dennis ***@***.***> wrote:\n> \n> You replied.\n> \nYes.  How is that \"little response\u201d?\n\nI\u2019m still trying to parse what you mean by \"This was asked earlier and received little response.\u201d.\n\nWhat are you trying to say?\n\nGr\u00fc\u00dfe, Carsten\n\n",
+          "createdAt": "2021-08-02T23:28:06Z",
+          "updatedAt": "2021-08-02T23:28:06Z"
+        }
+      ],
       "reviews": [
         {
           "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzE5NTg3MTIx",
@@ -18008,9 +18023,209 @@
           "comments": [
             {
               "originalPosition": 19,
-              "body": "Eventually, we'll want other-type expressions here, such as `4*(5+6)`.",
+              "body": "Eventually, we'll want other-type expressions within the `( )`, such as `4*(5+6)`.",
               "createdAt": "2021-07-31T21:44:51Z",
-              "updatedAt": "2021-07-31T21:45:54Z"
+              "updatedAt": "2021-08-02T05:56:50Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzE5NjQxNDEw",
+          "commit": {
+            "abbreviatedOid": "4534203"
+          },
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-01T09:12:09Z",
+          "updatedAt": "2021-08-01T09:12:09Z",
+          "comments": [
+            {
+              "originalPosition": 21,
+              "body": "Hmm ... if we agree to existence tests and assume \r\n\r\n```\r\n{ \"zero\": 0, \"five\": 5 }\r\n``` \r\n\r\nthen unlike in C-like languages.\r\n\r\n`@.five` evaluates to `true`, but consistently `!@.five` to `false` and `!!@.five` to true ... and ...\r\n`@.zero` evaluates to `true`, `!@.zero` to `false` and `!!@.zero` to true.\r\n\r\nTesting for values needs always to be explicit, as in `@.five == 5`, `@.five > 0`, `@.five != 6` or `@.zero != 0`.\r\n",
+              "createdAt": "2021-08-01T09:12:09Z",
+              "updatedAt": "2021-08-01T09:12:09Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzE5NjYwOTQy",
+          "commit": {
+            "abbreviatedOid": "4534203"
+          },
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-01T13:07:21Z",
+          "updatedAt": "2021-08-01T13:07:22Z",
+          "comments": [
+            {
+              "originalPosition": 21,
+              "body": "So then how would `!@.foo == false` be interpreted?",
+              "createdAt": "2021-08-01T13:07:22Z",
+              "updatedAt": "2021-08-01T13:07:22Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzE5NjczNDQ1",
+          "commit": {
+            "abbreviatedOid": "4534203"
+          },
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-01T15:23:10Z",
+          "updatedAt": "2021-08-01T15:23:10Z",
+          "comments": [
+            {
+              "originalPosition": 21,
+              "body": "if `@.foo`exists then `!@.foo` results in `false` and `!@.foo == false` will give `true` ... not to be confused with  `!(@.foo == false)` which is `true` for all values of `foo` (including `undefined`) except of  `false` ...",
+              "createdAt": "2021-08-01T15:23:10Z",
+              "updatedAt": "2021-08-01T15:23:10Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzE5Njg5Mzc3",
+          "commit": {
+            "abbreviatedOid": "4534203"
+          },
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-01T19:01:05Z",
+          "updatedAt": "2021-08-01T19:01:05Z",
+          "comments": [
+            {
+              "originalPosition": 21,
+              "body": "So in summary, if `@.foo` holds a value of `false`, then `!@.foo == false` yields true, and `!(@.foo == false)` yields false.\n\nI think this is one of the \"confusing possibilities\" that @glyn mentioned.\n\nI think this subtlety could bear some documentation at the very least.\n\nStill, I'd probably use `@.foo != false` instead of the latter.\n\nA different option would be to forbid existence operations within comparative expressions.  Only let `&&` and `||` operate on them.  This makes `!@.foo == false` invalid syntax.",
+              "createdAt": "2021-08-01T19:01:05Z",
+              "updatedAt": "2021-08-01T19:05:32Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzE5NzAwNzE3",
+          "commit": {
+            "abbreviatedOid": "4534203"
+          },
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-01T21:51:46Z",
+          "updatedAt": "2021-08-01T21:51:47Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "Why are we moving away from the standard way of expressing grammars for languages with operator precedences?  Obviously, right recursion works, but we do have *(...) in ABNF and could use it.\r\n(Right recursion leads to a binary tree that leans to the right, so a + b + c parses as a + (b + c).\r\nNot a problem as long as operators are [associative](https://en.wikipedia.org/wiki/Operator_associativity).)\r\nSee the ECMAScript grammars for the usual way to do this.",
+              "createdAt": "2021-08-01T21:51:46Z",
+              "updatedAt": "2021-08-01T21:51:47Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzE5NzE1NzUw",
+          "commit": {
+            "abbreviatedOid": "4534203"
+          },
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-02T00:27:38Z",
+          "updatedAt": "2021-08-02T00:27:38Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "This was asked earlier and received little response.",
+              "createdAt": "2021-08-02T00:27:38Z",
+              "updatedAt": "2021-08-02T00:27:39Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzIwMDkxMjMz",
+          "commit": {
+            "abbreviatedOid": "4534203"
+          },
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-02T11:18:03Z",
+          "updatedAt": "2021-08-02T11:18:03Z",
+          "comments": [
+            {
+              "originalPosition": 21,
+              "body": "So we have the alternatives ...\r\n\r\n1. `@.foo` always indicates existence (`true / false`) if used standalone. Drawback: inconsistency with potential value.\r\n2.  `@.foo` results in `false` if it doesn't exist, in its value otherwise. Drawback: What's about falsy values `false, 0, null`?\r\n\r\nWe basically need to handle the Javascript value equivalence `undefined`, which is not a valid JSON value.\r\n\r\nBest I can see yet, is Greg's proposal slightly modified: \r\n\r\nFor comparisons like `@.foo > 5`, always take the node value, except it does not exist, than ... hmm ... take\r\n\r\n* `false` or\r\n* `null`\r\n\r\nand let the implementation do implicite type conversion.  We cannot forbid existence operations within comparative expressions, if we don't want do error handling (which is not syntactically based).\r\n\r\nGeneral drawback: We cannot tell, if  `!@.foo == true` is `true` because of its value `false` or inexistence. The same effect comes with  `@.foo != true`.\r\n\r\nGeneral result of this discussion: We cannot reliably test whether a node exists or not.\r\n \r\n",
+              "createdAt": "2021-08-02T11:18:03Z",
+              "updatedAt": "2021-08-02T11:18:43Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzIwMDk2NzI2",
+          "commit": {
+            "abbreviatedOid": "4534203"
+          },
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-02T11:25:31Z",
+          "updatedAt": "2021-08-02T11:25:32Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "Where was what asked?",
+              "createdAt": "2021-08-02T11:25:32Z",
+              "updatedAt": "2021-08-02T11:25:32Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzIwNTAwNjI2",
+          "commit": {
+            "abbreviatedOid": "4534203"
+          },
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-02T18:53:18Z",
+          "updatedAt": "2021-08-02T18:53:18Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "@Glyn asked if there was a standard way for ANBF to support operator precedence.\r\n\r\nhttps://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/110#issuecomment-887390352\r\n\r\nYou replied.",
+              "createdAt": "2021-08-02T18:53:18Z",
+              "updatedAt": "2021-08-02T20:26:04Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzIwNTY2MjUy",
+          "commit": {
+            "abbreviatedOid": "4534203"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-02T20:26:41Z",
+          "updatedAt": "2021-08-02T20:26:41Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "I don't intend to include that in this PR, thanks.",
+              "createdAt": "2021-08-02T20:26:41Z",
+              "updatedAt": "2021-08-02T20:26:42Z"
             }
           ]
         }
