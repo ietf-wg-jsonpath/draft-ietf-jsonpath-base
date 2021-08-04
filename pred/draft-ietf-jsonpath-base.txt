@@ -5,10 +5,10 @@
 JSONPath WG                                              S. Gössner, Ed.
 Internet-Draft                                   Fachhochschule Dortmund
 Intended status: Standards Track                      G. Normington, Ed.
-Expires: 31 January 2022                                                
+Expires: 5 February 2022                                                
                                                          C. Bormann, Ed.
                                                   Universität Bremen TZI
-                                                            30 July 2021
+                                                           4 August 2021
 
 
                   JSONPath: Query expressions for JSON
@@ -45,7 +45,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 31 January 2022.
+   This Internet-Draft will expire on 5 February 2022.
 
 Copyright Notice
 
@@ -1003,21 +1003,22 @@ Semantics
 
    The current item is selected if and only if the result is "true".
 
-   boolean-expr     = logical-or-expr / logical-and-expr
-   logical-or-expr  = logical-and-expr "||" boolean-expr ; disjunction
+   boolean-expr     = logical-or-expr
+   logical-or-expr  = logical-and-expr *("||" logical-and-expr)
+                                                         ; disjunction
                                                          ; binds less tightly than conjunction
-   logical-and-expr = basic-filter /
-                      basic-filter "&&" logical-and-expr ; conjunction
+   logical-and-expr = basic-expr *("&&" basic-expr)      ; conjunction
                                                          ; binds more tightly than disjunction
 
-   basic-filter = comp-expr / paren-expr / ([neg-op] paren-expr)
+   basic-expr   = comp-expr / existence-expr / paren-expr / (neg-op paren-expr)
+   existence-expr = [neg-op] path                        ; path existence or non-existence
    paren-expr   = "(" boolean-expr ")"                   ; parenthesized expression
    neg-op       = "!"                                    ; not operator
 
-   comp-expr    = (rel-path-val /
-                   json-path) [(comp-op comparable /     ; comparison
-                               regex-op regex     /      ; RegEx test
-                               in-op container )]        ; containment test
+   comp-expr    = path (comp-op comparable /             ; comparison
+                        regex-op regex     /             ; RegEx test
+                        in-op container)                 ; containment test
+   path         = rel-path / json-path
    comp-op      = "==" / "!=" /                          ; comparison ...
                   "<"  / ">"  /                          ; operators
                   "<=" / ">="
@@ -1025,10 +1026,10 @@ Semantics
    in-op        = " in "                                 ; in operator
    comparable   = number / string-literal /              ; primitive ...
                   true / false / null /                  ; values only
-                  rel-path-val /                         ; descendant value
+                  rel-path /                             ; relative path value
                   json-path                              ; any value
 
-   rel-path-val = "@" *(dot-selector / index-selector)
+   rel-path     = "@" *(dot-selector / index-selector)
 
    container = <TO BE DEFINED>
    regex = <TO BE DEFINED>
@@ -1056,9 +1057,6 @@ Semantics
    *  Regular expression tests can be applied to "string" values only.
 
    *  Containment tests work with arrays and objects.
-
-   *  Explicit boolean type conversion is done by the not operator "neg-
-      op".
 
    *  The behaviour of operators is consistent with the 'C'-family of
       programming languages.
