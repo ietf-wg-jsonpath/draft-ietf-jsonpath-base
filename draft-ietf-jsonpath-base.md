@@ -1043,14 +1043,15 @@ logical-or-expr  = logical-and-expr *("||" logical-and-expr)
 logical-and-expr = basic-filter *("&&" basic-filter)  ; conjunction
                                                       ; binds more tightly than disjunction
 
-basic-filter = comp-expr / paren-expr / ([neg-op] paren-expr)
+basic-filter = comp-expr / existence-expr / paren-expr / (neg-op paren-expr)
+existence-expr = [neg-op] path                        ; path existence or non-existence
 paren-expr   = "(" boolean-expr ")"                   ; parenthesized expression
 neg-op       = "!"                                    ; not operator
 
-comp-expr    = (rel-path-val /
-                json-path) [(comp-op comparable /     ; comparison
-                            regex-op regex     /      ; RegEx test
-                            in-op container )]        ; containment test
+comp-expr    = path (comp-op comparable /             ; comparison
+                     regex-op regex     /             ; RegEx test
+                     in-op container)                 ; containment test
+path         = rel-path-val / json-path
 comp-op      = "==" / "!=" /                          ; comparison ...
                "<"  / ">"  /                          ; operators
                "<=" / ">="
@@ -1058,7 +1059,7 @@ regex-op     = "~="                                   ; RegEx match
 in-op        = " in "                                 ; in operator
 comparable   = number / string-literal /              ; primitive ...
                true / false / null /                  ; values only
-               rel-path-val /                         ; descendant value
+               rel-path-val /                         ; relative path value
                json-path                              ; any value
 
 rel-path-val = "@" *(dot-selector / index-selector)
@@ -1077,7 +1078,6 @@ Notes:
 * A member or element value by itself is *falsy* only, if it does not exist. Otherwise it is *truthy*, resulting in its value. To be more specific explicit comparisons are necessary. This existence test — as an exception of the general rule — also works with complex values.
 * Regular expression tests can be applied to `string` values only.
 * Containment tests work with arrays and objects.
-* Explicit boolean type conversion is done by the not operator `neg-op`.
 * The behaviour of operators is consistent with the 'C'-family of programming languages.
 <!-- need to clarify -->
 
