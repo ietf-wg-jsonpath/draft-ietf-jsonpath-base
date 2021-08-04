@@ -1040,10 +1040,10 @@ boolean-expr     = logical-or-expr
 logical-or-expr  = logical-and-expr *("||" logical-and-expr)
                                                       ; disjunction
                                                       ; binds less tightly than conjunction
-logical-and-expr = basic-filter *("&&" basic-filter)  ; conjunction
+logical-and-expr = basic-expr *("&&" basic-expr)      ; conjunction
                                                       ; binds more tightly than disjunction
 
-basic-filter = comp-expr / existence-expr / paren-expr / (neg-op paren-expr)
+basic-expr   = comp-expr / existence-expr / paren-expr / (neg-op paren-expr)
 existence-expr = [neg-op] path                        ; path existence or non-existence
 paren-expr   = "(" boolean-expr ")"                   ; parenthesized expression
 neg-op       = "!"                                    ; not operator
@@ -1051,7 +1051,7 @@ neg-op       = "!"                                    ; not operator
 comp-expr    = path (comp-op comparable /             ; comparison
                      regex-op regex     /             ; RegEx test
                      in-op container)                 ; containment test
-path         = rel-path-val / json-path
+path         = rel-path / json-path
 comp-op      = "==" / "!=" /                          ; comparison ...
                "<"  / ">"  /                          ; operators
                "<=" / ">="
@@ -1059,10 +1059,10 @@ regex-op     = "~="                                   ; RegEx match
 in-op        = " in "                                 ; in operator
 comparable   = number / string-literal /              ; primitive ...
                true / false / null /                  ; values only
-               rel-path-val /                         ; relative path value
+               rel-path /                             ; relative path value
                json-path                              ; any value
 
-rel-path-val = "@" *(dot-selector / index-selector)
+rel-path     = "@" *(dot-selector / index-selector)
 
 container = <TO BE DEFINED>
 regex = <TO BE DEFINED>
