@@ -1036,11 +1036,11 @@ The current item is selected if and only if the result is `true`.
 
 
 ~~~~ abnf
-boolean-expr     = logical-or-expr / logical-and-expr
-logical-or-expr  = logical-and-expr "||" boolean-expr ; disjunction
+boolean-expr     = logical-or-expr
+logical-or-expr  = logical-and-expr *("||" logical-and-expr)
+                                                      ; disjunction
                                                       ; binds less tightly than conjunction
-logical-and-expr = basic-filter /
-                   basic-filter "&&" logical-and-expr ; conjunction
+logical-and-expr = basic-filter *("&&" basic-filter)  ; conjunction
                                                       ; binds more tightly than disjunction
 
 basic-filter = comp-expr / paren-expr / ([neg-op] paren-expr)
