@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-08-03T01:05:11.323878+00:00",
+  "timestamp": "2021-08-05T01:01:16.969286+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -4709,6 +4709,119 @@
           "updatedAt": "2021-07-27T10:52:13Z"
         }
       ]
+    },
+    {
+      "number": 112,
+      "id": "MDU6SXNzdWU5NjAzNzA4MDg=",
+      "title": "Generalise filter comparisons",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/112",
+      "state": "OPEN",
+      "author": "glyn",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Currently, filter comparison require a path on the left hand side and a constant expression on the right hand side.  This seems overly restrictive. We should generalise it to allow the opposite order as well as path to path comparisons and, for completeness, constant expression to constant expression comparisons.\r\n\r\nFor example, the following comparisons should be valid:\r\n```\r\n@.foo == 1\r\n1 == @.foo\r\n@.foo == @.bar\r\n1 == 1\r\n```",
+      "createdAt": "2021-08-04T12:29:25Z",
+      "updatedAt": "2021-08-04T13:38:14Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "Should `=~` be symmetric, too?",
+          "createdAt": "2021-08-04T12:35:01Z",
+          "updatedAt": "2021-08-04T12:35:01Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Did you mean `~=` (which is what we use in the current draft)?\r\n\r\nI think not because its operands have distinct types and it's probably easier to police restrictions and give good diagnostics if we keep `~=` asymmetric. For instance, with the current syntax:\r\n```\r\n@.foo ~= @.bar\r\n```\r\ncan fail with an error such as \"@.bar needs to be a regular expression literal\", which is a bit easier to understand than something like \"one side of ~= needs to be a regular expression literal\".\r\n\r\nHaving said that, other generalisations of `~=` may be worth it, such as allowing a string literal (rather than only a path) on the left hand side, for consistency with the above syntax for the other comparison operators, but even that could be give rise to confusion, e.g.:\r\n```\r\n\"/.*/\" ~= /.*/\r\n```",
+          "createdAt": "2021-08-04T12:49:15Z",
+          "updatedAt": "2021-08-04T12:49:15Z"
+        },
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "Oops.  It really should be `=~`.\r\n\r\nPerl introduced `=~` as `string =~ regexp` (where regexp actually could be a substitute operator etc.).\r\nRuby generalized this to `regexp =~ string` and `string =~ regexp` (actually, even more general...).\r\nJava, JavaScript, Python, PowerShell don't have an operator at all; this is all handled using method calls.\r\n\r\nSo if we want to have syntax for regexp matching, we probably want to go with Perl's.\r\nWe also need to discuss whether we need syntax for regexp literals.\r\nBut this is maybe leading beyond this github issue.",
+          "createdAt": "2021-08-04T13:07:07Z",
+          "updatedAt": "2021-08-04T13:08:42Z"
+        },
+        {
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "When witing `$[?(1==1])` the current node represented by `@` will be selected. So resulting in the same as `$[*]`.\r\n\r\nIs this really, what we want?",
+          "createdAt": "2021-08-04T13:28:58Z",
+          "updatedAt": "2021-08-04T13:28:58Z"
+        },
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "Anything else we might want?\r\n\r\n(I'm not sure we can write a syntax that only lets \"meaningful\" expressions through.)",
+          "createdAt": "2021-08-04T13:31:03Z",
+          "updatedAt": "2021-08-04T13:31:03Z"
+        },
+        {
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Convinced ... you made the point.",
+          "createdAt": "2021-08-04T13:38:14Z",
+          "updatedAt": "2021-08-04T13:38:14Z"
+        }
+      ]
+    },
+    {
+      "number": 113,
+      "id": "MDU6SXNzdWU5NjAzOTk3NzQ=",
+      "title": "Operator precedence table",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/113",
+      "state": "OPEN",
+      "author": "glyn",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Introducing an operator precedence table will help us comunicate what we are trying to achieve precedence-wise in the ABNF syntax.\r\n\r\n_Originally posted by @cabo in https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/111#issuecomment-892618964_",
+      "createdAt": "2021-08-04T12:52:12Z",
+      "updatedAt": "2021-08-04T15:46:54Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Here is a first version ... taken from [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence)\r\n\r\n| Precedence | Operator type | Syntax | Comment |\r\n|:--:|:--:|:--:|:--:|\r\n|  6  | Grouping | `(...)` |  | \r\n|  5  | Logical NOT | `!` |  | \r\n|  4  | Less Than<br>Greater Than<br>Less Than Or Equal<br>Greater Than Or Equal | `<`<br>`>`<br>`<=`<br>`>=` | Relation | \r\n|  3  | Equal To<br>Not Equal To | `==`<br>`!=` | Comparison | \r\n|  2  | Logical AND | `&&` |  | \r\n|  1  | Logical OR | `\\|\\|` |  | \r\n",
+          "createdAt": "2021-08-04T13:22:17Z",
+          "updatedAt": "2021-08-04T13:22:17Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks for that @goessner!\r\n\r\nI suggest we combine the third and fourth rows and give `==` and `!=` the same precedence as the other comparison operators as I don't think there is a situation where their relative precedence is necessary.\r\n\r\nAlso, having a separate row for `==` and `!=` gives the impression we want to entertain expressions such as:\r\n```\r\n@.foo < 2 == @.bar\r\n```\r\nand\r\n```\r\n1 < 2 == 2 < 3\r\n```\r\nwhich I'd prefer to avoid",
+          "createdAt": "2021-08-04T13:44:00Z",
+          "updatedAt": "2021-08-04T13:44:00Z"
+        },
+        {
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yes ... so ...\r\n\r\n| Precedence | Operator type | Syntax | Comment |\r\n|:--:|:--:|:--:|:--:|\r\n|  5  | Grouping | `(...)` |  | \r\n|  4  | Logical NOT | `!` |  | \r\n|  3  | Equal To<br>Not Equal To<br>Less Than<br>Greater Than<br>Less Than Or Equal<br>Greater Than Or Equal | `==`<br>`!=`<br>`<`<br>`>`<br>`<=`<br>`>=` | Comparison | \r\n|  2  | Logical AND | `&&` |  | \r\n|  1  | Logical OR | `\\|\\|` |  | \r\n",
+          "createdAt": "2021-08-04T15:46:54Z",
+          "updatedAt": "2021-08-04T15:46:54Z"
+        }
+      ]
+    },
+    {
+      "number": 114,
+      "id": "MDU6SXNzdWU5NjA0MjQ1MDM=",
+      "title": "regex comparison operator should be =~",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/114",
+      "state": "OPEN",
+      "author": "glyn",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Perl introduced `=~` as `string =~ regexp` (where regexp actually could be a substitute operator etc.).\r\nRuby generalized this to `regexp =~ string` and `string =~ regexp`.\r\n(Java, JavaScript, Python, PowerShell don't have an operator at all; this is all handled using method calls.)\r\n\r\nSo if we want to have syntax for regexp matching, we probably want to go with Perl's.\r\n\r\n_Originally posted by @cabo in https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/112#issuecomment-892642185_",
+      "createdAt": "2021-08-04T13:09:14Z",
+      "updatedAt": "2021-08-04T13:09:14Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -17821,13 +17934,13 @@
       "labels": [],
       "body": "Fixes https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/110",
       "createdAt": "2021-07-30T14:38:25Z",
-      "updatedAt": "2021-08-02T23:28:06Z",
+      "updatedAt": "2021-08-04T13:39:58Z",
       "baseRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
       "baseRefName": "main",
       "baseRefOid": "8c99e5028c27ae49690182902125c2ca9b613867",
       "headRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
       "headRefName": "pred",
-      "headRefOid": "4534203dfc02161fb19af69814fbdda844cfc676",
+      "headRefOid": "790faca5c4f0535fe1b007e7b738ef80f460df73",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -17846,6 +17959,34 @@
           "body": "On 2. Aug 2021, at 20:53, Greg Dennis ***@***.***> wrote:\n> \n> You replied.\n> \nYes.  How is that \"little response\u201d?\n\nI\u2019m still trying to parse what you mean by \"This was asked earlier and received little response.\u201d.\n\nWhat are you trying to say?\n\nGr\u00fc\u00dfe, Carsten\n\n",
           "createdAt": "2021-08-02T23:28:06Z",
           "updatedAt": "2021-08-02T23:28:06Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Ok, so I pushed up some changes which attempt to address all the issues raised. Please see the individual commit logs for more detailed comments.",
+          "createdAt": "2021-08-04T10:15:28Z",
+          "updatedAt": "2021-08-04T10:15:28Z"
+        },
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "Maybe we want to add an [operator precedence table][1] into the text and try to make sure the grammar is somewhat congruence to that table.\r\n\r\n[1]: https://en.cppreference.com/w/c/language/operator_precedence",
+          "createdAt": "2021-08-04T10:18:53Z",
+          "updatedAt": "2021-08-04T10:20:59Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Maybe we want to add an [operator precedence table](https://en.cppreference.com/w/c/language/operator_precedence) into the text and try to make sure the grammar is somewhat congruence to that table.\r\n\r\nGood idea, but I'd prefer to defer as I've got enough to deal with in this PR! It will also be even more valuable if we end up supporting arithmetic expressions...",
+          "createdAt": "2021-08-04T10:24:37Z",
+          "updatedAt": "2021-08-04T10:24:37Z"
+        },
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "Having an operator precedence table will help us understand what we are trying to do here.\r\nBut I believe in incremental improvement, so completing this PR and then re-approaching it from the angle of the precedence table works for me.\r\n",
+          "createdAt": "2021-08-04T12:32:30Z",
+          "updatedAt": "2021-08-04T12:32:30Z"
         }
       ],
       "reviews": [
@@ -17883,9 +18024,9 @@
           "comments": [
             {
               "originalPosition": 21,
-              "body": "We could select\r\n```\r\n[?(@.audio && !@.video)]\r\n```\r\nusing implicit existance test. Requiring parentheses here, i.e. `!(@.video)` would be tedious.\r\n\r\nThis brings up another issue ... see below ...\r\n",
+              "body": "We could select\r\n```\r\n[?(@.audio && !@.video)]\r\n```\r\nusing implicit existence test. Requiring parentheses here, i.e. `!(@.video)` would be tedious.\r\n\r\nThis brings up another issue ... see below ...\r\n",
               "createdAt": "2021-07-31T16:42:09Z",
-              "updatedAt": "2021-07-31T16:42:29Z"
+              "updatedAt": "2021-08-04T09:30:52Z"
             }
           ]
         },
@@ -18228,6 +18369,239 @@
               "updatedAt": "2021-08-02T20:26:42Z"
             }
           ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzIyMDU0NDcy",
+          "commit": {
+            "abbreviatedOid": "4534203"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-04T09:17:53Z",
+          "updatedAt": "2021-08-04T09:17:53Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "> Why are we moving away from the standard way of expressing grammars for languages with operator precedences? \r\n\r\nSimply ignorance on my part.\r\n> Obviously, right recursion works, but we do have *(...) in ABNF and could use it.\r\n> (Right recursion leads to a binary tree that leans to the right, so a + b + c parses as a + (b + c).\r\n> Not a problem as long as operators are [associative](https://en.wikipedia.org/wiki/Operator_associativity).)\r\n> See the ECMAScript grammars for the usual way to do this.\r\n\r\nI can't find an ABNF ECMAScript grammar. [This grammar](https://tc39.es/ecma262/#sec-multiplicative-operators) uses recursion, e.g.:\r\n```\r\n AdditiveExpression :\r\nAdditiveExpression + MultiplicativeExpression\r\nAdditiveExpression - MultiplicativeExpression\r\n```\r\n@cabo Please could you provide a more specific reference to an ECMAScript grammar which demonstrates the \"standard way\" you are thinking of?\r\n\r\n\r\n",
+              "createdAt": "2021-08-04T09:17:53Z",
+              "updatedAt": "2021-08-04T09:17:53Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzIyMDgyOTU0",
+          "commit": {
+            "abbreviatedOid": "4534203"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-04T09:47:51Z",
+          "updatedAt": "2021-08-04T09:47:51Z",
+          "comments": [
+            {
+              "originalPosition": 21,
+              "body": "I'm going to push a change which renders `!@.foo == false` syntactically invalid. See what you make of it.",
+              "createdAt": "2021-08-04T09:47:51Z",
+              "updatedAt": "2021-08-04T09:47:51Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzIyMTAzNjg3",
+          "commit": {
+            "abbreviatedOid": "790faca"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-04T10:10:00Z",
+          "updatedAt": "2021-08-04T10:10:00Z",
+          "comments": [
+            {
+              "originalPosition": 21,
+              "body": "In fact the changes I just pushed make existence and non-existence tests incapable of being used in comparisons, which I hope avoids some of the issues above.",
+              "createdAt": "2021-08-04T10:10:00Z",
+              "updatedAt": "2021-08-04T10:10:00Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzIyMTA0ODY2",
+          "commit": {
+            "abbreviatedOid": "790faca"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-04T10:11:27Z",
+          "updatedAt": "2021-08-04T10:11:27Z",
+          "comments": [
+            {
+              "originalPosition": 46,
+              "body": "I went for `existence-expr` which now includes optional negation and `rel-path` as it's shorter.",
+              "createdAt": "2021-08-04T10:11:27Z",
+              "updatedAt": "2021-08-04T10:11:27Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzIyMTA2MjA4",
+          "commit": {
+            "abbreviatedOid": "790faca"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-04T10:12:56Z",
+          "updatedAt": "2021-08-04T10:12:56Z",
+          "comments": [
+            {
+              "originalPosition": 60,
+              "body": "I think this type conversion statement is no longer needed since `!` now applies only to existence terms, which give boolean values, and parenthesised boolean expressions which again give boolean values.",
+              "createdAt": "2021-08-04T10:12:56Z",
+              "updatedAt": "2021-08-04T10:12:56Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzIyMTA2NzU4",
+          "commit": {
+            "abbreviatedOid": "790faca"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-04T10:13:32Z",
+          "updatedAt": "2021-08-04T10:13:32Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "@cabo I tried using repetition instead of right recursion. Please see what you make of it.",
+              "createdAt": "2021-08-04T10:13:32Z",
+              "updatedAt": "2021-08-04T10:13:32Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzIyMTA3ODIy",
+          "commit": {
+            "abbreviatedOid": "790faca"
+          },
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-04T10:14:45Z",
+          "updatedAt": "2021-08-04T10:14:45Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "Indeed, I must have misremembered the way TC39 writes their grammars, which apparently has morphed to a simple BNF (without repetition) plus weird two-level features (not quite Algol68 though :-).\r\n\r\nBecause different parser generators react in different ways to (immediate) recursion, I try to avoid that in favor of repetition.  I just looked at the Python grammar for a potential example, but that is a weird mix of the different styles.\r\n\r\n31c1a7f is exactly what I had in mind.  Regular and non-surprising.  Thank you.",
+              "createdAt": "2021-08-04T10:14:45Z",
+              "updatedAt": "2021-08-04T10:14:45Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzIyMTEwNzI0",
+          "commit": {
+            "abbreviatedOid": "790faca"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-04T10:18:04Z",
+          "updatedAt": "2021-08-04T10:18:04Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "Phew, thanks! :sweat_smile:",
+              "createdAt": "2021-08-04T10:18:04Z",
+              "updatedAt": "2021-08-04T10:18:04Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzIyMTExNjc0",
+          "commit": {
+            "abbreviatedOid": "790faca"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-04T10:19:08Z",
+          "updatedAt": "2021-08-04T10:19:08Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "I went for `basic-expr`.",
+              "createdAt": "2021-08-04T10:19:08Z",
+              "updatedAt": "2021-08-04T10:19:08Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzIyMTE5MTA1",
+          "commit": {
+            "abbreviatedOid": "790faca"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-04T10:27:58Z",
+          "updatedAt": "2021-08-04T10:27:59Z",
+          "comments": [
+            {
+              "originalPosition": 31,
+              "body": "@goessner I'd like to support `comparable comp-op path` as well since it seems arbitrary to require the path to be on the left hand side of the comparison operator. Something for a future PR, perhaps?",
+              "createdAt": "2021-08-04T10:27:59Z",
+              "updatedAt": "2021-08-04T10:27:59Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzIyMjIwNjY2",
+          "commit": {
+            "abbreviatedOid": "790faca"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-04T12:29:47Z",
+          "updatedAt": "2021-08-04T12:29:47Z",
+          "comments": [
+            {
+              "originalPosition": 31,
+              "body": "I raised https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/112 to cover this.",
+              "createdAt": "2021-08-04T12:29:47Z",
+              "updatedAt": "2021-08-04T12:29:47Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzIyMjk2NTE5",
+          "commit": {
+            "abbreviatedOid": "790faca"
+          },
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-08-04T13:39:58Z",
+          "updatedAt": "2021-08-04T13:39:58Z",
+          "comments": []
         }
       ]
     }
