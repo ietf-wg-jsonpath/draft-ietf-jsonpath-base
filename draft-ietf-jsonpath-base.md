@@ -1043,29 +1043,32 @@ logical-or-expr  = logical-and-expr *("||" logical-and-expr)
 logical-and-expr = basic-expr *("&&" basic-expr)      ; conjunction
                                                       ; binds more tightly than disjunction
 
-basic-expr   = comp-expr / existence-expr / paren-expr / (neg-op paren-expr)
-existence-expr = [neg-op] path                        ; path existence or non-existence
+basic-expr   = exist-expr / paren-expr / (neg-op paren-expr) / relation-expr
+exist-expr   = [neg-op] path                          ; path existence or non-existence
+path         = rel-path / json-path
+rel-path     = "@" *(dot-selector / index-selector)
 paren-expr   = "(" boolean-expr ")"                   ; parenthesized expression
 neg-op       = "!"                                    ; not operator
 
-comp-expr    = path (comp-op comparable /             ; comparison
-                     regex-op regex     /             ; RegEx test
-                     in-op container)                 ; containment test
-path         = rel-path / json-path
+relation-expr = comp-expr /                           ; comparison test
+                regex-expr /                          ; regular expression test
+                contain-expr                          ; containment test
+
+comp-expr    = comparable comp-op comparable
+comparable   = number / string-literal /              ; primitive ...
+               true / false / null /                  ; values only
+               path                                   ; path value
 comp-op      = "==" / "!=" /                          ; comparison ...
                "<"  / ">"  /                          ; operators
                "<=" / ">="
-regex-op     = "~="                                   ; RegEx match
+
+regex-expr   = regex-op regex
+regex-op     = "=~"                                   ; regular expression match
+regex        = <TO BE DEFINED>
+
+contain-expr = in-op container
 in-op        = " in "                                 ; in operator
-comparable   = number / string-literal /              ; primitive ...
-               true / false / null /                  ; values only
-               rel-path /                             ; relative path value
-               json-path                              ; any value
-
-rel-path     = "@" *(dot-selector / index-selector)
-
 container = <TO BE DEFINED>
-regex = <TO BE DEFINED>
 ~~~~
 
 Notes:
@@ -1081,9 +1084,21 @@ Notes:
 * The behaviour of operators is consistent with the 'C'-family of programming languages.
 <!-- need to clarify -->
 
+The following table lists filter expression operators in order of precedence from highest (binds most tightly) to lowest (binds least tightly).
+
+| Precedence | Operator type | Syntax |
+|:--:|:--:|:--:|
+|  5  | Grouping | `(...)` |
+|  4  | Logical NOT | `!` |
+|  3  | Relations | `==`&nbsp;`!=`<br>`<`&nbsp;`<=`&nbsp;`>`&nbsp;`>=`<br>`=~`<br>` in ` |
+|  2  | Logical AND | `&&` |
+|  1  | Logical OR | `||` |
+{: title="Filter expression operator precedence" }
+
 #### Semantics
 
 The `filter-selector` works with arrays and objects exclusively. Its result might be a list of *zero*, *one*, *multiple* or *all* of their element or member values then. Applied to other value types, it will select nothing.
+
 
 Negation operator `neg-op` allows to test *falsiness* of values.
 
