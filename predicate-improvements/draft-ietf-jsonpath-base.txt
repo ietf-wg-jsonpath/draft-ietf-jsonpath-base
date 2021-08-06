@@ -2,13 +2,13 @@
 
 
 
-JSONPath WG                                           G. Normington, Ed.
-Internet-Draft                                                          
-Intended status: Standards Track                           E. Surov, Ed.
-Expires: 7 January 2022                          TheSoul Publishing Ltd.
-                                                              S. Gössner
-                                                 Fachhochschule Dortmund
-                                                             6 July 2021
+JSONPath WG                                              S. Gössner, Ed.
+Internet-Draft                                   Fachhochschule Dortmund
+Intended status: Standards Track                      G. Normington, Ed.
+Expires: 7 February 2022                                                
+                                                         C. Bormann, Ed.
+                                                  Universität Bremen TZI
+                                                           6 August 2021
 
 
                   JSONPath: Query expressions for JSON
@@ -45,7 +45,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 January 2022.
+   This Internet-Draft will expire on 7 February 2022.
 
 Copyright Notice
 
@@ -447,10 +447,6 @@ Table of Contents
    JSONPath query, e.g., because of resource depletion, but this is not
    modeled in the present specification.)
 
-      Discussion (D1): are we ready for the error model defined here,
-      i.e. one that does not have runtime errors, but only compile time
-      errors?
-
 3.2.  Processing Model
 
    In this specification, the semantics of a JSONPath query are defined
@@ -480,13 +476,8 @@ Table of Contents
    A selector performs its function on each of the nodes in its input
    nodelist, during such a function execution, such a node is referred
    to as the "current node".  Each of these function executions produces
-   a nodelist, which are then combined by algorithm _combine1_ into the
-   result of the selector.
-
-      Discussion (D2): We haven't decided yet whether there is only one
-      _combine1_ or a choice, with for instance simple concatenation and
-      concatenation with duplicate removal, based on a definition of
-      duplicate, are candidates.
+   a nodelist, which are then concatenated into the result of the
+   selector.
 
    The processing within a selector may execute nested queries, which
    are in turn handled with the processing model defined here.
@@ -523,18 +514,11 @@ Table of Contents
    being selected.
 
    But a selector doesn't just act on a single node: a selector acts on
-   each of the nodes in its input nodelist and selects an output
-   nodelist for each of them, as follows, which are then combined using
-   the combine1 algorithm to form the result nodelist of the selector.
-
-      Discussion (D3): Do we allow selectors that have their own
-      combine1 variant, or can we always use the same?
+   each of the nodes in its input nodelist and concatenates the
+   resultant nodelists to form the result nodelist of the selector.
 
    For each node in the list, the selector selects zero or more nodes,
    each of which is a descendant of the node or the node itself.
-
-      Discussion (D4): Is that a common requirement?  Or can a selector
-      also go up, or to the query argument?
 
    For instance, with the argument "{"a":[{"b":0},{"b":1},{"c":2}]}",
    the query "$.a[*].b" selects the following list of nodes: "0", "1"
@@ -1019,31 +1003,39 @@ Semantics
 
    The current item is selected if and only if the result is "true".
 
-   boolean-expr = logical-expr
-   logical-expr = ([neg-op] primary-expr) / logical-or-expr
-   neg-op       = "!"                                  ; not operator
-   primary-expr = "(" logical-or-expr ")"
-   logical-or-expr = logical-and-expr *["||" logical-and-expr]
-   logical-and-expr = comp-expr *["&&" comp-expr]
+   boolean-expr     = logical-or-expr
+   logical-or-expr  = logical-and-expr *("||" logical-and-expr)
+                                                         ; disjunction
+                                                         ; binds less tightly than conjunction
+   logical-and-expr = basic-expr *("&&" basic-expr)      ; conjunction
+                                                         ; binds more tightly than disjunction
 
-   comp-expr    = (rel-path-val /
-                   json-path) [(comp-op comparable / ; comparison
-                               regex-op regex     /  ; RegEx test
-                               in-op container )]    ; containment test
-   comp-op      = "==" / "!=" /                        ; comparison ...
-                  "<"  / ">"  /                        ; operators
+   basic-expr   = exist-expr / paren-expr / (neg-op paren-expr) / relation-expr
+   exist-expr   = [neg-op] path                          ; path existence or non-existence
+   path         = rel-path / json-path
+   rel-path     = "@" *(dot-selector / index-selector)
+   paren-expr   = "(" boolean-expr ")"                   ; parenthesized expression
+   neg-op       = "!"                                    ; not operator
+
+   relation-expr = comp-expr /                           ; comparison test
+                   regex-expr /                          ; regular expression test
+                   contain-expr                          ; containment test
+
+   comp-expr    = comparable comp-op comparable
+   comparable   = number / string-literal /              ; primitive ...
+                  true / false / null /                  ; values only
+                  path                                   ; path value
+   comp-op      = "==" / "!=" /                          ; comparison ...
+                  "<"  / ">"  /                          ; operators
                   "<=" / ">="
-   regex-op     = "~="                                 ; RegEx match
-   in-op        = " in "                               ; in operator
-   comparable   = number / string-literal /            ; primitive ...
-                  true / false / null /                ; values only
-                  rel-path-val /                       ; descendant value
-                  json-path                            ; any value
 
-   rel-path-val = "@" *(dot-selector / index-selector)
+   regex-expr   = regex-op regex
+   regex-op     = "=~"                                   ; regular expression match
+   regex        = <TO BE DEFINED>
 
+   contain-expr = in-op container
+   in-op        = " in "                                 ; in operator
    container = <TO BE DEFINED>
-   regex = <TO BE DEFINED>
 
    Notes:
 
@@ -1069,11 +1061,38 @@ Semantics
 
    *  Containment tests work with arrays and objects.
 
-   *  Explicit boolean type conversion is done by the not operator "neg-
-      op".
-
    *  The behaviour of operators is consistent with the 'C'-family of
       programming languages.
+
+   The following table lists filter expression operators in order of
+   precedence from highest to lowest.
+
+                    +============+===========+========+
+                    | Precedence |  Operator | Syntax |
+                    |            |    type   |        |
+                    +============+===========+========+
+                    |     5      |  Grouping | (...)  |
+                    +------------+-----------+--------+
+                    |     4      |  Logical  |   !    |
+                    |            |    NOT    |        |
+                    +------------+-----------+--------+
+                    |     3      | Relations |  "=="  |
+                    |            |           |  "!="  |
+                    |            |           |  "<"   |
+                    |            |           |  ">"   |
+                    |            |           |  "<="  |
+                    |            |           |  ">="  |
+                    |            |           |  "=~"  |
+                    |            |           |  "in"  |
+                    +------------+-----------+--------+
+                    |     2      |  Logical  |   &&   |
+                    |            |    AND    |        |
+                    +------------+-----------+--------+
+                    |     1      |  Logical  |  \|\|  |
+                    |            |     OR    |        |
+                    +------------+-----------+--------+
+
+                                  Table 5
 
 3.5.9.2.  Semantics
 
@@ -1105,7 +1124,7 @@ Semantics
        |        |  "![0]"  |        |                             |
        +--------+----------+--------+-----------------------------+
 
-                  Table 5: Test falsiness of JSON values
+                  Table 6: Test falsiness of JSON values
 
    Applying negation operator twice "!!" gives us _truthiness_ of
    values.
@@ -1139,7 +1158,7 @@ Semantics
    |{"a":{"b":{5},c:0}}|   $[?@.b==5 && !@.c]  |[{"b":{5},c:0}]|Existence  |
    +-------------------+-----------------------+---------------+-----------+
 
-                                  Table 6
+                                  Table 7
 
 4.  Expression Language
 
@@ -1246,16 +1265,6 @@ Acknowledgements
 
 Contributors
 
-   Carsten Bormann
-   Universität Bremen TZI
-   Postfach 330440
-   D-28359 Bremen
-   Germany
-
-   Phone: +49-421-218-63921
-   Email: cabo@tzi.org
-
-
    Marko Mikulicic
    InfluxData, Inc.
    Pisa
@@ -1264,7 +1273,24 @@ Contributors
    Email: mmikulicic@gmail.com
 
 
+   Edward Surov
+   TheSoul Publishing Ltd.
+   Limassol
+   Cyprus
+
+   Email: esurov.tsp@gmail.com
+
+
 Authors' Addresses
+
+   Stefan Gössner (editor)
+   Fachhochschule Dortmund
+   Sonnenstraße 96
+   D-44139 Dortmund
+   Germany
+
+   Email: stefan.goessner@fh-dortmund.de
+
 
    Glyn Normington (editor)
    Winchester
@@ -1273,18 +1299,11 @@ Authors' Addresses
    Email: glyn.normington@gmail.com
 
 
-   Edward Surov (editor)
-   TheSoul Publishing Ltd.
-   Limassol
-   Cyprus
-
-   Email: esurov.tsp@gmail.com
-
-
-   Stefan Gössner
-   Fachhochschule Dortmund
-   Sonnenstraße 96
-   D-44139 Dortmund
+   Carsten Bormann (editor)
+   Universität Bremen TZI
+   Postfach 330440
+   D-28359 Bremen
    Germany
 
-   Email: stefan.goessner@fh-dortmund.de
+   Phone: +49-421-218-63921
+   Email: cabo@tzi.org
