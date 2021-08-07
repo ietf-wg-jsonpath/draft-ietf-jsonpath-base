@@ -1036,30 +1036,33 @@ The current item is selected if and only if the result is `true`.
 
 
 ~~~~ abnf
+boolean-expr     = logical-or-expr
+logical-or-expr  = logical-and-expr *("||" logical-and-expr)
+                                                      ; disjunction
+                                                      ; binds less tightly than conjunction
+logical-and-expr = basic-expr *("&&" basic-expr)      ; conjunction
+                                                      ; binds more tightly than disjunction
 
+basic-expr   = comp-expr / existence-expr / paren-expr / (neg-op paren-expr)
+existence-expr = [neg-op] path                        ; path existence or non-existence
+paren-expr   = "(" boolean-expr ")"                   ; parenthesized expression
+neg-op       = "!"                                    ; not operator
 
-boolean-expr = logical-expr
-logical-expr = ([neg-op] primary-expr) / logical-or-expr
-neg-op       = "!"                                  ; not operator
-primary-expr = "(" logical-or-expr ")"
-logical-or-expr = logical-and-expr *["||" logical-and-expr]
-logical-and-expr = comp-expr *["&&" comp-expr]
-
-comp-expr    = (rel-path-val /
-                json-path) [(comp-op comparable / ; comparison
-                            regex-op regex     /  ; RegEx test
-                            in-op container )]    ; containment test
-comp-op      = "==" / "!=" /                        ; comparison ...
-               "<"  / ">"  /                        ; operators
+comp-expr    = path (comp-op comparable /             ; comparison
+                     regex-op regex     /             ; RegEx test
+                     in-op container)                 ; containment test
+path         = rel-path / json-path
+comp-op      = "==" / "!=" /                          ; comparison ...
+               "<"  / ">"  /                          ; operators
                "<=" / ">="
-regex-op     = "~="                                 ; RegEx match
-in-op        = " in "                               ; in operator
-comparable   = number / string-literal /            ; primitive ...
-               true / false / null /                ; values only
-               rel-path-val /                       ; descendant value
-               json-path                            ; any value
+regex-op     = "~="                                   ; RegEx match
+in-op        = " in "                                 ; in operator
+comparable   = number / string-literal /              ; primitive ...
+               true / false / null /                  ; values only
+               rel-path /                             ; relative path value
+               json-path                              ; any value
 
-rel-path-val = "@" *(dot-selector / index-selector)
+rel-path     = "@" *(dot-selector / index-selector)
 
 container = <TO BE DEFINED>
 regex = <TO BE DEFINED>
@@ -1075,7 +1078,6 @@ Notes:
 * A member or element value by itself is *falsy* only, if it does not exist. Otherwise it is *truthy*, resulting in its value. To be more specific explicit comparisons are necessary. This existence test — as an exception of the general rule — also works with complex values.
 * Regular expression tests can be applied to `string` values only.
 * Containment tests work with arrays and objects.
-* Explicit boolean type conversion is done by the not operator `neg-op`.
 * The behaviour of operators is consistent with the 'C'-family of programming languages.
 <!-- need to clarify -->
 
