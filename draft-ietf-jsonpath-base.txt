@@ -5,10 +5,10 @@
 JSONPath WG                                              S. Gössner, Ed.
 Internet-Draft                                   Fachhochschule Dortmund
 Intended status: Standards Track                      G. Normington, Ed.
-Expires: 8 January 2022                                                 
+Expires: 8 February 2022                                                
                                                          C. Bormann, Ed.
                                                   Universität Bremen TZI
-                                                             7 July 2021
+                                                           7 August 2021
 
 
                   JSONPath: Query expressions for JSON
@@ -45,7 +45,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 January 2022.
+   This Internet-Draft will expire on 8 February 2022.
 
 Copyright Notice
 
@@ -446,10 +446,6 @@ Table of Contents
    (Obviously, an implementation can still fail when executing a
    JSONPath query, e.g., because of resource depletion, but this is not
    modeled in the present specification.)
-
-      Discussion (D1): are we ready for the error model defined here,
-      i.e. one that does not have runtime errors, but only compile time
-      errors?
 
 3.2.  Processing Model
 
@@ -1007,28 +1003,33 @@ Semantics
 
    The current item is selected if and only if the result is "true".
 
-   boolean-expr = logical-expr
-   logical-expr = ([neg-op] primary-expr) / logical-or-expr
-   neg-op       = "!"                                  ; not operator
-   primary-expr = "(" logical-or-expr ")"
-   logical-or-expr = logical-and-expr *["||" logical-and-expr]
-   logical-and-expr = comp-expr *["&&" comp-expr]
+   boolean-expr     = logical-or-expr
+   logical-or-expr  = logical-and-expr *("||" logical-and-expr)
+                                                         ; disjunction
+                                                         ; binds less tightly than conjunction
+   logical-and-expr = basic-expr *("&&" basic-expr)      ; conjunction
+                                                         ; binds more tightly than disjunction
 
-   comp-expr    = (rel-path-val /
-                   json-path) [(comp-op comparable / ; comparison
-                               regex-op regex     /  ; RegEx test
-                               in-op container )]    ; containment test
-   comp-op      = "==" / "!=" /                        ; comparison ...
-                  "<"  / ">"  /                        ; operators
+   basic-expr   = comp-expr / existence-expr / paren-expr / (neg-op paren-expr)
+   existence-expr = [neg-op] path                        ; path existence or non-existence
+   paren-expr   = "(" boolean-expr ")"                   ; parenthesized expression
+   neg-op       = "!"                                    ; not operator
+
+   comp-expr    = path (comp-op comparable /             ; comparison
+                        regex-op regex     /             ; RegEx test
+                        in-op container)                 ; containment test
+   path         = rel-path / json-path
+   comp-op      = "==" / "!=" /                          ; comparison ...
+                  "<"  / ">"  /                          ; operators
                   "<=" / ">="
-   regex-op     = "~="                                 ; RegEx match
-   in-op        = " in "                               ; in operator
-   comparable   = number / string-literal /            ; primitive ...
-                  true / false / null /                ; values only
-                  rel-path-val /                       ; descendant value
-                  json-path                            ; any value
+   regex-op     = "~="                                   ; RegEx match
+   in-op        = " in "                                 ; in operator
+   comparable   = number / string-literal /              ; primitive ...
+                  true / false / null /                  ; values only
+                  rel-path /                             ; relative path value
+                  json-path                              ; any value
 
-   rel-path-val = "@" *(dot-selector / index-selector)
+   rel-path     = "@" *(dot-selector / index-selector)
 
    container = <TO BE DEFINED>
    regex = <TO BE DEFINED>
@@ -1056,9 +1057,6 @@ Semantics
    *  Regular expression tests can be applied to "string" values only.
 
    *  Containment tests work with arrays and objects.
-
-   *  Explicit boolean type conversion is done by the not operator "neg-
-      op".
 
    *  The behaviour of operators is consistent with the 'C'-family of
       programming languages.
