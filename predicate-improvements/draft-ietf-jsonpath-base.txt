@@ -5,10 +5,10 @@
 JSONPath WG                                              S. Gössner, Ed.
 Internet-Draft                                   Fachhochschule Dortmund
 Intended status: Standards Track                      G. Normington, Ed.
-Expires: 7 February 2022                                                
+Expires: 8 February 2022                                                
                                                          C. Bormann, Ed.
                                                   Universität Bremen TZI
-                                                           6 August 2021
+                                                           7 August 2021
 
 
                   JSONPath: Query expressions for JSON
@@ -45,7 +45,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 February 2022.
+   This Internet-Draft will expire on 8 February 2022.
 
 Copyright Notice
 
@@ -1065,34 +1065,31 @@ Semantics
       programming languages.
 
    The following table lists filter expression operators in order of
-   precedence from highest to lowest.
+   precedence from highest (binds most tightly) to lowest (binds least
+   tightly).
 
-                    +============+===========+========+
-                    | Precedence |  Operator | Syntax |
-                    |            |    type   |        |
-                    +============+===========+========+
-                    |     5      |  Grouping | (...)  |
-                    +------------+-----------+--------+
-                    |     4      |  Logical  |   !    |
-                    |            |    NOT    |        |
-                    +------------+-----------+--------+
-                    |     3      | Relations |  "=="  |
-                    |            |           |  "!="  |
-                    |            |           |  "<"   |
-                    |            |           |  ">"   |
-                    |            |           |  "<="  |
-                    |            |           |  ">="  |
-                    |            |           |  "=~"  |
-                    |            |           |  "in"  |
-                    +------------+-----------+--------+
-                    |     2      |  Logical  |   &&   |
-                    |            |    AND    |        |
-                    +------------+-----------+--------+
-                    |     1      |  Logical  |  \|\|  |
-                    |            |     OR    |        |
-                    +------------+-----------+--------+
+              +============+===========+===================+
+              | Precedence |  Operator |       Syntax      |
+              |            |    type   |                   |
+              +============+===========+===================+
+              |     5      |  Grouping |       (...)       |
+              +------------+-----------+-------------------+
+              |     4      |  Logical  |         !         |
+              |            |    NOT    |                   |
+              +------------+-----------+-------------------+
+              |     3      | Relations |     "==" "!="     |
+              |            |           | "<" "<=" ">" ">=" |
+              |            |           |        "=~"       |
+              |            |           |        "in"       |
+              +------------+-----------+-------------------+
+              |     2      |  Logical  |         &&        |
+              |            |    AND    |                   |
+              +------------+-----------+-------------------+
+              |     1      |  Logical  |        \|\|       |
+              |            |     OR    |                   |
+              +------------+-----------+-------------------+
 
-                                  Table 5
+                                 Table 5
 
 3.5.9.2.  Semantics
 
