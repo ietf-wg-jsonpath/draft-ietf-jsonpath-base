@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-08-05T01:01:16.969286+00:00",
+  "timestamp": "2021-08-08T01:01:23.516664+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -4649,15 +4649,15 @@
       "id": "MDU6SXNzdWU5NTE2MTUyODQ=",
       "title": "Support arbitrarily structured filter predicates",
       "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/110",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "glyn",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "The filter syntax currently requires predicates to be expressed in (something close to) disjunctive normal form (OR of ANDs), but this is likely to be inconvenient when the intention of the filter is expressed in a different way (e.g. as an AND or ORs or as a nested predicate with ANDs and ORs at various levels).\r\n\r\nThe JSONPath comparison project doesn't yet test these more complex predicates, although some, possibly most, implementations allow them.\r\n\r\nThe standard could allow arbitrarily structured predicates via syntax along these lines:\r\n```\r\nfilter-selector ::= \"[?(\" boolean-expr \")]\"\r\n\r\nboolean-expr ::= logical-and-expr |\r\n                 logical-and-expr \"||\" boolean-expr\r\n\r\nlogical-and-expr ::= basic-filter |\r\n                     basic-filter \"&&\" logical-and-expr\r\n\r\nbasic-filter ::= \"!\" basic filter |\r\n                 \"(\" boolean-expr \")\" |\r\n                 comp-expr\r\n```\r\n\r\nFor example, this would allow filters such as:\r\n```\r\n?(@.b && (@.c || @.d))\r\n```\r\nand\r\n```\r\n?(@.b && (@.c || @.d && @.e))\r\n```\r\n(where the semantics could, in line with mathematical convention and many programming languages, define `&&` to bind more tightly than `||`).\r\n\r\nNote: the comparison project's [Proposal A](https://github.com/cburgmer/json-path-comparison/tree/master/proposals/Proposal_A) restricts the syntax so that brackets are _required_ instead of making `&&` bind more tightly than `||`. This is a clever approach but is probably not suitable for the standard because it is rather unconventional.",
       "createdAt": "2021-07-23T14:09:53Z",
-      "updatedAt": "2021-07-27T10:52:14Z",
-      "closedAt": null,
+      "updatedAt": "2021-08-07T00:54:37Z",
+      "closedAt": "2021-08-07T00:54:37Z",
       "comments": [
         {
           "author": "cabo",
@@ -17927,24 +17927,28 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NzAwMzQ0Mzk4",
       "title": "Support arbitrary predicate structure",
       "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/111",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "glyn",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "glyn"
+      ],
       "labels": [],
       "body": "Fixes https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/110",
       "createdAt": "2021-07-30T14:38:25Z",
-      "updatedAt": "2021-08-04T13:39:58Z",
+      "updatedAt": "2021-08-07T00:54:37Z",
       "baseRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
       "baseRefName": "main",
       "baseRefOid": "8c99e5028c27ae49690182902125c2ca9b613867",
       "headRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
       "headRefName": "pred",
       "headRefOid": "790faca5c4f0535fe1b007e7b738ef80f460df73",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2021-08-07T00:54:37Z",
+      "mergedAt": "2021-08-07T00:54:37Z",
+      "mergedBy": "glyn",
+      "mergeCommit": {
+        "oid": "218fbc5911b2443ecd8a4d13b8acaceeb1e72b01"
+      },
       "comments": [
         {
           "author": "glyn",
@@ -17987,6 +17991,20 @@
           "body": "Having an operator precedence table will help us understand what we are trying to do here.\r\nBut I believe in incremental improvement, so completing this PR and then re-approaching it from the angle of the precedence table works for me.\r\n",
           "createdAt": "2021-08-04T12:32:30Z",
           "updatedAt": "2021-08-04T12:32:30Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@gregsdennis Please approve if your concerns are now addressed.",
+          "createdAt": "2021-08-06T00:59:54Z",
+          "updatedAt": "2021-08-06T00:59:54Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I've started the next batch of predicate improvements in draft PR https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/115 which is based on this PR.",
+          "createdAt": "2021-08-06T10:47:13Z",
+          "updatedAt": "2021-08-06T10:47:13Z"
         }
       ],
       "reviews": [
@@ -18602,6 +18620,239 @@
           "createdAt": "2021-08-04T13:39:58Z",
           "updatedAt": "2021-08-04T13:39:58Z",
           "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzI0NzM4Nzgz",
+          "commit": {
+            "abbreviatedOid": "790faca"
+          },
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-08-06T22:10:37Z",
+          "updatedAt": "2021-08-06T22:10:37Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 115,
+      "id": "MDExOlB1bGxSZXF1ZXN0NzA1MzgzODM4",
+      "title": "Filter predicate improvements",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/115",
+      "state": "OPEN",
+      "author": "glyn",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "* Generalise comparisons\r\n* Make regex operator conform to Perl etc.\r\n* Add operator precedence table\r\n\r\nFixes https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/112\r\nFixes https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/113\r\nFixes https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/114",
+      "createdAt": "2021-08-06T10:44:03Z",
+      "updatedAt": "2021-08-07T01:33:51Z",
+      "baseRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
+      "baseRefName": "main",
+      "baseRefOid": "218fbc5911b2443ecd8a4d13b8acaceeb1e72b01",
+      "headRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
+      "headRefName": "predicate-improvements",
+      "headRefOid": "7b23a0a203d0473182a00b5715898b36e05c7b98",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzI0NzM5NTU1",
+          "commit": {
+            "abbreviatedOid": "025c6ee"
+          },
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-06T22:12:57Z",
+          "updatedAt": "2021-08-06T22:12:57Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "Are we only supporting a single selector here, or does the `*( ... )` mean multiple?",
+              "createdAt": "2021-08-06T22:12:57Z",
+              "updatedAt": "2021-08-06T22:12:57Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzI0NzQwNjE1",
+          "commit": {
+            "abbreviatedOid": "025c6ee"
+          },
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-06T22:16:02Z",
+          "updatedAt": "2021-08-06T22:16:02Z",
+          "comments": [
+            {
+              "originalPosition": 24,
+              "body": "I'm curious, are we planning on supporting literal complex values (i.e. object / arrays) at some point later?  Maybe this needs more discussion.",
+              "createdAt": "2021-08-06T22:16:02Z",
+              "updatedAt": "2021-08-06T22:16:02Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzI0NzQxMTg4",
+          "commit": {
+            "abbreviatedOid": "025c6ee"
+          },
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-06T22:17:37Z",
+          "updatedAt": "2021-08-06T22:17:37Z",
+          "comments": [
+            {
+              "originalPosition": 57,
+              "body": "Is it necessary to have each operator on its own line?  Seems like we could do with two or three per line.  Just a readability question.",
+              "createdAt": "2021-08-06T22:17:37Z",
+              "updatedAt": "2021-08-06T22:17:37Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzI0NzQxMzIx",
+          "commit": {
+            "abbreviatedOid": "025c6ee"
+          },
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "This looks good.  Just some curiosity questions from me.",
+          "createdAt": "2021-08-06T22:18:01Z",
+          "updatedAt": "2021-08-06T22:18:01Z",
+          "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzI0Nzc1ODA4",
+          "commit": {
+            "abbreviatedOid": "025c6ee"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-07T00:57:50Z",
+          "updatedAt": "2021-08-07T00:57:50Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "`*()` means zero or more repetitions of the contents of the brackets. See [section 3.6](https://www.rfc-editor.org/rfc/rfc5234.html#section-3.6) of RFC 5234.",
+              "createdAt": "2021-08-07T00:57:50Z",
+              "updatedAt": "2021-08-07T00:57:50Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzI0Nzc1OTcx",
+          "commit": {
+            "abbreviatedOid": "025c6ee"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-07T00:59:24Z",
+          "updatedAt": "2021-08-07T00:59:24Z",
+          "comments": [
+            {
+              "originalPosition": 24,
+              "body": "I agree it needs more discussion, but let's defer such discussion for now to keep this PR nice and small.",
+              "createdAt": "2021-08-07T00:59:24Z",
+              "updatedAt": "2021-08-07T00:59:24Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzI0Nzc2Njcy",
+          "commit": {
+            "abbreviatedOid": "025c6ee"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-07T01:06:22Z",
+          "updatedAt": "2021-08-07T01:06:23Z",
+          "comments": [
+            {
+              "originalPosition": 57,
+              "body": "Not really. I've pushed a change which groups similar operators together on single lines.",
+              "createdAt": "2021-08-07T01:06:22Z",
+              "updatedAt": "2021-08-07T01:06:23Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzI0Nzc4MDY4",
+          "commit": {
+            "abbreviatedOid": "ae712f4"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-07T01:19:52Z",
+          "updatedAt": "2021-08-07T01:19:52Z",
+          "comments": [
+            {
+              "originalPosition": 57,
+              "body": "Perhaps I realise why this had one operator per line. Putting multiple on one line, separated by space or `&nbsp;` results in operators being wrapped in double quotes in the rendered text version (although not the HTML), thus:  \r\n```\r\n            +============+===========+===================+\r\n              | Precedence |  Operator |       Syntax      |\r\n              |            |    type   |                   |\r\n              +============+===========+===================+\r\n              |     5      |  Grouping |       (...)       |\r\n              +------------+-----------+-------------------+\r\n              |     4      |  Logical  |         !         |\r\n              |            |    NOT    |                   |\r\n              +------------+-----------+-------------------+\r\n              |     3      | Relations |     \"==\" \"!=\"     |\r\n              |            |           | \"<\" \"<=\" \">\" \">=\" |\r\n              |            |           |        \"=~\"       |\r\n              |            |           |        \"in\"       |\r\n              +------------+-----------+-------------------+\r\n              |     2      |  Logical  |         &&        |\r\n              |            |    AND    |                   |\r\n              +------------+-----------+-------------------+\r\n              |     1      |  Logical  |         ||        |\r\n              |            |     OR    |                   |\r\n              +------------+-----------+-------------------+\r\n```\r\nThis is pretty ugly, so I'm going to revert to one operator per line until someone can suggest better markup.",
+              "createdAt": "2021-08-07T01:19:52Z",
+              "updatedAt": "2021-08-07T01:19:52Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzI0Nzc4NTcx",
+          "commit": {
+            "abbreviatedOid": "2e95829"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-07T01:24:16Z",
+          "updatedAt": "2021-08-07T01:24:16Z",
+          "comments": [
+            {
+              "originalPosition": 57,
+              "body": "Huh! The double quotes are there in the text version even when there is only one operator per line. Given I can't remove the ugliness, switching back to the multiple operators per line version.",
+              "createdAt": "2021-08-07T01:24:16Z",
+              "updatedAt": "2021-08-07T01:24:16Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzI0Nzc5NDAw",
+          "commit": {
+            "abbreviatedOid": "7b23a0a"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-07T01:33:51Z",
+          "updatedAt": "2021-08-07T01:33:51Z",
+          "comments": [
+            {
+              "originalPosition": 57,
+              "body": "@cabo Do you know a way of avoiding these extraneous double quotes?",
+              "createdAt": "2021-08-07T01:33:51Z",
+              "updatedAt": "2021-08-07T01:33:51Z"
+            }
+          ]
         }
       ]
     }
