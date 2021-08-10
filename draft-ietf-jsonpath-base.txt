@@ -1061,9 +1061,6 @@ Semantics
 
    *  Containment tests work with arrays and objects.
 
-   *  The behaviour of operators is consistent with the 'C'-family of
-      programming languages.
-
    The following table lists filter expression operators in order of
    precedence from highest (binds most tightly) to lowest (binds least
    tightly).
