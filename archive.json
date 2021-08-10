@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-08-08T01:01:23.516664+00:00",
+  "timestamp": "2021-08-10T01:03:19.954437+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -18648,7 +18648,7 @@
       "labels": [],
       "body": "* Generalise comparisons\r\n* Make regex operator conform to Perl etc.\r\n* Add operator precedence table\r\n\r\nFixes https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/112\r\nFixes https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/113\r\nFixes https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/114",
       "createdAt": "2021-08-06T10:44:03Z",
-      "updatedAt": "2021-08-07T01:33:51Z",
+      "updatedAt": "2021-08-09T10:57:14Z",
       "baseRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
       "baseRefName": "main",
       "baseRefOid": "218fbc5911b2443ecd8a4d13b8acaceeb1e72b01",
@@ -18851,6 +18851,26 @@
               "body": "@cabo Do you know a way of avoiding these extraneous double quotes?",
               "createdAt": "2021-08-07T01:33:51Z",
               "updatedAt": "2021-08-07T01:33:51Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzI1MjUwNTcy",
+          "commit": {
+            "abbreviatedOid": "7b23a0a"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-09T10:57:13Z",
+          "updatedAt": "2021-08-09T10:57:14Z",
+          "comments": [
+            {
+              "originalPosition": 57,
+              "body": "The extra quotes are added by xml2rfc, but I don't know why or how to avoid this. I [posted](https://mailarchive.ietf.org/arch/msg/xml2rfc/30tTnMMcJHCIH8t8-s_NVLZYrFg/) to the xml2rfc mailing list about this.",
+              "createdAt": "2021-08-09T10:57:14Z",
+              "updatedAt": "2021-08-09T10:57:14Z"
             }
           ]
         }
