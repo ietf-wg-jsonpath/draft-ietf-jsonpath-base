@@ -1081,8 +1081,6 @@ Notes:
 * A member or element value by itself is *falsy* only, if it does not exist. Otherwise it is *truthy*, resulting in its value. To be more specific explicit comparisons are necessary. This existence test — as an exception of the general rule — also works with complex values.
 * Regular expression tests can be applied to `string` values only.
 * Containment tests work with arrays and objects.
-* The behaviour of operators is consistent with the 'C'-family of programming languages.
-<!-- need to clarify -->
 
 The following table lists filter expression operators in order of precedence from highest (binds most tightly) to lowest (binds least tightly).
 
