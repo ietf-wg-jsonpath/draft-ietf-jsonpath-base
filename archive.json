@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-08-10T01:03:19.954437+00:00",
+  "timestamp": "2021-08-12T00:59:45.125482+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -4715,15 +4715,15 @@
       "id": "MDU6SXNzdWU5NjAzNzA4MDg=",
       "title": "Generalise filter comparisons",
       "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/112",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "glyn",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Currently, filter comparison require a path on the left hand side and a constant expression on the right hand side.  This seems overly restrictive. We should generalise it to allow the opposite order as well as path to path comparisons and, for completeness, constant expression to constant expression comparisons.\r\n\r\nFor example, the following comparisons should be valid:\r\n```\r\n@.foo == 1\r\n1 == @.foo\r\n@.foo == @.bar\r\n1 == 1\r\n```",
       "createdAt": "2021-08-04T12:29:25Z",
-      "updatedAt": "2021-08-04T13:38:14Z",
-      "closedAt": null,
+      "updatedAt": "2021-08-10T09:13:15Z",
+      "closedAt": "2021-08-10T09:13:15Z",
       "comments": [
         {
           "author": "cabo",
@@ -4774,15 +4774,15 @@
       "id": "MDU6SXNzdWU5NjAzOTk3NzQ=",
       "title": "Operator precedence table",
       "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/113",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "glyn",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Introducing an operator precedence table will help us comunicate what we are trying to achieve precedence-wise in the ABNF syntax.\r\n\r\n_Originally posted by @cabo in https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/111#issuecomment-892618964_",
       "createdAt": "2021-08-04T12:52:12Z",
-      "updatedAt": "2021-08-04T15:46:54Z",
-      "closedAt": null,
+      "updatedAt": "2021-08-10T09:13:15Z",
+      "closedAt": "2021-08-10T09:13:15Z",
       "comments": [
         {
           "author": "goessner",
@@ -4812,15 +4812,15 @@
       "id": "MDU6SXNzdWU5NjA0MjQ1MDM=",
       "title": "regex comparison operator should be =~",
       "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/114",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "glyn",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Perl introduced `=~` as `string =~ regexp` (where regexp actually could be a substitute operator etc.).\r\nRuby generalized this to `regexp =~ string` and `string =~ regexp`.\r\n(Java, JavaScript, Python, PowerShell don't have an operator at all; this is all handled using method calls.)\r\n\r\nSo if we want to have syntax for regexp matching, we probably want to go with Perl's.\r\n\r\n_Originally posted by @cabo in https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/112#issuecomment-892642185_",
       "createdAt": "2021-08-04T13:09:14Z",
-      "updatedAt": "2021-08-04T13:09:14Z",
-      "closedAt": null,
+      "updatedAt": "2021-08-10T09:13:15Z",
+      "closedAt": "2021-08-10T09:13:15Z",
       "comments": []
     }
   ],
@@ -18641,25 +18641,42 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NzA1MzgzODM4",
       "title": "Filter predicate improvements",
       "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/115",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "glyn",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "* Generalise comparisons\r\n* Make regex operator conform to Perl etc.\r\n* Add operator precedence table\r\n\r\nFixes https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/112\r\nFixes https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/113\r\nFixes https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/114",
       "createdAt": "2021-08-06T10:44:03Z",
-      "updatedAt": "2021-08-09T10:57:14Z",
+      "updatedAt": "2021-08-10T11:00:20Z",
       "baseRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
       "baseRefName": "main",
       "baseRefOid": "218fbc5911b2443ecd8a4d13b8acaceeb1e72b01",
       "headRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
       "headRefName": "predicate-improvements",
-      "headRefOid": "7b23a0a203d0473182a00b5715898b36e05c7b98",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
+      "headRefOid": "48af814da70f7d251fdfb884856e843771fd3e71",
+      "closedAt": "2021-08-10T09:13:15Z",
+      "mergedAt": "2021-08-10T09:13:15Z",
+      "mergedBy": "glyn",
+      "mergeCommit": {
+        "oid": "e143d9824131aa6bcd0201774ae35a872c240819"
+      },
+      "comments": [
+        {
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "\n>   * The behaviour of operators is consistent with the 'C'-family of programming languages.\n>   <!-- need to clarify -->\n\nI think having the precedence table now, above remark is obsolete.\n\n\n> +The following table lists filter expression operators in order of precedence from highest to lowest.\n> +\n> +| Precedence | Operator type | Syntax |\n> +|:--:|:--:|:--:|\n> +|  5  | Grouping | `(...)` |\n> +|  4  | Logical NOT | `!` |\n> +|  3  | Relations | `==`<br>`!=`<br>`<`<br>`>`<br>`<=`<br>`>=`<br>`=~`<br>` in ` |\n>\n\n",
+          "createdAt": "2021-08-10T09:14:58Z",
+          "updatedAt": "2021-08-10T09:14:58Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks @goessner. I raised https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/116 to remove that remark.",
+          "createdAt": "2021-08-10T11:00:19Z",
+          "updatedAt": "2021-08-10T11:00:19Z"
+        }
+      ],
       "reviews": [
         {
           "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzI0NzM5NTU1",
@@ -18873,6 +18890,68 @@
               "updatedAt": "2021-08-09T10:57:14Z"
             }
           ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzI2MTk3MjMz",
+          "commit": {
+            "abbreviatedOid": "7b23a0a"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-10T09:10:01Z",
+          "updatedAt": "2021-08-10T09:10:01Z",
+          "comments": [
+            {
+              "originalPosition": 57,
+              "body": "So it seems the extra quotes are caused by a [bug](https://trac.ietf.org/trac/xml2rfc/ticket/600) which will be fixed in the upcoming release of xml2rfc. I propose to leave them be for now and pick up the new release of xml2rfc in due course.",
+              "createdAt": "2021-08-10T09:10:01Z",
+              "updatedAt": "2021-08-10T09:10:01Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 116,
+      "id": "MDExOlB1bGxSZXF1ZXN0NzA3MjQ3NTE2",
+      "title": "Delete old comment",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/116",
+      "state": "MERGED",
+      "author": "glyn",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2021-08-10T10:59:42Z",
+      "updatedAt": "2021-08-10T11:18:35Z",
+      "baseRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
+      "baseRefName": "main",
+      "baseRefOid": "e143d9824131aa6bcd0201774ae35a872c240819",
+      "headRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
+      "headRefName": "delete-old-comment",
+      "headRefOid": "709fb1d14d7f6209dd70a65d78540eb06f993339",
+      "closedAt": "2021-08-10T11:18:32Z",
+      "mergedAt": "2021-08-10T11:18:32Z",
+      "mergedBy": "glyn",
+      "mergeCommit": {
+        "oid": "79d7c588f6eb273654c336a3b75179be5e511c48"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzI2MzA3Mzg1",
+          "commit": {
+            "abbreviatedOid": "709fb1d"
+          },
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-08-10T11:16:58Z",
+          "updatedAt": "2021-08-10T11:16:58Z",
+          "comments": []
         }
       ]
     }
