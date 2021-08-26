@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-08-12T00:59:45.125482+00:00",
+  "timestamp": "2021-08-26T00:57:11.113403+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -1904,7 +1904,7 @@
       "labels": [],
       "body": "**Proposal**: JSONPath should have support to relative paths (to a current context), so it can be used as a building block for more advanced usages. \r\n\r\nXPath makes a clear distinction between relative and absolute paths, e.g.:\r\n\r\ngiven the following XML input:\r\n```xml\r\n<root>\r\n    <e>foo</e>\r\n    <a>\r\n        <b>\r\n            <c><d>1</d><e>bar1</e></c>\r\n            <c><d>2</d><e>bar2</e></c>\r\n            <c><d>3</d><e>bar3</e></c>\r\n        </b>\r\n    </a>\r\n</root>\r\n```\r\n\r\nand the following template, which uses the relative XPath `d` and the absolute XPath `/root/e`:\r\n\r\n```xml\r\n<?xml version=\"1.0\"?>\r\n<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"1.0\">\r\n    <xsl:template match=\"/\">\r\n        <x>\r\n            <xsl:for-each select=\"root/a/b/c\">\r\n                <item>\r\n                    <y><xsl:value-of select=\"d\"/></y>\r\n                    <z><xsl:value-of select=\"/root/e\"/></z>\r\n                </item>\r\n            </xsl:for-each>\r\n        </x>\r\n    </xsl:template>\r\n</xsl:stylesheet>\r\n```\r\n\r\nthe following XML can be produced:\r\n```xml\r\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<x>\r\n    <item>\r\n        <y>1</y>\r\n        <z>foo</z>\r\n    </item>\r\n    <item>\r\n        <y>2</y>\r\n        <z>foo</z>\r\n    </item>\r\n    <item>\r\n        <y>3</y>\r\n        <z>foo</z>\r\n    </item>\r\n</x>\r\n```\r\n\r\nI think that in a similar fashion JSONPath should allow relative paths as a building feature for more advanced usages.\r\n\r\n*Remark: I acknowledge that templating/transforms are out of scope here, however I believe that we must consider enabling more advanced usages.* \r\n\r\n**Suggested implementation**: JSONPath spec should mention that `$` is always the document root, while any JSONPath which doesn't start with '$' is relative to the current context.\r\nThis wouldn't change the behavior for several existing implementations since they can assume that current context == document root.\r\n**Additional note**: There is also a number of implementations for which a JSONPath without starting `$` always evaluates to `[]`, given the previous definition we can state that their current context is always set to `null`, therefore this change would allow both as valid JSONPath spec implementations.",
       "createdAt": "2021-03-09T14:48:45Z",
-      "updatedAt": "2021-05-14T22:57:10Z",
+      "updatedAt": "2021-08-25T22:48:04Z",
       "closedAt": null,
       "comments": [
         {
@@ -2186,6 +2186,13 @@
           "body": "@bettio the consensus that was made during the meeting on Tuesday ([minutes here](https://datatracker.ietf.org/doc/minutes-interim-2021-jsonpath-01-202105110900/)) was that at this stage we won't include relative path support as it's been described in this PR. Several points already mentioned in this issue were re-iterated in the meeting such as charter scope, and percentage of existing deployments.\r\n\r\nIf you continue to feel strongly for it the two options are either providing a further case for its inclusion into the base specification, or consider this work as an extension - a key action that was set at the meeting was for JSONPath to have an extension model in place, and this seems like an obvious candidate.",
           "createdAt": "2021-05-14T22:57:10Z",
           "updatedAt": "2021-05-14T22:57:10Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "https://stackoverflow.com/q/68926463/878701\n\nThis is a question that would benefit from another concept of relative paths, more akin to the [Relative JSON Pointer](https://tools.ietf.org/id/draft-handrews-relative-json-pointer-00.html).  This pointer allows travel _up_ the data structure so that parent, sibling, and cousin data can be selected.",
+          "createdAt": "2021-08-25T22:48:03Z",
+          "updatedAt": "2021-08-25T22:48:03Z"
         }
       ]
     },
@@ -2520,7 +2527,7 @@
       "labels": [],
       "body": "(This was original raised in #54 and now being split out)\r\n\r\n\r\n> Related to that, it would be helpful to determine if JSONPath filters\r\napply to both JSON objects and arrays, or only to JSON arrays.\r\n*(Daniel P)*\r\n\r\n> I would support restricting filters to arrays, if others agree.\r\n*(Glyn Normington)*\r\n\r\nI tend to let implementations and their \"normative force of the factual\" decide here or in doubt agree to Glyn's restriction to arrays.\r\n\r\nI am very unhappy with confusing `$..book[(@.length-1)]`, where `'@'` addresses the array itself and implies that array has a `length` property. In filter expression examples `'@'` more consistently addresses the current array element.\r\n\r\nThe invocation of 'the underlying scripting engine' wasn't meant a serious normative aspect, but rather a quick and dirty solution for JavaScript and PHP implementations at that time.\r\n\r\n\r\n### Corner Case\r\n\r\n> Consider this perfectly legal JSON object\r\n>\r\n> ```{ \"ab\": 0,  \"'a.b\": 1,  \"a-b\": 2, \"a\": { \"b\": 3 } }```\r\n>\r\n>So `$.ab` is 0, `$.a.b` is 3, `$['a.b']` is 1, `$['a-b']` is 2. You'd like to say `$.a-b` but lots of libraries will refuse it because `\"a-b\"` is not a legal JavaScript \"name\" construct, that's why you have to say `$['a-b']`.\r\n>\r\n> But suppose your library would accept `$.a-b`.  Then `$.a-b` and `$['a-b']` would be synonyms, but `$.a.b` and `$['a.b']` wouldn't.\r\n*(Tim Bray)*\r\n\r\nHmm ... this seems to be a hint to better exclude `'-'` from dot-child-selector syntax. I think I have read more discussion about that, currently don't know where.\r\n",
       "createdAt": "2021-03-10T15:07:12Z",
-      "updatedAt": "2021-07-18T21:32:51Z",
+      "updatedAt": "2021-08-25T22:50:19Z",
       "closedAt": null,
       "comments": [
         {
@@ -2655,6 +2662,13 @@
           "body": "We received an [SO question](https://stackoverflow.com/q/68432349/878701) that works be helped by the `in` operator, but the other direction.\n\nThe asker wants a path that can identity paths to arrays that contain two values.  Such a query could be\n\n```\n$[?('PERSON A' in @ && 'PERSON B' in @)]\n```\n\nreturning paths instead of values (so they can get the keys).\n\nThis iterates over the values in the top-level object (which are themselves arrays) and uses the `in` operator to determine if specific values are in the arrays.",
           "createdAt": "2021-07-18T21:26:50Z",
           "updatedAt": "2021-07-18T21:32:51Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Here's another SO question that would benefit from nested expressions.\n\nhttps://stackoverflow.com/q/68926463/878701",
+          "createdAt": "2021-08-25T22:50:19Z",
+          "updatedAt": "2021-08-25T22:50:19Z"
         }
       ]
     },
