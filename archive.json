@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-08-26T00:57:11.113403+00:00",
+  "timestamp": "2021-08-31T01:01:18.976324+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -4836,6 +4836,30 @@
       "updatedAt": "2021-08-10T09:13:15Z",
       "closedAt": "2021-08-10T09:13:15Z",
       "comments": []
+    },
+    {
+      "number": 117,
+      "id": "MDU6SXNzdWU5ODI4OTk1NzY=",
+      "title": "Normalization",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/117",
+      "state": "OPEN",
+      "author": "cburgmer",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "When looking up object member names (dot selector or index selector) normalization of strings becomes an issue. See https://en.wikipedia.org/wiki/Unicode_equivalence#Normalization for an introduction on normalization in Unicode. \r\n\r\nAs indicated with one test in the comparison project (https://cburgmer.github.io/json-path-comparison/#bracket_notation_with_NFC_path_on_NFD_key) it seems though that there is consensus not to respect equivalent code points. The Raku implementation is the only one that matches the equivalent key, which seems to stem from the Raku runtime already normalizing strings upfront (if my manual tests are to be believed).\r\n\r\nIs this something we want to prescribe in a standard, or would we end up with advice possibly contradicting the implementation of JSON parsers? (A quick search turned up http://seriot.ch/parsing_json.php which complains about different implementation in parsers with respect to string normalization.)",
+      "createdAt": "2021-08-30T15:08:46Z",
+      "updatedAt": "2021-08-30T22:45:17Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I believe there's already a convention that bracketed syntax (`[1]` and `['foo']`) is the normalized syntax.\n\nSecondarily, where should these normalized paths be used/enforced?  Surely input should handle any form.  However output (i.e. paths to matches) should be normalized.",
+          "createdAt": "2021-08-30T22:45:16Z",
+          "updatedAt": "2021-08-30T22:45:16Z"
+        }
+      ]
     }
   ],
   "pulls": [
