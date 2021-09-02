@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-08-31T01:01:18.976324+00:00",
+  "timestamp": "2021-09-02T01:01:10.470151+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -4849,7 +4849,7 @@
       "labels": [],
       "body": "When looking up object member names (dot selector or index selector) normalization of strings becomes an issue. See https://en.wikipedia.org/wiki/Unicode_equivalence#Normalization for an introduction on normalization in Unicode. \r\n\r\nAs indicated with one test in the comparison project (https://cburgmer.github.io/json-path-comparison/#bracket_notation_with_NFC_path_on_NFD_key) it seems though that there is consensus not to respect equivalent code points. The Raku implementation is the only one that matches the equivalent key, which seems to stem from the Raku runtime already normalizing strings upfront (if my manual tests are to be believed).\r\n\r\nIs this something we want to prescribe in a standard, or would we end up with advice possibly contradicting the implementation of JSON parsers? (A quick search turned up http://seriot.ch/parsing_json.php which complains about different implementation in parsers with respect to string normalization.)",
       "createdAt": "2021-08-30T15:08:46Z",
-      "updatedAt": "2021-08-30T22:45:17Z",
+      "updatedAt": "2021-09-01T08:38:32Z",
       "closedAt": null,
       "comments": [
         {
@@ -4858,6 +4858,62 @@
           "body": "I believe there's already a convention that bracketed syntax (`[1]` and `['foo']`) is the normalized syntax.\n\nSecondarily, where should these normalized paths be used/enforced?  Surely input should handle any form.  However output (i.e. paths to matches) should be normalized.",
           "createdAt": "2021-08-30T22:45:16Z",
           "updatedAt": "2021-08-30T22:45:16Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": "@cburgmer, it's an interesting issue. \r\n\r\nI was interested in how XPath 3.1 handles normalization, discussed [here](https://www.w3.org/TR/xpath-functions-31/#character-terminology), and it appears to have very limited support, remarking that \"Unless explicitly stated, the `xs:string` values returned by the functions in this document are not normalized in the sense of [Character Model for the World Wide Web 1.0: Fundamentals](https://www.w3.org/TR/charmod/).\r\n\r\nXPath 3.1 does have an [fn:normalize-unicode](https://www.w3.org/TR/xpath-functions-31/#func-normalize-unicode) function, which applies unicode normalization to a string. It has a two argument overload that allows the caller to set the Normalization Form, with five different kinds of normalization. I suppose we could use such a function to compare string values in filter expressions.\r\n\r\nAs for looking up property values in a JSON object, I think many JSONPath implementations use functions provided by another library, such as `JsonElement.TryGetProperty` in `.Net`. And it seems from your test that they don't generally support normalization.\r\n\r\n",
+          "createdAt": "2021-08-31T01:24:31Z",
+          "updatedAt": "2021-08-31T01:24:31Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Wait, are we discussing _Unicode_ normalization or _Path_ normalization?  I think my comment may have been off-topic.",
+          "createdAt": "2021-08-31T04:26:26Z",
+          "updatedAt": "2021-08-31T04:26:26Z"
+        },
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "When discussing normalisation of text in this context, it is useful to have read https://www.w3.org/TR/charmod-norm/\r\n\r\n(I'm assuming that we are not using the once popular model where processing entails text-normalising everything in sight first and then working with that, but that text normalisation occurs only as part of comparison.)\r\n\r\nIt seems that text comparison is relevant to JSONPath in two places:\r\n\r\n- indexing of JSON objects\r\n- expression language equality/equivalence\r\n\r\nDepending on your view what JSON objects are good for, indexing may have a normalisation requirement or you are only ever indexing with known vocabulary (which is then easy to pre-normalize).\r\n\r\nExpression language equivalence cannot ignore the problem as easily, or you won't find J\u00f6rg if you have a J\u00f6rg (sorry, this distinction doesn't seem to survive here).",
+          "createdAt": "2021-08-31T06:35:23Z",
+          "updatedAt": "2021-08-31T06:35:23Z"
+        },
+        {
+          "author": "cburgmer",
+          "authorAssociation": "NONE",
+          "body": "I've added another test for filter expressions with string equality. It shows two implementations employ some form of normalization when checking for equality: https://cburgmer.github.io/json-path-comparison/results/filter_expression_with_equals_string_in_NFC.html (see `Mot\\u00f6rhead` and `Moto\\u0308rhead`), while (again) consensus seems to be to not normalize.",
+          "createdAt": "2021-08-31T14:54:04Z",
+          "updatedAt": "2021-08-31T15:00:35Z"
+        },
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "I'm relieved that the consensus appears to be to use byte string comparison.\r\n(I'm too dense to find out which ones are the implementations that do employ some normalization.)\r\n\r\nThat does not mean, though, that we couldn't **add** a separate operator for normalizing comparison.\r\n",
+          "createdAt": "2021-08-31T15:44:39Z",
+          "updatedAt": "2021-08-31T15:44:39Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": "> I've added another test for filter expressions with string equality ... consensus seems to be to not normalize.\r\n\r\nAs a practical matter, I think that the issue would most likely be felt in this context, rather than with key lookup. Keys are usually chosen judiciously so as not to cause problems.\r\n\r\nFor JSONPath implementations in interpreted languages such as JavaScript, Python or PHP, and whose filter expressions are these languages, they already have functions that return the Unicode Normalization Form of strings, see e.g. [JavaScript String.prototype.normalize](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize), [Python unicodedata.normalize](https://docs.python.org/3.6/library/unicodedata.html#unicodedata.normalize), and [PHP normalizer.normalize](https://www.php.net/manual/en/normalizer.normalize.php).\r\n\r\nPerhaps other implementations that implement their own expression evaluators could support a function like XPath's [fn:normalize-unicode](https://www.w3.org/TR/xpath-functions-31/#func-normalize-unicode).\r\n\r\nFor another comparison, I looked at [JMESPath](https://jmespath.org/specification.html), and it specifically states that \"All string related functions are defined on the basis of Unicode code points; they do not take normalization into account.\" There is a community developed JMESPath extension library that  supports other functions, but I don't think any of these provide normalization functionality.",
+          "createdAt": "2021-08-31T16:55:41Z",
+          "updatedAt": "2021-08-31T20:10:05Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": "For one more comparison, I looked at [JSONiq](https://www.jsoniq.org/docs/JSONiq/webhelp/index.html#:~:text=As%20a%20matter%20of%20fact,information%20cleaning%2C%20and%20so%20on), an ISO/IEC approved, OASIS standard. JSONiq supports the XPath and XQuery function [fn:normalize-unicode](https://www.w3.org/TR/xpath-functions-30/#func-normalize-unicode).",
+          "createdAt": "2021-08-31T17:07:56Z",
+          "updatedAt": "2021-08-31T17:07:56Z"
+        },
+        {
+          "author": "remorhaz",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I'd like to cite JSON RFC-8259, section [8.3](https://datatracker.ietf.org/doc/html/rfc8259#section-8.3):\r\n\r\n> 8.3.  String Comparison\r\n>\r\n> Software implementations are typically required to test names of object members for equality.  Implementations that transform the textual representation into sequences of Unicode code units and then perform the comparison numerically, code unit by code unit, are interoperable in the sense that implementations will agree in all cases on equality or inequality of two strings.  For example, implementations that compare strings with escaped characters unconverted may incorrectly find that \"a\\\\b\" and \"a\\u005Cb\" are not equal.\r\n\r\nSo, JSON considers strings equal if they consist of same sequences of Unicode code units. In fact that means that valid JSON object can have two property keys that will become equal if normalized. If we enforce normalization in JSONPath, we cannot address each of those properties separately.",
+          "createdAt": "2021-09-01T08:38:32Z",
+          "updatedAt": "2021-09-01T08:38:32Z"
         }
       ]
     }
