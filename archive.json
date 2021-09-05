@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-09-02T01:01:10.470151+00:00",
+  "timestamp": "2021-09-05T01:03:24.582149+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -1904,7 +1904,7 @@
       "labels": [],
       "body": "**Proposal**: JSONPath should have support to relative paths (to a current context), so it can be used as a building block for more advanced usages. \r\n\r\nXPath makes a clear distinction between relative and absolute paths, e.g.:\r\n\r\ngiven the following XML input:\r\n```xml\r\n<root>\r\n    <e>foo</e>\r\n    <a>\r\n        <b>\r\n            <c><d>1</d><e>bar1</e></c>\r\n            <c><d>2</d><e>bar2</e></c>\r\n            <c><d>3</d><e>bar3</e></c>\r\n        </b>\r\n    </a>\r\n</root>\r\n```\r\n\r\nand the following template, which uses the relative XPath `d` and the absolute XPath `/root/e`:\r\n\r\n```xml\r\n<?xml version=\"1.0\"?>\r\n<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"1.0\">\r\n    <xsl:template match=\"/\">\r\n        <x>\r\n            <xsl:for-each select=\"root/a/b/c\">\r\n                <item>\r\n                    <y><xsl:value-of select=\"d\"/></y>\r\n                    <z><xsl:value-of select=\"/root/e\"/></z>\r\n                </item>\r\n            </xsl:for-each>\r\n        </x>\r\n    </xsl:template>\r\n</xsl:stylesheet>\r\n```\r\n\r\nthe following XML can be produced:\r\n```xml\r\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<x>\r\n    <item>\r\n        <y>1</y>\r\n        <z>foo</z>\r\n    </item>\r\n    <item>\r\n        <y>2</y>\r\n        <z>foo</z>\r\n    </item>\r\n    <item>\r\n        <y>3</y>\r\n        <z>foo</z>\r\n    </item>\r\n</x>\r\n```\r\n\r\nI think that in a similar fashion JSONPath should allow relative paths as a building feature for more advanced usages.\r\n\r\n*Remark: I acknowledge that templating/transforms are out of scope here, however I believe that we must consider enabling more advanced usages.* \r\n\r\n**Suggested implementation**: JSONPath spec should mention that `$` is always the document root, while any JSONPath which doesn't start with '$' is relative to the current context.\r\nThis wouldn't change the behavior for several existing implementations since they can assume that current context == document root.\r\n**Additional note**: There is also a number of implementations for which a JSONPath without starting `$` always evaluates to `[]`, given the previous definition we can state that their current context is always set to `null`, therefore this change would allow both as valid JSONPath spec implementations.",
       "createdAt": "2021-03-09T14:48:45Z",
-      "updatedAt": "2021-08-25T22:48:04Z",
+      "updatedAt": "2021-09-03T15:35:59Z",
       "closedAt": null,
       "comments": [
         {
@@ -2193,6 +2193,13 @@
           "body": "https://stackoverflow.com/q/68926463/878701\n\nThis is a question that would benefit from another concept of relative paths, more akin to the [Relative JSON Pointer](https://tools.ietf.org/id/draft-handrews-relative-json-pointer-00.html).  This pointer allows travel _up_ the data structure so that parent, sibling, and cousin data can be selected.",
           "createdAt": "2021-08-25T22:48:03Z",
           "updatedAt": "2021-08-25T22:48:03Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": "@gregsdennis, access to the parent node is one of the most requested features of JSONPath on Stack Overflow and elsewhere. [JSONPath Plus](https://www.npmjs.com/package/jsonpath-plus) was first to introduce the notation '^' for parent operator. Currently this feature is supported by three implementations in the JSONPath Comparisons, see [Filter expression with parent axis operator](https://cburgmer.github.io/json-path-comparison/results/filter_expression_with_parent_axis_operator.html). See [Support for path axis navigation](https://github.com/cburgmer/json-path-comparison/issues/88) for discussion pertaining to this query, and why the implementations give different results for values. (They do give the same results for output paths, it appears that JSONPath Plus gives inconsistent results for returning output paths and values when applying the parent operator.)\r\n\r\nSupport for a JSONPath parent operator doesn't actually require keeping a parent pointer along with the JSON value. Rather, all it requires is path tracking (which is required anyway for implementations that support output paths), the ability to back up one level in the path, and access to the root node. In other words, it can be implemented trivially in all implementations that support output of normalized paths as an option.   \r\n\r\n",
+          "createdAt": "2021-09-03T15:25:42Z",
+          "updatedAt": "2021-09-03T15:35:59Z"
         }
       ]
     },
