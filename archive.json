@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-09-05T01:03:24.582149+00:00",
+  "timestamp": "2021-09-07T00:59:17.096400+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -4618,7 +4618,7 @@
       "labels": [],
       "body": "First of all, thanks for the standardization efforts!\r\n\r\nUnless I am missing something, the current draft (https://datatracker.ietf.org/doc/html/draft-ietf-jsonpath-base-01) allows filtering only in the context of child selection. I understand the semantics of `[?(<predicate>)]` as follows:\r\n\r\n* we have a current list of *items* (as produced by selectors earlier on the path),\r\n* for each of the items, we examine its *subitems* - elements if it is an array, values if it is an object, none otherwise,\r\n* we evaluate `<predicate>` on each subitem (with the special selector `@` denoting the subitem),\r\n* the resulting list consists of those *subitems* for which the predicate evaluates to (something) true.\r\n\r\nThe problem I see is that there seems absolutely no way to filter the current list of *items*. In some situations, one can work around it, but sometimes not. Assume I have a value\r\n```\r\n{\r\n  \"a\": { \"v\": true, \"w\": true },\r\n  \"b\": { \"v\": false, \"w\": true },\r\n  \"c\": { \"v\": true, \"w\": false },\r\n  \"d\": { \"v\": true, \"w\": true }\r\n}\r\n```\r\nand I would like to select those of subobjects with keys \"a\", \"b\" or \"c\" (but not \"d\") whose element \"v\" is true (i.e., the resulting list should contain `{ \"v\": true, \"w\": true }` and `{ \"v\": true, \"w\": false }`). I cannot apply the filtering at the top level, as it would include the key \"d\", I cannot apply it one level below as it would have to include \"w\", and there are no other levels.\r\n\r\nImagine that we had an independent filtering selector, say `{<predicate>}`, with the semantics of evaluating `<predicate>` on each current *item* (with `@` denoting the item) and leaving those which satisfy it (note: I am not proposing this exact syntax here, just the semantics). Then I could intuitively solve the example above with `$['a','b','c']{@.v}`.\r\n\r\n(as a side note, with the above the syntax `[?(<predicate>)]` would become equivalent to `[*]{<predicate>}`)\r\n\r\nSome implementations (jayway IIRC) actually \u201csolve\u201d the problem above by applying the filtering predicate in `[?(...)]` to *items or subitems*, apparently depending on whether the items are arrays or not. IMO following this path in the standard is a bad idea, as it can quickly become confusing (what if the list contains a mixture of arrays, objects, and primitives?).\r\n\r\nPlease, consider adding an independent filtering selector to the standard!\r\n\r\n(as another side note, binding the \u201ccurrent item\u201d `@` is currently also attached to filtering, do you think it could be worthwhile to make it independent as well?)",
       "createdAt": "2021-07-19T09:57:14Z",
-      "updatedAt": "2021-07-26T13:47:00Z",
+      "updatedAt": "2021-09-06T03:44:39Z",
       "closedAt": null,
       "comments": [
         {
@@ -4662,6 +4662,13 @@
           "body": "@grzegorz-herman :  You are correctly pointing to a certain insufficiency of JSONPath here.\r\n\r\nI would like to elaborate here a little more. Both arguments ...\r\n\r\n```json\r\n{\r\n    \"a\": 1,\r\n    \"b\": 2,\r\n    \"c\": 3\r\n}\r\n```\r\n```json\r\n[\r\n    1,\r\n    2,\r\n    3\r\n]\r\n```\r\nwill select against the query `$[?(@)]` the identical value list `[1,2,3]`, different node lists though.\r\nSo this conforms to the spec ...\r\n\r\n>  During iteration process **each** array element or object member is\r\n   visited and its **value** -- accessible via symbol \"@\" -- or one of its\r\n   descendants -- uniquely defined by a relative path -- is tested\r\n   against a boolean expression \"boolean-expr\".\r\n\r\nSo it is vitally important for `@` to give us each *value* in order to build a relative path as in `@.v` above.\r\n\r\nNote that this has nothing to do with the fact, that we are iterating over the root node. The enability to filter during iteration against the index is inherent.\r\n```json\r\n{\r\n    \"obj\": {\r\n        \"a\": 1,\r\n        \"b\": 2,\r\n        \"c\": 3\r\n    }\r\n}\r\n```\r\nalso won't work via `$.obj[?(@ != 'd')]` or `$[?(@[*] != 'd')]` (useless anyway).\r\n\r\nWe simply have no mechanism yet to get the node-index during iteration. \r\n\r\nImagine, we had the symbol `\u00a7` for giving us the node-index instead of the node value during iteration, we could write `$.obj[?(\u00a7 != 'd')]` but not `$[?(\u00a7[*] != 'd')]` even if `\u00a7` would be so smart to resolve correctly, if it occurs at the start of a relative path. Also we probably might need to have a complement function `value` then. So I see no use value in introducing a new syntax element here.\r\n\r\n@grzegorz-herman:  In this context I do not understand ...\r\n\r\n> ... why should I use some special function to filter on the key, when there is a dedicated \u201ccore\u201d syntax for selecting subobjects by key?\r\n\r\n... as `@` is unable to be resolved to its index (key).\r\n\r\nHaving functions like `index` in our expression language seems to get increased importance through discussions like this. `$.obj[?(index(@) != 'd')]` would obviously do what we want.\r\n\r\n... do I miss out here something ?\r\n\r\nThanks\r\n\r\n--  \r\nsg",
           "createdAt": "2021-07-26T13:47:00Z",
           "updatedAt": "2021-07-26T13:47:00Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": "> Assume I have a value\r\n> \r\n> ```\r\n> {\r\n>   \"a\": { \"v\": true, \"w\": true },\r\n>   \"b\": { \"v\": false, \"w\": true },\r\n>   \"c\": { \"v\": true, \"w\": false },\r\n>   \"d\": { \"v\": true, \"w\": true }\r\n> }\r\n> ```\r\n> \r\n> and I would like to select those of subobjects with keys \"a\", \"b\" or \"c\" (but not \"d\") whose element \"v\" is true (i.e., the resulting list should contain `{ \"v\": true, \"w\": true }` and `{ \"v\": true, \"w\": false }`). I cannot apply the filtering at the top level, as it would include the key \"d\", I cannot apply it one level below as it would have to include \"w\", and there are no other levels.\r\n> \r\nIt may be interesting to compare how this requirement would be met in [JSONiq](https://www.jsoniq.org/), an ISO/IEC approved, OASIS standard. In the JSONiq syntax, one way would be:\r\n```\r\nlet $data := {\r\n  \"a\": { \"v\": true, \"w\": true },\r\n  \"b\": { \"v\": false, \"w\": true },\r\n  \"c\": { \"v\": true, \"w\": false },\r\n  \"d\": { \"v\": true, \"w\": true }\r\n}\r\n\r\nfor $key in jn:keys($data),\r\n    $x in $data($key)\r\nwhere ($key eq \"a\" or $key eq \"b\" or $key eq \"c\") and $x.\"v\" eq true\r\nreturn $x\r\n```\r\nOutput:\r\n```\r\n{\r\n  \"v\": true,\r\n  \"w\": true\r\n}\r\n{\r\n  \"v\": true,\r\n  \"w\": false\r\n}\r\n```",
+          "createdAt": "2021-09-06T03:40:42Z",
+          "updatedAt": "2021-09-06T03:44:39Z"
         }
       ]
     },
@@ -4921,6 +4928,51 @@
           "body": "I'd like to cite JSON RFC-8259, section [8.3](https://datatracker.ietf.org/doc/html/rfc8259#section-8.3):\r\n\r\n> 8.3.  String Comparison\r\n>\r\n> Software implementations are typically required to test names of object members for equality.  Implementations that transform the textual representation into sequences of Unicode code units and then perform the comparison numerically, code unit by code unit, are interoperable in the sense that implementations will agree in all cases on equality or inequality of two strings.  For example, implementations that compare strings with escaped characters unconverted may incorrectly find that \"a\\\\b\" and \"a\\u005Cb\" are not equal.\r\n\r\nSo, JSON considers strings equal if they consist of same sequences of Unicode code units. In fact that means that valid JSON object can have two property keys that will become equal if normalized. If we enforce normalization in JSONPath, we cannot address each of those properties separately.",
           "createdAt": "2021-09-01T08:38:32Z",
           "updatedAt": "2021-09-01T08:38:32Z"
+        }
+      ]
+    },
+    {
+      "number": 118,
+      "id": "MDU6SXNzdWU5ODg3NzU2NDY=",
+      "title": "key missing vs key present with null",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/118",
+      "state": "OPEN",
+      "author": "gregsdennis",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "A new [StackOverflow question](https://stackoverflow.com/q/69069083/878701) highlights the need to define whether these two cases are the same or different:\r\n\r\n- a key missing\r\n- a key present but with `null` as a value\r\n\r\nI would expect that Javascript would handle these cases differently, but .Net generally wouldn't (it seems Newtonsoft has some special handling for this).\r\n\r\nPosed in a more direct, testable way, given the data\r\n\r\n```json\r\n[\r\n  {\r\n      \"id\": 2\r\n  }\r\n]\r\n```\r\n\r\nwould\r\n\r\n```\r\n$[?(@.foo==null)]\r\n```\r\n\r\nreturn any results?\r\n\r\n(related to #64 and #47)",
+      "createdAt": "2021-09-06T05:14:17Z",
+      "updatedAt": "2021-09-06T16:13:57Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "cburgmer",
+          "authorAssociation": "NONE",
+          "body": "I think the corresponding test in the comparison project is https://cburgmer.github.io/json-path-comparison/results/filter_expression_with_equals_null.html. Currently no consensus exists.",
+          "createdAt": "2021-09-06T06:45:49Z",
+          "updatedAt": "2021-09-06T06:45:49Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": "I think this is related to [\\#74](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/74). Or, what does the left hand side of `@.foo==null` mean? It means different things in different implementations. \r\n\r\nFor JSONPath implementations in interpreted languages such as JavaScript, Python or PHP, and whose filter expressions are these languages, `@.foo` in the case of no match may mean `undefined`, `null`, `false`, or a type error. \r\n\r\nIn Javascript, `@.foo` in the case of no match means `undefined`. So in Goessner Javascript, we have:\r\n\r\n`$[?(@.foo==null)]` returns `[  { \"id\": 2 }]`\r\n`$[?(@.foo==false)]` returns `[  { \"id\": 2 }]`\r\n`$[?(@.foo===null)]` returns `false`\r\n`$[?(@.foo===false)]` returns `false`\r\n`$[?(@.foo===undefined)]` returns `[  { \"id\": 2 }]`\r\n\r\nFor implementations such as Jayway, jsoncons, and JsonCons.JsonPath, where `@.foo` means a JSONPath expression that returns a single JSON value (rather than an array of values), it depends on what the implementation specifies `@.foo` to evaluate to when there is no match. For some, it's `null`, for others `false`, and for others it's a type error.  In Jayway, by default it's a type error, and the item being evaluated is omitted from the results (Jayway has an option to evaluate to a null value instead.) \r\n\r\nIn [JMESPath](https://jmespath.org/), for comparison, evaluating an object with a missing key is specified to return a null value, so \r\n```\r\n[?foo==null]\r\n```\r\nreturns\r\n```\r\n[  { \"id\": 2 }]\r\n```\r\n\r\nIn [JSONiq](https://www.jsoniq.org/), for another comparison, evaluating an object with a missing key results in an empty sequence, viz.\r\n```\r\nlet $doc := [\r\n  {\r\n      \"id\": 2\r\n  }\r\n]\r\n\r\nfor $x in $doc[]\r\nwhere $x.\"foo\" eq null\r\n\r\nreturn $x\r\n```\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+          "createdAt": "2021-09-06T12:12:28Z",
+          "updatedAt": "2021-09-06T16:13:57Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yes, it does relate to that as well!  I interpret literals as JSON values.",
+          "createdAt": "2021-09-06T12:56:06Z",
+          "updatedAt": "2021-09-06T12:56:54Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": "> Yes, it does relate to that as well! I interpret literals as JSON values.\r\n\r\nThat and https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/64#issuecomment-831755108",
+          "createdAt": "2021-09-06T14:17:15Z",
+          "updatedAt": "2021-09-06T15:46:34Z"
         }
       ]
     }
