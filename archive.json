@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-09-07T00:59:17.096400+00:00",
+  "timestamp": "2021-09-09T01:04:31.040673+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -1904,7 +1904,7 @@
       "labels": [],
       "body": "**Proposal**: JSONPath should have support to relative paths (to a current context), so it can be used as a building block for more advanced usages. \r\n\r\nXPath makes a clear distinction between relative and absolute paths, e.g.:\r\n\r\ngiven the following XML input:\r\n```xml\r\n<root>\r\n    <e>foo</e>\r\n    <a>\r\n        <b>\r\n            <c><d>1</d><e>bar1</e></c>\r\n            <c><d>2</d><e>bar2</e></c>\r\n            <c><d>3</d><e>bar3</e></c>\r\n        </b>\r\n    </a>\r\n</root>\r\n```\r\n\r\nand the following template, which uses the relative XPath `d` and the absolute XPath `/root/e`:\r\n\r\n```xml\r\n<?xml version=\"1.0\"?>\r\n<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"1.0\">\r\n    <xsl:template match=\"/\">\r\n        <x>\r\n            <xsl:for-each select=\"root/a/b/c\">\r\n                <item>\r\n                    <y><xsl:value-of select=\"d\"/></y>\r\n                    <z><xsl:value-of select=\"/root/e\"/></z>\r\n                </item>\r\n            </xsl:for-each>\r\n        </x>\r\n    </xsl:template>\r\n</xsl:stylesheet>\r\n```\r\n\r\nthe following XML can be produced:\r\n```xml\r\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<x>\r\n    <item>\r\n        <y>1</y>\r\n        <z>foo</z>\r\n    </item>\r\n    <item>\r\n        <y>2</y>\r\n        <z>foo</z>\r\n    </item>\r\n    <item>\r\n        <y>3</y>\r\n        <z>foo</z>\r\n    </item>\r\n</x>\r\n```\r\n\r\nI think that in a similar fashion JSONPath should allow relative paths as a building feature for more advanced usages.\r\n\r\n*Remark: I acknowledge that templating/transforms are out of scope here, however I believe that we must consider enabling more advanced usages.* \r\n\r\n**Suggested implementation**: JSONPath spec should mention that `$` is always the document root, while any JSONPath which doesn't start with '$' is relative to the current context.\r\nThis wouldn't change the behavior for several existing implementations since they can assume that current context == document root.\r\n**Additional note**: There is also a number of implementations for which a JSONPath without starting `$` always evaluates to `[]`, given the previous definition we can state that their current context is always set to `null`, therefore this change would allow both as valid JSONPath spec implementations.",
       "createdAt": "2021-03-09T14:48:45Z",
-      "updatedAt": "2021-09-03T15:35:59Z",
+      "updatedAt": "2021-09-08T11:08:29Z",
       "closedAt": null,
       "comments": [
         {
@@ -2200,6 +2200,20 @@
           "body": "@gregsdennis, access to the parent node is one of the most requested features of JSONPath on Stack Overflow and elsewhere. [JSONPath Plus](https://www.npmjs.com/package/jsonpath-plus) was first to introduce the notation '^' for parent operator. Currently this feature is supported by three implementations in the JSONPath Comparisons, see [Filter expression with parent axis operator](https://cburgmer.github.io/json-path-comparison/results/filter_expression_with_parent_axis_operator.html). See [Support for path axis navigation](https://github.com/cburgmer/json-path-comparison/issues/88) for discussion pertaining to this query, and why the implementations give different results for values. (They do give the same results for output paths, it appears that JSONPath Plus gives inconsistent results for returning output paths and values when applying the parent operator.)\r\n\r\nSupport for a JSONPath parent operator doesn't actually require keeping a parent pointer along with the JSON value. Rather, all it requires is path tracking (which is required anyway for implementations that support output paths), the ability to back up one level in the path, and access to the root node. In other words, it can be implemented trivially in all implementations that support output of normalized paths as an option.   \r\n\r\n",
           "createdAt": "2021-09-03T15:25:42Z",
           "updatedAt": "2021-09-03T15:35:59Z"
+        },
+        {
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "IIRC we decided for filter expressions containing filter expressions ... can't locate that discussion though.\r\n\r\nSo with a former example of mine\r\n\r\n>Consider a school,\r\n> ```json\r\n> {\r\n>    \"students\": [...],\r\n>    \"staff\": [...],\r\n>    \"teachers\": [...]\r\n> }\r\n> ```\r\n> while looking for the array(s) containing persons named 'M\u00fcller' ...\r\n\r\nwe can now write `$[?@[?@.name=='M\u00fcller']]`.\r\n\r\nObviously the corresponding filter syntax  in the latest draft \r\n\r\nhttps://ietf-wg-jsonpath.github.io/draft-ietf-jsonpath-base/draft-ietf-jsonpath-base.html#name-filter-selector\r\n\r\nshould be corrected from\r\n\r\n` rel-path     = \"@\" *(dot-selector / index-selector)`\r\n\r\nto\r\n\r\n`rel-path     = \"@\" *(dot-selector / index-selector / filter-selector)`\r\n\r\nthen.\r\n\r\nGiven this, an explicit parent operator `^` would be redundant. But ...\r\n\r\n@danielaparker\r\n>Support for a JSONPath parent operator doesn't actually require keeping a parent pointer along with the JSON value. Rather, all it requires is path tracking (which is required anyway for implementations that support output paths), the ability to back up one level in the path, and access to the root node. In other words, it can be implemented trivially in all implementations that support output of normalized paths as an option.\r\n\r\n... regarding the obvious low hurdle for implementating that operator, we might discuss it under the aspect of user-friendliness.\r\n\r\n\r\n",
+          "createdAt": "2021-09-08T11:07:51Z",
+          "updatedAt": "2021-09-08T11:07:51Z"
+        },
+        {
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "sorry ... wrong button ...",
+          "createdAt": "2021-09-08T11:08:29Z",
+          "updatedAt": "2021-09-08T11:08:29Z"
         }
       ]
     },
@@ -4618,7 +4632,7 @@
       "labels": [],
       "body": "First of all, thanks for the standardization efforts!\r\n\r\nUnless I am missing something, the current draft (https://datatracker.ietf.org/doc/html/draft-ietf-jsonpath-base-01) allows filtering only in the context of child selection. I understand the semantics of `[?(<predicate>)]` as follows:\r\n\r\n* we have a current list of *items* (as produced by selectors earlier on the path),\r\n* for each of the items, we examine its *subitems* - elements if it is an array, values if it is an object, none otherwise,\r\n* we evaluate `<predicate>` on each subitem (with the special selector `@` denoting the subitem),\r\n* the resulting list consists of those *subitems* for which the predicate evaluates to (something) true.\r\n\r\nThe problem I see is that there seems absolutely no way to filter the current list of *items*. In some situations, one can work around it, but sometimes not. Assume I have a value\r\n```\r\n{\r\n  \"a\": { \"v\": true, \"w\": true },\r\n  \"b\": { \"v\": false, \"w\": true },\r\n  \"c\": { \"v\": true, \"w\": false },\r\n  \"d\": { \"v\": true, \"w\": true }\r\n}\r\n```\r\nand I would like to select those of subobjects with keys \"a\", \"b\" or \"c\" (but not \"d\") whose element \"v\" is true (i.e., the resulting list should contain `{ \"v\": true, \"w\": true }` and `{ \"v\": true, \"w\": false }`). I cannot apply the filtering at the top level, as it would include the key \"d\", I cannot apply it one level below as it would have to include \"w\", and there are no other levels.\r\n\r\nImagine that we had an independent filtering selector, say `{<predicate>}`, with the semantics of evaluating `<predicate>` on each current *item* (with `@` denoting the item) and leaving those which satisfy it (note: I am not proposing this exact syntax here, just the semantics). Then I could intuitively solve the example above with `$['a','b','c']{@.v}`.\r\n\r\n(as a side note, with the above the syntax `[?(<predicate>)]` would become equivalent to `[*]{<predicate>}`)\r\n\r\nSome implementations (jayway IIRC) actually \u201csolve\u201d the problem above by applying the filtering predicate in `[?(...)]` to *items or subitems*, apparently depending on whether the items are arrays or not. IMO following this path in the standard is a bad idea, as it can quickly become confusing (what if the list contains a mixture of arrays, objects, and primitives?).\r\n\r\nPlease, consider adding an independent filtering selector to the standard!\r\n\r\n(as another side note, binding the \u201ccurrent item\u201d `@` is currently also attached to filtering, do you think it could be worthwhile to make it independent as well?)",
       "createdAt": "2021-07-19T09:57:14Z",
-      "updatedAt": "2021-09-06T03:44:39Z",
+      "updatedAt": "2021-09-08T20:06:51Z",
       "closedAt": null,
       "comments": [
         {
@@ -4669,6 +4683,62 @@
           "body": "> Assume I have a value\r\n> \r\n> ```\r\n> {\r\n>   \"a\": { \"v\": true, \"w\": true },\r\n>   \"b\": { \"v\": false, \"w\": true },\r\n>   \"c\": { \"v\": true, \"w\": false },\r\n>   \"d\": { \"v\": true, \"w\": true }\r\n> }\r\n> ```\r\n> \r\n> and I would like to select those of subobjects with keys \"a\", \"b\" or \"c\" (but not \"d\") whose element \"v\" is true (i.e., the resulting list should contain `{ \"v\": true, \"w\": true }` and `{ \"v\": true, \"w\": false }`). I cannot apply the filtering at the top level, as it would include the key \"d\", I cannot apply it one level below as it would have to include \"w\", and there are no other levels.\r\n> \r\nIt may be interesting to compare how this requirement would be met in [JSONiq](https://www.jsoniq.org/), an ISO/IEC approved, OASIS standard. In the JSONiq syntax, one way would be:\r\n```\r\nlet $data := {\r\n  \"a\": { \"v\": true, \"w\": true },\r\n  \"b\": { \"v\": false, \"w\": true },\r\n  \"c\": { \"v\": true, \"w\": false },\r\n  \"d\": { \"v\": true, \"w\": true }\r\n}\r\n\r\nfor $key in jn:keys($data),\r\n    $x in $data($key)\r\nwhere ($key eq \"a\" or $key eq \"b\" or $key eq \"c\") and $x.\"v\" eq true\r\nreturn $x\r\n```\r\nOutput:\r\n```\r\n{\r\n  \"v\": true,\r\n  \"w\": true\r\n}\r\n{\r\n  \"v\": true,\r\n  \"w\": false\r\n}\r\n```",
           "createdAt": "2021-09-06T03:40:42Z",
           "updatedAt": "2021-09-06T03:44:39Z"
+        },
+        {
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "... interesting ...\r\n\r\n`@key` would be another syntax approach equivalent to function `key(@)` then.",
+          "createdAt": "2021-09-08T09:55:39Z",
+          "updatedAt": "2021-09-08T09:55:39Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think I prefer the function syntax. It opens the door for other functions.",
+          "createdAt": "2021-09-08T10:14:11Z",
+          "updatedAt": "2021-09-08T10:14:11Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": "> I think I prefer the function syntax. It opens the door for other functions.\r\n\r\n@gregsdennis , I don't think it does, open the door for other functions. This is based on prior experience with supporting functions in two JSONPath implementations (C++ and C#), one allowing for custom user defined functions, and also on prior experience with two JMESPath implementations (C++ and C#) with built in functions as per the [JMESPath Specification](https://jmespath.org/specification.html#built-in-functions).\r\n\r\nI had earlier suggested `key(@)` [here](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/57#issuecomment-792857872), without fully thinking it through, but I no longer think it's a good idea. The difficulty is what that requires for the arguments passed to functions. Support for `key(@)` as a general function would require arguments to come in pairs, either `path-value` pairs or minimally `key-value` pairs. And of course not all function arguments are associated with paths. That makes for a messy function interface, departing from prior experience, prior experience suggest that functions should operate on values only. \r\n\r\nOf course, an implementation could support `key(@)`, but I think it would be as a special case, using internal details unavailable to say, a user taking advantage of an extension function interface.\r\n\r\n\r\n\r\n\r\n\r\n",
+          "createdAt": "2021-09-08T11:48:20Z",
+          "updatedAt": "2021-09-08T12:00:07Z"
+        },
+        {
+          "author": "remorhaz",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> I think I prefer the function syntax. It opens the door for other functions.\r\n\r\nIntroducing functions also brings permanent temptation to add new functions to the list; it's not bad in itself, but it requires a good versioning strategy for JSONPath. And user-defined functions can cause interoperability problems. We should think twice before opening this door.\r\n\r\nOn the other hand, introducing \"current index\" symbol binds the operation to current context. With functions we can build queries like `$.a.b[?(key(@.c.d)==\"e\")]`, but such query can be easily replaced by `$.a.b[?(@.c[\"e\"].d)]` - so we probably don't need to detect index in arbitrary context.\r\n",
+          "createdAt": "2021-09-08T16:41:09Z",
+          "updatedAt": "2021-09-08T16:41:09Z"
+        },
+        {
+          "author": "remorhaz",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "And if we use, for example , `#` as current index symbol, we also can make it possible to access whole path. For example (given path `a->b->c->d`):\r\n\r\n- `#[1, 3]` selects `c` and `a`;\r\n- `#[0]` is equivalent of `#` and selects `d`\r\n- `#[0:2]` selects `d` and `c`, and so on.\r\n\r\nThat can be quite a powerful syntax.",
+          "createdAt": "2021-09-08T16:49:43Z",
+          "updatedAt": "2021-09-08T16:49:43Z"
+        },
+        {
+          "author": "grzegorz-herman",
+          "authorAssociation": "NONE",
+          "body": "The discussion seems to focus more and more on accessing the current key/index. I just wanted to point out that, while such access would indeed solve the example problem, the real intent/question of this issue is different: should JSONPath have a filtering construct operating on the \u201ccurrent list of values\u201d, not tied to child selection. I hope this question does not get lost. Thanks!",
+          "createdAt": "2021-09-08T18:36:39Z",
+          "updatedAt": "2021-09-08T18:36:39Z"
+        },
+        {
+          "author": "remorhaz",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> should JSONPath have a filtering construct operating on the \u201ccurrent list of values\u201d\r\n\r\nI've re-read your inital post:\r\n>  I would like to select those of subobjects with keys \"a\", \"b\" or \"c\" (but not \"d\") whose element \"v\" is true\r\n\r\nIn fact, we may be lacking an _intersection_ operation over unions. Some possible examples of this:\r\n\r\n1. `$['a', 'b', 'c']#[?(@.v == true)]` - operator applies over two (or more) separate unions;\r\n2. `$['a', 'b', 'c' # ?(@.v == true)]` - operator applies over two (or more) groups of selectors within a single union.\r\n\r\nIn both cases `#` (symbol is random) acts like an intersection operator over nodelists and result of its application is list of nodes that exists in all nodelists.\r\n\r\nI don't know if these examples look more \"intuitive\" than semantics of \"alternative filtering\" originally proposed by @grzegorz-herman or not. As for me personally, concept of intersection is more natural. If we're working with sets, why not use classic set operations?\r\n\r\nP.S.:\r\n> Some implementations (jayway IIRC) actually \u201csolve\u201d the problem above by applying the filtering predicate in [?(...)] to items or subitems, apparently depending on whether the items are arrays or not.\r\n\r\nAnd so does mine PHP implementation (which I've tried to implement as close as possible to JayWay's), but I think that it's absolutely ugly.\r\n",
+          "createdAt": "2021-09-08T19:14:08Z",
+          "updatedAt": "2021-09-08T19:18:07Z"
+        },
+        {
+          "author": "grzegorz-herman",
+          "authorAssociation": "NONE",
+          "body": "@remorhaz:\r\n> In fact, we may be lacking an _intersection_ operation over unions. Some possible examples of this:\r\n> \r\n> 1. `$['a', 'b', 'c']#[?(@.v == true)]` - operator applies over two (or more) separate unions;\r\n> 2. `$['a', 'b', 'c' # ?(@.v == true)]` - operator applies over two (or more) groups of selectors within a single union.\r\n\r\nI find the second version somewhat weird: on the left-hand side of the intersection operator we have _indices_, while on the right \u2013 a predicate on _values_.\r\n\r\nYou can view the first as either an intersection of two unions, or as a regular child selection (`['a', 'b', 'c']`) followed by the filtering I am suggesting (`#[?(@.v == true)]`, in my non-syntax simply `{@.v == true}`). The latter has the advantage of being able to have additional selector in between, e.g. `$['a','b'].g{@.v == true}`.\r\n\r\n> > Some implementations (jayway IIRC) actually \u201csolve\u201d the problem above by applying the filtering predicate in [?(...)] to items or subitems, apparently depending on whether the items are arrays or not.\r\n> \r\n> And so does mine PHP implementation (which I've tried to implement as close as possible to JayWay's), but I think that it's absolutely ugly.\r\n\r\nI wholeheartedly agree!",
+          "createdAt": "2021-09-08T20:06:51Z",
+          "updatedAt": "2021-09-08T20:06:51Z"
         }
       ]
     },
@@ -4943,7 +5013,7 @@
       "labels": [],
       "body": "A new [StackOverflow question](https://stackoverflow.com/q/69069083/878701) highlights the need to define whether these two cases are the same or different:\r\n\r\n- a key missing\r\n- a key present but with `null` as a value\r\n\r\nI would expect that Javascript would handle these cases differently, but .Net generally wouldn't (it seems Newtonsoft has some special handling for this).\r\n\r\nPosed in a more direct, testable way, given the data\r\n\r\n```json\r\n[\r\n  {\r\n      \"id\": 2\r\n  }\r\n]\r\n```\r\n\r\nwould\r\n\r\n```\r\n$[?(@.foo==null)]\r\n```\r\n\r\nreturn any results?\r\n\r\n(related to #64 and #47)",
       "createdAt": "2021-09-06T05:14:17Z",
-      "updatedAt": "2021-09-06T16:13:57Z",
+      "updatedAt": "2021-09-08T09:40:35Z",
       "closedAt": null,
       "comments": [
         {
@@ -4973,6 +5043,41 @@
           "body": "> Yes, it does relate to that as well! I interpret literals as JSON values.\r\n\r\nThat and https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/64#issuecomment-831755108",
           "createdAt": "2021-09-06T14:17:15Z",
           "updatedAt": "2021-09-06T15:46:34Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": "> > Yes, it does relate to that as well! I interpret literals as JSON values.\r\n> \r\n> That and [#64 (comment)](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/64#issuecomment-831755108)\r\n\r\nIn any case, it's impossible to talk about what \r\n```\r\n?(@.foo==null)\r\n```\r\nmeans without first defining what `@.foo` means (including when `foo` is missing), and what `==` means. Different implementations define them differently, the draft doesn't currently define them at all.\r\n\r\nDaniel",
+          "createdAt": "2021-09-07T11:32:09Z",
+          "updatedAt": "2021-09-07T12:18:04Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@danielaparker you're getting a little ahead of yourself. Operators and relative paths in expressions are discussed in other issues that deal with expressions themselves. These are quite well-defined in those issues.",
+          "createdAt": "2021-09-07T20:01:29Z",
+          "updatedAt": "2021-09-07T20:01:29Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": "@gregsdennis, just noting that the answer to this issue you raised follows immediately once the meaning of `@.foo` and `==` have been defined. Nothing more. ",
+          "createdAt": "2021-09-07T21:26:10Z",
+          "updatedAt": "2021-09-07T21:26:10Z"
+        },
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "> @gregsdennis, just noting that the answer to this issue you raised follows immediately once the meaning of `@.foo` and `==` have been defined. Nothing more.\r\n\r\nIndeed, so the discussion here should inform the decisions we make for empty `@.foo` and for `==`.",
+          "createdAt": "2021-09-08T05:50:30Z",
+          "updatedAt": "2021-09-08T05:50:30Z"
+        },
+        {
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The latest draft seems to be pretty clear about that.\r\n\r\nhttps://ietf-wg-jsonpath.github.io/draft-ietf-jsonpath-base/draft-ietf-jsonpath-base.html#name-filter-selector\r\n\r\n> A member or element value by itself is falsy only, if it does not exist. Otherwise it is truthy, resulting in its value. To be more specific explicit comparisons are necessary. This existence test -- as an exception of the general rule -- also works with complex values.\r\n\r\nProblem here is, that JSON lacks  `undefined ` value (from JavaScript). So we decided to use standalone path expressions in filters as existence tests\r\n\r\n* `[?@foo]` ... selected, if member `foo` exists.\r\n*  `[?(!@foo)]` ... selected, if member `foo` does not exists.\r\n*  but `[?(!!@foo)]` ... selected, if value of  `foo` is truthy.\r\n* `[?(@foo == null)]` ... selected only, if member exactly has that value.\r\n*  `[?(!@foo == true)]` ... not allowed with comparison, rather use  `[?(@foo != true)]`.\r\n\r\nUsing new `in` operator also allows test for existence now as with `[?('foo' in @)]`.\r\n\r\nMost of discussions were done in this pull request\r\n\r\nhttps://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/111\r\n\r\nAm I missing something here?\r\n\r\n-- sg\r\n",
+          "createdAt": "2021-09-08T09:40:34Z",
+          "updatedAt": "2021-09-08T09:40:34Z"
         }
       ]
     }
