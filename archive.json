@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-09-09T01:04:31.040673+00:00",
+  "timestamp": "2021-09-12T01:04:17.029866+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -4559,7 +4559,7 @@
       "labels": [],
       "body": "At today's meeting, I agreed to submit a PR to float the idea of partial determinism for the descendants operator, even though the consensus seems to be against any determinism for that operator. Given the descendants operator PR https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/102 isn't yet merged, I'll start with an issue to capture discussion and avoid rebasing effort.\r\n\r\nWe probably don't want to _force_ any determinism on implementations, so the idea is to provide a recommendation for implementations which want to provide partial determinism and use \"SHOULD\" language so the recommendation is optional. Then implementations which opt in will agree on the ordering recommentations.\r\n\r\nThe benefits of partial determinism are:\r\n* improved predictability and interoperation\r\n* relative ease for JSONPath users writing tests, as there are fewer possible outputs.\r\n\r\nIn PR https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/102 there are no constraints on the non-determinism of the descendants operator:\r\n> The `descendant-selector` is inspired by ECMAScript for XML (E4X). It selects the node and all its descendants.\r\n\r\nWe agreed in issue https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/60 to allow non-determinism in the order in which objects are iterated and the same should be true when the descendants operator encounters an object. But there are other details of the ordering which could be tied down:\r\n* arrays SHOULD be visited in array order\r\n* nodes SHOULD be visited strictly before their descendants (so-called _pre-order_ traversal).\r\n\r\n(_Post-order_ traversal, in which nodes are visited strictly after their descendants, would be an equally valid alternative.)\r\n\r\nOne of the reasons given at today's meeting for allowing full non-determinism was for parallel processing, so it would be interesting to discuss what constraints the above rules produce on parallel processing. The order of collection of the results seems to be more significant than whether or not parallel processing is used.",
       "createdAt": "2021-06-15T15:13:00Z",
-      "updatedAt": "2021-07-30T15:55:23Z",
+      "updatedAt": "2021-09-09T18:44:10Z",
       "closedAt": null,
       "comments": [
         {
@@ -4617,6 +4617,48 @@
           "body": "> I recommend checking out the language around interoperability in 8259. Something like that might work here.\n\nI\u2019m not sure you actually mean that, but for me that would be about the worst result we could arrive at.\n\n8259 was worked on in a politicized context, which simply didn\u2019t allow us to clean it up.  There barely was the courage to finally say that interchanging JSON implies UTF-8, which was at least some progress.\nBut there was no way to clarify the data model issues, and this is why JSON in practice essentially has been reduced to I-JSON, which is not bad at all, but really different from what JSON originally promised to be.\n\nI\u2019d prefer if we don\u2019t need an I-JSONPath document to clean up the interoperability issues left in JSONPath-base.\n\nGiven that we have JSON and I-JSON, it may be useful to acknowledge (or violently reject! \u2014 we get to choose) the emergence of multiple levels/classes of interoperability with JSONPath, too.\n\nGr\u00fc\u00dfe, Carsten\n\n",
           "createdAt": "2021-07-30T15:55:23Z",
           "updatedAt": "2021-07-30T15:55:23Z"
+        },
+        {
+          "author": "remorhaz",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> B. Require .. to visit arrays in array order and visit nodes before their descendants\r\n\r\nI would vote for this option, but in the same time we have slices with negative steps, which naturally do sort of \"backwards\" iteration in Python. [Here is an example](https://cburgmer.github.io/json-path-comparison/results/array_slice_with_negative_step.html) - while there's no clear consensus, we see that _all_ implementations with \"python-compatible\" slices return values in reverse order, no exceptions.\r\n\r\nIf we determine order of array items visiting (thus determining the order of selected nodes in output), shouldn't we also take into consideration the effect of selectors, and if yes - then should the order of union items affect the order of visit?\r\n\r\nWe can consider part of selectors as \"order neutral\" and others are \"order affecting\", with affecting selectors overriding natural order. At first glance I see slices and unions as order-affecting selectors.",
+          "createdAt": "2021-09-09T10:48:47Z",
+          "updatedAt": "2021-09-09T11:02:27Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@remorhaz I don't follow. The ordering of `..` is not affected by other selectors (e.g. involving negative array steps or unions).",
+          "createdAt": "2021-09-09T11:03:35Z",
+          "updatedAt": "2021-09-09T11:03:35Z"
+        },
+        {
+          "author": "remorhaz",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> The ordering of .. is not affected by other selectors (e.g. involving negative array steps or unions).\r\n\r\nThis is not absolutely clear for me. Let us have the following structure:\r\n```json\r\n[\r\n  [\r\n    [1, 2, 3, 4],\r\n    [5, 6, 7, 8]\r\n  ]\r\n]\r\n```\r\nAnd we apply `$..[::-1]` query. At first we apply `..` selector to the root node, and it returns following nodes:\r\n\r\n1. `$[0]`: `[[1, 2, 3, 4], [5, 6, 7, 8]]`\r\n2. `$[0][0]`: `[1, 2, 3, 4]`\r\n3. `$[0][0][0]`: `1`\r\n4. `$[0][0][1]`: `2`\r\n5. `$[0][0][2]`: `3`\r\n6. `$[0][0][3]`: `4`\r\n7.  `$[0][1]`: `[5, 6, 7, 8]`\r\n8. `$[0][1][0]`: `5`\r\n9. `$[0][1][1]`: `6`\r\n10. `$[0][1][2]`: `7`\r\n11. `$[0][1][3]`: `8`\r\n\r\nThen we apply `[::-1]` selector to each these nodes. Applying slice to number will return empty node list, so I consider only arrays below:\r\n\r\n`$[0]`: `[[1, 2, 3, 4], [5, 6, 7, 8]]`\r\n1. `$[0][1]`: `[5, 6, 7, 8]`\r\n2. `$[0][0]`: `[1, 2, 3, 4]`\r\n\r\n`$[0][0]`: `[1, 2, 3, 4]`\r\n1. `$[0][0][3]`: `4`\r\n2. `$[0][0][2]`: `3`\r\n3. `$[0][0][1]`: `2`\r\n4. `$[0][0][0]`: `1`\r\n\r\n`$[0][1]`: `[5, 6, 7, 8]`\r\n1. `$[0][1][3]`: `8`\r\n2. `$[0][1][2]`: `7`\r\n3. `$[0][1][1]`: `6`\r\n4. `$[0][1][0]`: `5`\r\n\r\nThe resulting node list is:\r\n1. `$[0][1]`: `[5, 6, 7, 8]`\r\n2. `$[0][0]`: `[1, 2, 3, 4]`\r\n3. `$[0][0][3]`: `4`\r\n4. `$[0][0][2]`: `3`\r\n5. `$[0][0][1]`: `2`\r\n6. `$[0][0][0]`: `1`\r\n7. `$[0][1][3]`: `8`\r\n8. `$[0][1][2]`: `7`\r\n9. `$[0][1][1]`: `6`\r\n10. `$[0][1][0]`: `5`\r\n\r\nI didn't notice any problems following both \"natural order\" while applying `..` and \"reversed order\" while applying `[::-1]`, because they never apply simultaneously. Please show me if I missed something in my reasoning.",
+          "createdAt": "2021-09-09T11:55:02Z",
+          "updatedAt": "2021-09-09T14:04:42Z"
+        },
+        {
+          "author": "remorhaz",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The idea of determinism in arrays itself seems important to me. For example, let some service provides array of some data in some garanteed order that is important for end user, and and another service wants to use JSONPath to filter them on some fancy condition.\r\n\r\nIf JSONPath provides determined order of results, then it's at least possible to solve the problem with a single query. If no - we'll have no easy way to do it. We will need to extract from JSON original order somehow (with alternative tool or manual parsing), and then use it to rebuild original order of filtered items. It will be much more convenient to receive results in a determined order.",
+          "createdAt": "2021-09-09T12:56:03Z",
+          "updatedAt": "2021-09-09T12:56:03Z"
+        },
+        {
+          "author": "timbray",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The main aspect of JSON that leads to non-determinism is the fact that no\nspecification makes any guarantee that the order of Members in an Object\ncarries any meaning. RFC8259, last para of Section 4\n<https://datatracker.ietf.org/doc/html/rfc8259#section-4>,  explicitly\ncautions against relying on this.\n\nOn the other hand, order in arrays is explicitly significant and I would be\nshocked if application of array-based selectors did not produce identical\nresults in all implementations.\n\nOr am I missing something obvious?\n\nOn Thu, Sep 9, 2021 at 5:56 AM Edward Surov ***@***.***>\nwrote:\n\n> The idea of determinism in arrays itself seems important to me. For\n> example, let some service provides array of some data in some garanteed\n> order that is important for end user, and and another service wants to use\n> JSONPath to filter them on some fancy condition.\n>\n> If JSONPath provides determined order of results, then it's at least\n> possible to solve the problem with a single query. If no - we'll have no\n> easy way to do it. We will need to extract from JSON original order somehow\n> (with alternative tool or manual parsing), and then use it to rebuild\n> original order of filtered items. It will be much more convenient to\n> receive results in a determined order.\n>\n> \u2014\n> You are receiving this because you commented.\n> Reply to this email directly, view it on GitHub\n> <https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/103#issuecomment-916066134>,\n> or unsubscribe\n> <https://github.com/notifications/unsubscribe-auth/AAAEJE4BWYATVFBIEWAYLWDUBCVG5ANCNFSM46XPPL6Q>\n> .\n> Triage notifications on the go with GitHub Mobile for iOS\n> <https://apps.apple.com/app/apple-store/id1477376905?ct=notification-email&mt=8&pt=524675>\n> or Android\n> <https://play.google.com/store/apps/details?id=com.github.android&referrer=utm_campaign%3Dnotification-email%26utm_medium%3Demail%26utm_source%3Dgithub>.\n>\n>\n",
+          "createdAt": "2021-09-09T18:40:03Z",
+          "updatedAt": "2021-09-09T18:40:03Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yes, I think we agree that array order should be preserved and that object order is not guaranteed, but I'd like this issue to focus specifically on the ordering of `..`.",
+          "createdAt": "2021-09-09T18:44:10Z",
+          "updatedAt": "2021-09-09T18:44:10Z"
         }
       ]
     },
@@ -4632,7 +4674,7 @@
       "labels": [],
       "body": "First of all, thanks for the standardization efforts!\r\n\r\nUnless I am missing something, the current draft (https://datatracker.ietf.org/doc/html/draft-ietf-jsonpath-base-01) allows filtering only in the context of child selection. I understand the semantics of `[?(<predicate>)]` as follows:\r\n\r\n* we have a current list of *items* (as produced by selectors earlier on the path),\r\n* for each of the items, we examine its *subitems* - elements if it is an array, values if it is an object, none otherwise,\r\n* we evaluate `<predicate>` on each subitem (with the special selector `@` denoting the subitem),\r\n* the resulting list consists of those *subitems* for which the predicate evaluates to (something) true.\r\n\r\nThe problem I see is that there seems absolutely no way to filter the current list of *items*. In some situations, one can work around it, but sometimes not. Assume I have a value\r\n```\r\n{\r\n  \"a\": { \"v\": true, \"w\": true },\r\n  \"b\": { \"v\": false, \"w\": true },\r\n  \"c\": { \"v\": true, \"w\": false },\r\n  \"d\": { \"v\": true, \"w\": true }\r\n}\r\n```\r\nand I would like to select those of subobjects with keys \"a\", \"b\" or \"c\" (but not \"d\") whose element \"v\" is true (i.e., the resulting list should contain `{ \"v\": true, \"w\": true }` and `{ \"v\": true, \"w\": false }`). I cannot apply the filtering at the top level, as it would include the key \"d\", I cannot apply it one level below as it would have to include \"w\", and there are no other levels.\r\n\r\nImagine that we had an independent filtering selector, say `{<predicate>}`, with the semantics of evaluating `<predicate>` on each current *item* (with `@` denoting the item) and leaving those which satisfy it (note: I am not proposing this exact syntax here, just the semantics). Then I could intuitively solve the example above with `$['a','b','c']{@.v}`.\r\n\r\n(as a side note, with the above the syntax `[?(<predicate>)]` would become equivalent to `[*]{<predicate>}`)\r\n\r\nSome implementations (jayway IIRC) actually \u201csolve\u201d the problem above by applying the filtering predicate in `[?(...)]` to *items or subitems*, apparently depending on whether the items are arrays or not. IMO following this path in the standard is a bad idea, as it can quickly become confusing (what if the list contains a mixture of arrays, objects, and primitives?).\r\n\r\nPlease, consider adding an independent filtering selector to the standard!\r\n\r\n(as another side note, binding the \u201ccurrent item\u201d `@` is currently also attached to filtering, do you think it could be worthwhile to make it independent as well?)",
       "createdAt": "2021-07-19T09:57:14Z",
-      "updatedAt": "2021-09-08T20:06:51Z",
+      "updatedAt": "2021-09-09T21:32:39Z",
       "closedAt": null,
       "comments": [
         {
@@ -4739,6 +4781,48 @@
           "body": "@remorhaz:\r\n> In fact, we may be lacking an _intersection_ operation over unions. Some possible examples of this:\r\n> \r\n> 1. `$['a', 'b', 'c']#[?(@.v == true)]` - operator applies over two (or more) separate unions;\r\n> 2. `$['a', 'b', 'c' # ?(@.v == true)]` - operator applies over two (or more) groups of selectors within a single union.\r\n\r\nI find the second version somewhat weird: on the left-hand side of the intersection operator we have _indices_, while on the right \u2013 a predicate on _values_.\r\n\r\nYou can view the first as either an intersection of two unions, or as a regular child selection (`['a', 'b', 'c']`) followed by the filtering I am suggesting (`#[?(@.v == true)]`, in my non-syntax simply `{@.v == true}`). The latter has the advantage of being able to have additional selector in between, e.g. `$['a','b'].g{@.v == true}`.\r\n\r\n> > Some implementations (jayway IIRC) actually \u201csolve\u201d the problem above by applying the filtering predicate in [?(...)] to items or subitems, apparently depending on whether the items are arrays or not.\r\n> \r\n> And so does mine PHP implementation (which I've tried to implement as close as possible to JayWay's), but I think that it's absolutely ugly.\r\n\r\nI wholeheartedly agree!",
           "createdAt": "2021-09-08T20:06:51Z",
           "updatedAt": "2021-09-08T20:06:51Z"
+        },
+        {
+          "author": "remorhaz",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> I find the second version somewhat weird: on the left-hand side of the intersection operator we have indices, while on the right \u2013 a predicate on values.\r\n\r\nUnion (at least on the level of idea) is just a combination of selectors, it allows you to mix _any_ predicates, like this: `$['a', ?(@.v == true), 'b']`.\r\n\r\n**Update:** I've looked over draft and ensured that union is defined like this:\r\n> Union selector \"[<sel1>,<sel2>,...,<selN>]\", holding a comma delimited list of index, index wild card, array slice, and filter selectors.",
+          "createdAt": "2021-09-09T06:32:26Z",
+          "updatedAt": "2021-09-09T08:38:18Z"
+        },
+        {
+          "author": "remorhaz",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "And yes, you're right in that your `{...}` syntax is full equivalent of my first variant `#[...]` technically; the only difference is that my `#` works as binary operator \"intersect\" over unons (or their parts) that are already defined in syntax, and you define completely new selector; but how to name it? How to define it's input node list?",
+          "createdAt": "2021-09-09T08:33:03Z",
+          "updatedAt": "2021-09-09T08:33:03Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": "@remorhaz , Possibly follow XPath 2 and later approach to support [union and intersect operators](https://www.w3.org/TR/xpath-31/#combining_seq)? Union (\"|\") to combine the nodes returned by two or more paths, intersect to return the nodes common to both paths? And allow these operators to be grouped with left and right parentheses?\r\n\r\nIt could be argued that this is a natural evolution of JSONPath, much as XPath 1 evolved. It could also be argued that that's not JSONPath anymore.\r\n",
+          "createdAt": "2021-09-09T16:31:08Z",
+          "updatedAt": "2021-09-09T16:31:08Z"
+        },
+        {
+          "author": "remorhaz",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@danielaparker, yes, the \"problem\" is that union syntax evolved naturally to `[..., ...]` in JSONPath - where `,` works like `|` in XPath and there's no grouping. I would like to find the way not to break this paradygm.\r\n\r\nIn fact, we can place all this grammar into `union-entry`. We can make two entries:\r\n\r\n- \"nested union\" entry `(.., ...)`;\r\n- binary `intersect` operator over entries.\r\n \r\nAnd get something like this:\r\n\r\n```\r\n$['a', ('b', 'c') intersect ?(@.val == true)]\r\n```\r\n\r\nThat could be translated to following functions:\r\n```\r\nunion(\r\n  index('a'),\r\n  intersection(\r\n    union(\r\n      index('b'),\r\n      index('c'),\r\n    ),\r\n    filter(@val == true),\r\n)\r\n```\r\n\r\nOf course this syntax has tons of pitfalls, but it follows XPath way in general. But we also can follow another way:\r\n\r\n```\r\n$['a', {['b', 'c'], ?(@.val == true)}]\r\n```\r\n\r\nIn other words, if we defined union like `[..., ...]`, then why not follow the naturally evolved pattern and define intersection like `{..., ...}`? And I see no problems in nesting these structures.\r\n\r\nIn this case, @grzegorz-herman 's problem salvation will be written like this:\r\n\r\n```\r\n${['a', 'b', 'c'], ?(@.val == true)}\r\n```\r\n\r\nWhat would you say?",
+          "createdAt": "2021-09-09T18:06:11Z",
+          "updatedAt": "2021-09-09T18:10:09Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "On Thu, 9 Sep 2021, 19:06 Edward Surov, ***@***.***> wrote:\n\n> @danielaparker <https://github.com/danielaparker>, yes, the \"problem\" is\n> that union syntax evolved naturally to [..., ...] in JSONPath - where ,\n> works like | in XPath and there's no grouping. I would like to find the\n> way not to break this paradygm.\n>\n> In fact, we can place all this grammar into union-entry. We can make two\n> entries:\n>\n>    - \"nested union\" entry (.., ...);\n>    - binary intersect operator over entries.\n>\n> And get something like this:\n>\n> $['a', ('b', 'c') intersect ***@***.*** == true)]\n>\n> That could be translated in a following functions:\n>\n> union(\n>   index('a'),\n>   intersection(\n>     union(\n>       index('b'),\n>       index('c'),\n>     ),\n>     ***@***.*** == true),\n> )\n>\n> Of course this syntax has tons of pitfalls, but it follows XPath way in\n> general. But we also can follow another way:\n>\n> $['a', {['b', 'c'], ***@***.*** == true)}]\n>\n> In other words, if we defined union like [..., ...], then why not follow\n> the naturally evolved pattern and define intersection like {..., ...}?\n> And I see no problems in nesting these structures.\n>\n> In this case, @grzegorz-herman <https://github.com/grzegorz-herman> 's\n> problem salvation will be written like this:\n>\n> ${['a', 'b', 'c'], ***@***.*** == true)}\n>\n> What would you say?\n>\n\nI personally find that syntax a little obscure.\n\nAlso, it would be good to know we are satisfying a usecase which can't\neasily be satisfied in another way.\n\n> \u2014\n> You are receiving this because you are subscribed to this thread.\n> Reply to this email directly, view it on GitHub\n> <https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/109#issuecomment-916321875>,\n> or unsubscribe\n> <https://github.com/notifications/unsubscribe-auth/AAAXF2IAXGXJD2YOV3SPWCLUBDZR5ANCNFSM5ATLPCKQ>\n> .\n> Triage notifications on the go with GitHub Mobile for iOS\n> <https://apps.apple.com/app/apple-store/id1477376905?ct=notification-email&mt=8&pt=524675>\n> or Android\n> <https://play.google.com/store/apps/details?id=com.github.android&referrer=utm_campaign%3Dnotification-email%26utm_medium%3Demail%26utm_source%3Dgithub>.\n>\n>\n",
+          "createdAt": "2021-09-09T18:30:59Z",
+          "updatedAt": "2021-09-09T18:30:59Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": "> @danielaparker, yes, the \"problem\" is that union syntax evolved naturally to `[..., ...]` in JSONPath - where `,` works like `|` in XPath and there's no grouping. I would like to find the way not to break this paradygm.\r\n> \r\n> But we also can follow another way:\r\n> \r\n> ```\r\n> $['a', {['b', 'c'], ?(@.val == true)}]\r\n> ```\r\n> \r\n> In other words, if we defined union like `[..., ...]`, then why not follow the naturally evolved pattern and define intersection like `{..., ...}`? And I see no problems in nesting these structures.\r\n> \r\n> In this case, @grzegorz-herman 's problem salvation will be written like this:\r\n> \r\n> ```\r\n> ${['a', 'b', 'c'], ?(@.val == true)}\r\n> ```\r\nReading the first suggestion made me feel woozy :-) I thought the second was easier on the eyes. I don't love or hate the notation, and could probably get used to it. I'm not personally enthusiastic about `{..., ...}` for intersection, I think I would prefer `[[..., ...]]`. But I'm used to being a minority of one.\r\n",
+          "createdAt": "2021-09-09T21:32:39Z",
+          "updatedAt": "2021-09-09T21:32:39Z"
         }
       ]
     },
@@ -5078,6 +5162,198 @@
           "body": "The latest draft seems to be pretty clear about that.\r\n\r\nhttps://ietf-wg-jsonpath.github.io/draft-ietf-jsonpath-base/draft-ietf-jsonpath-base.html#name-filter-selector\r\n\r\n> A member or element value by itself is falsy only, if it does not exist. Otherwise it is truthy, resulting in its value. To be more specific explicit comparisons are necessary. This existence test -- as an exception of the general rule -- also works with complex values.\r\n\r\nProblem here is, that JSON lacks  `undefined ` value (from JavaScript). So we decided to use standalone path expressions in filters as existence tests\r\n\r\n* `[?@foo]` ... selected, if member `foo` exists.\r\n*  `[?(!@foo)]` ... selected, if member `foo` does not exists.\r\n*  but `[?(!!@foo)]` ... selected, if value of  `foo` is truthy.\r\n* `[?(@foo == null)]` ... selected only, if member exactly has that value.\r\n*  `[?(!@foo == true)]` ... not allowed with comparison, rather use  `[?(@foo != true)]`.\r\n\r\nUsing new `in` operator also allows test for existence now as with `[?('foo' in @)]`.\r\n\r\nMost of discussions were done in this pull request\r\n\r\nhttps://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/111\r\n\r\nAm I missing something here?\r\n\r\n-- sg\r\n",
           "createdAt": "2021-09-08T09:40:34Z",
           "updatedAt": "2021-09-08T09:40:34Z"
+        }
+      ]
+    },
+    {
+      "number": 119,
+      "id": "MDU6SXNzdWU5OTI5MDg5NTI=",
+      "title": "Semantics of @.foo as a standalone expression (truthiness)",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/119",
+      "state": "OPEN",
+      "author": "gregsdennis",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Currently we have `$[?(@.foo)]` (I'm just going to use `@.foo` for brevity) to represent \"the item is an object and contains a `foo` property.\"  It also seems that some implementations evaluate the truthiness of the value of the `foo` property, if it exists, while others that accept the syntax interpret it to strictly consider existence.\r\n\r\nRelated comparison results:\r\n- [Filter Expression On Object](https://cburgmer.github.io/json-path-comparison/results/filter_expression_on_object.html)\r\n- [Filter Expression Without a Value](https://cburgmer.github.io/json-path-comparison/results/filter_expression_without_value.html)\r\n\r\nThere has also been an [email thread](https://mailarchive.ietf.org/arch/msg/jsonpath/yJEZ1bbdFt19qRAeHEoMqtB6jRg/) floating around discussing truthiness, but I wanted something a bit easier to read through than emails.\r\n\r\nOne aspect that I don't think has been considered in the email thread is the ability to consider strict existence.  On StackOverflow, [this](https://stackoverflow.com/questions/69069083/write-a-jsonpath-query-for-a-null-property-with-newtonsoft-json-net) and [this](https://stackoverflow.com/questions/69120789/how-to-get-the-result-which-has-not-the-property-with-jpath-in-the-newtonsoft) question both have asked about Newtonsoft's (.Net) support for this syntax, and the second seems to be asking specifically about detecting the _absense_ of a property as opposed to its presence with a `null` value.\r\n\r\nI think strict existence detection is an important feature to support, and if we move to have this syntax operate on truthiness, I fear we won't be able to support it.\r\n\r\nImportantly, I would suggest that regardless of the decision we make here, `!@.foo` should return the inverse set.\r\n",
+      "createdAt": "2021-09-10T05:45:38Z",
+      "updatedAt": "2021-09-11T22:34:49Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> `!@.foo` should return the inverse set.\r\n\r\nYes! `@.foo` should always be `true` or `false` and `!@.foo` should always be the negation of `@.foo`.\r\n\r\nI would prefer:\r\n* `@.foo` always to denote strict existence of the key `foo` in the object `@` (and be `false` in other cases, e.g. when `@` is not an object).\r\n* there to be no implicit conversion of values to booleans and therefore no need for the concepts of truthy and falsy in the spec.",
+          "createdAt": "2021-09-10T06:37:41Z",
+          "updatedAt": "2021-09-10T06:37:41Z"
+        },
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "\r\n> Yes! `@.foo` should always be `true` or `false` \r\n\r\nYou lost me here.\r\n\r\n`@.foo.bar` doesn't work any longer if `@.foo` is defined that way.\r\n\r\n> and `!@.foo` should always be the negation of `@.foo`.\r\n\r\nThat is one of the places where @.foo could be used in a context that expects a Boolean value, as is `$[?(@.foo)]`.\r\nI think you are saying that there should be an implicit conversion of the range of @.foo (which I called a nodelist before, but we don't need to stick with that) to Boolean.\r\n\r\nAnd then you are outlining what that conversion should look like:\r\n\r\n> * `@.foo` always to denote strict existence of the key `foo` in the object `@` (and be `false` in other cases, e.g. when `@` is not an object).\r\n\r\nWhich means that I don't understand this:\r\n\r\n> * there to be no implicit conversion of values to booleans and therefore no need for the concepts of truthy and falsy in the spec.\r\n\r\n\r\n",
+          "createdAt": "2021-09-10T06:50:29Z",
+          "updatedAt": "2021-09-10T06:50:29Z"
+        },
+        {
+          "author": "remorhaz",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "`@.foo` as itself just provides some node list (either empty or not). Then we can:\r\n\r\n- Use it in filter directly or with logical operator, like `$[?(@.foo)]`, or `$[?(@.foo and @.bar == 1)]`, or `$[?(!@.foo)]`. In this cases it's check for existence (non-emptiness of node list).\r\n- Use it in filter as a part of comparison, like `$[?(@.foo == true)]`. Comparison evaluates to `true` only if both of his part exist and provide equal value.\r\n\r\n> ...one of the places where `@.foo` could be used in a context that expects a Boolean value, as is `$[?(@.foo)]`.\r\n\r\nThere are indeed contexts that require casting to boolean, like \"filter root\" or \"logic operator argument\" (but not \"comparison operator argument\"). And node list casts to `false` if it's empty and to `true` otherwise - I see it like this.",
+          "createdAt": "2021-09-10T07:05:12Z",
+          "updatedAt": "2021-09-10T07:05:12Z"
+        },
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "@remorhaz and what you propose seems to mesh with \"Proposal A\" in the comparison results.\r\n",
+          "createdAt": "2021-09-10T07:07:08Z",
+          "updatedAt": "2021-09-10T07:07:08Z"
+        },
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "\r\n> * Use it in filter as a part of comparison, like `$[?(@.foo == true)]`. Comparison evaluates to `true` only if both of his part exist and provide equal value.\r\n\r\nWhat is the semantics of `$[?(@.foo != true)]`?\r\nIs that the same as `$[?(!(@.foo == true))]`?",
+          "createdAt": "2021-09-10T07:09:11Z",
+          "updatedAt": "2021-09-10T07:09:11Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Sorry @cabo: I was using `@.foo` in the same way as the OP:\r\n\r\n> Currently we have `$[?(@.foo)]` (I'm just going to use `@.foo` for brevity) to represent \"the item is an object and contains a foo property.\" It also seems that some implementations evaluate the truthiness of the value of the foo property, if it exists, while others that accept the syntax interpret it to strictly consider existence.\r\n\r\nI prefer the latter interpretation. To be clearer, I would be happy to see the syntax in the current draft amended to something like:\r\n```\r\nexist-expr   = *neg_op (root-selector / \"@\") 1*(dot-selector / (\"[\" quoted-member-name \"]\"))\r\n```\r\nThus attempts to use other expressions (such as `@` and `$[0]`) as existence tests would be syntactically invalid.",
+          "createdAt": "2021-09-10T07:26:26Z",
+          "updatedAt": "2021-09-10T07:26:26Z"
+        },
+        {
+          "author": "remorhaz",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> Thus attempts to use other expressions (such as @ and $[0]) as existence tests would be syntactically invalid.\r\n\r\nWhat rationale is behind forbidding to test existance of `$`-based paths? We can have complex filters like this: `$.a[?(@.foo == true and $.b)]` that selects `$.a` elements with `\"foo\": true` or nothing if `$.b` doesn't exist.",
+          "createdAt": "2021-09-10T07:41:14Z",
+          "updatedAt": "2021-09-10T07:41:14Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This issue has expanded into more than what was intended.  So let me clarify my intents:\r\n\r\n- By `@.foo` in expressions, I mean to include any path as used in the context of an expression, be it `@.foo`, `@.foo.bar`, `@[0]`, `$.foo`, or any other path.  I'm not asking whether these are valid in the context of an expression.  I would expect from previous conversations and what's in the spec currently that we agree that they are.\r\n- We've also previously discussed that such paths within expressions must return a single value.  This is not up for discussion here.\r\n- I only intend to discuss the usage of a path in an expression when it is not part of an equality or other comparison.  Specifically, when the only operators, if any, that operate on the path are boolean operators (i.e. `!`, `&&`, and `||`).\r\n- The result set is defined in the current incarnation of the spec to be a nodelist.  This was added out of a need to define it separately from any other JSON array, and it really only applies when discussing the theory behind the spec.  Implementations can design their internal mechanisms however they want so long as the output is what is prescribed by the specification.  This is not up for discussion.\r\n\r\nWith that in mind, let's continue the discussion at hand, please.\r\n\r\nI'm asking about considering the results of such expressions as \"truthy.\"  It was my opinion (upon opening the issue) that by considering the result set to be truthy, we restrict our ability to check for strict existence.\r\n\r\nMulling this over for a bit now, I see three options.\r\n\r\n1. Consider paths in expressions as truthy.  This means that we need to define a way to query for strict existence.  We could introduce a function such as `exists(@.foo)` to handle this, but function syntax has been deferred a few times because we haven't defined a sufficient foundation to discuss them.  This seems to also be in line with many existing implementations, though no clear consensus exists.\r\n2. Consider paths in expressions as a strict check for existence.  This means that truthy queries be more complex to include the full intent of truthiness.  This raises questions around what that looks like.  Do we consider `@.foo == true` to be sufficient to express truthiness?  We already decided that `==` and kin don't perform type conversions, so that seems to be off the table.  But that means a user would have to list out all of the \"truthiness\" possibilities.  This gets very messy very quickly, which leads us to the last option.\r\n3. Add a separate operator set for truthy comparisons vs strict comparisons.  This moves us more toward a Javascript operator set instead of the C operator set we've decided on so far.  The nuances of this are less widely known, which means it becomes harder to adopt JSON Path.\r\n\r\nConsidering the implications of these options has led me to believe that the first one is actually most viable.  We just need to define how to specify strict existence.  I rather like the function, but, as I said, we haven't defined them yet.\r\n\r\n---\r\n\r\nAs an alternative to all of this, I would be happy to have the specification require the implementation to provide an option to consider such expressions as either truthy or strict existence, and then define what each means.  This would mean a little more work for implementers, but I am one, and I can tell you that I don't mind.  It's our end users that we need to consider most.",
+          "createdAt": "2021-09-10T11:11:36Z",
+          "updatedAt": "2021-09-10T11:52:13Z"
+        },
+        {
+          "author": "remorhaz",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "What I was speaking about before was exactly option 2.\r\n\r\n> @remorhaz and what you propose seems to mesh with \"Proposal A\" in the comparison results.\r\n\r\n@cabo, I agree, but sort of this way it was directly defined in first @goessner 's examples:\r\n\r\n```\r\n$..book[?(@.isbn)] : Filter all books with isbn number.\r\n```\r\n\r\n\"Sort of\", because most obvious iterpretation of \"with isbn\" is \"in which isbn property exists\"; there were no details like \"with non-null isbn\" or \"with isbn that evaluates to true\". Of course this can be argued, but at least original implementation and JayWay's interpreted path as existence check.",
+          "createdAt": "2021-09-10T12:48:42Z",
+          "updatedAt": "2021-09-10T13:03:54Z"
+        },
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "> * I only intend to discuss the usage of a path in an expression when it is not part of an equality or other comparison.  Specifically, when the only operators, if any, that operate on the path are boolean operators (i.e. `!`, `&&`, and `||`).\r\n\r\nThis was what I meant with \"in a context where a Boolean is expected\".  So we are still talking about implicit conversions of query results to Boolean.\r\n\r\n> 2. Consider paths in expressions as a strict check for existence.  \r\n\r\nThis.\r\n\r\n> This means that truthy queries be more complex to include the full intent of truthiness.  \r\n\r\nYou are presupposing that we need another implicit conversion to Boolean, called \"truthy\".\r\nI haven't seen evidence that we need that.\r\n\r\n> This raises questions around what that looks like.  Do we consider `@.foo == true` to be sufficient to express truthiness?  \r\n\r\nOf course not (`== true` is the exact opposite of \"truthy\").  There is an implicit conversion of a query result to a JSON value involved here that we should discuss separately.\r\n\r\n> We already decided that `==` and kin don't perform type conversions, so that seems to be off the table.  But that means a user would have to list out all of the \"truthiness\" possibilities.  This gets very messy very quickly, which leads us to the last option.\r\n\r\nAgain, where is the evidence that \"truthy\" makes sense?  And which of the many ways of defining it?\r\n\r\n> 3. Add a separate operator set for truthy comparisons vs strict comparisons.  This moves us more toward a Javascript operator set instead of the C operator set we've decided on so far.  The nuances of this are less widely known, which means it becomes harder to adopt JSON Path.\r\n\r\nMore likely, an explicit coercion from a JSON value to a Boolean along the \"truthy\" lines would be indicated.\r\n\r\n`truthy(@.foo)` if we must.\r\nBut leaving this out is better.",
+          "createdAt": "2021-09-10T13:05:21Z",
+          "updatedAt": "2021-09-10T13:06:33Z"
+        },
+        {
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I do like Glyn's syntax\r\n```\r\nexist-expr   = *neg_op (root-selector / \"@\") 1*(dot-selector / (\"[\" quoted-member-name \"]\"))\r\n```\r\nIn fact it already includes the root-selector `$`. But considering an argument\r\n```\r\n[ { a:2 } ]\r\n```\r\nwe obviously need to support queries with array element existence checks as in\r\n\r\n`$[?(@.a && $[1])]`\r\n\r\nAnd ... don't we already have, beside those implicit existence tests above, with\r\n\r\n`'foo' in @`\r\n\r\nan explicit existence test instead of inventing an `exist()` function? ",
+          "createdAt": "2021-09-10T14:12:33Z",
+          "updatedAt": "2021-09-10T14:12:33Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": "> `@.foo` should always be `true` or `false` and `!@.foo` should always be the negation of `@.foo`.\r\n> \r\n> I would prefer:\r\n> \r\n> * `@.foo` always to denote strict existence of the key `foo` in the object `@` (and be `false` in other cases, e.g. when `@` is not an object).\r\n> * there to be no implicit conversion of values to booleans and therefore no need for the concepts of truthy and falsy in the spec.\r\n\r\nI believe that would be well defined. The only issue with it is that it would be inconsistent with almost all (I added \"almost\" because I haven't studied all of them), so \"almost all\", existing implementations.\r\n\r\nDaniel",
+          "createdAt": "2021-09-10T14:41:16Z",
+          "updatedAt": "2021-09-10T14:42:08Z"
+        },
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "@danielaparker:  So no `@.foo.bar` and no `@.foo == 17`?",
+          "createdAt": "2021-09-10T14:47:50Z",
+          "updatedAt": "2021-09-10T14:47:50Z"
+        },
+        {
+          "author": "remorhaz",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> So no `@.foo.bar` and no `@.foo == 17`?\r\n\r\nBut why? Because of \"`@.foo` is always boolean\" in @glyn 's phrase?",
+          "createdAt": "2021-09-10T14:54:51Z",
+          "updatedAt": "2021-09-10T14:54:51Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": "> @danielaparker: So no `@.foo.bar` and no `@.foo == 17`?\r\n\r\nConsider the JSON document\r\n```\r\n[{\"foo\" : \"baz\"}]\r\n```\r\nGlyn's rule (assuming I've understood it correctly) would imply that\r\n```\r\n$[?(@.bar == false)]\r\n```\r\nwould produce\r\n```\r\n[{\"foo\" : \"baz\"}]\r\n```\r\nI don't know of any extant implementation that does so.",
+          "createdAt": "2021-09-10T15:03:42Z",
+          "updatedAt": "2021-09-10T15:03:59Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Please note my syntax fragment only applied to `exist-expr` and didn't limit the terms of comparisons etc.",
+          "createdAt": "2021-09-10T15:15:30Z",
+          "updatedAt": "2021-09-10T15:15:30Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": "> Please note my syntax fragment only applied to `exist-expr` and didn't limit the terms of comparisons etc.\r\n\r\nBut if the evaluation of `@.bar` by itself should differ from when it appears in a binary expression, that would also be different from \"almost all\" existing implementations. \r\n\r\nI think \"almost all\" existing implementations take one of three approaches to evaluating an object with a missing key:\r\n\r\n- Return a valid JSON value, generally null. Truthiness rules will produce false when testing a single value. The equality operator will evaluate to true when comparing with the JSON value `null`.  \r\n- Return a special non JSON value, in JavaScript this is `undefined` Truthiness rules will produce false when testing a single value. The (strict) equality operator will evaluate to false when comparing with any JSON value. The equality operator will evaluate to true when comparing with the special value itself, e.g. `undefined` in JavaScript. \r\n- Treat a missing property in an object as a runtime type error. Then the question is how the implementation handles the type error. It can get complicated.    \r\n\r\nJayway JsonPath is an example of the third approach, and it handles this type error differently depending on where in the path it occurs. Evaluating `$.bar`, with missing 'bar', it will throw a `PathNotFound` exception with the message \"Missing property in path\". Evaluating `$[?(@.bar || @.foo )]` with missing `bar` and present `foo`, it will branch to some code that ignores the `@.bar` part so that the other parts of the path evaluation can still be examined.  \r\n\r\n",
+          "createdAt": "2021-09-10T15:50:28Z",
+          "updatedAt": "2021-09-10T18:28:18Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> But if the evaluation of @.bar by itself should differ from when it appears in a binary expression, that would also be different from \"almost all\" existing implementations.\r\n\r\nThanks for the reality check. I don't like truthy and falsey, but it looks like we are stuck with them.",
+          "createdAt": "2021-09-10T15:59:36Z",
+          "updatedAt": "2021-09-10T15:59:36Z"
+        },
+        {
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Please remember, that JSONPath is about selecting nodes. In the following cases of non-existence of object member `foo`  we simply do not need to return its value:\r\n\r\n1. `$.foo` ... the resulting node-list is empty.\r\n2. `$.foo.bar` ... the resulting node-list is empty.\r\n3. `$[?(@foo)]` ...  the resulting node-list is empty.\r\n4.  `$[?(!@foo)]` ... current `@` is in the node-list.\r\n\r\nOnly temporary boolean values are needed with boolean expressions\r\n\r\n5.  `$[?(!!@foo)]` ...  the resulting node-list is empty.\r\n6.  `$[?(!@foo || @bar && $.baz)]` ...  the resulting node-list is empty or contains `@`\r\n\r\nBut now with direct comparisons we need to convert its non-existence to a (boolean ?) value.\r\n\r\n7.  `$[?(@foo==false)]` ... the resulting node-list is empty ... regardless of the right side\r\n8.  `$[?(@foo!=false)]` ... hmm ... to be defined.\r\n9. `$[?!(@foo==false)]` ... current `@` is in the node-list.\r\n\r\nBTW: This is, where I like the mental node-list approach. I don't need to specify the selection process result as values or normalized pathes, despite the fact, that it will be one of them.\r\n\r\nA JSON value `undefined` would be of help here ... but since that value in above cases is not exposed to the outer world, it is up to the implementation to represent it internally somehow specifically. This seems to conform to @danielaparker's case 2 above.\r\n\r\nThe spec requires to only treat syntax errors. No 'type not found' message is required or even recommended. It is up to the implementations to handle such cases.",
+          "createdAt": "2021-09-10T17:18:20Z",
+          "updatedAt": "2021-09-10T17:18:20Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": "> In the following cases of non-existence of object member `foo` we simply do not need to return its value:\r\n\r\n> But now with direct comparisons we need to convert its non-existence to a (boolean ?) value.\r\n> \r\nI don't think that's a useful way of presenting the problem.\r\n\r\nGenerally, as an expression evaluator evaluates the parse tree, it needs to evaluate the operands _before_ performing any unary or binary operations, including comparisons. Therefore, it needs to produce _something_ to represent the result of evaluating `@.foo`.  If we're using the Shunting-yard algorithm, for example, that something has to be pushed onto an output queue of values. In my case 1, that something would be a JSON null value; in my case 2, it would be an `undefined` value.  Another possibility would be an 'optional' type value with properties `HasValue` and `Value`. Of course, there are implementation details, but the basic point remains the same: how we think about `@.foo` doesn't change as we make our way through the parse tree.",
+          "createdAt": "2021-09-10T19:08:05Z",
+          "updatedAt": "2021-09-10T19:08:05Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": "> The spec requires to only treat syntax errors. No 'type not found' message is required or even recommended. It is up to the implementations to handle such cases.\r\n\r\nIt still behooves the specification, for each expression operator, to identify the runtime type errors that may occur, and how the response should be handled. For example, if the ordering operators `<`, `<=`, `>`, and `>=` were specified to be only valid for numbers, as in JMESPath, then other types would entail a type error. Possible responses could be to take out just the element currently being evaluated from the result set (as JMESPath specifies for this case), or to abort evaluation and return an entirely empty collection to the user.  \r\n\r\n",
+          "createdAt": "2021-09-10T20:17:37Z",
+          "updatedAt": "2021-09-10T20:33:17Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I've updated my library to use strict existence.  You can play with it at [json-everything.net/json-path](https://json-everything.net/json-path).\r\n\r\nHere's an example:\r\n\r\nPath\r\n```\r\n$[?(!@.name || @.name == 'abc')]\r\n```\r\n\r\nData\r\n```json\r\n[\r\n  {\r\n      \"id\": 1,\r\n      \"name\": \"abc\"\r\n  },\r\n  {\r\n      \"id\": 2\r\n  },\r\n  {\r\n      \"id\": 3,\r\n      \"name\": null\r\n  },\r\n  {\r\n      \"id\": 4,\r\n      \"name\": \"def\"\r\n  }\r\n]\r\n```\r\n\r\nResponse\r\n```\r\n[\r\n    {\"id\":1,\"name\":\"abc\"},\r\n    {\"id\":2}\r\n]\r\n```\r\n\r\nNote that the third item (id: 3) is not selected.  If we use truthiness, then this would be selected and there would be no way to select either the second or third item without selecting the other.",
+          "createdAt": "2021-09-11T07:51:38Z",
+          "updatedAt": "2021-09-11T22:34:49Z"
+        },
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "Great.  So with Greg's implementation, we now have two different implicit conversions:\r\n\r\n- using the result of a query expression in a Boolean context (?(), !, &&/||): empty node sets \u2794 false, non-empty \u2794 true\r\n- using the result of a query expression in a comparison (and I expect anywhere else): retrieve the value at \"the node\"\r\n\r\nI think we don't have a full grasp of the second alternative.  What if the query expression would have been `$..foo` (and there is more than one node in the nodeset)?\r\nWhat does it mean to compare an empty nodeset to anything?  Do we get `a == b` \u2263 `!( a != b)`?",
+          "createdAt": "2021-09-11T08:17:40Z",
+          "updatedAt": "2021-09-11T08:17:40Z"
+        },
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "Meta-comment: Obviously, I'd prefer to get rid of the implicit conversion (e.g., always use something like `exist(@.name)` as an explicit existence test).\r\nBut we want to support current practice here. \r\nI think we need to decide what current practice we can cover and what goes beyond what we can do.\r\nI think Greg's list of\r\n\r\n- [Filter Expression On Object](https://cburgmer.github.io/json-path-comparison/results/filter_expression_on_object.html)\r\n- [Filter Expression Without a Value](https://cburgmer.github.io/json-path-comparison/results/filter_expression_without_value.html)\r\n\r\nand the \"Proposal A\" in there is a very good start.\r\n",
+          "createdAt": "2021-09-11T08:22:19Z",
+          "updatedAt": "2021-09-11T08:22:19Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I don't mean for my library to be an indicator of what we should do. I thought it would be good to have something to play around with.  It's still in a 0.* version, so I don't mind changing behavior. I plan on keeping it in line with the spec or experimental based on our discussions.",
+          "createdAt": "2021-09-11T09:33:02Z",
+          "updatedAt": "2021-09-11T09:33:02Z"
         }
       ]
     }
