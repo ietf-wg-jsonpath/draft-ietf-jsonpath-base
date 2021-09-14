@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-09-12T01:04:17.029866+00:00",
+  "timestamp": "2021-09-14T01:05:37.008424+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -5177,7 +5177,7 @@
       "labels": [],
       "body": "Currently we have `$[?(@.foo)]` (I'm just going to use `@.foo` for brevity) to represent \"the item is an object and contains a `foo` property.\"  It also seems that some implementations evaluate the truthiness of the value of the `foo` property, if it exists, while others that accept the syntax interpret it to strictly consider existence.\r\n\r\nRelated comparison results:\r\n- [Filter Expression On Object](https://cburgmer.github.io/json-path-comparison/results/filter_expression_on_object.html)\r\n- [Filter Expression Without a Value](https://cburgmer.github.io/json-path-comparison/results/filter_expression_without_value.html)\r\n\r\nThere has also been an [email thread](https://mailarchive.ietf.org/arch/msg/jsonpath/yJEZ1bbdFt19qRAeHEoMqtB6jRg/) floating around discussing truthiness, but I wanted something a bit easier to read through than emails.\r\n\r\nOne aspect that I don't think has been considered in the email thread is the ability to consider strict existence.  On StackOverflow, [this](https://stackoverflow.com/questions/69069083/write-a-jsonpath-query-for-a-null-property-with-newtonsoft-json-net) and [this](https://stackoverflow.com/questions/69120789/how-to-get-the-result-which-has-not-the-property-with-jpath-in-the-newtonsoft) question both have asked about Newtonsoft's (.Net) support for this syntax, and the second seems to be asking specifically about detecting the _absense_ of a property as opposed to its presence with a `null` value.\r\n\r\nI think strict existence detection is an important feature to support, and if we move to have this syntax operate on truthiness, I fear we won't be able to support it.\r\n\r\nImportantly, I would suggest that regardless of the decision we make here, `!@.foo` should return the inverse set.\r\n",
       "createdAt": "2021-09-10T05:45:38Z",
-      "updatedAt": "2021-09-11T22:34:49Z",
+      "updatedAt": "2021-09-14T00:06:42Z",
       "closedAt": null,
       "comments": [
         {
@@ -5316,13 +5316,6 @@
         {
           "author": "danielaparker",
           "authorAssociation": "NONE",
-          "body": "> In the following cases of non-existence of object member `foo` we simply do not need to return its value:\r\n\r\n> But now with direct comparisons we need to convert its non-existence to a (boolean ?) value.\r\n> \r\nI don't think that's a useful way of presenting the problem.\r\n\r\nGenerally, as an expression evaluator evaluates the parse tree, it needs to evaluate the operands _before_ performing any unary or binary operations, including comparisons. Therefore, it needs to produce _something_ to represent the result of evaluating `@.foo`.  If we're using the Shunting-yard algorithm, for example, that something has to be pushed onto an output queue of values. In my case 1, that something would be a JSON null value; in my case 2, it would be an `undefined` value.  Another possibility would be an 'optional' type value with properties `HasValue` and `Value`. Of course, there are implementation details, but the basic point remains the same: how we think about `@.foo` doesn't change as we make our way through the parse tree.",
-          "createdAt": "2021-09-10T19:08:05Z",
-          "updatedAt": "2021-09-10T19:08:05Z"
-        },
-        {
-          "author": "danielaparker",
-          "authorAssociation": "NONE",
           "body": "> The spec requires to only treat syntax errors. No 'type not found' message is required or even recommended. It is up to the implementations to handle such cases.\r\n\r\nIt still behooves the specification, for each expression operator, to identify the runtime type errors that may occur, and how the response should be handled. For example, if the ordering operators `<`, `<=`, `>`, and `>=` were specified to be only valid for numbers, as in JMESPath, then other types would entail a type error. Possible responses could be to take out just the element currently being evaluated from the result set (as JMESPath specifies for this case), or to abort evaluation and return an entirely empty collection to the user.  \r\n\r\n",
           "createdAt": "2021-09-10T20:17:37Z",
           "updatedAt": "2021-09-10T20:33:17Z"
@@ -5354,6 +5347,48 @@
           "body": "I don't mean for my library to be an indicator of what we should do. I thought it would be good to have something to play around with.  It's still in a 0.* version, so I don't mind changing behavior. I plan on keeping it in line with the spec or experimental based on our discussions.",
           "createdAt": "2021-09-11T09:33:02Z",
           "updatedAt": "2021-09-11T09:33:02Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": "> If we use truthiness, then this would be selected and there would be no way to select either the second or third item without selecting the other.\r\n\r\n@gregsdennis , On a minor note, the statement \"If we use truthiness, then this would be selected\" is a non sequitur. Whether `{\"id\": 3, \"name\": null}` is selected depends on the rules the language designer chooses for determining whether an expression is `falsey` or `truthy`.  Different languages have adopted different rules. Different JSONPath implementations have adopted different rules, or have inherited them from dynamic languages that they use for evaluating expressions. You can of course have a view about what those rules ought to be. \r\n\r\nIf I understand your main point, you want `@.name` to mean something different than \"evaluate the expression \"@.name\" and then check whether the resulting value may be considered true or false\", as it does generally in dynamic languages such as Javascript. You want it to mean \"does `@` contain `name`\".\r\n\r\nI was interested in the case of document\r\n```\r\n[{\"name\": false}]\r\n```\r\nwith query\r\n```\r\n$[?(@.name)]\r\n```\r\nYour implementation returns\r\n```\r\n{\"name\":false}\r\n```\r\n\r\nI compared with a couple of implementations. Goessner Javascript returns no results, as I'd expect. But surprisingly (to me), Jayway returns the same result as yours. After seeing that, I had to go back and edit and tone down some of my original comments about your main point :-) \r\n\r\nI couldn't find a Christoph Burgmer's comparision that specifically covers this case. But [this one](https://cburgmer.github.io/json-path-comparison/results/filter_expression_without_value.html)  covers the `$[?(!@.name)]` case. This case suggest that six out of 42 implementations (including Jayway) behave the same as your's.  The number may be higher for `$[?(@.name)]`, as many implements can't handle the '!'. I don't agree with that result, because I don't think it's interesting to invent ways of evaluating expressions that are different from our dynamic languages and the textbooks. But it seems that some JSONPath implementations have taken this approach, and it warrants further investigation.\r\n\r\nBest regards,\r\nDaniel\r\n\r\n",
+          "createdAt": "2021-09-12T15:48:28Z",
+          "updatedAt": "2021-09-12T23:39:38Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think you found a bug in my implementation.  I definitely don't intend to select `name : false`.  I'll fix it later tonight and redeploy.",
+          "createdAt": "2021-09-12T23:50:49Z",
+          "updatedAt": "2021-09-12T23:50:49Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": "> I think you found a bug in my implementation. I definitely don't intend to select `name : false`. I'll fix it later tonight and redeploy.\r\n\r\nI think that result is consistent with how you've defined what `@.name` means. I expected it. What I didn't expect was that at least six implementations, including the important Jayway, have the same behaviour. I've submitted a pull request to the JSONPath Comparisons to get a more accurate count. ",
+          "createdAt": "2021-09-13T00:06:11Z",
+          "updatedAt": "2021-09-13T01:21:42Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "\ud83e\udd14 Well, that was not my intent.  I wanted `!@.name` to select an item _only_ if `name` doesn't exist.  This means a user would be forced to write `@.name == false` to match your case.\r\n\r\nI guess this is an option we can throw into the mix.  Suppose that we make `@.foo` attempt to return a value such that if the value is missing, it results in an internal \"undefined.\"  Given that concept, we have these three options:\r\n\r\n1. **`@.foo` is fully truthy.**  Evaluation of `@.foo` resulting in \"undefined,\" `null`, `false`, `0`, `\"\"`, `{}, or `[]` doesn't match; any other value does match.\r\n2. **`@.foo` is a pure existence test.**  Evaluation of `@.foo` resulting in \"undefined\" doesn't match; any value at all does match.  (what I intended)\r\n3. **`@.foo` operates as a query.**  Evaluation of `@.foo` resulting in \"undefined\" (because of existence) or `false` (because of boolean) doesn't match; any other value does match.  (what mine currently does)\r\n\r\nThe last option has the added benefit that `@.foo` would always operate as a query, whether it was by itself (e.g. `$[?(@.foo)]`) or part of a comparison (e.g. `$[?(@.foo == 2)]`).  In contrast, the first two options would give `@.foo` different meanings depending upon context.\r\n\r\nHonesly, I think any of these options are reasonable, as long as we define which we mean so that implementations can be consistent.  It wouldn't hurt to have a series of tests around this specific behavior, either.",
+          "createdAt": "2021-09-13T04:58:59Z",
+          "updatedAt": "2021-09-13T05:16:09Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": ">>>I was interested in the case of document `[{\"name\": false}]` \r\nwith query `$[?(@.name)]`  Your implementation returns `{\"name\":false}`\r\n\r\n> > I definitely don't intend to select `name : false`. \r\n> \r\n> I think that result is consistent with how you've defined what `@.name` means. I expected it. What I didn't expect was that at least six implementations, including the important Jayway, have the same behaviour. I've submitted a pull request to the JSONPath Comparisons to get a more accurate count.\r\n\r\nAnd [here](https://cburgmer.github.io/json-path-comparison/results/filter_expression_without_value.html) we have the results. \r\n\r\nTo summarize: 14 of 42 implementations will return `{\"name\":false}`. These include the Jayway implementation, which is probably second to Goessner as far as importance for JSONPath. Unsurprisingly, they exclude the implementations including Goessner JavaScript that use a \"real\" dynamic language such as JavaScript for evaluating expressions. \r\n\r\nPersonally, I don't agree with the 14, because I don't think it's interesting to invent ad hoc ways of evaluating expressions that are different from our dynamic languages and the textbooks. ",
+          "createdAt": "2021-09-13T12:36:40Z",
+          "updatedAt": "2021-09-13T12:52:57Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": "> > But if the evaluation of @.bar by itself should differ from when it appears in a binary expression, that would also be different from \"almost all\" existing implementations.\r\n> \r\n> Thanks for the reality check. I don't like truthy and falsey, but it looks like we are stuck with them.\r\n\r\n@glyn, It appears from [these results](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/119#issuecomment-918148025) that my remark that you're replying to is wrong. In fact 14 of 42 implementations do evaluate `@.bar` by itself differently than when it appears in a binary expression.",
+          "createdAt": "2021-09-14T00:06:41Z",
+          "updatedAt": "2021-09-14T00:06:41Z"
         }
       ]
     }
