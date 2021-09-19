@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-09-16T01:06:08.506135+00:00",
+  "timestamp": "2021-09-19T01:03:31.426372+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -5097,7 +5097,7 @@
       "labels": [],
       "body": "A new [StackOverflow question](https://stackoverflow.com/q/69069083/878701) highlights the need to define whether these two cases are the same or different:\r\n\r\n- a key missing\r\n- a key present but with `null` as a value\r\n\r\nI would expect that Javascript would handle these cases differently, but .Net generally wouldn't (it seems Newtonsoft has some special handling for this).\r\n\r\nPosed in a more direct, testable way, given the data\r\n\r\n```json\r\n[\r\n  {\r\n      \"id\": 2\r\n  }\r\n]\r\n```\r\n\r\nwould\r\n\r\n```\r\n$[?(@.foo==null)]\r\n```\r\n\r\nreturn any results?\r\n\r\n(related to #64 and #47)",
       "createdAt": "2021-09-06T05:14:17Z",
-      "updatedAt": "2021-09-15T18:53:27Z",
+      "updatedAt": "2021-09-17T00:47:10Z",
       "closedAt": null,
       "comments": [
         {
@@ -5169,6 +5169,69 @@
           "body": "> The latest draft seems to be pretty clear about that.\r\n> \r\n> https://ietf-wg-jsonpath.github.io/draft-ietf-jsonpath-base/draft-ietf-jsonpath-base.html#name-filter-selector\r\n> \r\n> Most of discussions were done in this pull request\r\n> \r\n> #111\r\n> \r\n> Am I missing something here?\r\n> \r\nWhat's missing, and what's missing generally in the draft, is any survey and analysis of prior experience in the great physical tarpit that is JSONPath. And if the purpose of this IETF effort really is to standardize existing practice, I think that's important. Of course, if that's not the purpose, than it doesn't matter, but everybody says that's the purpose.\r\n\r\nIt's not that the rules you've sketched here cannot be motivated by some prior experience, see e.g my analysis [here](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/119#issuecomment-919628694). 11 of 42 implementations, including two that may be considered important,  do follow this rule:\r\n\r\n[?(@.foo)] ... selected, if member foo exists.\r\n\r\nBut Goessner Javascript doesn't follow that rule. Nor do a significant number of others. \r\n\r\nIf the draft really is about standardizing existing behaviour, it seems to me that it needs to justify its choices with reference to prior experience.  Not just with what \"we\" (a handful of people) \"agreed\".\r\n",
           "createdAt": "2021-09-15T18:46:33Z",
           "updatedAt": "2021-09-15T18:53:27Z"
+        },
+        {
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "hmm ... in my original proposal I included (as already someone mentioned):\r\n\r\n```\r\n//book[isbn]   | $..book[?(@.isbn)]   |  filter all books with isbn number |\r\n```\r\nIt seems to be, this was of no significant relevance for existing implementations.",
+          "createdAt": "2021-09-16T07:26:19Z",
+          "updatedAt": "2021-09-16T07:26:19Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@goessner would your implementation match on `isbn: null`?",
+          "createdAt": "2021-09-16T08:25:15Z",
+          "updatedAt": "2021-09-16T08:25:15Z"
+        },
+        {
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "of course it would ... as I reused the Javascript engine for simplicity then.",
+          "createdAt": "2021-09-16T10:00:26Z",
+          "updatedAt": "2021-09-16T10:00:26Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": "@goessner, maybe I've misunderstood Greg's question, but  I think you meant to reply \"of course it wouldn't\". Using Goessner Javascript, and given the JSON document\r\n```\r\n{\r\n    \"store\": {\r\n        \"book\": [\r\n            {\r\n                \"isbn\" : null\r\n            }\r\n    ]\r\n  }\r\n}\r\n``` \r\nthe query\r\n```\r\n$..[?(@.isbn)]\r\n```\r\nreturns nothing. This is what we expect from JavaScript, and is consistent with the results reported [here](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/119#issuecomment-919628694).\r\n\r\nJayway (Java), on other other hand, returns \r\n```\r\n[\r\n   {\r\n      \"isbn\" : null\r\n   }\r\n]\r\n```",
+          "createdAt": "2021-09-16T13:40:06Z",
+          "updatedAt": "2021-09-16T14:54:52Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": "> hmm ... in my original proposal I included (as already someone mentioned):\r\n> \r\n> ```\r\n> //book[isbn]   | $..book[?(@.isbn)]   |  filter all books with isbn number |\r\n> ```\r\n> \r\n> It seems to be, this was of no significant relevance for existing implementations.\r\n\r\nI don't think any of the JSONPath implementations that use a dynamic language for evaluation, whether JavaScript,  PHP, Python, Ruby or Lua, evaluate `?(@.isbn)` that way. They all evaluate `@.isbn` first and then apply \"not falsey\" rules of one sort or another to the result. It's the textbook way for interpreting an expression. That's a lot of implementations, including the original.\r\n\r\nOn the other hand a significant number of (not all) implementations that implemented their own expression evaluators do evaluate  `?(@.isbn)` that way, including Jayway JsonPath. It's messier to implement it this way because it's not following the textbook evaluation patterns. Jayway does it by treating `@.isbn` as a recoverable error if isbn is missing, and handling that error to allow other terms being evaluated to continue. \r\n\r\n  ",
+          "createdAt": "2021-09-16T14:32:21Z",
+          "updatedAt": "2021-09-16T15:19:19Z"
+        },
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "\r\n> If the draft really is about standardizing existing behaviour, it seems to me that it needs to justify its choices with reference to prior experience. Not just with what \"we\" (a handful of people) \"agreed\".\r\n\r\nThe charter is quite specific:\r\n\r\n> The WG will develop a standards-track JSONPath specification that\r\nis technically sound and complete, based on the common semantics\r\nand other aspects of existing implementations. Where there are\r\ndifferences, the working group will analyze those differences and\r\nmake choices that rough consensus considers technically best, with\r\nan aim toward minimizing disruption among the different JSONPath\r\nimplementations.\r\n\r\nSince we do have those differences here, we are asked to consider what is \"technically best\", but \"with an aim toward minimizing disruption\".  This seems clear to me, and I think our charter writers did a very good job here.\r\n",
+          "createdAt": "2021-09-16T15:00:20Z",
+          "updatedAt": "2021-09-16T15:00:20Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": "> Since we do have those differences here, we are asked to consider what is \"technically best\", but \"with an aim toward minimizing disruption\". This seems clear to me, and I think our charter writers did a very good job here.\r\n\r\nI think it's hard to make a case that the draft is doing much to minimize disruption.\r\n\r\nOn the one hand, it's becoming incompatible with all of the implementations that use a dynamic language such as Javascript, PHP, Python, Ruby or Lua for evaluating expressions. For users of such implementations, having an expression language in their familiar language, with all of the functions that that language provides, is part of the appeal of these implementations. The users of these implementations all have a `normalize-unicode` function equivalent for comparing strings, and much else. These users don't care about interoperability, they care about familiarity and expressiveness.\r\n\r\nOn the other hand, the WG is sketching out an expression language that is different from the expression languages that were developed by other implementations mostly following Jayway Java. These expression languages specified `@.relative-path` as a JSONPath expression, with rules for \"ExecuteSingle\" to produce a single value for use in comparisons. `@.` means something different in the draft, where it's not a JSONPath expression. But Jayway Java is integrated into legacy Java enterprise software, and cannot change.\r\n\r\nIt seems to me that the draft is departing from both streams of JSONPath that evolved from the original article. I don't see anything in the draft that suggests that the editors consider prior experience important. There is no text in the draft that discusses the important implementations, and which features were motivated by one, which from another, and which are new or refinements.\r\n\r\nAnyway, I realize that nobody here is interested in this topic, no doubt for the obvious reason :-) \r\n",
+          "createdAt": "2021-09-16T19:47:52Z",
+          "updatedAt": "2021-09-16T20:14:11Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Daniel wrote:\n> I don't see anything in the draft that suggests that the editors consider\nprior experience important. There is no text in the draft that discusses\nthe important implementations,\n> and which features were motivated by one, which from another, and which\nare new or refinements.\n\nI consider prior experience to be very important and I'm sure Stefan does\ntoo. However, I am not sure to what extent the spec should reference\nparticular implementations since such references will not necessarily stand\nthe test of time. Perhaps an appendix is the way to do it, in which case,\nplease feel free to submit a PR to help lead the way forward. Editors need\nnot be the only authors.\n\n>\n\n> Anyway, I realize that nobody here is interested in this topic, no doubt\nfor the obvious reason :-)\n\nNot so.\n\nOn Thu, 16 Sept 2021 at 20:48, Daniel Parker ***@***.***>\nwrote:\n\n> Since we do have those differences here, we are asked to consider what is\n> \"technically best\", but \"with an aim toward minimizing disruption\". This\n> seems clear to me, and I think our charter writers did a very good job here.\n>\n> I think it's hard to make a case that the draft is doing much to minimize\n> disruption.\n>\n> On the one hand, it's becoming incompatible with all of the\n> implementations that use a dynamic language such as Javascript, PHP,\n> Python, Ruby or Lua for evaluating expressions. For users of such\n> implementations, having an expression language in their familiar language,\n> with all of the functions that that language provides, is part of the\n> appeal of these implementations.\n>\n> On the other hand, the WG is sketching out an expression language that is\n> different from the expression languages that were developed by other\n> implementations mostly following Jayway. These expression languages\n> specified @.relative-path as a JSONPath expression, with rules for\n> \"ExecuteSingle\" to produce a single value for use in comparisons. @.\n> means something different in the draft, where it's not a JSONPath\n> expression.\n>\n> It seems to me that the draft is departing from both streams of JSONPath\n> that evolved from the original article. I don't see anything in the draft\n> that suggests that the editors consider prior experience important. There\n> is no text in the draft that discusses the important implementations, and\n> which features were motivated by one, which from another, and which are new\n> or refinements.\n>\n> Anyway, I realize that nobody here is interested in this topic, no doubt\n> for the obvious reason :-)\n>\n> \u2014\n> You are receiving this because you are subscribed to this thread.\n> Reply to this email directly, view it on GitHub\n> <https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/118#issuecomment-921196950>,\n> or unsubscribe\n> <https://github.com/notifications/unsubscribe-auth/AAAXF2OMWFKBT5DNTHL3FULUCJCXHANCNFSM5DPUZ5FA>\n> .\n> Triage notifications on the go with GitHub Mobile for iOS\n> <https://apps.apple.com/app/apple-store/id1477376905?ct=notification-email&mt=8&pt=524675>\n> or Android\n> <https://play.google.com/store/apps/details?id=com.github.android&referrer=utm_campaign%3Dnotification-email%26utm_medium%3Demail%26utm_source%3Dgithub>.\n>\n>\n",
+          "createdAt": "2021-09-16T20:38:48Z",
+          "updatedAt": "2021-09-16T20:38:48Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I agree that such references do not belong in the main text of the spec. An appendix is okay. I'd I had my way, if have a separate companion doc that summarized individual decisions and the reasoning behind them.  Such a document would be a natural place to include references to behaviors in existing implementations.",
+          "createdAt": "2021-09-17T00:46:57Z",
+          "updatedAt": "2021-09-17T00:47:10Z"
         }
       ]
     },
@@ -5403,6 +5466,109 @@
           "body": "The table below shows the \"falsey\" conditions for each of 42 implementations covered in the JSONPath Comparisons, inferred from [this query](https://cburgmer.github.io/json-path-comparison/results/filter_expression_without_value.html). In this test the selector `$[?(@.key)]` is applied to a JSON array containing an assortment of objects with a single name value pair. Important implementations are labelled in boldface.\r\n\r\nThe column labelled \"n/a\" is checked if the implementation is unable to evaluate `$[?(@.key)]`, or if it returns no results. The column labelled \"Key exists\" is checked if the implementation returns all objects that have a name \"key\". The remaining columns correspond to \"falsey\" conditions on values.\r\n\r\nFifteen implementations are unable to evaluate `$[?(@.key)]`, or return no results. Eleven return all objects that have a name \"key\", regardless of value. One returns all objects that have a name \"key\", unless the value is null. The remaining 15 return results that satisfy \"not false\" conditions on values that range from simple (not false, or neither false or null), to weird (excluding if values are strings or negative numbers).\r\n\r\nTwelve implementations evaluating  `$[?(@.key)]` will select `{\"key\":false}`. Eleven do so because they select all objects that have name \"key\" regardless of value, and one (Clojure) does so because it only refuses values of `null`. \r\n\r\nImplementation|n/a|Key exists|null|false|false, null|false, null, \"\", [], {}|false, null, \"\", [], {}, 0|false, null, string, [], {} , 0|false, null, 0, \"\"|false, null, 0, negative number|false, null, 0, \"\"|false, null, 0, \"\", []|\r\n--------------|-----------|-------|--------------|-------------|--------------------|----------------------------|------------------------------|----------------------------------|------------------------|----------------------------|---------------------------|-------------------------------|\r\nBash (JSONPath.sh)                    |<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\nC (json-glib)                         |<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\nDart (json_path)                      |<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\nElixir (ExJsonPath)                   |<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\nGolang (github.com-ohler55-ojg)       |<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\nGolang (github.com-oliveagle-jsonpath)|<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\nHaskell (jsonpath)                    |<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\nKotlin (com.nfeld.jsonpathkt)         |<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\nPython (jsonpath-ng)                  |<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\nPython (jsonpath-rw)                  |<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\nRaku (JSON-Path)                      |<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\nRust (jsonpath)                       |<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\nPHP (Goessner)                        |<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\nPerl (JSON-Path)                      |<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\ndotNET (JsonPathLib)                  |<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\nElixir (warpath)                              |&nbsp;|<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\nErlang (ejsonpath)                            |&nbsp;|<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\nGolang (github.com-vmware-labs-yaml-jsonpath) |&nbsp;|<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\nJava (com.github.jsurfer)                     |&nbsp;|<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\n__Java (com.jayway.jsonpath)__                    |&nbsp;|<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\nObjective-C (SMJJSONPath)                     |&nbsp;|<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\nPHP (remorhaz-jsonpath)                       |&nbsp;|<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\nRust (jsonpath_lib)                           |&nbsp;|<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\nScala (jsonpath)                              |&nbsp;|<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\n__dotNET (Json.NET)__                             |&nbsp;|<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\ndotNET (JsonPath.Net)                         |&nbsp;|<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\nClojure (json-path)                   |&nbsp;|&nbsp;|<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\nPHP (galbar-jsonpath)                         |&nbsp;|&nbsp;|&nbsp;|<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;| \r\ndotNET (Manatee.Json)                         |&nbsp;|&nbsp;|&nbsp;|<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\nRuby (jsonpath)                               |&nbsp;|&nbsp;|&nbsp;|&nbsp;|<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;| \r\nCpp (jsoncons)                                |&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;| \r\ndotNET (JsonCons.JsonPath)                    |&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;| \r\nGolang (github.com-spyzhov-ajson)    |&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;| \r\nPython (jsonpath)                    |&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;| \r\nGolang (github.com-PaesslerAG-jsonpath) |&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|&nbsp;|\r\nGolang (github.com-bhmj-jsonslice)             |&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|\r\nGolang (github.com-bhmj-jsonslice)             |&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|<em>&#x2713;</em>|&nbsp;|&nbsp;|&nbsp;|\r\n__JavaScript (Goessner)__                   |&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|<em>&#x2713;</em>|&nbsp;|    \r\nJavaScript (brunerd)                    |&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|<em>&#x2713;</em>|&nbsp;|\r\nJavaScript (jsonpath)                   |&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|<em>&#x2713;</em>|&nbsp;|\r\nJavaScript (jsonpath-plus)              |&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|<em>&#x2713;</em>|&nbsp;|\r\nPHP (softcreatr-jsonpath)               |&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|<em>&#x2713;</em>|\r\n",
           "createdAt": "2021-09-15T01:36:32Z",
           "updatedAt": "2021-09-15T09:54:48Z"
+        }
+      ]
+    },
+    {
+      "number": 120,
+      "id": "I_kwDOEIqrgc47glav",
+      "title": "`regex-expr` and `contain-expr` are missing lhs",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/120",
+      "state": "OPEN",
+      "author": "cabo",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [],
+      "body": "While this may be a bit premature as long as we don't know what the rhs of contain-expr should be, it is missing its lhs.\r\n\r\n```\r\ncontain-expr = in-op container\r\nin-op        = \" in \"                                 ; in operator\r\n```\r\n\r\n*What* is in the container?",
+      "createdAt": "2021-09-16T16:20:13Z",
+      "updatedAt": "2021-09-17T10:06:20Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "Oh, and the same with `regex-expr`:\r\n\r\n```\r\nregex-expr   = regex-op regex\r\n```\r\n",
+          "createdAt": "2021-09-16T16:21:59Z",
+          "updatedAt": "2021-09-16T16:21:59Z"
+        },
+        {
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Well ... good point. Starting with these examples:\r\n```\r\n@.color in [\"red\",\"green\",\"blue\"]\r\n@.color in $.colors\r\n$.color in @.colors\r\n\"color\" in @.colors\r\n\"color\" in @\r\n@.index in [2,4,7]\r\n@.index in $.indices\r\n$.index in @.indices\r\n42 in @.indices\r\n42 in @\r\n```\r\n* lhs is restricted to a primitive value (possibly only number and string). lhs holding a complex value will fail, i.e. no selection occurs.\r\n* rhs must be resolved to a complex value (array or object).  rhs holding a simple value will fail, i.e. no selection occurs.\r\n\r\nGiven this we have something like this ...\r\n```\r\ncontain-expr = (rel-path-val / json-path / number / string-literal) in-op container\r\ncontainer =  (rel-path-val / json-path / array-literal)\r\n```\r\n... as a starting proposal.\r\n",
+          "createdAt": "2021-09-17T08:57:19Z",
+          "updatedAt": "2021-09-17T08:57:19Z"
+        },
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "(From 2012-09-17 interim:)\r\nSo we would have syntax for array literals composed of primitive values only (subset of JSON array literals); other JSON array literals cause a syntax error.  (Empty array literals should be allowed to simplify code generation.)\r\nA LHS evaluating to a complex value would not match.\r\nThe path on the RHS may also yield an array, we would match against every single element of that like we would match against a literal array.\r\nExample: `\"color\" in @.colors`\r\n\r\ntending towards consensus on:\r\n`@.color in $.colors`\r\nif $.colors is an array of structured values, @.color is a single structured value?\r\n\u2794 only match primitive values from the LHS (counterintuitive!?)\r\n`@.color` = [128, 255, 17] \u2794 no selection \r\neven if `$.color` = [[128, 255, 17], [1, 2, 3]]\r\n(we cannot avoid structured data to turn up in a query, but we don't match)\r\nAvoid deep equals!  (We already avoid it in simple comparisons.)\r\n",
+          "createdAt": "2021-09-17T10:03:24Z",
+          "updatedAt": "2021-09-17T10:06:20Z"
+        }
+      ]
+    },
+    {
+      "number": 121,
+      "id": "I_kwDOEIqrgc47gmVw",
+      "title": "blank space in ABNF",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/121",
+      "state": "OPEN",
+      "author": "cabo",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [
+        "task"
+      ],
+      "body": "From the document:\r\n\r\n> Task (T1): This, besides slice-index, is currently one of only two\r\n> places in the document that mentions whitespace.  Whitespace needs\r\n> to be handled throughout the ABNF syntax.  Room Consensus at the\r\n> 2021-06-15 interim was that JSONPath generally is generous with\r\n> allowing insignificant whitespace throughout.  Minimizing the impact\r\n> of the many whitespace insertion points by choosing a rule name such\r\n> as \"S\" was mentioned.  Some conventions will probably help with\r\n> minimizing the number of places where S needs to be inserted.\r\n\r\n(whitespace is now generally called blank space, but that doesn't change the work to be done.)\r\n",
+      "createdAt": "2021-09-16T16:24:38Z",
+      "updatedAt": "2021-09-16T16:36:47Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 122,
+      "id": "I_kwDOEIqrgc47jjwk",
+      "title": "Nodeslists on RHS of in-op",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/122",
+      "state": "OPEN",
+      "author": "cabo",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [],
+      "body": "(Spin-off from #120:)\r\n\r\nDiscuss:\r\n`@.color in $..allowed_color`\r\nWe make sure that the paths on the LHS only yield a single node; the paths on the RHS may yield multiple nodes and the nodelist is examined like a JSON array would be.\r\n\\[How do we distinguish these cases?]\r\n\u2794 disallow paths that can yield multiple nodes on the in-op RHS as well.",
+      "createdAt": "2021-09-17T10:04:11Z",
+      "updatedAt": "2021-09-17T10:04:11Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 123,
+      "id": "I_kwDOEIqrgc47jost",
+      "title": "Is absent equal to absent?",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/123",
+      "state": "OPEN",
+      "author": "cabo",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [],
+      "body": "If yes,\r\n\r\n`@.doesnotexist != @.alsodoesnotexist` \r\n\r\nis false.\r\n\r\nNeed to discuss impact on >, >=, etc.\r\n\r\nSee also:\r\nhttps://notes.ietf.org/notes-ietf-interim-2021-jsonpath-03-jsonpath",
+      "createdAt": "2021-09-17T10:26:28Z",
+      "updatedAt": "2021-09-17T14:26:17Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "cburgmer",
+          "authorAssociation": "NONE",
+          "body": "I've extended the query which compares two paths via equals to include absent keys: https://cburgmer.github.io/json-path-comparison/results/filter_expression_with_equals_with_path_and_path.html. No consensus, not even a majority at this point.",
+          "createdAt": "2021-09-17T14:03:05Z",
+          "updatedAt": "2021-09-17T14:03:05Z"
+        },
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "... which is not necessarily a problem: I gives us more leeway to nail down something sane (if we want to).\r\n",
+          "createdAt": "2021-09-17T14:26:17Z",
+          "updatedAt": "2021-09-17T14:26:17Z"
         }
       ]
     }
