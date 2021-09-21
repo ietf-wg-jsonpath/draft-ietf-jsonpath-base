@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-09-19T01:03:31.426372+00:00",
+  "timestamp": "2021-09-21T01:03:51.924783+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -5553,7 +5553,7 @@
       "labels": [],
       "body": "If yes,\r\n\r\n`@.doesnotexist != @.alsodoesnotexist` \r\n\r\nis false.\r\n\r\nNeed to discuss impact on >, >=, etc.\r\n\r\nSee also:\r\nhttps://notes.ietf.org/notes-ietf-interim-2021-jsonpath-03-jsonpath",
       "createdAt": "2021-09-17T10:26:28Z",
-      "updatedAt": "2021-09-17T14:26:17Z",
+      "updatedAt": "2021-09-20T14:16:18Z",
       "closedAt": null,
       "comments": [
         {
@@ -5569,6 +5569,13 @@
           "body": "... which is not necessarily a problem: I gives us more leeway to nail down something sane (if we want to).\r\n",
           "createdAt": "2021-09-17T14:26:17Z",
           "updatedAt": "2021-09-17T14:26:17Z"
+        },
+        {
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "... with JavaScript ...\r\n```js\r\nconst o = {};\r\no.a === o.b;  // true\r\n```\r\ndue to ` undefined === undefined`.",
+          "createdAt": "2021-09-20T14:16:18Z",
+          "updatedAt": "2021-09-20T14:16:18Z"
         }
       ]
     }
