@@ -1066,9 +1066,11 @@ regex-expr   = regex-op regex
 regex-op     = "=~"                                   ; regular expression match
 regex        = <TO BE DEFINED>
 
-contain-expr = in-op container
+contain-expr = containable in-op container
+containable  = rel-path / json-path /                 ; path to primitive value 
+               number / string-literal
 in-op        = " in "                                 ; in operator
-container = <TO BE DEFINED>
+container    = rel-path / json-path / array-literal   ; resolves to array
 ~~~~
 
 Notes:
@@ -1078,9 +1080,10 @@ Notes:
 <!-- issue: comparison with structured value -->
 * Types are not implicitly converted in comparisons.
   So `"13 == '13'"` selects no node.
-* A member or element value by itself is *falsy* only, if it does not exist. Otherwise it is *truthy*, resulting in its value. To be more specific explicit comparisons are necessary. This existence test — as an exception of the general rule — also works with complex values.
+* A member or element value by itself is *falsy* only, if it does not exist. Otherwise it is *truthy*, resulting in its value. To be more specific explicit comparisons are necessary. This existence test — as an exception of the general rule — also works with structured values.
 * Regular expression tests can be applied to `string` values only.
-* Containment tests work with arrays and objects.
+* The value of the first operand (`containable`) of a `contain-expr` is compared to every single element of the RHS `container`. In case of a match a selection occurs. Containment tests — like comparisons — are restricted to primitive values. So even if a structured `containable` value is equal to a certain structured value in `container`, no selection is done.
+* The value of the second operand (`container`) of a `contain-expr` needs to be resolved to an array. Otherwise nothing is selected.
 
 The following table lists filter expression operators in order of precedence from highest (binds most tightly) to lowest (binds least tightly).
 
@@ -1090,7 +1093,7 @@ The following table lists filter expression operators in order of precedence fro
 |  4  | Logical NOT | `!` |
 |  3  | Relations | `==`&nbsp;`!=`<br>`<`&nbsp;`<=`&nbsp;`>`&nbsp;`>=`<br>`=~`<br>` in ` |
 |  2  | Logical AND | `&&` |
-|  1  | Logical OR | `||` |
+|  1  | Logical OR | `\|\|` |
 {: title="Filter expression operator precedence" }
 
 #### Semantics
