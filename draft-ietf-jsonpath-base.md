@@ -1083,7 +1083,7 @@ Notes:
 * A member or element value by itself is *falsy* only, if it does not exist. Otherwise it is *truthy*, resulting in its value. To be more specific explicit comparisons are necessary. This existence test — as an exception of the general rule — also works with structured values.
 * Regular expression tests can be applied to `string` values only.
 * The value of the first operand (`containable`) of a `contain-expr` is compared to every single element of the RHS `container`. In case of a match a selection occurs. Containment tests — like comparisons — are restricted to primitive values. So even if a structured `containable` value is equal to a certain structured value in `container`, no selection is done.
-* The value of RHS `container` of a `contain-expr` needs to be resolved to an array. Otherwise nothing is selected.
+* The value of the second operand (`container`) of a `contain-expr` needs to be resolved to an array. Otherwise nothing is selected.
 
 The following table lists filter expression operators in order of precedence from highest (binds most tightly) to lowest (binds least tightly).
 
