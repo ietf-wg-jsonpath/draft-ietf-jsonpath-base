@@ -97,12 +97,6 @@ informative:
     seriesinfo:
       ISO/IEC 22537:2006
     date: 2006
-  E4X-overview:
-    title: >
-      Proposed ECMAScript 4 Edition — Language Overview
-    author:
-    - org: Adobe Systems Inc., The Mozilla Foundation, Opera Software ASA, and others
-    date: 2007
   SLICE:
     target: https://github.com/tc39/proposal-slice-notation
     title: Slice notation
@@ -161,7 +155,7 @@ document. Path is a query syntax that can also be used to pull multiple location
 
 ## Terminology
 
-{::boilerplate bcp14}
+{::boilerplate bcp14-tagged}
 
 The grammatical rules in this document are to be interpreted as ABNF,
 as described in {{-abnf}}.
@@ -1067,7 +1061,7 @@ regex-op     = "=~"                                   ; regular expression match
 regex        = <TO BE DEFINED>
 
 contain-expr = containable in-op container
-containable  = rel-path / json-path /                 ; path to primitive value 
+containable  = rel-path / json-path /                 ; path to primitive value
                number / string-literal
 in-op        = " in "                                 ; in operator
 container    = rel-path / json-path / array-literal   ; resolves to array
