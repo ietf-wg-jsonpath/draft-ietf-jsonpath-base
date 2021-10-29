@@ -118,15 +118,13 @@ normative:
 JSONPath defines a string syntax for identifying values
 within a JavaScript Object Notation (JSON) document.
 
---- note_Contributing
+--- to_be_removed_note_Discussion_Venues
 
-This document picks up the popular JSONPath specification dated
-2007-02-21 and provides a normative definition for it.
-In its current state, it is a strawman document showing what needs to
-be covered.
-
-Comments and issues may be directed to this document's
-[github repository](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-jsonpath).
+Discussion of this document takes place on the
+JSON Path Working Group mailing list (jsonpath@ietf.org),
+which is archived at <https://mailarchive.ietf.org/arch/browse/jsonpath/>.
+Source for this draft and an issue tracker can be found at
+<https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-jsonpath>.
 
 --- middle
 
