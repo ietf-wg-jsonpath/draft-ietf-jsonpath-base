@@ -116,7 +116,7 @@ normative:
 --- abstract
 
 JSONPath defines a string syntax for identifying values
-within a JavaScript Object Notation (JSON) document.
+within a JavaScript Object Notation (JSON, RFC 8259) value.
 
 --- to_be_removed_note_Discussion_Venues
 
@@ -137,19 +137,20 @@ Source for this draft and an issue tracker can be found at
 
 # Introduction
 
-This document picks up the popular JSONPath specification dated
-2007-02-21 {{JSONPath-orig}} and provides a normative definition for it.
-In its current state, it is a strawman document showing what needs to
-be covered.
-
-JSON is defined by {{RFC8259}}.
+JavaScript Object Notation (JSON, {{-json}}) is a popular representation
+format for structured data values.
+JSONPath defines a string syntax for identifying values
+within a JSON value.
 
 JSONPath is not intended as a replacement, but as a more powerful
-companion, to JSON Pointer {{RFC6901}}. \[insert reference to section
-where the relationship is detailed.  The purposes of the two syntaxes
-are different. Pointer is for isolating a single location within a
-document. Path is a query syntax that can also be used to pull multiple locations.]
+companion, to JSON Pointer {{RFC6901}}. [^json-pointer-missing]
 
+[^json-pointer-missing]:
+    Insert reference to section where the relationship is detailed.
+    The purposes of the two syntaxes are different.
+    Pointer is for isolating a single location within a document.
+    Path is a query syntax that can also be used to pull multiple
+    locations.
 
 ## Terminology
 
