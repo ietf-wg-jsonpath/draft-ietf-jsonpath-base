@@ -97,12 +97,6 @@ informative:
     seriesinfo:
       ISO/IEC 22537:2006
     date: 2006
-  E4X-overview:
-    title: >
-      Proposed ECMAScript 4 Edition — Language Overview
-    author:
-    - org: Adobe Systems Inc., The Mozilla Foundation, Opera Software ASA, and others
-    date: 2007
   SLICE:
     target: https://github.com/tc39/proposal-slice-notation
     title: Slice notation
@@ -122,17 +116,15 @@ normative:
 --- abstract
 
 JSONPath defines a string syntax for identifying values
-within a JavaScript Object Notation (JSON) document.
+within a JavaScript Object Notation (JSON, RFC 8259) value.
 
---- note_Contributing
+--- to_be_removed_note_Discussion_Venues
 
-This document picks up the popular JSONPath specification dated
-2007-02-21 and provides a normative definition for it.
-In its current state, it is a strawman document showing what needs to
-be covered.
-
-Comments and issues may be directed to this document's
-[github repository](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-jsonpath).
+Discussion of this document takes place on the
+JSON Path Working Group mailing list (jsonpath@ietf.org),
+which is archived at <https://mailarchive.ietf.org/arch/browse/jsonpath/>.
+Source for this draft and an issue tracker can be found at
+<https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-jsonpath>.
 
 --- middle
 
@@ -145,23 +137,24 @@ Comments and issues may be directed to this document's
 
 # Introduction
 
-This document picks up the popular JSONPath specification dated
-2007-02-21 {{JSONPath-orig}} and provides a normative definition for it.
-In its current state, it is a strawman document showing what needs to
-be covered.
-
-JSON is defined by {{RFC8259}}.
+JavaScript Object Notation (JSON, {{-json}}) is a popular representation
+format for structured data values.
+JSONPath defines a string syntax for identifying values
+within a JSON value.
 
 JSONPath is not intended as a replacement, but as a more powerful
-companion, to JSON Pointer {{RFC6901}}. \[insert reference to section
-where the relationship is detailed.  The purposes of the two syntaxes
-are different. Pointer is for isolating a single location within a
-document. Path is a query syntax that can also be used to pull multiple locations.]
+companion, to JSON Pointer {{RFC6901}}. [^json-pointer-missing]
 
+[^json-pointer-missing]:
+    Insert reference to section where the relationship is detailed.
+    The purposes of the two syntaxes are different.
+    Pointer is for isolating a single location within a document.
+    Path is a query syntax that can also be used to pull multiple
+    locations.
 
 ## Terminology
 
-{::boilerplate bcp14}
+{::boilerplate bcp14-tagged}
 
 The grammatical rules in this document are to be interpreted as ABNF,
 as described in {{-abnf}}.
@@ -1067,7 +1060,7 @@ regex-op     = "=~"                                   ; regular expression match
 regex        = <TO BE DEFINED>
 
 contain-expr = containable in-op container
-containable  = rel-path / json-path /                 ; path to primitive value 
+containable  = rel-path / json-path /                 ; path to primitive value
                number / string-literal
 in-op        = " in "                                 ; in operator
 container    = rel-path / json-path / array-literal   ; resolves to array
