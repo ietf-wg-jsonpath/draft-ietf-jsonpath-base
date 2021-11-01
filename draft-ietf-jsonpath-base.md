@@ -207,6 +207,18 @@ Node:
 Root Node:
 : The unique node whose value is the entire argument.
 
+Children (of a node):
+: If the node is an array, each of its elements,
+  or if the node is an object, each its member values (but not its
+  member names).
+
+Descendants (of a node):
+: The node itself, plus the descendants of each of its children. [^or-self]
+
+[^or-self]: Note that this is often more selectively called descendant-or-self.
+    Should we define descendants non-inclusive of the node itself?
+    We do have the language to say "node + descendants" in several places.
+
 Nodelist:
 : A list of nodes.  <!-- ordered list?  Maybe TBD by issues #27 and #60 -->
   The output of applying a query to an argument is manifested as a list of nodes.
@@ -944,8 +956,7 @@ descendant-selector = ".." ( dot-member-name      /  ; ..<name>
 #### Semantics
 {: unnumbered}
 
-The `descendant-selector` is inspired by ECMAScript for XML (E4X).
-It selects the node and all its descendants.
+The `descendant-selector` selects the node and all its descendants.
 
 ### Union Selector
 
