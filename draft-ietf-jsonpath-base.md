@@ -233,61 +233,37 @@ may also be referred to as the type of the node.)
 
 A query is applied to an argument, and the output is a nodelist.
 
-## Inspired by XPath
+## History
 
-A frequently emphasized advantage of XML is the availability of
-powerful tools to analyse, transform and selectively extract data from
-XML documents.
-{{XPath}} is one of these tools.
+This document picks up Stefan Gössner's popular JSONPath specification
+dated 2007-02-21 {{JSONPath-orig}} and provides a normative definition
+for it.
 
-In 2007, the need for something solving the same class of problems for
-the emerging JSON community became apparent, specifically for:
+{{inspired-by-xpath}} provides a brief synopsis with XML's XPath
+[XPath], which was the inspiration that led to the definition of
+JSONPath.
 
-* Finding data interactively and extracting them out of {{-json}}
-  JSON values without special scripting.
-* Specifying the relevant parts of the JSON data in a request by a
-  client, so the server can reduce the amount of data in its response,
-  minimizing bandwidth usage.
+JSONPath was intended as a light-weight companion to JSON
+implementations on platforms such as PHP and JavaScript, so instead of
+defining its own expression language like XPath did, JSONPath
+delegated this to the expression language of the platform.
+While the languages in which JSONPath is used do have significant
+commonalities, over time this caused non-portability of JSONPath
+expressions between the ensuing platform-specific dialects.
 
-So what does such a tool look like for JSON?
-When defining a JSONPath, how should expressions look?
-
-The XPath expression
-
-~~~~
-/store/book[1]/title
-~~~~
-
-looks like
-
-~~~~
-x.store.book[0].title
-~~~~
-
-or
-
-~~~~
-x['store']['book'][0]['title']
-~~~~
-
-in popular programming languages such as JavaScript, Python and PHP,
-with a variable x holding the argument.  Here we observe that
-such languages already have a fundamentally XPath-like feature built
-in.
-
-The JSONPath tool in question should:
-
-* be naturally based on those language characteristics.
-* cover only essential parts of XPath 1.0.
-* be lightweight in code size and memory consumption.
-* be runtime efficient.
+The present specification intends to remove platform dependencies and
+server as a common JSONPath specification that can be used across
+platforms.  Obviously, this means that backwards compatibility could
+not always be achieved; a design principle of this specification is to
+go with a "consensus" between implementations even if it is rough, as
+long as that does not jeopardize the objective of obtaining a usable,
+stable JSON query language.
 
 ## Overview of JSONPath Expressions {#overview}
 
-JSONPath expressions always apply to a value in the same way
-as XPath expressions are used in combination with an XML document.
-Since a value is anonymous, JSONPath uses the abstract name `$` to
-refer to the root node of the argument.
+JSONPath expressions are applied to a JSON value, the *argument*.
+Within the JSONPath expression, the abstract name `$` is used to refer
+to the *root node* of the argument, i.e., to the argument as a whole.
 
 JSONPath expressions can use the *dot notation*
 
@@ -301,69 +277,59 @@ or the *bracket notation*
 $['store']['book'][0]['title']
 ~~~~
 
-for paths input to a JSONPath processor.
-\[1]
-Where a JSONPath processor uses JSONPath expressions as output paths,
-these will always be converted to Output Paths
-which employ the more general *bracket notation*.
-\[2]
+to build paths that are input to a JSONPath processor.
 Bracket notation is more general than dot notation and can serve as a
-canonical form when a JSONPath processor uses JSONPath expressions as
-output paths.
+canonical form (for instance, when a JSONPath processor uses JSONPath
+expressions as output paths).
 
+JSONPath allows the wildcard symbol `*` to select any member of an
+object or any element of an array ({{wildcard}}).
+The descendant operator `..` selects the node and all its descendants ({{descendant-selector}}).
+The array slice
+syntax `[start:end:step]` allows selecting a regular selection of an
+element from an array, giving a start position, an end position, and
+possibly a step value that moves the position from the start to the
+end ({{slice}}).
 
-JSONPath allows the wildcard symbol `*` for member names and array
-indices. It borrows the descendant operator `..` from {{E4X}} and
-the array slice syntax proposal `[start:end:step]` {{SLICE}} from ECMASCRIPT 4.
-
-JSONPath was originally designed to employ an *underlying scripting
-language* for computing expressions.  The present specification
+JSONPath employs an *expression language* for computing values and
+making decisions.  The present specification
 defines a simple expression language that is independent from any
 scripting language in use on the platform.
-
-JSONPath can use expressions, written in parentheses: `(<expr>)`, as
-an alternative to explicit names or indices as in:
+JSONPath can use such expression language expressions, written in
+parentheses: `(<expr>)`, as an alternative to explicit names or
+indices as in [^no-dot-length]:
 
 ~~~~
 $.store.book[(@.length-1)].title
 ~~~~
 
-The symbol `@` is used for the current node.
+[^no-dot-length]: We probably want to use an expression that does not use `.length`.
+
+The symbol `@` is used for the current node, i.e., the node in the
+context of which the expression is evaluated.
+
 Filter expressions are supported via the syntax `?(<boolean expr>)` as in
 
 ~~~~
 $.store.book[?(@.price < 10)].title
 ~~~~
 
-Here is a complete overview and a side by side comparison of the JSONPath syntax elements with their XPath counterparts.
+{{tbl-overview}} provides a quick overview of the JSONPath syntax elements.
 
-| XPath | JSONPath           | Description                                                                                                                           |
-|-------|--------------------|---------------------------------------------------------------------------------------------------------------------------------------|
-| `/`   | `$`                | the root element/node                                                                                                             |
-| `.`   | `@`                | the current element/node                                                                                                          |
-| `/`   | `.` or `[]`        | child operator                                                                                                                        |
-| `..`  | n/a                | parent operator                                                                                                                       |
-| `//`  | `..`               | nested descendants (JSONPath borrows this syntax from E4X)                                                                            |
-| `*`   | `*`                | wildcard: All elements/nodes regardless of their names                                                                     |
-| `@`   | n/a                | attribute access: JSON values do not have attributes                                                                         |
-| `[]`  | `[]`               | subscript operator: XPath uses it to iterate over element collections and for predicates; native array indexing as in JavaScript here |
-| `¦`   | `[,]`              | Union operator in XPath (results in a combination of node sets); JSONPath allows alternate names or array indices as a set            |
-| n/a   | `[start:end:step]` | array slice operator borrowed from ES4                                                                                                |
-| `[]`  | `?()`              | applies a filter (script) expression                                                                                                  |
-| n/a   | `()`               | expression engine                                                                                                                     |
-| `()`  | n/a                | grouping in Xpath                                                                                                                     |
+| JSONPath           | Description                                                                  |
+|--------------------+------------------------------------------------------------------------------|
+| `$`                | the root node                                                                |
+| `@`                | the current node                                                             |
+| `.` or `[]`        | child operator                                                               |
+| n/a                | parent operator                                                              |
+| `..`               | nested descendants                                                           |
+| `*`                | wildcard: all member values/array elements regardless of their names/indices |
+| `[]`               | subscript operator: index current node as an array (from 0)                  |
+| `[,]`              | Union operator JSONPath allows alternate(??) names or array indices as a set |
+| `[start:end:step]` | array slice operator                                                         |
+| `?()`              | applies a filter expression                                                  |
+| `()`               | expression, e.g., for indexing                                               |
 {: #tbl-overview title="Overview over JSONPath, comparing to XPath"}
-
-<!-- note that the weirdness about the vertical bar above is intentional -->
-
-XPath has a lot more to offer (location paths in unabbreviated syntax,
-operators and functions) than listed here.  Moreover there is a
-significant difference how the subscript operator works in Xpath and
-JSONPath:
-
-* Square brackets in XPath expressions always operate on the *node set* resulting from the previous path fragment. Indices always start at 1.
-* With JSONPath, square brackets operate on the *object* or *array*
-  addressed by the previous path fragment. Array indices always start at 0.
 
 # JSONPath Examples
 
@@ -644,7 +610,7 @@ single unpaired UTF-16 surrogate, for example).
 The behaviour of an implementation is undefined for member names which do
 not encode Unicode characters.
 
-### Dot Wild Card Selector
+### Dot Wild Card Selector {#wildcard}
 
 #### Syntax
 {: unnumbered}
@@ -792,7 +758,7 @@ a number, string, or true/false/null) selects no node.
 
 The `index-wild-selector` behaves identically to the `dot-wild-selector`.
 
-### Array Slice Selector
+### Array Slice Selector {#slice}
 
 #### Syntax
 {: unnumbered}
@@ -1157,6 +1123,121 @@ This section gives security considerations, as required by {{RFC3552}}.
 
 --- back
 
+# Inspired by XPath
+
+This appendix is informative.
+
+At the time JSONPath was invented, XML was noted for the availability of
+powerful tools to analyse, transform and selectively extract data from
+XML documents.
+{{XPath}} is one of these tools.
+
+In 2007, the need for something solving the same class of problems for
+the emerging JSON community became apparent, specifically for:
+
+* Finding data interactively and extracting them out of {{-json}}
+  JSON values without special scripting.
+* Specifying the relevant parts of the JSON data in a request by a
+  client, so the server can reduce the amount of data in its response,
+  minimizing bandwidth usage.
+
+JSONPath picks up the overall feeling of XPath, but maps the concepts
+to syntax (and partially semantics) that would be familiar to someone
+using JSON in a dynamic language.
+
+E.g., in popular dynamic programming languages such as JavaScript,
+Python and PHP, the semantics of the XPath expression
+
+~~~~
+/store/book[1]/title
+~~~~
+
+can be realized in the expression
+
+~~~~
+x.store.book[0].title
+~~~~
+
+or, in bracket notation,
+
+~~~~
+x['store']['book'][0]['title']
+~~~~
+
+with the variable x holding the argument.
+
+The JSONPath language was designed to:
+
+* be naturally based on those language characteristics;
+* cover only the most essential parts of XPath 1.0;
+* be lightweight in code size and memory consumption;
+* be runtime efficient.
+
+## JSONPath and XPath {#xpath-overview}
+
+JSONPath expressions apply to JSON values in the same way
+as XPath expressions are used in combination with an XML document.
+JSONPath uses `$` to refer to the root node of the argument, similar
+to XPath's `/` at the front.
+
+JSONPath expressions move further down the hierarchy using *dot notation*
+(`$.store.book[0].title`)
+or the *bracket notation*
+(`$['store']['book'][0]['title']`), a lightweight/limited, and a more
+heavyweight syntax replacing XPath's `/` within query expressions.
+
+Both JSONPath and XPath use `*` for a wildcard.
+The descendant operator `..`, borrowed from {{E4X}}, is similar to XPath's `//`.
+The array slicing construct `[start:end:step]` is unique to JSONPath,
+inspired by {{SLICE}} from ECMASCRIPT 4.
+
+The JSONPath expression language originally was less well defined.
+It is always written in parentheses: `(<expr>)`, and can be used for indexing:
+
+~~~~
+$.store.book[(@.length-1)].title
+~~~~
+
+The symbol `@` is used for the current node, compare `.` in XPath.
+Filter expressions are supported via the syntax `?(<boolean expr>)` as in
+
+~~~~
+$.store.book[?(@.price < 10)].title
+~~~~
+
+{{tbl-xpath-overview}} extends {{tbl-overview}} by providing a comparison
+with similar XPath concepts.
+
+| XPath | JSONPath           | Description                                                                                                                           |
+|-------|--------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| `/`   | `$`                | the root element/node                                                                                                             |
+| `.`   | `@`                | the current element/node                                                                                                          |
+| `/`   | `.` or `[]`        | child operator                                                                                                                        |
+| `..`  | n/a                | parent operator                                                                                                                       |
+| `//`  | `..`               | nested descendants (JSONPath borrows this syntax from E4X)                                                                            |
+| `*`   | `*`                | wildcard: All elements/nodes regardless of their names                                                                     |
+| `@`   | n/a                | attribute access: JSON values do not have attributes                                                                         |
+| `[]`  | `[]`               | subscript operator: XPath uses it to iterate over element collections and for predicates; native array indexing as in JavaScript here |
+| `¦`   | `[,]`              | Union operator in XPath (results in a combination of node sets); JSONPath allows alternate names or array indices as a set            |
+| n/a   | `[start:end:step]` | array slice operator borrowed from ES4                                                                                                |
+| `[]`  | `?()`              | applies a filter (script) expression                                                                                                  |
+| n/a   | `()`               | expression engine                                                                                                                     |
+| `()`  | n/a                | grouping in Xpath                                                                                                                     |
+{: #tbl-xpath-overview title="Overview over JSONPath, comparing to XPath"}
+
+<!-- note that the weirdness about the vertical bar above is intentional -->
+
+XPath has a lot more functionality (location paths in unabbreviated syntax,
+operators and functions) than listed in this comparison.  Moreover there is a
+significant difference how the subscript operator works in Xpath and
+JSONPath:
+
+* Square brackets in XPath expressions always operate on the *node
+  set* resulting from the previous path fragment. Indices always start
+  at 1.
+* With JSONPath, square brackets operate on the *object* or *array*
+  addressed by the previous path fragment. Array indices always start
+  at 0.
 
 # Acknowledgements
 {: numbered="no"}
