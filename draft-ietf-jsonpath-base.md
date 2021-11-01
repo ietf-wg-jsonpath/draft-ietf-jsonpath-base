@@ -950,6 +950,7 @@ It selects the node and all its descendants.
 ### Union Selector
 
 #### Syntax
+{: unnumbered}
 
 The union selector is syntactically related to the `index-selector`. It contains multiple, comma separated entries.
 
@@ -972,6 +973,7 @@ union-entry    =  ( quoted-member-name /
 > minimizing the number of places where S needs to be inserted.
 
 #### Semantics
+{: unnumbered}
 
 A union selects any node which is selected by at least one of the union selectors and selects the concatenation of the
 lists (in the order of the selectors) of nodes selected by the union elements.
@@ -982,6 +984,7 @@ as many times in the node list.
 ### Filter Selector
 
 #### Syntax
+{: unnumbered}
 
 The filter selector has the form `[?<expr>]`. It works via iterating over structured values, i.e. arrays and objects.
 
@@ -1056,6 +1059,7 @@ The following table lists filter expression operators in order of precedence fro
 {: title="Filter expression operator precedence" }
 
 #### Semantics
+{: unnumbered}
 
 The `filter-selector` works with arrays and objects exclusively. Its result might be a list of *zero*, *one*, *multiple* or *all* of their element or member values then. Applied to other value types, it will select nothing.
 
