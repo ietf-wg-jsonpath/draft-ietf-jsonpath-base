@@ -341,7 +341,7 @@ $.store.book[?(@.price < 10)].title
 | `[start:end:step]` | array slice operator                                                         |
 | `?()`              | applies a filter expression                                                  |
 | `()`               | expression, e.g., for indexing                                               |
-{: #tbl-overview title="Overview over JSONPath, comparing to XPath"}
+{: #tbl-overview title="Overview over JSONPath"}
 
 # JSONPath Examples
 
