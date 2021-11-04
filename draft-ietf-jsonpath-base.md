@@ -389,6 +389,8 @@ The examples in {{tbl-example}} use the expression mechanism to obtain
 the number of elements in an array, to test for the presence of a
 member in a object, and to perform numeric comparisons of member values with a
 constant.
+For further illustration, the table shows XPath expressions that would
+be used with a comparable XML document; see also {{xpath-overview}}.
 
 | XPath                  | JSONPath                                  | Result                                                       |
 |------------------------|-------------------------------------------|--------------------------------------------------------------|
@@ -482,14 +484,14 @@ stands for a nodelist that contains the root node of the argument,
 followed by a possibly empty sequence of *selectors*.
 
 ~~~~ abnf
-json-path = root-selector *(dot-selector        /
-                            dot-wild-selector   /
-                            index-selector      /
-                            index-wild-selector /
-                            union-selector      /
-                            slice-selector      /
-                            descendant-selector /
-                            filter-selector)
+json-path = root-selector *(S (dot-selector        /
+                               dot-wild-selector   /
+                               index-selector      /
+                               index-wild-selector /
+                               union-selector      /
+                               slice-selector      /
+                               descendant-selector /
+                               filter-selector))
 ~~~~
 
 The syntax and semantics of each selector is defined below.
@@ -534,7 +536,9 @@ member value of the input
 node corresponding to the member name `"a"`.
 The result is again a list of one node: `[{"b":0},{"b":1},{"c":2}]`.
 
-Next, `[*]` selects from any input node — either an array or an object — all its elements or members.
+Next, `[*]` selects from an input node of type array all its elements
+(if the input note were of type object, it would select all its member
+values, but not the member names).
 The result is a list of three nodes: `{"b":0}`, `{"b":1}`, and `{"c":2}`.
 
 Finally, `.b` selects from any input node of type object with a member name
@@ -649,7 +653,7 @@ string, or true/false/null) selects no node.
 An index selector `[<index>]` addresses at most one object member value or at most one array element value.
 
 ~~~~ abnf
-index-selector      = "[" (quoted-member-name / element-index) "]"
+index-selector      = "[" S (quoted-member-name / element-index) S "]"
 ~~~~
 
 Applying the `index-selector` to an object value, a `quoted-member-name` string is required. JSONPath allows it to be enclosed in _single_ or _double_ quotes.
@@ -779,16 +783,19 @@ It selects elements starting at index `<start>`, ending at — but
 not including — `<end>`, while incrementing by `step`.
 
 ~~~~ abnf
-slice-selector = "[" S [start S] ":" [ S end] [S ":" S [step]] S "]"
+slice-selector = "[" S [start S] ":" S [end S] [":" S [step S]] "]"
 
 start          = int       ; included in selection
 end            = int       ; not included in selection
 step           = int       ; default: 1
 
-S              = *( %x20 / ; Space
+B              =    %x20 / ; Space
                     %x09 / ; Horizontal tab
                     %x0A / ; Line feed or New line
-                    %x0D ) ; Carriage return
+                    %x0D   ; Carriage return
+S              = *B        ; optional blank space
+RS             = 1*B       ; required blank space
+
 ~~~~
 
 The `slice-selector` consists of three optional decimal integers separated by colons.
@@ -997,7 +1004,7 @@ as many times in the node list.
 The filter selector has the form `[?<expr>]`. It works via iterating over structured values, i.e. arrays and objects.
 
 ~~~~ abnf
-filter-selector    = "[?" S boolean-expr S "]"
+filter-selector    = "[" S "?" S boolean-expr S "]"
 ~~~~
 
 During iteration process each array element or object member is visited and its value — accessible via symbol `@` — or one of its descendants — uniquely defined by a relative path — is tested against a boolean expression `boolean-expr`.
@@ -1013,13 +1020,13 @@ logical-or-expr  = logical-and-expr *(S "||" S logical-and-expr)
 logical-and-expr = basic-expr *(S "&&" S basic-expr)  ; conjunction
                                                       ; binds more tightly than disjunction
 
-basic-expr   = exist-expr / 
-               [neg-op] paren-expr / 
+basic-expr   = exist-expr /
+               paren-expr /
                relation-expr
-exist-expr   = [neg-op] path                          ; path existence or non-existence
+exist-expr   = [neg-op S] path                          ; path existence or non-existence
 path         = rel-path / json-path
-rel-path     = "@" *(dot-selector / index-selector)
-paren-expr   = "(" S boolean-expr S ")"               ; parenthesized expression
+rel-path     = "@" *(S (dot-selector / index-selector))
+paren-expr   = [neg-op S] "(" S boolean-expr S ")"    ; parenthesized expression
 neg-op       = "!"                                    ; not operator
 
 relation-expr = comp-expr /                           ; comparison test
@@ -1038,13 +1045,13 @@ regex-expr   = (path / string-literal) S regex-op S regex
 regex-op     = "=~"                                   ; regular expression match
 regex        = <TO BE DEFINED>
 
-contain-expr = containable S in-op S container
+contain-expr = containable in-op container
 containable  = path /                                 ; path to primitive value
-               number / 
+               number /
                string-literal
-in-op        = " in "                                 ; in operator
+in-op        = RS "in" RS                             ; in operator
 container    = path /                                 ; resolves to array
-               array-literal 
+               array-literal
 ~~~~
 
 Notes:
