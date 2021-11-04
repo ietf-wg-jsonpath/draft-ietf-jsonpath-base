@@ -328,8 +328,8 @@ $.store.book[?(@.price < 10)].title
 
 {{tbl-overview}} provides a quick overview of the JSONPath syntax elements.
 
-| JSONPath           | Description                                                                  |
-|--------------------+------------------------------------------------------------------------------|
+| JSONPath       | Description           |
+|----------------|-----------------------|
 | `$`                | the root node                                                                |
 | `@`                | the current node                                                             |
 | `.` or `[]`        | child operator                                                               |
@@ -534,8 +534,7 @@ member value of the input
 node corresponding to the member name `"a"`.
 The result is again a list of one node: `[{"b":0},{"b":1},{"c":2}]`.
 
-Next, `[*]` selects from any input node which is an array and selects all the elements
-of the input node.
+Next, `[*]` selects from any input node — either an array or an object — all its elements or members.
 The result is a list of three nodes: `{"b":0}`, `{"b":1}`, and `{"c":2}`.
 
 Finally, `.b` selects from any input node of type object with a member name
@@ -780,15 +779,13 @@ It selects elements starting at index `<start>`, ending at — but
 not including — `<end>`, while incrementing by `step`.
 
 ~~~~ abnf
-slice-selector = "[" slice-index "]"
-
-slice-index    = ws [start] ws ":" ws [end] [ws ":" ws [step] ws]
+slice-selector = "[" S [start S] ":" [ S end] [S ":" S [step]] S "]"
 
 start          = int       ; included in selection
 end            = int       ; not included in selection
 step           = int       ; default: 1
 
-ws             = *( %x20 / ; Space
+S              = *( %x20 / ; Space
                     %x09 / ; Horizontal tab
                     %x0A / ; Line feed or New line
                     %x0D ) ; Carriage return
@@ -966,7 +963,7 @@ The `descendant-selector` selects the node and all its descendants.
 The union selector is syntactically related to the `index-selector`. It contains multiple, comma separated entries.
 
 ~~~~ abnf
-union-selector = "[" ws union-entry 1*(ws "," ws union-entry) ws "]"
+union-selector = "[" S union-entry 1*(S "," S union-entry) S "]"
 
 union-entry    =  ( quoted-member-name /
                     element-index      /
@@ -1000,7 +997,7 @@ as many times in the node list.
 The filter selector has the form `[?<expr>]`. It works via iterating over structured values, i.e. arrays and objects.
 
 ~~~~ abnf
-filter-selector    = "[?" boolean-expr "]"
+filter-selector    = "[?" S boolean-expr S "]"
 ~~~~
 
 During iteration process each array element or object member is visited and its value — accessible via symbol `@` — or one of its descendants — uniquely defined by a relative path — is tested against a boolean expression `boolean-expr`.
@@ -1010,24 +1007,26 @@ The current item is selected if and only if the result is `true`.
 
 ~~~~ abnf
 boolean-expr     = logical-or-expr
-logical-or-expr  = logical-and-expr *("||" logical-and-expr)
+logical-or-expr  = logical-and-expr *(S "||" S logical-and-expr)
                                                       ; disjunction
                                                       ; binds less tightly than conjunction
-logical-and-expr = basic-expr *("&&" basic-expr)      ; conjunction
+logical-and-expr = basic-expr *(S "&&" S basic-expr)  ; conjunction
                                                       ; binds more tightly than disjunction
 
-basic-expr   = exist-expr / paren-expr / (neg-op paren-expr) / relation-expr
+basic-expr   = exist-expr / 
+               [neg-op] paren-expr / 
+               relation-expr
 exist-expr   = [neg-op] path                          ; path existence or non-existence
 path         = rel-path / json-path
 rel-path     = "@" *(dot-selector / index-selector)
-paren-expr   = "(" boolean-expr ")"                   ; parenthesized expression
+paren-expr   = "(" S boolean-expr S ")"               ; parenthesized expression
 neg-op       = "!"                                    ; not operator
 
 relation-expr = comp-expr /                           ; comparison test
                 regex-expr /                          ; regular expression test
                 contain-expr                          ; containment test
 
-comp-expr    = comparable comp-op comparable
+comp-expr    = comparable S comp-op S comparable
 comparable   = number / string-literal /              ; primitive ...
                true / false / null /                  ; values only
                path                                   ; path value
@@ -1035,15 +1034,17 @@ comp-op      = "==" / "!=" /                          ; comparison ...
                "<"  / ">"  /                          ; operators
                "<=" / ">="
 
-regex-expr   = regex-op regex
+regex-expr   = (path / string-literal) S regex-op S regex
 regex-op     = "=~"                                   ; regular expression match
 regex        = <TO BE DEFINED>
 
-contain-expr = containable in-op container
-containable  = rel-path / json-path /                 ; path to primitive value
-               number / string-literal
+contain-expr = containable S in-op S container
+containable  = path /                                 ; path to primitive value
+               number / 
+               string-literal
 in-op        = " in "                                 ; in operator
-container    = rel-path / json-path / array-literal   ; resolves to array
+container    = path /                                 ; resolves to array
+               array-literal 
 ~~~~
 
 Notes:
