@@ -484,7 +484,7 @@ stands for a nodelist that contains the root node of the argument,
 followed by a possibly empty sequence of *selectors*.
 
 ~~~~ abnf
-json-path = root-selector *(S (dot-selector        /
+json-path == root-selector *(S (dot-selector        /
                                dot-wild-selector   /
                                index-selector      /
                                index-wild-selector /
