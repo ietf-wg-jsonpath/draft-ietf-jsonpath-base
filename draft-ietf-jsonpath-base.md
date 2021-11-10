@@ -962,6 +962,12 @@ descendant-selector = ".." ( dot-member-name      /  ; ..<name>
 
 The `descendant-selector` selects the node and all its descendants.
 
+In the resultant nodelist:
+* nodes occur before their children, and
+* nodes of an array occur in array order.
+
+Children of an object may occur in any order, since JSON objects are unordered.
+
 ### Union Selector
 
 #### Syntax
