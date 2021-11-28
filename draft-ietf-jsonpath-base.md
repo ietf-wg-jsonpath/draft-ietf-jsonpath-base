@@ -1069,7 +1069,10 @@ Notes:
 <!-- issue: comparison with structured value -->
 * Types are not implicitly converted in comparisons.
   So `"13 == '13'"` selects no node.
-* A member or element value by itself is *falsy* only, if it does not exist. Otherwise it is *truthy*, resulting in its value. To be more specific explicit comparisons are necessary. This existence test — as an exception of the general rule — also works with structured values.
+* A member or element value by itself in a Boolean context is
+  interpreted as `false` only if it does not exist.
+  Otherwise it is interpreted as `true`.
+  To be more specific about the actual value, explicit comparisons are necessary. This existence test — as an exception to the general rule — also works with structured values.
 * Regular expression tests can be applied to `string` values only.
 * The value of the first operand (`containable`) of a `contain-expr` is compared to every single element of the RHS `container`. In case of a match a selection occurs. Containment tests — like comparisons — are restricted to primitive values. So even if a structured `containable` value is equal to a certain structured value in `container`, no selection is done.
 * The value of the second operand (`container`) of a `contain-expr` needs to be resolved to an array. Otherwise nothing is selected.
@@ -1090,6 +1093,7 @@ The following table lists filter expression operators in order of precedence fro
 
 The `filter-selector` works with arrays and objects exclusively. Its result might be a list of *zero*, *one*, *multiple* or *all* of their element or member values then. Applied to other value types, it will select nothing.
 
+**FIXME**: The zero number/empty string exceptions are no longer true.  Booleans work the same everywhere.
 
 Negation operator `neg-op` allows to test *falsiness* of values.
 
