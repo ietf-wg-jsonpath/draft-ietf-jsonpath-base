@@ -192,6 +192,9 @@ Element:
 
 Index:
 : A non-negative integer that identifies a specific element in an array.
+  Note that the term _indexing_ is also used for accessing elements
+  using negative integers ({{index-semantics}}), and for accessing
+  member values in an object using their member name.
 
 Query:
 : Short name for JSONPath expression.
@@ -573,7 +576,8 @@ A JSONPath query consists of a sequence of selectors. Valid selectors are
   * Root selector `$`
   * Dot selector `.<name>`, used with object member names exclusively.
   * Dot wild card selector `.*`.
-  * Index selector `[<index>]`, where `<index>` is either an (possibly negative) array index or an object member name.
+  * Index selector `[<index>]`, where `<index>` is either a (possibly
+    negative, see {{index-semantics}}) array index or an object member name.
   * Index wild card selector `[*]`.
   * Array slice selector `[<start>:<end>:<step>]`, where `<start>`, `<end>`, `<step>` are integer literals.
   * Nested descendants selector `..`.
@@ -715,7 +719,9 @@ HEXDIG = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
 ; Task from 2021-06-15 interim: update ABNF later
 ~~~~
 
-Applying the `index-selector` to an array, a numerical `element-index` is required. JSONPath allows it to be negative.
+Applying the `index-selector` to an array, a numerical `element-index`
+is required to select the corresponding
+element. JSONPath allows it to be negative (see {{index-semantics}}).
 
 ~~~~ abnf
 element-index   = int                             ; decimal integer
@@ -730,7 +736,7 @@ Notes:
 2. An `element-index` is an integer (in base 10, as in JSON numbers).
 3. As in JSON numbers, the syntax does not allow octal-like integers with leading zeros such as `01` or `-01`.
 
-#### Semantics
+#### Semantics {#index-semantics}
 {: unnumbered}
 
 A `quoted-member-name` string MUST be converted to a
@@ -760,7 +766,9 @@ Array indexing via `element-index` is a way of selecting a particular array elem
 For example, selector `[0]` selects the first and selector `[4]` the fifth element of a sufficiently long array.
 
 A negative `element-index` counts from the array end.
-For example, selector `[-1]` selects the last and selector `[-2]` selects the last but one element of an array with at least two elements.
+For example, selector `[-1]` selects the last and selector `[-2]` selects the penultimate element of an array with at least two elements.
+As with non-negative indexes, it is not an error if such an element does
+not exist; this simply means that no element is selected.
 
 
 ### Index Wild Card Selector
