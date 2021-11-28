@@ -991,15 +991,6 @@ union-entry    =  ( quoted-member-name /
                   )
 ~~~~
 
-> Task (T1): This, besides slice-index, is currently one of only two
-> places in the document that mentions whitespace.  Whitespace needs
-> to be handled throughout the ABNF syntax.  Room Consensus at the
-> 2021-06-15 interim was that JSONPath generally is generous with
-> allowing insignificant whitespace throughout.  Minimizing the impact
-> of the many whitespace insertion points by choosing a rule name such
-> as "S" was mentioned.  Some conventions will probably help with
-> minimizing the number of places where S needs to be inserted.
-
 #### Semantics
 {: unnumbered}
 
