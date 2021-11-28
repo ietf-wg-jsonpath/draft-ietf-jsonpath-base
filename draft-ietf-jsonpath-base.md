@@ -112,19 +112,16 @@ normative:
   RFC5234: abnf
   RFC8259: json
 
+venue:
+  group: JSON Path
+  mail: jsonpath@ietf.org
+  github: ietf-wg-jsonpath/draft-ietf-jsonpath-base
+
 ...
 --- abstract
 
 JSONPath defines a string syntax for identifying values
 within a JavaScript Object Notation (JSON, RFC 8259) value.
-
---- to_be_removed_note_Discussion_Venues
-
-Discussion of this document takes place on the
-JSON Path Working Group mailing list (jsonpath@ietf.org),
-which is archived at <https://mailarchive.ietf.org/arch/browse/jsonpath/>.
-Source for this draft and an issue tracker can be found at
-<https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-jsonpath>.
 
 --- middle
 
