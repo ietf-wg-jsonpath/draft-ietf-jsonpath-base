@@ -111,6 +111,7 @@ normative:
   RFC3629:
   RFC5234: abnf
   RFC8259: json
+  RFC7493: i-json
 
 venue:
   group: JSON Path
@@ -426,13 +427,27 @@ of JSONPath.
 A well-formed JSONPath query is valid if it also fulfills all semantic
 requirements posed by this document.
 
+To be valid, integer numbers in the JSONPath query that are relevant
+to the JSONPath processing (e.g., index values and steps) MUST be
+within the range of exact values defined in I-JSON {{-i-json}}, namely
+within the interval \[-(2<sup>53</sup>)+1, (2<sup>53</sup>)-1]).
+
 The well-formedness and the validity of JSONPath queries are independent of
 the value the query is applied to; no further errors can be
 raised during application of the query to a value.
 
-(Obviously, an implementation can still fail when executing a JSONPath
+Obviously, an implementation can still fail when executing a JSONPath
 query, e.g., because of resource depletion, but this is not modeled in
-the present specification.)
+the present specification.  However, the implementation MUST NOT
+silently malfunction.  Specifically, if a valid JSONPath query is
+evaluated against a structured value whose size doesn't fit in the
+range of exact values, interfering with the correct interpretation of
+the query, the implementation MUST provide an indication of overflow.
+
+(Readers familiar with the HTTP error model may be reminded of 400
+type errors when pondering well-formedness and validity, while
+resource depletion and related errors are comparable to 500 type
+errors.)
 
 ## Processing Model
 
@@ -929,13 +944,8 @@ END IF
 
 When `step = 0`, no elements are selected and the result array is empty.
 
-An implementation MUST raise an error if any of the slice expression parameters
-does not fit in
-the implementation's representation of an integer.
-If a successfully parsed slice expression is evaluated against an array whose
-size doesn't
-fit in the implementation's representation of an integer, the implementation
-MUST raise an error.
+To be valid, the slice expression parameters MUST be in the I-JSON
+range of exact values, see {{synsem-overview}}.
 
 ### Descendant Selector
 
@@ -997,6 +1007,10 @@ A union selects any node which is selected by at least one of the union selector
 lists (in the order of the selectors) of nodes selected by the union elements.
 Note that any node selected in more than one of the union selectors is kept
 as many times in the node list.
+
+To be valid, integer values in the `element-index` and `slice-index`
+components MUST be in the I-JSON range of exact values, see
+{{synsem-overview}}.
 
 
 ### Filter Selector
