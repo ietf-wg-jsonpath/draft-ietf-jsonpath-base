@@ -419,15 +419,14 @@ be used with a comparable XML document; see also {{xpath-overview}}.
 A JSONPath query is a string which selects zero or more nodes of a piece of JSON.
 
 A query MUST be encoded using UTF-8.
-The grammar for queries given in this document assumes that its UTF-8 form is first be decoded into
+The grammar for queries given in this document assumes that its UTF-8 form is first decoded into
 Unicode code points as described
 in {{RFC3629}}; implementation approaches that lead to an equivalent
 result are possible.
 
 A string to be used as a JSONPath query needs to be *well-formed* and
 *valid*.
-A string is a well-formed JSONPath query if it conforms to the syntax
-of JSONPath, as defined by the ABNF syntax in this document.
+A string is a well-formed JSONPath query if it conforms to the ABNF syntax in this document.
 A well-formed JSONPath query is valid if it also fulfills all semantic
 requirements posed by this document.
 
@@ -625,7 +624,7 @@ DIGIT           =  %x30-39              ; 0-9
 ALPHA           =  %x41-5A / %x61-7A    ; A-Z / a-z
 ~~~~
 
-Member names containing other characters than allowed by
+Member names containing characters other than allowed by
 `dot-selector` — such as space ` `, minus `-`, or dot `.`
 characters — MUST NOT be used with the `dot-selector`.
 (Such member names can be addressed by the
