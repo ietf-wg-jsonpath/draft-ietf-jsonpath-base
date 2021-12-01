@@ -1301,8 +1301,8 @@ and their JSONPath equivalents.
 {: #tbl-xpath-equivalents title="Example XPath expressions and their JSONPath equivalents"}
 
 XPath has a lot more functionality (location paths in unabbreviated syntax,
-operators and functions) than listed in this comparison.  Moreover, there is a
-significant difference how the subscript operator works in Xpath and
+operators and functions) than listed in this comparison.  Moreover, there are
+significant differences in how the subscript operator works in XPath and
 JSONPath:
 
 * Square brackets in XPath expressions always operate on the *node
