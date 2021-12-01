@@ -252,9 +252,8 @@ This document picks up Stefan Gössner's popular JSONPath proposal
 dated 2007-02-21 {{JSONPath-orig}} and provides a normative definition
 for it.
 
-{{inspired-by-xpath}} provides a brief synopsis with XML's XPath
-[XPath], which was the inspiration that led to the definition of
-JSONPath.
+{{inspired-by-xpath}} describes how JSONPath was inspired by XML's XPath
+[XPath].
 
 JSONPath was intended as a light-weight companion to JSON
 implementations on platforms such as PHP and JavaScript, so instead of
