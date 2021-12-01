@@ -1106,19 +1106,17 @@ The following table lists filter expression operators in order of precedence fro
 
 The `filter-selector` works with arrays and objects exclusively. Its result might be a list of *zero*, *one*, *multiple* or *all* of their element or member values then. Applied to other value types, it will select nothing.
 
-**FIXME**: The zero number/empty string exceptions are no longer true.  Booleans work the same everywhere.
-
 Negation operator `neg-op` allows to test *falsiness* of values.
 
-| Type |  Negation | Result | Comment |
-|:----:|:---------:|:------:|:-------:|
-| Number |  `!0`   | `true` | `false` for non-zero number  |
-| String |  `!""`<br>`!''`  | `true` | `false` for non-empty string  |
-| `null` |  `!null`| `true` | —  |
-| `true` |  `!true`| `false`| —  |
-| `false`| `!false`| `true` | —  |
-| Object | `!{}`<br>`!{a:0}` | `false`| always `false` |
-| Array | `![]`<br>`![0]` | `false`| always `false` |
+| Type    | Negation          | Result   | Comment        |
+| :----:  | :---------:       | :------: | :-------:      |
+| Number  | `!0`              | `false`  | always `false` |
+| String  | `!""`<br>`!''`    | `false`  | always `false` |
+| `null`  | `!null`           | `true`   | —              |
+| `true`  | `!true`           | `false`  | —              |
+| `false` | `!false`          | `true`   | —              |
+| Object  | `!{}`<br>`!{a:0}` | `false`  | always `false` |
+| Array   | `![]`<br>`![0]`   | `false`  | always `false` |
 {: title="Test falsiness of JSON values" }
 
 Applying negation operator twice `!!` gives us *truthiness* of values.
