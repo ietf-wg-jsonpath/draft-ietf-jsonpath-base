@@ -1056,8 +1056,7 @@ paren-expr   = [neg-op S] "(" S boolean-expr S ")"    ; parenthesized expression
 neg-op       = "!"                                    ; not operator
 
 relation-expr = comp-expr /                           ; comparison test
-                regex-expr /                          ; regular expression test
-                contain-expr                          ; containment test
+                regex-expr                            ; regular expression test
 
 comp-expr    = comparable S comp-op S comparable
 comparable   = number / string-literal /              ; primitive ...
@@ -1070,14 +1069,6 @@ comp-op      = "==" / "!=" /                          ; comparison ...
 regex-expr   = (path / string-literal) S regex-op S regex
 regex-op     = "=~"                                   ; regular expression match
 regex        = <TO BE DEFINED>
-
-contain-expr = containable in-op container
-containable  = path /                                 ; path to primitive value
-               number /
-               string-literal
-in-op        = RS "in" RS                             ; in operator
-container    = path /                                 ; resolves to array
-               array-literal
 ~~~~
 
 Notes:
@@ -1092,8 +1083,6 @@ Notes:
   Otherwise it is interpreted as `true`.
   To be more specific about the actual value, explicit comparisons are necessary. This existence test — as an exception to the general rule — also works with structured values.
 * Regular expression tests can be applied to `string` values only.
-* The value of the first operand (`containable`) of a `contain-expr` is compared to every single element of the RHS `container`. In case of a match a selection occurs. Containment tests — like comparisons — are restricted to primitive values. So even if a structured `containable` value is equal to a certain structured value in `container`, no selection is done.
-* The value of the second operand (`container`) of a `contain-expr` needs to be resolved to an array. Otherwise nothing is selected.
 
 The following table lists filter expression operators in order of precedence from highest (binds most tightly) to lowest (binds least tightly).
 
