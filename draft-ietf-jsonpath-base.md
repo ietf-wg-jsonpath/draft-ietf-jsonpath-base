@@ -636,13 +636,6 @@ characters — MUST NOT be used with the `dot-selector`.
 The `dot-selector` selects the node of the member value corresponding
 to the member name from any JSON object in its input nodelist. It selects no nodes from any other JSON value.
 
-<!-- DELETEME Not true, as JSONPath queries are UTF-8 texts -->
-Note that the `dot-selector` follows the philosophy of JSON strings and is
-allowed to contain bit sequences that cannot encode Unicode characters (a
-single unpaired UTF-16 surrogate, for example).
-The behaviour of an implementation is undefined for member names which do
-not encode Unicode characters.
-
 ### Dot Wild Card Selector {#wildcard}
 
 #### Syntax
