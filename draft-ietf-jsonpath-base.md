@@ -1112,6 +1112,28 @@ Some examples:
 | `[3,4,5]` | `$[?index(@)==2]`<br>`$[?index(@)==17]` | `[5]`<br>`[]` | Select array element |
 | `{"a":{"b":{5},c:0}}` | `$[?@.b==5 && !@.c]` | `[{"b":{5},c:0}]` | Existence  |
 
+# Expression Language
+
+> Task (T2): Separate out expression language.  For now, this section
+> is a repository for ABNF taken from {{-json}}.  This needs to be
+> deduplicated with definitions above.
+
+<!-- Remnants of the expression language ABNF we need to keep -->
+
+~~~~ abnf
+number = int [ frac ] [ exp ]
+frac = "." 1*DIGIT
+exp = "e" [ "-" / "+" ] 1*DIGIT
+
+false = %x66.61.6c.73.65   ; false
+null  = %x6e.75.6c.6c      ; null
+true  = %x74.72.75.65      ; true
+~~~~
+
+Note that alphabetic characters in ABNF are case-insensitive, so "e"
+can be either "e" or "E".  Note also that false, null, true are
+lower-case only (case-sensitive).
+
 # IANA Considerations {#IANA}
 
 TBD: Define a media type for JSONPath expressions.
