@@ -1128,7 +1128,6 @@ Some examples:
 | `{"a":{"b":{"c":{}}}` | `$[?@.b]`<br>`$[?@.b.c]` | `[{"b":{"c":{}}]` | Existence  |
 | `{"key":false}` | `$[?index(@)=='key']`<br>`$[?index(@)==0]` | `[false]`<br>`[]` | Select object member |
 | `[3,4,5]` | `$[?index(@)==2]`<br>`$[?index(@)==17]` | `[5]`<br>`[]` | Select array element |
-| `{"col":"red"}` | `$[?@ in ['red','green','blue']]` | `["red"]` | Containment |
 | `{"a":{"b":{5},c:0}}` | `$[?@.b==5 && !@.c]` | `[{"b":{5},c:0}]` | Existence  |
 
 
