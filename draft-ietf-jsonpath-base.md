@@ -1108,15 +1108,15 @@ The `filter-selector` works with arrays and objects exclusively. Its result migh
 
 Negation operator `neg-op` allows to test *falsiness* of values.
 
-| Type    | Negation          | Result   | Comment        |
-| :----:  | :---------:       | :------: | :-------:      |
-| Number  | `!0`              | `false`  | always `false` |
-| String  | `!""`<br>`!''`    | `false`  | always `false` |
-| `null`  | `!null`           | `true`   | —              |
-| `true`  | `!true`           | `false`  | —              |
-| `false` | `!false`          | `true`   | —              |
-| Object  | `!{}`<br>`!{a:0}` | `false`  | always `false` |
-| Array   | `![]`<br>`![0]`   | `false`  | always `false` |
+| Type    | Negation                 | Result   | Comment        |
+| :----:  | :---------:              | :------: | :-------:      |
+| Number  | `!0`<br>`!1`             | `false`  | always `false` |
+| String  | `!""`<br>`!''`<br>`!"a"` | `false`  | always `false` |
+| `null`  | `!null`                  | `true`   | —              |
+| `true`  | `!true`                  | `false`  | —              |
+| `false` | `!false`                 | `true`   | —              |
+| Object  | `!{}`<br>`!{"a":0}`      | `false`  | always `false` |
+| Array   | `![]`<br>`![0]`          | `false`  | always `false` |
 {: title="Test falsiness of JSON values" }
 
 Applying negation operator twice `!!` gives us *truthiness* of values.
