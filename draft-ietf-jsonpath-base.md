@@ -188,7 +188,7 @@ Name:
   It is included here for completeness.
 
 Element:
-: A value in an array.
+: A value in an array. (Not to be confused with XML element)
 
 Index:
 : A non-negative integer that identifies a specific element in an array.
