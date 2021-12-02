@@ -231,11 +231,6 @@ Normalized Path:
   providing a query that results in exactly that node.  Similar
   to, but syntactically different from, a JSON Pointer {{-pointer}}.
 
-<!--
-  Depending on the outcome of [?()] expression support discussions,
-  we may also need to define "boolean", "number", and perhaps others.
--->
-
 For the purposes of this specification, a value as defined by
 {{-json}} is also viewed as a tree of nodes.
 Each node, in turn, holds a value.
@@ -1044,6 +1039,9 @@ comparable   = number / string-literal /              ; primitive ...
 comp-op      = "==" / "!=" /                          ; comparison ...
                "<"  / ">"  /                          ; operators
                "<=" / ">="
+number       = int [ frac ] [ exp ]                   ; decimal number
+frac         = "." 1*DIGIT                            ; decimal fraction
+exp          = "e" [ "-" / "+" ] 1*DIGIT              ; decimal exponent
 true         = %x74.72.75.65                          ; true
 false        = %x66.61.6c.73.65                       ; false
 null         = %x6e.75.6c.6c                          ; null
@@ -1065,6 +1063,8 @@ Notes:
   Otherwise it is interpreted as `true`.
   To be more specific about the actual value, explicit comparisons are necessary. This existence test — as an exception to the general rule — also works with structured values.
 * Regular expression tests can be applied to `string` values only.
+* Alphabetic characters in ABNF are case-insensitive, so "e" can be either "e" or "E".
+* false, null, true are lower-case only (case-sensitive).
 
 The following table lists filter expression operators in order of precedence from highest (binds most tightly) to lowest (binds least tightly).
 
