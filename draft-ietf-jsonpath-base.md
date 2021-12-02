@@ -188,8 +188,7 @@ Name:
   It is included here for completeness.
 
 Element:
-: A value in an array.  (Also used with a distinct meaning in XML
-  context for XML elements.)
+: A value in an array. (Not to be confused with XML element)
 
 Index:
 : A non-negative integer that identifies a specific element in an array.
@@ -253,9 +252,8 @@ This document picks up Stefan Gössner's popular JSONPath proposal
 dated 2007-02-21 {{JSONPath-orig}} and provides a normative definition
 for it.
 
-{{inspired-by-xpath}} provides a brief synopsis with XML's XPath
-[XPath], which was the inspiration that led to the definition of
-JSONPath.
+{{inspired-by-xpath}} describes how JSONPath was inspired by XML's XPath
+[XPath].
 
 JSONPath was intended as a light-weight companion to JSON
 implementations on platforms such as PHP and JavaScript, so instead of
@@ -391,21 +389,19 @@ The examples in {{tbl-example}} use the expression mechanism to obtain
 the number of elements in an array, to test for the presence of a
 member in a object, and to perform numeric comparisons of member values with a
 constant.
-For further illustration, the table shows XPath expressions that would
-be used with a comparable XML document; see also {{xpath-overview}}.
 
-| XPath                  | JSONPath                                  | Result                                                       |
-|------------------------|-------------------------------------------|--------------------------------------------------------------|
-| `/store/book/author`   | `$.store.book[*].author`                  | the authors of all books in the store                        |
-| `//author`             | `$..author`                               | all authors                                                  |
-| `/store/*`             | `$.store.*`                               | all things in store, which are some books and a red bicycle  |
-| `/store//price`        | `$.store..price`                          | the prices of everything in the store                        |
-| `//book[3]`            | `$..book[2]`                              | the third book                                               |
-| `//book[last()]`       | `$..book[(@.length-1)]`<br>`$..book[-1]`  | the last book in order                                       |
-| `//book[position()<3]` | `$..book[0,1]`<br>`$..book[:2]`           | the first two books                                          |
-| `//book[isbn]`         | `$..book[?(@.isbn)]`                      | filter all books with isbn number                            |
-| `//book[price<10]`     | `$..book[?(@.price<10)]`                  | filter all books cheaper than 10                             |
-| `//*`                  | `$..*`                                    | all elements in XML document; all member values and array elements contained in input value |
+| JSONPath                                  | Result                                                       |
+|-------------------------------------------|--------------------------------------------------------------|
+| `$.store.book[*].author`                  | the authors of all books in the store                        |
+| `$..author`                               | all authors                                                  |
+| `$.store.*`                               | all things in store, which are some books and a red bicycle  |
+| `$.store..price`                          | the prices of everything in the store                        |
+| `$..book[2]`                              | the third book                                               |
+| `$..book[(@.length-1)]`<br>`$..book[-1]`  | the last book in order                                       |
+| `$..book[0,1]`<br>`$..book[:2]`           | the first two books                                          |
+| `$..book[?(@.isbn)]`                      | filter all books with isbn number                            |
+| `$..book[?(@.price<10)]`                  | filter all books cheaper than 10                             |
+| `$..*`                                    | all elements in XML document; all member values and array elements contained in input value |
 {: #tbl-example title="Example JSONPath expressions applied to the example JSON value"}
 
 <!-- XXX: fine tune: is $..* really member values + array elements -->
@@ -1270,26 +1266,43 @@ with similar XPath concepts.
 
 | XPath | JSONPath           | Description                                                                                                                           |
 |-------|--------------------|---------------------------------------------------------------------------------------------------------------------------------------|
-| `/`   | `$`                | the root element/node                                                                                                             |
-| `.`   | `@`                | the current element/node                                                                                                          |
+| `/`   | `$`                | the root XML element                                                                                                                  |
+| `.`   | `@`                | the current XML element                                                                                                               |
 | `/`   | `.` or `[]`        | child operator                                                                                                                        |
 | `..`  | n/a                | parent operator                                                                                                                       |
 | `//`  | `..`               | nested descendants (JSONPath borrows this syntax from E4X)                                                                            |
-| `*`   | `*`                | wildcard: All elements/nodes regardless of their names                                                                     |
-| `@`   | n/a                | attribute access: JSON values do not have attributes                                                                         |
-| `[]`  | `[]`               | subscript operator: XPath uses it to iterate over element collections and for predicates; native array indexing as in JavaScript here |
-| `¦`   | `[,]`              | Union operator in XPath (results in a combination of node sets); JSONPath allows alternate names or array indices as a set            |
+| `*`   | `*`                | wildcard: All XML elements regardless of their names                                                                                  |
+| `@`   | n/a                | attribute access: JSON values do not have attributes                                                                                  |
+| `[]`  | `[]`               | subscript operator used to iterate over XML element collections and for predicates                                                    |
+| `¦`   | `[,]`              | Union operator (results in a combination of node sets); JSONPath allows alternate names or array indices as a set                     |
 | n/a   | `[start:end:step]` | array slice operator borrowed from ES4                                                                                                |
 | `[]`  | `?()`              | applies a filter (script) expression                                                                                                  |
 | seamless   | `()`               | expression engine                                                                                                                     |
-| `()`  | n/a                | grouping in Xpath                                                                                                                     |
-{: #tbl-xpath-overview title="Overview over JSONPath, comparing to XPath"}
+| `()`  | n/a                | grouping                                                                                                                              |
+{: #tbl-xpath-overview title="XPath syntax compared to JSONPath"}
 
 <!-- note that the weirdness about the vertical bar above is intentional -->
 
+For further illustration, {{tbl-xpath-equivalents}} shows some XPath expressions
+and their JSONPath equivalents.
+
+| XPath                  | JSONPath                                  | Result                                                       |
+|------------------------|-------------------------------------------|--------------------------------------------------------------|
+| `/store/book/author`   | `$.store.book[*].author`                  | the authors of all books in the store                        |
+| `//author`             | `$..author`                               | all authors                                                  |
+| `/store/*`             | `$.store.*`                               | all things in store, which are some books and a red bicycle  |
+| `/store//price`        | `$.store..price`                          | the prices of everything in the store                        |
+| `//book[3]`            | `$..book[2]`                              | the third book                                               |
+| `//book[last()]`       | `$..book[(@.length-1)]`<br>`$..book[-1]`  | the last book in order                                       |
+| `//book[position()<3]` | `$..book[0,1]`<br>`$..book[:2]`           | the first two books                                          |
+| `//book[isbn]`         | `$..book[?(@.isbn)]`                      | filter all books with isbn number                            |
+| `//book[price<10]`     | `$..book[?(@.price<10)]`                  | filter all books cheaper than 10                             |
+| `//*`                  | `$..*`                                    | all elements in XML document; all member values and array elements contained in input value |
+{: #tbl-xpath-equivalents title="Example XPath expressions and their JSONPath equivalents"}
+
 XPath has a lot more functionality (location paths in unabbreviated syntax,
-operators and functions) than listed in this comparison.  Moreover, there is a
-significant difference how the subscript operator works in Xpath and
+operators and functions) than listed in this comparison.  Moreover, there are
+significant differences in how the subscript operator works in XPath and
 JSONPath:
 
 * Square brackets in XPath expressions always operate on the *node
