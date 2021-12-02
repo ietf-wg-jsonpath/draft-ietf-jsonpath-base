@@ -1048,9 +1048,9 @@ true         = %x74.72.75.65                          ; true
 false        = %x66.61.6c.73.65                       ; false
 null         = %x6e.75.6c.6c                          ; null
 
-regex-expr   = (path / string-literal) S regex-op S regex
+regex-expr   = (path / string-literal) S regex-op S "/" regex "/"
 regex-op     = "=~"                                   ; regular expression match
-regex        = <TO BE DEFINED>
+regex        = 1*(%x20-2E / "\/" / %x30-10FFFF)       ; regular expression with any "/" escaped as "\/"
 ~~~~
 
 Notes:
@@ -1064,7 +1064,8 @@ Notes:
   interpreted as `false` only if it does not exist.
   Otherwise it is interpreted as `true`.
   To be more specific about the actual value, explicit comparisons are necessary. This existence test — as an exception to the general rule — also works with structured values.
-* Regular expression tests can be applied to `string` values only.
+* Regular expression tests can be applied to `string` values only. The above regular expression syntax is permissive, allowing a variety of regular expression syntaxes.
+<!-- the above is a temporary measure until such time as there is a standard regex syntax, such as iregexp, we can mandate -->
 
 The following table lists filter expression operators in order of precedence from highest (binds most tightly) to lowest (binds least tightly).
 
@@ -1081,6 +1082,8 @@ The following table lists filter expression operators in order of precedence fro
 
 #### Semantics
 {: unnumbered}
+
+**FIXME**: This section needs to define the semantics in detail. At the moment, most of the semantics is left to the readers' imagination.
 
 The `filter-selector` works with arrays and objects exclusively. Its result might be a list of *zero*, *one*, *multiple* or *all* of their element or member values then. Applied to other value types, it will select nothing.
 
