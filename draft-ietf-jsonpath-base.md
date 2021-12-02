@@ -188,7 +188,7 @@ Name:
   It is included here for completeness.
 
 Element:
-: A value in an array. (Not to be confused with XML element)
+: A value in an array. (Not to be confused with XML element.)
 
 Index:
 : A non-negative integer that identifies a specific element in an array.
@@ -264,7 +264,7 @@ commonalities, over time this caused non-portability of JSONPath
 expressions between the ensuing platform-specific dialects.
 
 The present specification intends to remove platform dependencies and
-server as a common JSONPath specification that can be used across
+serve as a common JSONPath specification that can be used across
 platforms.  Obviously, this means that backwards compatibility could
 not always be achieved; a design principle of this specification is to
 go with a "consensus" between implementations even if it is rough, as
@@ -302,23 +302,6 @@ syntax `[start:end:step]` allows selecting a regular selection of an
 element from an array, giving a start position, an end position, and
 possibly a step value that moves the position from the start to the
 end ({{slice}}).
-
-JSONPath employs an *expression language* for computing values and
-making decisions.  The present specification
-defines a simple expression language that is independent from any
-scripting language in use on the platform.
-JSONPath can use such expression language expressions, written in
-parentheses: `(<expr>)`, as an alternative to explicit names or
-indices as in [^no-dot-length]:
-
-~~~~
-$.store.book[(@.length-1)].title
-~~~~
-
-[^no-dot-length]: We probably want to use an expression that does not use `.length`.
-
-The symbol `@` is used for the current node, i.e., the node in the
-context of which the expression is evaluated.
 
 Filter expressions are supported via the syntax `?(<boolean expr>)` as in
 
@@ -1061,6 +1044,9 @@ comparable   = number / string-literal /              ; primitive ...
 comp-op      = "==" / "!=" /                          ; comparison ...
                "<"  / ">"  /                          ; operators
                "<=" / ">="
+true         = %x74.72.75.65                          ; true
+false        = %x66.61.6c.73.65                       ; false
+null         = %x6e.75.6c.6c                          ; null
 
 regex-expr   = (path / string-literal) S regex-op S regex
 regex-op     = "=~"                                   ; regular expression match
@@ -1125,30 +1111,6 @@ Some examples:
 | `{"key":false}` | `$[?index(@)=='key']`<br>`$[?index(@)==0]` | `[false]`<br>`[]` | Select object member |
 | `[3,4,5]` | `$[?index(@)==2]`<br>`$[?index(@)==17]` | `[5]`<br>`[]` | Select array element |
 | `{"a":{"b":{5},c:0}}` | `$[?@.b==5 && !@.c]` | `[{"b":{5},c:0}]` | Existence  |
-
-
-# Expression Language
-
-> Task (T2): Separate out expression language.  For now, this section
-> is a repository for ABNF taken from {{-json}}.  This needs to be
-> deduplicated with definitions above.
-
-~~~~ abnf
-number = [ minus ] jsint [ frac ] [ exp ]
-decimal-point = %x2E       ; .
-digit1-9 = %x31-39         ; 1-9
-e = %x65 / %x45            ; e E
-exp = e [ minus / plus ] 1*DIGIT
-frac = decimal-point 1*DIGIT
-jsint = zero / ( digit1-9 *DIGIT )
-minus = %x2D               ; -
-plus = %x2B                ; +
-zero = %x30                ; 0
-
-false = %x66.61.6c.73.65   ; false
-null  = %x6e.75.6c.6c      ; null
-true  = %x74.72.75.65      ; true
-~~~~
 
 # IANA Considerations {#IANA}
 
@@ -1235,14 +1197,6 @@ The descendant operator `..`, borrowed from {{E4X}}, is similar to XPath's `//`.
 The array slicing construct `[start:end:step]` is unique to JSONPath,
 inspired by {{SLICE}} from ECMASCRIPT 4.
 
-The JSONPath expression language originally was less well defined.
-It is always written in parentheses: `(<expr>)`, and can be used for indexing:
-
-~~~~
-$.store.book[(@.length-1)].title
-~~~~
-
-The symbol `@` is used for the current node, compare `.` in XPath.
 Filter expressions are supported via the syntax `?(<boolean expr>)` as in
 
 ~~~~
@@ -1265,8 +1219,8 @@ with similar XPath concepts.
 | `¦`   | `[,]`              | Union operator (results in a combination of node sets); JSONPath allows alternate names or array indices as a set                     |
 | n/a   | `[start:end:step]` | array slice operator borrowed from ES4                                                                                                |
 | `[]`  | `?()`              | applies a filter (script) expression                                                                                                  |
-| seamless   | `()`               | expression engine                                                                                                                     |
-| `()`  | n/a                | grouping                                                                                                                              |
+| seamless   | n/a                | expression engine                                                                                                                     |
+| `()`  | n/a                | grouping                                                                                                                     |
 {: #tbl-xpath-overview title="XPath syntax compared to JSONPath"}
 
 <!-- note that the weirdness about the vertical bar above is intentional -->
