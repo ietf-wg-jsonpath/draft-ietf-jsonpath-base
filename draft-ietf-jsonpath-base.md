@@ -1077,27 +1077,6 @@ The following table lists filter expression operators in order of precedence fro
 
 The `filter-selector` works with arrays and objects exclusively. Its result might be a list of *zero*, *one*, *multiple* or *all* of their element or member values then. Applied to other value types, it will select nothing.
 
-DELETE-ME: ((
-We currently don't need this.  But we commit a version in
-case we do need it later.
-The negation operator `neg-op` can be applied to any JSON value and
-returns `true` only when applied to `false` or `null`:
-
-| Type    | Negation                 | Result   | Comment        |
-| :----:  | :---------:              | :------: | :-------:      |
-| Number  | `!0`<br>`!1`             | `false`  | always `false` |
-| String  | `!""`<br>`!''`<br>`!"a"` | `false`  | always `false` |
-| `null`  | `!null`                  | `true`   | —              |
-| `true`  | `!true`                  | `false`  | —              |
-| `false` | `!false`                 | `true`   | —              |
-| Object  | `!{}`<br>`!{"a":0}`      | `false`  | always `false` |
-| Array   | `![]`<br>`![0]`          | `false`  | always `false` |
-{: title="Test falsiness of JSON values" }
-
-Consequently, applying the negation operator twice `!!` returns `true`
-for all values except `false` or `null`.
-))
-
 Some examples:
 
 | JSON |  Query | Result | Comment |
