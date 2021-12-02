@@ -610,13 +610,6 @@ characters — MUST NOT be used with the `dot-selector`.
 The `dot-selector` selects the node of the member value corresponding
 to the member name from any JSON object in its input nodelist. It selects no nodes from any other JSON value.
 
-<!-- DELETEME Not true, as JSONPath queries are UTF-8 texts -->
-Note that the `dot-selector` follows the philosophy of JSON strings and is
-allowed to contain bit sequences that cannot encode Unicode characters (a
-single unpaired UTF-16 surrogate, for example).
-The behaviour of an implementation is undefined for member names which do
-not encode Unicode characters.
-
 ### Dot Wild Card Selector {#wildcard}
 
 #### Syntax
@@ -1084,22 +1077,26 @@ The following table lists filter expression operators in order of precedence fro
 
 The `filter-selector` works with arrays and objects exclusively. Its result might be a list of *zero*, *one*, *multiple* or *all* of their element or member values then. Applied to other value types, it will select nothing.
 
-**FIXME**: The zero number/empty string exceptions are no longer true.  Booleans work the same everywhere.
+DELETE-ME: ((
+We currently don't need this.  But we commit a version in
+case we do need it later.
+The negation operator `neg-op` can be applied to any JSON value and
+returns `true` only when applied to `false` or `null`:
 
-Negation operator `neg-op` allows to test *falsiness* of values.
-
-| Type |  Negation | Result | Comment |
-|:----:|:---------:|:------:|:-------:|
-| Number |  `!0`   | `true` | `false` for non-zero number  |
-| String |  `!""`<br>`!''`  | `true` | `false` for non-empty string  |
-| `null` |  `!null`| `true` | —  |
-| `true` |  `!true`| `false`| —  |
-| `false`| `!false`| `true` | —  |
-| Object | `!{}`<br>`!{a:0}` | `false`| always `false` |
-| Array | `![]`<br>`![0]` | `false`| always `false` |
+| Type    | Negation                 | Result   | Comment        |
+| :----:  | :---------:              | :------: | :-------:      |
+| Number  | `!0`<br>`!1`             | `false`  | always `false` |
+| String  | `!""`<br>`!''`<br>`!"a"` | `false`  | always `false` |
+| `null`  | `!null`                  | `true`   | —              |
+| `true`  | `!true`                  | `false`  | —              |
+| `false` | `!false`                 | `true`   | —              |
+| Object  | `!{}`<br>`!{"a":0}`      | `false`  | always `false` |
+| Array   | `![]`<br>`![0]`          | `false`  | always `false` |
 {: title="Test falsiness of JSON values" }
 
-Applying negation operator twice `!!` gives us *truthiness* of values.
+Consequently, applying the negation operator twice `!!` returns `true`
+for all values except `false` or `null`.
+))
 
 Some examples:
 
