@@ -588,11 +588,11 @@ A dot selector starts with a dot `.` followed by an object's member name.
 ~~~~ abnf
 dot-selector    = "." dot-member-name
 dot-member-name = name-first *name-char
-name-first =
+name-first      =
                       ALPHA /
                       "_"   /           ; _
                       %x80-10FFFF       ; any non-ASCII Unicode character
-name-char = DIGIT / name-first
+name-char       = name-first / DIGIT
 
 DIGIT           =  %x30-39              ; 0-9
 ALPHA           =  %x41-5A / %x61-7A    ; A-Z / a-z
@@ -640,7 +640,14 @@ string, or true/false/null) selects no node.
 An index selector `[<index>]` addresses at most one object member value or at most one array element value.
 
 ~~~~ abnf
-index-selector      = "[" S (quoted-member-name / element-index) S "]"
+index-selector = "[" S (quoted-member-name / element-index) S "]"
+
+B              =  %x20 / ; Space
+                  %x09 / ; Horizontal tab
+                  %x0A / ; Line feed or New line
+                  %x0D   ; Carriage return
+
+S              =  *B     ; optional blank space
 ~~~~
 
 Applying the `index-selector` to an object value in its input nodelist, a
@@ -652,8 +659,10 @@ the JSONPath syntax allows strings to be enclosed in _single_ or _double_ quotes
 ~~~~ abnf
 quoted-member-name  = string-literal
 
-string-literal      = %x22 *double-quoted %x22 /       ; "string"
+string-literal      = json-string /                    ; "string"
                       %x27 *single-quoted %x27         ; 'string'
+
+json-string         = %x22 *double-quoted %x22         ; "string"
 
 double-quoted       = unescaped /
                       %x27      /                       ; '
@@ -672,16 +681,14 @@ unescaped           = %x20-21 /                         ; s. RFC 8259
                       %x28-5B /                         ; omit '
                       %x5D-10FFFF                       ; omit \
 
-escapable           = ( %x62 / %x66 / %x6E / %x72 / %x74 / ; \b \f \n \r \t
-                          ; b /         ;  BS backspace U+0008
-                          ; t /         ;  HT horizontal tab U+0009
-                          ; n /         ;  LF line feed U+000A
-                          ; f /         ;  FF form feed U+000C
-                          ; r /         ;  CR carriage return U+000D
-                          "/" /          ;  /  slash (solidus)
-                          "\" /          ;  \  backslash (reverse solidus)
-                          (%x75 hexchar) ;  uXXXX      U+XXXX
-                      )
+escapable           = %x62 /         ; b  BS backspace U+0008
+                      %x66 /         ; f  FF form feed U+000C
+                      %x6E /         ; n  LF line feed U+000A
+                      %x72 /         ; r  CR carriage return U+000D
+                      %x74 /         ; t  HT horizontal tab U+0009
+                      %x47 /         ; /  slash (solidus)
+                      ESC  /         ; \  backslash (reverse solidus)
+                      (%x75 hexchar) ;  uXXXX      U+XXXX
 
 hexchar = non-surrogate / (high-surrogate "\" %x75 low-surrogate)
 non-surrogate = ((DIGIT / "A"/"B"/"C" / "E"/"F") 3HEXDIG) /
@@ -783,14 +790,6 @@ slice-selector = "[" S [start S] ":" S [end S] [":" S [step S]] "]"
 start          = int       ; included in selection
 end            = int       ; not included in selection
 step           = int       ; default: 1
-
-B              =    %x20 / ; Space
-                    %x09 / ; Horizontal tab
-                    %x0A / ; Line feed or New line
-                    %x0D   ; Carriage return
-S              = *B        ; optional blank space
-RS             = 1*B       ; required blank space
-
 ~~~~
 
 The `slice-selector` consists of three optional decimal integers separated by colons.
@@ -1006,55 +1005,66 @@ The current item is selected if and only if the result is `true`.
 
 
 ~~~~ abnf
-boolean-expr     = logical-or-expr
-logical-or-expr  = logical-and-expr *(S "||" S logical-and-expr)
-                                                      ; disjunction
-                                                      ; binds less tightly than conjunction
-logical-and-expr = basic-expr *(S "&&" S basic-expr)  ; conjunction
-                                                      ; binds more tightly than disjunction
+boolean-expr = or-expr   
+
+or-expr      = and-expr *(S "||" S and-expr)        ; logical or operator
+
+and-expr     = basic-expr *(S "&&" S basic-expr)    ; logical and operator
 
 basic-expr   = exist-expr /
                paren-expr /
                relation-expr
-exist-expr   = [neg-op S] path                          ; path existence or non-existence
+exist-expr   = [neg-op S] path                      ; path existence or non-existence
 path         = rel-path / json-path
 rel-path     = "@" *(S (dot-selector / index-selector))
-paren-expr   = [neg-op S] "(" S boolean-expr S ")"    ; parenthesized expression
-neg-op       = "!"                                    ; not operator
+paren-expr   = [neg-op S] "(" S boolean-expr S ")"  ; parenthesized expression
+neg-op       = "!"                                  ; not operator
 
-relation-expr = comp-expr /                           ; comparison test
-                regex-expr                            ; regular expression test
+relation-expr = comp-expr /                         ; comparison test
+                regex-expr                          ; regular expression test
 
 comp-expr    = comparable S comp-op S comparable
-comparable   = number / string-literal /              ; primitive ...
-               true / false / null /                  ; values only
-               path                                   ; path value
-comp-op      = "==" / "!=" /                          ; comparison ...
-               "<"  / ">"  /                          ; operators
-               "<=" / ">="
-number       = int [ frac ] [ exp ]                   ; decimal number
-frac         = "." 1*DIGIT                            ; decimal fraction
-exp          = "e" [ "-" / "+" ] 1*DIGIT              ; decimal exponent
-true         = %x74.72.75.65                          ; true
-false        = %x66.61.6c.73.65                       ; false
-null         = %x6e.75.6c.6c                          ; null
+comparable   = json-value / path                    ; JSON value or path value
+json-value   = number / string-literal /            ; primitive
+               true / false / null /                ; value or
+               object / array /                     ; structured value or
+               path                                 ; path value
+comp-op      = "==" / "!=" /                        ; equality or
+               "<"  / ">"  /                        ; relational
+               "<=" / ">="                          ; operator
+number       = int [ frac ] [ exp ]                 ; decimal number
+frac         = "." 1*DIGIT                          ; decimal fraction
+exp          = "e" [ "-" / "+" ] 1*DIGIT            ; decimal exponent
+true         = %x74.72.75.65                        ; true
+false        = %x66.61.6c.73.65                     ; false
+null         = %x6e.75.6c.6c                        ; null
+
+object       = "{" S [ members ] S "}"              ; { ... }
+members      = member *(S "," S member) 
+member       = json-string S ":" S json-value       ; "name": value
+    
+array        = "[" S [ elements ] S "]"             ; [ ... ]
+elements     =  json-value *(S "," S json-value )
 
 regex-expr   = (path / string-literal) S regex-op S regex
-regex-op     = "=~"                                   ; regular expression match
+regex-op     = "=~"                                 ; regular expression match
 regex        = <TO BE DEFINED>
 ~~~~
 
 Notes:
 
 * Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `[?(<expr>)]` is naturally contained in the current lean syntax `[?<expr>]` as a special case.
-* Comparisons are restricted to primitive values (such as number, string, `true`, `false`, `null`). Comparisons with complex values will fail, i.e. no selection occurs.
-<!-- issue: comparison with structured value -->
 * Types are not implicitly converted in comparisons.
   So `"13 == '13'"` selects no node.
-* A member or element value by itself in a Boolean context is
-  interpreted as `false` only if it does not exist.
+* Relational operators (`>`, `<`, `>=`, `<=`) are working on primitive number values exclusively. 
+Comparison with a non-number value(s) fails, i.e. no selection occurs.
+* Equality operators (`==`, `!=`) on primitive and/or structured values are working as expected, i.e. selection occurs in case of deep equality/inequality.
+ Equality comparison works on a member by member or element by element basis down the node tree.
+ In case of equality each singular comparison is expected to result in `true` for a successful selection.
+ In case of inequality one single comparison resulting in `false` is enough for proper selection.
+* A member or element value by itself is interpreted as an existence test, which results in `false` only if that value does not exist.
   Otherwise it is interpreted as `true`.
-  To be more specific about the actual value, explicit comparisons are necessary. This existence test — as an exception to the general rule — also works with structured values.
+  To be more specific about the actual value, explicit comparisons are necessary.
 * Regular expression tests can be applied to `string` values only.
 * Alphabetic characters in ABNF are case-insensitive, so "e" can be either "e" or "E".
 * false, null, true are lower-case only (case-sensitive).
