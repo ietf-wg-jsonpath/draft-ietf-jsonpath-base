@@ -1056,7 +1056,7 @@ Notes:
 * Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `[?(<expr>)]` is naturally contained in the current lean syntax `[?<expr>]` as a special case.
 * Types are not implicitly converted in comparisons.
   So `"13 == '13'"` selects no node.
-* Relational operators (`>`, `<`, `>=`, `<=`) are working on primitive number values exclusively. 
+* Relational operators (`>`, `<`, `>=`, `<=`) are intended for comparing primitive number values. 
 Comparison with a non-number value(s) fails, i.e. no selection occurs.
 * Equality operators (`==`, `!=`) on primitive and/or structured values are working as expected, i.e. selection occurs in case of deep equality/inequality.
  Equality comparison works on a member by member or element by element basis down the node tree.
