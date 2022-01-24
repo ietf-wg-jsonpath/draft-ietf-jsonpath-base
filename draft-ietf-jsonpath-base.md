@@ -112,6 +112,7 @@ normative:
   RFC5234: abnf
   RFC8259: json
   RFC7493: i-json
+  RFC6838: media-types-reg
 
 venue:
   group: JSON Path
@@ -1090,7 +1091,72 @@ Some examples:
 
 # IANA Considerations {#IANA}
 
-TBD: Define a media type for JSONPath expressions.
+##  Registration of Media Type application/jsonpath
+
+IANA is requested to register the following media type {{RFC6838}}:
+
+Type name:
+: application
+
+Subtype name:
+: jsonpath
+
+Required parameters:
+: N/A
+
+Optional parameters:
+: N/A
+
+Encoding considerations:
+: binary (UTF-8)
+
+Security considerations:
+: See the Security Considerations section of RFCXXXX.
+
+Interoperability considerations:
+: N/A
+
+Published specification:
+: RFCXXXX
+
+Applications that use this media type:
+: Applications that need to convey queries in JSON data
+
+Fragment identifier considerations:
+: N/A
+
+Additional information:
+: Deprecated alias names for this type:
+  : N/A
+
+  Magic number(s):
+  : N/A
+
+  File extension(s):
+  : N/A
+
+  Macintosh file type code(s):
+  : N/A
+
+Person & email address to contact for further information:
+   iesg@ietf.org
+
+Intended usage:
+: COMMON
+
+Restrictions on usage:
+: N/A
+
+Author:
+: JSONPath WG
+
+Change controller:
+: IESG
+
+Provisional registration? (standards tree only):
+: no
+
+
 
 # Security Considerations {#Security}
 
