@@ -969,7 +969,7 @@ slices in a single selector.
 Note: The list selector was called "union selector" in
 {{JSONPath-orig}}, as it was intended to solve use cases addressed by
 the union selector in XPath.
-However, the term "union" implies the set operation that involves
+However, the term "union" has the connotation of a set operation that involves
 merging input sets while avoiding duplicates, so the concept was
 renamed into "list selector".
 
