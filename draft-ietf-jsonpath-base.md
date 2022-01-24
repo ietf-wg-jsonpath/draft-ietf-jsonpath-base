@@ -993,9 +993,10 @@ list-entry     =  ( quoted-member-name /
 {: unnumbered}
 
 A list selector selects the nodes that are selected by at least one of
-the selectors in the list and yields the concatenation of the
-lists (in the order of the selectors) of nodes selected by the list elements.
-Note that any node selected in more than one of the list selectors is kept
+the selector entries in the list and yields the concatenation of the
+lists (in the order of the selector entries) of nodes selected by the
+selector entries.
+Note that any node selected in more than one of the selector entries is kept
 as many times in the node list.
 
 To be valid, integer values in the `element-index` and `slice-index`
