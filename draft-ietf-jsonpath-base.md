@@ -316,7 +316,7 @@ $.store.book[?(@.price < 10)].title
 | `..`               | nested descendants                                                           |
 | `*`                | wildcard: all member values/array elements regardless of their names/indices |
 | `[]`               | subscript operator: index current node as an array (from 0)                  |
-| `[,]`              | Union operator JSONPath allows alternate(??) names or array indices as a set |
+| `[,]`              | list operator: allows combining member names, array indices, and slices |
 | `[start:end:step]` | array slice operator                                                         |
 | `?()`              | applies a filter expression                                                  |
 | `()`               | expression, e.g., for indexing                                               |
@@ -478,7 +478,7 @@ json-path = root-selector *(S (dot-selector        /
                                dot-wild-selector   /
                                index-selector      /
                                index-wild-selector /
-                               union-selector      /
+                               list-selector       /
                                slice-selector      /
                                descendant-selector /
                                filter-selector))
@@ -557,7 +557,8 @@ A JSONPath query consists of a sequence of selectors. Valid selectors are
   * Array slice selector `[<start>:<end>:<step>]`, where the optional
     values `<start>`, `<end>`, and `<step>` are integer literals.
   * Nested descendants selector `..`.
-  * Union selector `[<sel1>,<sel2>,...,<selN>]`, holding a comma delimited list of index, index wild card, array slice, and filter selectors.
+  * List selector `[<sel1>,<sel2>,...,<selN>]`, holding a comma
+    separated list of index and slice selectors.
   * Filter selector `[?(<expr>)]`
   * Current item selector `@` (used in expressions)
 
@@ -589,7 +590,7 @@ A dot selector starts with a dot `.` followed by an object's member name.
 ~~~~ abnf
 dot-selector    = "." dot-member-name
 dot-member-name = name-first *name-char
-name-first =
+name-first      =
                       ALPHA /
                       "_"   /           ; _
                       %x80-10FFFF       ; any non-ASCII Unicode character
@@ -779,7 +780,9 @@ It selects elements starting at index `<start>`, ending at — but
 not including — `<end>`, while incrementing by `step`.
 
 ~~~~ abnf
-slice-selector = "[" S [start S] ":" S [end S] [":" S [step S]] "]"
+slice-selector = "[" S slice-index S "]"
+
+slice-index    =  [start S] ":" S [end S] [":" [S step ]]
 
 start          = int       ; included in selection
 end            = int       ; not included in selection
@@ -959,19 +962,29 @@ In the resultant nodelist:
 
 Children of an object may occur in any order, since JSON objects are unordered.
 
-### Union Selector
+### List Selector
+
+The list selector allows combining member names, array indices, and
+slices in a single selector.
+
+Note: The list selector was called "union selector" in
+{{JSONPath-orig}}, as it was intended to solve use cases addressed by
+the union selector in XPath.
+However, the term "union" has the connotation of a set operation that involves
+merging input sets while avoiding duplicates, so the concept was
+renamed into "list selector".
 
 #### Syntax
 {: unnumbered}
 
-The union selector is syntactically related to the
-`index-selector`.
+The list selector is syntactically related to the
+`index-selector` and the `slice-selector`.
 It contains two or more entries, separated by commas.
 
 ~~~~ abnf
-union-selector = "[" S union-entry 1*(S "," S union-entry) S "]"
+list-selector  = "[" S list-entry 1*(S "," S list-entry) S "]"
 
-union-entry    =  ( quoted-member-name /
+list-entry     =  ( quoted-member-name /
                     element-index      /
                     slice-index
                   )
@@ -980,9 +993,11 @@ union-entry    =  ( quoted-member-name /
 #### Semantics
 {: unnumbered}
 
-A union selects any node which is selected by at least one of the union selectors and selects the concatenation of the
-lists (in the order of the selectors) of nodes selected by the union elements.
-Note that any node selected in more than one of the union selectors is kept
+A list selector selects the nodes that are selected by at least one of
+the selector entries in the list and yields the concatenation of the
+lists (in the order of the selector entries) of nodes selected by the
+selector entries.
+Note that any node selected in more than one of the selector entries is kept
 as many times in the node list.
 
 To be valid, integer values in the `element-index` and `slice-index`
@@ -1258,7 +1273,7 @@ with similar XPath concepts.
 | `*`   | `*`                | wildcard: All XML elements regardless of their names                                                                                  |
 | `@`   | n/a                | attribute access: JSON values do not have attributes                                                                                  |
 | `[]`  | `[]`               | subscript operator used to iterate over XML element collections and for predicates                                                    |
-| `¦`   | `[,]`              | Union operator (results in a combination of node sets); JSONPath allows alternate names or array indices as a set                     |
+| `¦`   | `[,]`              | Union operator (results in a combination of node sets); called list operator in JSONPath, allows combining member names, array indices, and slices |
 | n/a   | `[start:end:step]` | array slice operator borrowed from ES4                                                                                                |
 | `[]`  | `?()`              | applies a filter (script) expression                                                                                                  |
 | seamless   | n/a                | expression engine                                                                                                                     |
