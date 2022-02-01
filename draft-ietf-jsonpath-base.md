@@ -141,15 +141,8 @@ format for structured data values.
 JSONPath defines a string syntax for identifying values
 within a JSON value.
 
-JSONPath is not intended as a replacement, but as a more powerful
-companion, to JSON Pointer {{RFC6901}}. [^json-pointer-missing]
-
-[^json-pointer-missing]:
-    Insert reference to section where the relationship is detailed.
-    The purposes of the two syntaxes are different.
-    Pointer is for isolating a single location within a JSON document.
-    Path is a query syntax that can also be used to pull multiple
-    locations.
+JSONPath is not intended as a replacement for, but as a more powerful
+companion to, JSON Pointer {{RFC6901}}. See {{json-pointer}}.
 
 ## Terminology
 
@@ -279,16 +272,13 @@ JSONPath expressions can use the *dot notation*
 $.store.book[0].title
 ~~~~
 
-or the *bracket notation*
+or the more general *bracket notation*
 
 ~~~~
 $['store']['book'][0]['title']
 ~~~~
 
-to build paths that are input to a JSONPath processor.
-Bracket notation is more general than dot notation and can serve as a
-canonical form (for instance, when a JSONPath processor uses JSONPath
-expressions as output paths).
+to build paths that are input to a JSONPath implementation.
 
 JSONPath allows the wildcard symbol `*` to select any member of an
 object or any element of an array ({{wildcard}}).
@@ -450,7 +440,7 @@ the argument.
 The nodelist resulting from the last selector is presented as the
 result of the query; depending on the specific API, it might be
 presented as an array of the JSON values at the nodes, an array of
-Output Paths referencing the nodes, or both — or some other
+Normalized Paths referencing the nodes, or both — or some other
 representation as desired by the implementation.
 Note that the API must be capable of presenting an empty nodelist as
 the result of the query.
@@ -680,8 +670,8 @@ escapable           = ( %x62 / %x66 / %x6E / %x72 / %x74 / ; \b \f \n \r \t
                           ; n /         ;  LF line feed U+000A
                           ; f /         ;  FF form feed U+000C
                           ; r /         ;  CR carriage return U+000D
-                          "/" /          ;  /  slash (solidus)
-                          "\" /          ;  \  backslash (reverse solidus)
+                          "/" /          ;  /  slash (solidus) U+002F
+                          "\" /          ;  \  backslash (reverse solidus) U+005C
                           (%x75 hexchar) ;  uXXXX      U+XXXX
                       )
 
@@ -1104,6 +1094,57 @@ Some examples:
 | `[3,4,5]` | `$[?index(@)==2]`<br>`$[?index(@)==17]` | `[5]`<br>`[]` | Select array element |
 | `{"a":{"b":{5},c:0}}` | `$[?@.b==5 && !@.c]` | `[{"b":{5},c:0}]` | Existence  |
 
+
+## Normalized Paths
+
+A Normalized Path is a JSONPath with restricted syntax that identifies a node by providing a query that results in exactly that node. For example,
+the JSONPath expression `$.book[?(@.price<10)]` could select two values with Normalized Paths
+`$['book'][3]` and `$['book'][5]`. For a given JSON document, there is a one to one correspondence between the document's
+nodes and the Normalized Paths that identify these nodes.
+
+An example application of Normalized Paths is a JSONPath implementation which outputs Normalized Paths
+instead of, or in addition to, the values identified by these paths.
+
+Since bracket notation is more general than dot notation, it is used to construct Normalized Paths.
+Single quotes are used to delimit string member names. This reduces the number of characters that
+need escaping when Normalized Paths appear as strings (which are delimited with double quotes) in JSON documents.
+
+The syntax of Normalized Paths is restricted so that there is one and only one way of representing any
+given Normalized Path. Putting this another way, for any two distinct Normalized Paths, there is a JSON document
+which will yield distinct results when the Normalized Paths are applied to the document.
+
+Certain characters are escaped in one and only one way; all other characters are unescaped.
+
+~~~~ abnf
+normalized-path           = root-selector *(normal-index-selector)
+normal-index-selector     = "[" (normal-quoted-member-name / normal-element-index) "]"
+normal-quoted-member-name = %x27 *normal-single-quoted %x27 ; 'string'
+normal-single-quoted      = normal-unescaped /
+                            ESC normal-escapable
+normal-unescaped          = %x20-26 /                       ; omit control codes
+                            %x28-5B /                       ; omit '
+                            %x5D-10FFFF                     ; omit \
+normal-escapable          = ( %x62 / %x66 / %x6E / %x72 / %x74 / ; \b \f \n \r \t
+                                ; b /         ;  BS backspace U+0008
+                                ; t /         ;  HT horizontal tab U+0009
+                                ; n /         ;  LF line feed U+000A
+                                ; f /         ;  FF form feed U+000C
+                                ; r /         ;  CR carriage return U+000D
+                                "'" /         ;  ' apostrophe U+0027
+                                "\" /         ;  \ backslash (reverse solidus) U+005C
+                                (%x75 normal-hexchar) ;  certain values u00XX U+00XX
+                            )
+normal-hexchar            = "0" "0"
+                            (
+                              ("0" %x30-37) / ; "00"-"07"
+                              ("0" %x62) /    ; "0b"      ; omit U+0008-U+000A
+                              ("0" %x65-66) /  ; "0e"-"0f" ; omit U+000C-U+000D
+                              ("1" normal-HEXDIG)
+                            )
+normal-HEXDIG             = DIGIT / %x61-66   ; "0"-"9", "a"-"f"
+normal-element-index      = "0" / (DIGIT1 *DIGIT) ; non-negative decimal integer
+~~~~
+
 # IANA Considerations {#IANA}
 
 ##  Registration of Media Type application/jsonpath
@@ -1310,6 +1351,28 @@ JSONPath:
 * With JSONPath, square brackets operate on the *object* or *array*
   addressed by the previous path fragment. Array indices always start
   at 0.
+
+# JSON Pointer
+
+This appendix is informative.
+
+JSONPath is not intended as a replacement for, but as a more powerful
+companion to, JSON Pointer {{RFC6901}}. The purposes of the two standards
+are different.
+
+JSON Pointer is for identifying a single value within a JSON document whose
+structure is known.
+
+JSONPath can identify a single value within a JSON document, for example by
+using a Normalized Path. But JSONPath is also a query syntax that can be used
+to search for and extract multiple values from JSON documents whose structure
+is known only in a general way.
+
+A Normalized JSONPath can be converted into a JSON Pointer by converting the syntax,
+without knowledge of any JSON document. The inverse is not generally true: a numeric
+path component in a JSON Pointer may identify a member of a JSON object or may index an array.
+For conversion to a JSONPath query, knowledge of the structure of the JSON document is
+needed to distinguish these cases.
 
 # Acknowledgements
 {: numbered="no"}
