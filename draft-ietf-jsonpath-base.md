@@ -376,7 +376,7 @@ constant.
 | `$.store.*`                               | all things in store, which are some books and a red bicycle  |
 | `$.store..price`                          | the prices of everything in the store                        |
 | `$..book[2]`                              | the third book                                               |
-| `$..book[(@.length-1)]`<br>`$..book[-1]`  | the last book in order                                       |
+| `$..book[-1]`                             | the last book in order                                       |
 | `$..book[0,1]`<br>`$..book[:2]`           | the first two books                                          |
 | `$..book[?(@.isbn)]`                      | filter all books with isbn number                            |
 | `$..book[?(@.price<10)]`                  | filter all books cheaper than 10                             |
@@ -1292,7 +1292,7 @@ and their JSONPath equivalents.
 | `/store/*`             | `$.store.*`                               | all things in store, which are some books and a red bicycle  |
 | `/store//price`        | `$.store..price`                          | the prices of everything in the store                        |
 | `//book[3]`            | `$..book[2]`                              | the third book                                               |
-| `//book[last()]`       | `$..book[(@.length-1)]`<br>`$..book[-1]`  | the last book in order                                       |
+| `//book[last()]`       | `$..book[-1]`                             | the last book in order                                       |
 | `//book[position()<3]` | `$..book[0,1]`<br>`$..book[:2]`           | the first two books                                          |
 | `//book[isbn]`         | `$..book[?(@.isbn)]`                      | filter all books with isbn number                            |
 | `//book[price<10]`     | `$..book[?(@.price<10)]`                  | filter all books cheaper than 10                             |
