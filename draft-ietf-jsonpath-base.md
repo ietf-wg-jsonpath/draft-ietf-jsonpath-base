@@ -1102,8 +1102,7 @@ the JSONPath expression `$.book[?(@.price<10)]` could select two values with Nor
 `$['book'][3]` and `$['book'][5]`. For a given JSON document, there is a one to one correspondence between the document's
 nodes and the Normalized Paths that identify these nodes.
 
-An example application of Normalized Paths is a JSONPath implementation which outputs Normalized Paths
-instead of, or in addition to, the values identified by these paths.
+A JSONPath implementation may output Normalized Paths instead of, or in addition to, the values identified by these paths.
 
 Since bracket notation is more general than dot notation, it is used to construct Normalized Paths.
 Single quotes are used to delimit string member names. This reduces the number of characters that
