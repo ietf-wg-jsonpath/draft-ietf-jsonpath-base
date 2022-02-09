@@ -1110,9 +1110,9 @@ need escaping when Normalized Paths appear as strings (which are delimited with 
 
 The syntax of Normalized Paths is restricted so that there is one and only one way of representing any
 given Normalized Path. Putting this another way, for any two distinct Normalized Paths, a JSON document exists
-which will yield distinct results when the Normalized Paths are applied to the it.
+which will yield distinct results when the Normalized Paths are applied to it.
 
-Certain characters are escaped in one and only one way; all other characters are unescaped.
+Certain characters are escaped, in one and only one way; all other characters are unescaped.
 
 ~~~~ abnf
 normalized-path           = root-selector *(normal-index-selector)
