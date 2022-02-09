@@ -1109,8 +1109,8 @@ Single quotes are used to delimit string member names. This reduces the number o
 need escaping when Normalized Paths appear as strings (which are delimited with double quotes) in JSON documents.
 
 The syntax of Normalized Paths is restricted so that there is one and only one way of representing any
-given Normalized Path. Putting this another way, for any two distinct Normalized Paths, there is a JSON document
-which will yield distinct results when the Normalized Paths are applied to the document.
+given Normalized Path. Putting this another way, for any two distinct Normalized Paths, a JSON document exists
+which will yield distinct results when the Normalized Paths are applied to the it.
 
 Certain characters are escaped in one and only one way; all other characters are unescaped.
 
