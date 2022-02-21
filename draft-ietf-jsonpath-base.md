@@ -486,7 +486,7 @@ node: the argument itself.
 A selector may select zero or more nodes for further processing.
 A syntactically valid selector MUST NOT produce errors.
 This means that some
-operations which might be considered erroneous, such as indexing beyond the
+operations that might be considered erroneous, such as indexing beyond the
 end of an array,
 simply result in fewer nodes being selected.
 
@@ -727,7 +727,7 @@ in the table below:
 
 The `index-selector` applied with a `quoted-member-name` to an object
 selects the node of the corresponding member value from it, if and only if that object has a member with that name.
-Nothing is selected from a value which is not a object.
+Nothing is selected from a value that is not a object.
 
 Array indexing via `element-index` is a way of selecting a particular array element using a zero-based index.
 For example, selector `[0]` selects the first and selector `[4]` the fifth element of a sufficiently long array.
@@ -824,7 +824,7 @@ that order and `[::-1]` selects all the elements of an array in
 reverse order.
 
 When `step` is `0`, no elements are selected.
-(This is the one case which differs from the behaviour of Python, which
+(This is the one case that differs from the behaviour of Python, which
 raises an error in this case.)
 
 The following section specifies the behaviour fully, without depending on
@@ -839,7 +839,7 @@ in terms of an array slice.
 A slice expression selects a subset of the elements of the input array, in
 the same order
 as the array or the reverse order, depending on the sign of the `step` parameter.
-It selects no nodes from a node which is not an array.
+It selects no nodes from a node that is not an array.
 
 A slice is defined by the two slice parameters, `start` and `end`, and
 an iteration delta, `step`.
@@ -1110,7 +1110,7 @@ need escaping when Normalized Paths appear as strings (which are delimited with 
 
 The syntax of Normalized Paths is restricted so that there is one and only one way of representing any
 given Normalized Path. Putting this another way, for any two distinct Normalized Paths, a JSON document exists
-which will yield distinct results when the Normalized Paths are applied to it.
+that will yield distinct results when the Normalized Paths are applied to it.
 
 Certain characters are escaped, in one and only one way; all other characters are unescaped.
 
