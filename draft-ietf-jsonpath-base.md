@@ -1066,7 +1066,7 @@ Notes:
   side of `=~` are as defined in {{-iregexp}}.
   Regular expression tests can be applied to JSON string values
   ({{Section 7 of -json}}) only
-  (on the left-hand side of `=~`).
+  (on the left-hand side of `=~`); they yield false otherwise.
 * Alphabetic characters in ABNF are case-insensitive, so "e" can be either "e" or "E".
 * false, null, true are lower-case only (case-sensitive).
 
