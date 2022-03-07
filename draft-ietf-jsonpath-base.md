@@ -113,6 +113,7 @@ normative:
   RFC8259: json
   RFC7493: i-json
   RFC6838: media-types-reg
+  I-D.draft-bormann-jsonpath-iregexp: iregexp
 
 venue:
   group: JSON Path
@@ -399,6 +400,9 @@ To be valid, integer numbers in the JSONPath query that are relevant
 to the JSONPath processing (e.g., index values and steps) MUST be
 within the range of exact values defined in I-JSON {{-i-json}}, namely
 within the interval \[-(2<sup>53</sup>)+1, (2<sup>53</sup>)-1]).
+
+To be valid, strings on the right hand side of the `=~` regex matching
+operator need to conform to {{-iregexp}}.
 
 The well-formedness and the validity of JSONPath queries are independent of
 the JSON value the query is applied to; no further errors can be
@@ -1047,7 +1051,7 @@ null         = %x6e.75.6c.6c                          ; null
 
 regex-expr   = (path / string-literal) S regex-op S regex
 regex-op     = "=~"                                   ; regular expression match
-regex        = <TO BE DEFINED>
+regex        = string-literal                         ; I-Regexp
 ~~~~
 
 Notes:
@@ -1055,13 +1059,17 @@ Notes:
 * Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `[?(<expr>)]` is naturally contained in the current lean syntax `[?<expr>]` as a special case.
 * Comparisons are restricted to primitive values (such as number, string, `true`, `false`, `null`). Comparisons with complex values will fail, i.e. no selection occurs.
 <!-- issue: comparison with structured value -->
-* Types are not implicitly converted in comparisons.
+* Data types are not implicitly converted in comparisons.
   So `"13 == '13'"` selects no node.
 * A member or element value by itself in a Boolean context is
   interpreted as `false` only if it does not exist.
   Otherwise it is interpreted as `true`.
   To be more specific about the actual value, explicit comparisons are necessary. This existence test — as an exception to the general rule — also works with structured values.
-* Regular expression tests can be applied to `string` values only.
+* The regular expressions in the string-literals on the right-hand
+  side of `=~` are as defined in {{-iregexp}}.
+  Regular expression tests can be applied to JSON string values
+  ({{Section 7 of -json}}) only
+  (on the left-hand side of `=~`); they yield false otherwise.
 * Alphabetic characters in ABNF are case-insensitive, so "e" can be either "e" or "E".
 * false, null, true are lower-case only (case-sensitive).
 
