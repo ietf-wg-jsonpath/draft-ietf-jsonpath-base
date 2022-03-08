@@ -226,6 +226,9 @@ Normalized Path:
   providing a query that results in exactly that node.  Similar
   to, but syntactically different from, a JSON Pointer {{-pointer}}.
 
+Singular Path:
+: A JSONPath expression that identifies at most one node.
+
 For the purposes of this specification, a value as defined by
 {{-json}} is also viewed as a tree of nodes.
 Each node, in turn, holds a value.
@@ -1025,14 +1028,15 @@ logical-or-expr  = logical-and-expr *(S "||" S logical-and-expr)
 logical-and-expr = basic-expr *(S "&&" S basic-expr)  ; conjunction
                                                       ; binds more tightly than disjunction
 
-basic-expr   = exist-expr /
-               paren-expr /
-               relation-expr
-exist-expr   = [neg-op S] path                          ; path existence or non-existence
-path         = rel-path / json-path
-rel-path     = "@" *(S (dot-selector / index-selector))
-paren-expr   = [neg-op S] "(" S boolean-expr S ")"    ; parenthesized expression
-neg-op       = "!"                                    ; not operator
+basic-expr        = exist-expr /
+                    paren-expr /
+                    relation-expr
+exist-expr        = [neg-op S] singular-path          ; path existence or non-existence
+singular-path     = rel-singular-path / abs-singular-path
+rel-singular-path = "@" *(S (dot-selector / index-selector))
+abs-singular-path = root-selector *(S (dot-selector / index-selector))
+paren-expr        = [neg-op S] "(" S boolean-expr S ")" ; parenthesized expression
+neg-op            = "!"                               ; not operator
 
 relation-expr = comp-expr /                           ; comparison test
                 regex-expr                            ; regular expression test
@@ -1040,7 +1044,7 @@ relation-expr = comp-expr /                           ; comparison test
 comp-expr    = comparable S comp-op S comparable
 comparable   = number / string-literal /              ; primitive ...
                true / false / null /                  ; values only
-               path                                   ; path value
+               singular-path                          ; Singular Path value
 comp-op      = "==" / "!=" /                          ; comparison ...
                "<"  / ">"  /                          ; operators
                "<=" / ">="
@@ -1051,7 +1055,7 @@ true         = %x74.72.75.65                          ; true
 false        = %x66.61.6c.73.65                       ; false
 null         = %x6e.75.6c.6c                          ; null
 
-regex-expr   = (path / string-literal) S regex-op S regex
+regex-expr   = (singular-path / string-literal) S regex-op S regex
 regex-op     = "=~"                                   ; regular expression match
 regex        = string-literal                         ; I-Regexp
 ~~~~
@@ -1067,6 +1071,7 @@ Notes:
   interpreted as `false` only if it does not exist.
   Otherwise it is interpreted as `true`.
   To be more specific about the actual value, explicit comparisons are necessary. This existence test — as an exception to the general rule — also works with structured values.
+* Paths in filter expressions are Singular Paths, each of which selects at most one node.
 * The regular expressions in the string-literals on the right-hand
   side of `=~` are as defined in {{-iregexp}}.
   Regular expression tests can be applied to JSON string values
@@ -1123,6 +1128,9 @@ given Normalized Path. Putting this another way, for any two distinct Normalized
 that will yield distinct results when the Normalized Paths are applied to it.
 
 Certain characters are escaped, in one and only one way; all other characters are unescaped.
+
+Normalized Paths are Singular Paths. Not all Singular Paths are Normalized Paths: `$[-1]`, for example, is a Singular
+Path but not a Normalized Path.
 
 ~~~~ abnf
 normalized-path           = root-selector *(normal-index-selector)
