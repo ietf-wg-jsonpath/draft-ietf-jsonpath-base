@@ -980,9 +980,11 @@ list-selector  = "[" S list-entry 1*(S "," S list-entry) S "]"
 
 list-entry     =  ( quoted-member-name /
                     element-index      /
-                    slice-index
+                    slice-index /
+                    ("?" S boolean-expr) ; filter expression
                   )
 ~~~~
+<!-- To do: Move list selector after filter selector to avoid a forward reference. -->
 
 #### Semantics
 {: unnumbered}
