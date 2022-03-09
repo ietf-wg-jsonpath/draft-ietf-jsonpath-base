@@ -301,7 +301,7 @@ $.store.book[?(@.price < 10)].title
 | JSONPath    | Description                                                                                                                         |
 |-------------|-------------------------------------------------------------------------------------------------------------------------------------|
 | `$`         | [the root node](#root-selector)                                                                                                     |
-| `@`         | the current node (within [filter selectors](#filter-selector))                                                                      |
+| `@`         | the current node: within [filter selectors](#filter-selector)                                                                     |
 | `.name`     | child selectors for JSON objects: [dot selector](#dot-selector)                                                                     |
 | `['name']`  | child selectors for JSON objects: [index selector](#index-selector)                                                                 |
 | `..`        | nested descendants: [descendant selector](#descendant-selector)                                                                     |
