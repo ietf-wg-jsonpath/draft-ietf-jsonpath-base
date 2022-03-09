@@ -298,19 +298,19 @@ $.store.book[?(@.price < 10)].title
 
 {{tbl-overview}} provides a quick overview of the JSONPath syntax elements.
 
-| JSONPath       | Description           |
-|----------------|-----------------------|
-| `$`                | the root node                                                                |
-| `@`                | the current node                                                             |
-| `.` or `[]`        | child operator                                                               |
-| n/a                | parent operator                                                              |
-| `..`               | nested descendants                                                           |
-| `*`                | wildcard: all member values/array elements regardless of their names/indices |
-| `[]`               | subscript operator: index current node as an array (from 0)                  |
-| `[,]`              | list operator: allows combining member names, array indices, and slices |
-| `[start:end:step]` | array slice operator                                                         |
-| `?()`              | applies a filter expression                                                  |
-| `()`               | expression, e.g., for indexing                                               |
+| JSONPath    | Description                                                                                                                         |
+|-------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| `$`         | [the root node](#root-selector)                                                                                                     |
+| `@`         | the current node (within [filter selectors](#filter-selector)                                                                                          |
+| `.name`     | child selectors for JSON objects: [dot selector](#dot-selector)                                                                     |
+| `['name']`  | child selectors for JSON objects: [index selector](#index-selector)                                                                 |
+| `..`        | nested descendants: [descendant selector](#descendant-selector)                                                                     |
+| `*`         | [dot wildcard selector](#wildcard), [index wildcard selector](#index-wildcard-selector): all child member values and array elements |
+| `[3]`       | [index (subscript) selector](#index-selector): index current node as an array (from 0)                                              |
+| `[..,..]`   | [list selector](#list-selector): allow combining selector styles                                                          |
+| `[0:100:5]` | [array slice selector](#slice): start:end:step                                                                                      |
+| `?...`      | [filter selector](#filter-selector)                                                                                                 |
+| `()`        | expression (within [filter selectors](#filter-selector)                                                                                                 |
 {: #tbl-overview title="Overview over JSONPath"}
 
 # JSONPath Examples
@@ -606,7 +606,7 @@ characters — MUST NOT be used with the `dot-selector`.
 The `dot-selector` selects the node of the member value corresponding
 to the member name from any JSON object in its input nodelist. It selects no nodes from any other JSON value.
 
-### Dot Wild Card Selector {#wildcard}
+### Dot Wildcard Selector {#wildcard}
 
 #### Syntax
 {: unnumbered}
@@ -742,7 +742,7 @@ As with non-negative indexes, it is not an error if such an element does
 not exist; this simply means that no element is selected.
 
 
-### Index Wild Card Selector
+### Index Wildcard Selector
 
 #### Syntax
 {: unnumbered}
