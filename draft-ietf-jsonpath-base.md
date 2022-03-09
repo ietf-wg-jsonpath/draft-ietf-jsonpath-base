@@ -301,16 +301,16 @@ $.store.book[?(@.price < 10)].title
 | JSONPath    | Description                                                                                                                         |
 |-------------|-------------------------------------------------------------------------------------------------------------------------------------|
 | `$`         | [the root node](#root-selector)                                                                                                     |
-| `@`         | the current node (within [filter selectors](#filter-selector)                                                                                          |
+| `@`         | the current node (within [filter selectors](#filter-selector))                                                                      |
 | `.name`     | child selectors for JSON objects: [dot selector](#dot-selector)                                                                     |
 | `['name']`  | child selectors for JSON objects: [index selector](#index-selector)                                                                 |
 | `..`        | nested descendants: [descendant selector](#descendant-selector)                                                                     |
 | `*`         | [dot wildcard selector](#wildcard), [index wildcard selector](#index-wildcard-selector): all child member values and array elements |
 | `[3]`       | [index (subscript) selector](#index-selector): index current node as an array (from 0)                                              |
-| `[..,..]`   | [list selector](#list-selector): allow combining selector styles                                                          |
+| `[..,..]`   | [list selector](#list-selector): allow combining selector styles                                                                    |
 | `[0:100:5]` | [array slice selector](#slice): start:end:step                                                                                      |
 | `?...`      | [filter selector](#filter-selector)                                                                                                 |
-| `()`        | expression (within [filter selectors](#filter-selector)                                                                                                 |
+| `()`        | expression (within [filter selectors](#filter-selector))                                                                            |
 {: #tbl-overview title="Overview over JSONPath"}
 
 # JSONPath Examples
