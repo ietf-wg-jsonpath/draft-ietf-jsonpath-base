@@ -227,7 +227,7 @@ Normalized Path:
   to, but syntactically different from, a JSON Pointer {{-pointer}}.
 
 Singular Path:
-: A JSONPath expression that identifies at most one node.
+: A JSONPath expression built from selectors which each select at most one node.
 
 For the purposes of this specification, a value as defined by
 {{-json}} is also viewed as a tree of nodes.
@@ -1129,8 +1129,8 @@ that will yield distinct results when the Normalized Paths are applied to it.
 
 Certain characters are escaped, in one and only one way; all other characters are unescaped.
 
-Normalized Paths are Singular Paths. Not all Singular Paths are Normalized Paths: `$[-1]`, for example, is a Singular
-Path but not a Normalized Path.
+Normalized Paths are Singular Paths. Not all Singular Paths are Normalized Paths: `$[-3]`, for example, is a Singular
+Path, but not a Normalized Path.
 
 ~~~~ abnf
 normalized-path           = root-selector *(normal-index-selector)
