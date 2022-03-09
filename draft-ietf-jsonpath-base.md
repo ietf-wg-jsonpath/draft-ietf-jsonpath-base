@@ -576,6 +576,13 @@ root-selector  = "$"
 The Argument — the root JSON value — becomes the root node, which is
 addressed by the root selector `$`.
 
+#### Examples
+{: unnumbered}
+
+| JSON | Query | Result | Comment|
+| ---- | :---: | :---:  | ---    |
+| `{"k": "v"}` | `$` | `$` | Root node, regardless of JSON  |
+{: title="Root selector examples"}
 
 ### Dot Selector
 
