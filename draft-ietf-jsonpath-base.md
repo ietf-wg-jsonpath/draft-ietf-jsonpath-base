@@ -310,7 +310,7 @@ $.store.book[?(@.price < 10)].title
 | `[..,..]`   | [list selector](#list-selector): allow combining selector styles                                                                    |
 | `[0:100:5]` | [array slice selector](#slice): start:end:step                                                                                      |
 | `?...`      | [filter selector](#filter-selector)                                                                                                 |
-| `()`        | expression (within [filter selectors](#filter-selector))                                                                            |
+| `()`        | expression: within [filter selectors](#filter-selector)                                                                            |
 {: #tbl-overview title="Overview of JSONPath"}
 
 # JSONPath Examples
