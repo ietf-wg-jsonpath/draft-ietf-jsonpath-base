@@ -547,10 +547,10 @@ A JSONPath query consists of a sequence of selectors. Valid selectors are
 
   * Root selector `$` (used at the start of a query and in expressions)
   * Dot selector `.<name>`, used with object member names exclusively.
-  * Dot wild card selector `.*`.
+  * Dot wildcard selector `.*`.
   * Index selector `[<index>]`, where `<index>` is either a (possibly
     negative, see {{index-semantics}}) array index or an object member name.
-  * Index wild card selector `[*]`.
+  * Index wildcard selector `[*]`.
   * Array slice selector `[<start>:<end>:<step>]`, where the optional
     values `<start>`, `<end>`, and `<step>` are integer literals.
   * Nested descendants selector `..`.
@@ -621,7 +621,7 @@ to the member name from any JSON object in its input nodelist. It selects no nod
 #### Syntax
 {: unnumbered}
 
-The dot wild card selector has the form `.*` as defined in the
+The dot wildcard selector has the form `.*` as defined in the
 following syntax:
 
 ~~~~ abnf
@@ -631,12 +631,21 @@ dot-wild-selector    = "." "*"            ;  dot followed by asterisk
 #### Semantics
 {: unnumbered}
 
-A `dot-wild-selector` acts as a wild card by selecting the nodes of
+A `dot-wild-selector` acts as a wildcard by selecting the nodes of
 all member values of an object in its input nodelist as well as all
 element nodes of an array in its input nodelist.
 Applying the `dot-wild-selector` to a primitive JSON value (number,
 string, or true/false/null) selects no node.
 
+#### Examples
+{: unnumbered}
+
+| JSON | Query | Result | Comment|
+| ---- | :---: | :---:  | ---    |
+| `{"j": 1, "k": 2}` | `$.*` | `$['j']` <br> `$['k']` | Object values      |
+|                    | `$.*` | `$['k']` <br> `$['j']` | Alternative result |
+| `[5, 3]`           | `$.*` | `$[0]` <br> `$[1]`     | Array members      |
+{: title="Dot wildcard selector examples"}
 
 ### Index Selector
 
@@ -757,7 +766,7 @@ not exist; this simply means that no element is selected.
 #### Syntax
 {: unnumbered}
 
-The index wild card selector has the form `[*]`.
+The index wildcard selector has the form `[*]`.
 
 ~~~~ abnf
 index-wild-selector    = "[" "*" "]"  ;  asterisk enclosed by brackets
@@ -945,7 +954,7 @@ range of exact values, see {{synsem-overview}}.
 
 The descendant selector starts with a double dot `..` and can be
 followed by an object member name (similar to the `dot-selector`),
-by an `index-selector` acting on objects or arrays, or by a wild card.
+by an `index-selector` acting on objects or arrays, or by a wildcard.
 
 ~~~~ abnf
 descendant-selector = ".." ( dot-member-name      /  ; ..<name>
