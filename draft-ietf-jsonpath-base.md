@@ -579,9 +579,9 @@ addressed by the root selector `$`.
 #### Examples
 {: unnumbered}
 
-| JSON | Query | Result | Comment|
-| ---- | :---: | :---:  | ---    |
-| `{"k": "v"}` | `$` | `$` | Root node, regardless of JSON  |
+| JSON | Query | Result | Result Paths | Comment |
+| ---- | :---: | ------ | :----------: | ------- |
+| `{"k": "v"}` | `$` | `{"k": "v"}` | `$` | Root node, regardless of JSON  |
 {: title="Root selector examples"}
 
 ### Dot Selector
@@ -616,6 +616,15 @@ characters — MUST NOT be used with the `dot-selector`.
 The `dot-selector` selects the node of the member value corresponding
 to the member name from any JSON object in its input nodelist. It selects no nodes from any other JSON value.
 
+#### Examples
+{: unnumbered}
+
+| JSON | Query | Result | Result Paths | Comment |
+| ---- | :---: | ------ | :----------: | ------- |
+| `{"j": {"k": 3}}` | `$.j`   | `{"k": 3}` | `$['j']`      | Named value of an object      |
+|                   | `$.j.k` | `3`        | `$['j']['k']` | Named value in nested object  |
+{: title="Dot selector examples"}
+
 ### Dot Wildcard Selector {#wildcard}
 
 #### Syntax
@@ -640,11 +649,11 @@ string, or true/false/null) selects no node.
 #### Examples
 {: unnumbered}
 
-| JSON | Query | Result | Comment|
-| ---- | :---: | :---:  | ---    |
-| `{"j": 1, "k": 2}` | `$.*` | `$['j']` <br> `$['k']` | Object values      |
-|                    | `$.*` | `$['k']` <br> `$['j']` | Alternative result |
-| `[5, 3]`           | `$.*` | `$[0]` <br> `$[1]`     | Array members      |
+| JSON | Query | Result | Result Paths | Comment |
+| ---- | :---: | ------ | :----------: | ------- |
+| `{"j": 1, "k": 2}` | `$.*` | `1` <br> `2` | `$['j']` <br> `$['k']` | Object values      |
+|                    | `$.*` | `2` <br> `1` | `$['k']` <br> `$['j']` | Alternative result |
+| `[5, 3]`           | `$.*` | `5` <br> `3` | `$[0]` <br> `$[1]`     | Array members      |
 {: title="Dot wildcard selector examples"}
 
 ### Index Selector
