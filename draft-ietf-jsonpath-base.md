@@ -735,6 +735,18 @@ Notes:
 2. An `element-index` is an integer (in base 10, as in JSON numbers).
 3. As in JSON numbers, the syntax does not allow octal-like integers with leading zeros such as `01` or `-01`.
 
+#### Examples
+{: unnumbered}
+
+| JSON | Query | Result | Result Paths | Comment |
+| ---- | :---: | ------ | :----------: | ------- |
+| `{"j j": {"k.k": 3}}` | `$['j j']['k.k']`   | `3` | `$['j ']['k.k']`      | Named value in nested object      |
+| `{"j j": {"k.k": 3}}` | `$["j j"]["k.k"]`   | `3` | `$['j ']['k.k']`      | Named value in nested object      |
+| `["a","b"]` | `$[1]`   | `"b"` | `$[1]`      | Member of array      |
+| `["a","b"]` | `$[-2]`   | `"a"` | `$[0]`      | Member of array, from the end      |
+{: title="Index selector examples"}
+
+
 #### Semantics {#index-semantics}
 {: unnumbered}
 
