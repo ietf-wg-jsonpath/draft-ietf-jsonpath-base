@@ -579,9 +579,15 @@ addressed by the root selector `$`.
 #### Examples
 {: unnumbered}
 
-| JSON | Query | Result | Result Paths | Comment |
-| ---- | :---: | ------ | :----------: | ------- |
-| `{"k": "v"}` | `$` | `{"k": "v"}` | `$` | Root node, regardless of JSON  |
+JSON document:
+
+    {"k": "v"}
+
+Queries:
+
+| Query | Result | Result Path | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$` | `{"k": "v"}` | `$` | Root node |
 {: title="Root selector examples"}
 
 ### Dot Selector
@@ -619,10 +625,16 @@ to the member name from any JSON object in its input nodelist. It selects no nod
 #### Examples
 {: unnumbered}
 
-| JSON | Query | Result | Result Paths | Comment |
-| ---- | :---: | ------ | :----------: | ------- |
-| `{"j": {"k": 3}}` | `$.j`   | `{"k": 3}` | `$['j']`      | Named value of an object      |
-|                   | `$.j.k` | `3`        | `$['j']['k']` | Named value in nested object  |
+JSON document:
+
+    {"j": {"k": 3}}
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$.j`   | `{"k": 3}` | `$['j']`      | Named value of an object      |
+| `$.j.k` | `3`        | `$['j']['k']` | Named value in nested object  |
 {: title="Dot selector examples"}
 
 ### Dot Wildcard Selector {#wildcard}
@@ -649,11 +661,20 @@ string, or true/false/null) selects no node.
 #### Examples
 {: unnumbered}
 
-| JSON | Query | Result | Result Paths | Comment |
-| ---- | :---: | ------ | :----------: | ------- |
-| `{"j": 1, "k": 2}` | `$.*` | `1` <br> `2` | `$['j']` <br> `$['k']` | Object values      |
-|                    | `$.*` | `2` <br> `1` | `$['k']` <br> `$['j']` | Alternative result |
-| `[5, 3]`           | `$.*` | `5` <br> `3` | `$[0]` <br> `$[1]`     | Array members      |
+JSON document:
+
+    {
+      o: {"j": 1, "k": 2},
+      a: [5, 3]
+    }
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$.o.*` | `1` <br> `2` | `$['o']['j']` <br> `$['o']['k']` | Object values      |
+| `$.o.*` | `2` <br> `1` | `$['o']['k']` <br> `$['o']['j']` | Alternative result |
+| `$.a.*` | `5` <br> `3` | `$['a'][0]` <br> `$['a'][1]`     | Array members      |
 {: title="Dot wildcard selector examples"}
 
 ### Index Selector
@@ -738,14 +759,22 @@ Notes:
 #### Examples
 {: unnumbered}
 
-| JSON | Query | Result | Result Paths | Comment |
-| ---- | :---: | ------ | :----------: | ------- |
-| `{"j j": {"k.k": 3}}` | `$['j j']['k.k']`   | `3` | `$['j ']['k.k']`      | Named value in nested object      |
-| `{"j j": {"k.k": 3}}` | `$["j j"]["k.k"]`   | `3` | `$['j ']['k.k']`      | Named value in nested object      |
-| `["a","b"]` | `$[1]`   | `"b"` | `$[1]`      | Member of array      |
-| `["a","b"]` | `$[-2]`   | `"a"` | `$[0]`      | Member of array, from the end      |
-{: title="Index selector examples"}
+JSON document:
 
+    {
+      o: {"j j": {"k.k": 3}},
+      a: ["a","b"]
+    }
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$.o['j j']['k.k']`   | `3` | `$['o']['j ']['k.k']`      | Named value in nested object      |
+| `$.o["j j"]["k.k"]`   | `3` | `$['o']['j ']['k.k']`      | Named value in nested object      |
+| `$.a[1]`   | `"b"` | `$['a'][1]`      | Member of array      |
+| `$.a[-2]`   | `"a"` | `$['a'][0]`      | Member of array, from the end      |
+{: title="Index selector examples"}
 
 #### Semantics {#index-semantics}
 {: unnumbered}
