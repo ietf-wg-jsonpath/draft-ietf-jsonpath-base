@@ -832,6 +832,25 @@ a number, string, or true/false/null) selects no node.
 
 The `index-wild-selector` behaves identically to the `dot-wild-selector`.
 
+#### Examples
+{: unnumbered}
+
+JSON document:
+
+    {
+      o: {"j": 1, "k": 2},
+      a: [5, 3]
+    }
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$.o.[*]` | `1` <br> `2` | `$['o']['j']` <br> `$['o']['k']` | Object values      |
+| `$.o.[*]` | `2` <br> `1` | `$['o']['k']` <br> `$['o']['j']` | Alternative result |
+| `$.a.[*]` | `5` <br> `3` | `$['a'][0]` <br> `$['a'][1]`     | Array members      |
+{: title="Index wildcard selector examples"}
+
 ### Array Slice Selector {#slice}
 
 #### Syntax
