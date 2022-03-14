@@ -475,10 +475,10 @@ json-path = root-selector *(S (dot-selector        /
                                dot-wild-selector   /
                                index-selector      /
                                index-wild-selector /
-                               list-selector       /
                                slice-selector      /
                                descendant-selector /
-                               filter-selector))
+                               filter-selector     /
+                               list-selector))
 ~~~~
 
 The syntax and semantics of each selector is defined below.
