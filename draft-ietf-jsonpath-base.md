@@ -1015,6 +1015,23 @@ When `step = 0`, no elements are selected and the result array is empty.
 To be valid, the slice expression parameters MUST be in the I-JSON
 range of exact values, see {{synsem-overview}}.
 
+#### Examples
+{: unnumbered}
+
+JSON document:
+
+    ["a", "b", "c", "d", "e", "f", "g"]
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$[1:3]` | `"b"` <br> `"c"` | `$[1]` <br> `$[2]` | Slice with default step |
+| `$[1:5:2]` | `"b"` <br> `"d"` | `$[1]` <br> `$[3]` | Slice with step 2 |
+| `$[5:1:-2]` | `"f"` <br> `"d"` | `$[5]` <br> `$[3]` | Slice with negative step |
+| `$[::-1]` | `"g"` <br> `"f"` <br> `"e"` <br> `"d"` <br> `"c"` <br> `"b"` <br> `"a"` | `$[6]` <br> `$[5]` <br> `$[4]` <br> `$[3]` <br> `$[2]` <br> `$[1]` <br> `$[0]` | Slice in reverse order |
+{: title="Array slice selector examples"}
+
 ### Descendant Selector
 
 #### Syntax
