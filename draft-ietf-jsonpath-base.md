@@ -756,26 +756,6 @@ Notes:
 2. An `element-index` is an integer (in base 10, as in JSON numbers).
 3. As in JSON numbers, the syntax does not allow octal-like integers with leading zeros such as `01` or `-01`.
 
-#### Examples
-{: unnumbered}
-
-JSON document:
-
-    {
-      o: {"j j": {"k.k": 3}},
-      a: ["a","b"]
-    }
-
-Queries:
-
-| Query | Result | Result Paths | Comment |
-| :---: | ------ | :----------: | ------- |
-| `$.o['j j']['k.k']`   | `3` | `$['o']['j ']['k.k']`      | Named value in nested object      |
-| `$.o["j j"]["k.k"]`   | `3` | `$['o']['j ']['k.k']`      | Named value in nested object      |
-| `$.a[1]`   | `"b"` | `$['a'][1]`      | Member of array      |
-| `$.a[-2]`   | `"a"` | `$['a'][0]`      | Member of array, from the end      |
-{: title="Index selector examples"}
-
 #### Semantics {#index-semantics}
 {: unnumbered}
 
@@ -810,6 +790,25 @@ For example, selector `[-1]` selects the last and selector `[-2]` selects the pe
 As with non-negative indexes, it is not an error if such an element does
 not exist; this simply means that no element is selected.
 
+#### Examples
+{: unnumbered}
+
+JSON document:
+
+    {
+      o: {"j j": {"k.k": 3}},
+      a: ["a","b"]
+    }
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$.o['j j']['k.k']`   | `3` | `$['o']['j ']['k.k']`      | Named value in nested object      |
+| `$.o["j j"]["k.k"]`   | `3` | `$['o']['j ']['k.k']`      | Named value in nested object      |
+| `$.a[1]`   | `"b"` | `$['a'][1]`      | Member of array      |
+| `$.a[-2]`   | `"a"` | `$['a'][0]`      | Member of array, from the end      |
+{: title="Index selector examples"}
 
 ### Index Wildcard Selector
 
