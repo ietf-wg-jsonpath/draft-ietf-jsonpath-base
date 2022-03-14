@@ -959,51 +959,6 @@ In the resultant nodelist:
 
 Children of an object may occur in any order, since JSON objects are unordered.
 
-### List Selector
-
-The list selector allows combining member names, array indices, and
-slices in a single selector.
-
-Note: The list selector was called "union selector" in
-{{JSONPath-orig}}, as it was intended to solve use cases addressed by
-the union selector in XPath.
-However, the term "union" has the connotation of a set operation that involves
-merging input sets while avoiding duplicates, so the concept was
-renamed into "list selector".
-
-#### Syntax
-{: unnumbered}
-
-The list selector is syntactically related to the
-`index-selector` and the `slice-selector`.
-It contains two or more entries, separated by commas.
-
-~~~~ abnf
-list-selector  = "[" S list-entry 1*(S "," S list-entry) S "]"
-
-list-entry     =  ( quoted-member-name /
-                    element-index      /
-                    slice-index /
-                    ("?" S boolean-expr) ; filter expression
-                  )
-~~~~
-<!-- To do: Move list selector after filter selector to avoid a forward reference. -->
-
-#### Semantics
-{: unnumbered}
-
-A list selector selects the nodes that are selected by at least one of
-the selector entries in the list and yields the concatenation of the
-lists (in the order of the selector entries) of nodes selected by the
-selector entries.
-Note that any node selected in more than one of the selector entries is kept
-as many times in the node list.
-
-To be valid, integer values in the `element-index` and `slice-index`
-components MUST be in the I-JSON range of exact values, see
-{{synsem-overview}}.
-
-
 ### Filter Selector
 
 #### Syntax
@@ -1012,7 +967,8 @@ components MUST be in the I-JSON range of exact values, see
 The filter selector has the form `[?<expr>]`. It works via iterating over structured values, i.e. arrays and objects.
 
 ~~~~ abnf
-filter-selector    = "[" S "?" S boolean-expr S "]"
+filter-selector    = "[" S filter S "]"
+filter             = "?" S boolean-expr
 ~~~~
 
 During iteration process each array element or object member is visited and its value — accessible via symbol `@` — or one of its descendants — uniquely defined by a relative path — is tested against a boolean expression `boolean-expr`.
@@ -1108,6 +1064,50 @@ Some examples:
 | `{"key":false}` | `$[?index(@)=='key']`<br>`$[?index(@)==0]` | `[false]`<br>`[]` | Select object member |
 | `[3,4,5]` | `$[?index(@)==2]`<br>`$[?index(@)==17]` | `[5]`<br>`[]` | Select array element |
 | `{"a":{"b":{5},c:0}}` | `$[?@.b==5 && !@.c]` | `[{"b":{5},c:0}]` | Existence  |
+
+
+### List Selector
+
+The list selector allows combining member names, array indices, and
+slices in a single selector.
+
+Note: The list selector was called "union selector" in
+{{JSONPath-orig}}, as it was intended to solve use cases addressed by
+the union selector in XPath.
+However, the term "union" has the connotation of a set operation that involves
+merging input sets while avoiding duplicates, so the concept was
+renamed into "list selector".
+
+#### Syntax
+{: unnumbered}
+
+The list selector is syntactically related to the
+`index-selector` and the `slice-selector`.
+It contains two or more entries, separated by commas.
+
+~~~~ abnf
+list-selector  = "[" S list-entry 1*(S "," S list-entry) S "]"
+
+list-entry     =  ( quoted-member-name /
+                    element-index      /
+                    slice-index /
+                    filter
+                  )
+~~~~
+
+#### Semantics
+{: unnumbered}
+
+A list selector selects the nodes that are selected by at least one of
+the selector entries in the list and yields the concatenation of the
+lists (in the order of the selector entries) of nodes selected by the
+selector entries.
+Note that any node selected in more than one of the selector entries is kept
+as many times in the node list.
+
+To be valid, integer values in the `element-index` and `slice-index`
+components MUST be in the I-JSON range of exact values, see
+{{synsem-overview}}.
 
 
 ## Normalized Paths
