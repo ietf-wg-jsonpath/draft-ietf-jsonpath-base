@@ -1060,6 +1060,28 @@ In the resultant nodelist:
 
 Children of an object may occur in any order, since JSON objects are unordered.
 
+#### Examples
+{: unnumbered}
+
+JSON document:
+
+    {
+      o: {"j": 1, "k": 2},
+      a: [5, 3]
+    }
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$..j` | `1` | `$['o']['j']` | Object values      |
+| `$..[0]` | `5` | `$['a'][0]` | Array values |
+| `$..[*]` | `{"j": 1, "k" : 2}` <br> `[5, 3]` <br> `1` <br> `2` <br> `5` <br> `3` | `$['0']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]`   | All values     |
+| `$..*` | `{"j": 1, "k" : 2}` <br> `[5, 3]` <br> `1` <br> `2` <br> `5` <br> `3` | `$['0']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]`     | All values    |
+{: title="Descendant selector examples"}
+
+Note: This ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that `5` must appear before `3`.
+
 ### Filter Selector
 
 #### Syntax
