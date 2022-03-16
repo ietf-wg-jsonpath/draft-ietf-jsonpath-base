@@ -547,10 +547,10 @@ A JSONPath query consists of a sequence of selectors. Valid selectors are
 
   * Root selector `$` (used at the start of a query and in expressions)
   * Dot selector `.<name>`, used with object member names exclusively.
-  * Dot wild card selector `.*`.
+  * Dot wildcard selector `.*`.
   * Index selector `[<index>]`, where `<index>` is either a (possibly
     negative, see {{index-semantics}}) array index or an object member name.
-  * Index wild card selector `[*]`.
+  * Index wildcard selector `[*]`.
   * Array slice selector `[<start>:<end>:<step>]`, where the optional
     values `<start>`, `<end>`, and `<step>` are integer literals.
   * Nested descendants selector `..`.
@@ -576,6 +576,19 @@ root-selector  = "$"
 The Argument — the root JSON value — becomes the root node, which is
 addressed by the root selector `$`.
 
+#### Examples
+{: unnumbered}
+
+JSON document:
+
+    {"k": "v"}
+
+Queries:
+
+| Query | Result | Result Path | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$` | `{"k": "v"}` | `$` | Root node |
+{: title="Root selector examples"}
 
 ### Dot Selector
 
@@ -609,12 +622,27 @@ characters — MUST NOT be used with the `dot-selector`.
 The `dot-selector` selects the node of the member value corresponding
 to the member name from any JSON object in its input nodelist. It selects no nodes from any other JSON value.
 
+#### Examples
+{: unnumbered}
+
+JSON document:
+
+    {"j": {"k": 3}}
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$.j`   | `{"k": 3}` | `$['j']`      | Named value of an object      |
+| `$.j.k` | `3`        | `$['j']['k']` | Named value in nested object  |
+{: title="Dot selector examples"}
+
 ### Dot Wildcard Selector {#wildcard}
 
 #### Syntax
 {: unnumbered}
 
-The dot wild card selector has the form `.*` as defined in the
+The dot wildcard selector has the form `.*` as defined in the
 following syntax:
 
 ~~~~ abnf
@@ -624,12 +652,30 @@ dot-wild-selector    = "." "*"            ;  dot followed by asterisk
 #### Semantics
 {: unnumbered}
 
-A `dot-wild-selector` acts as a wild card by selecting the nodes of
+A `dot-wild-selector` acts as a wildcard by selecting the nodes of
 all member values of an object in its input nodelist as well as all
 element nodes of an array in its input nodelist.
 Applying the `dot-wild-selector` to a primitive JSON value (number,
 string, or true/false/null) selects no node.
 
+#### Examples
+{: unnumbered}
+
+JSON document:
+
+    {
+      o: {"j": 1, "k": 2},
+      a: [5, 3]
+    }
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$.o.*` | `1` <br> `2` | `$['o']['j']` <br> `$['o']['k']` | Object values      |
+| `$.o.*` | `2` <br> `1` | `$['o']['k']` <br> `$['o']['j']` | Alternative result |
+| `$.a.*` | `5` <br> `3` | `$['a'][0]` <br> `$['a'][1]`     | Array members      |
+{: title="Dot wildcard selector examples"}
 
 ### Index Selector
 
@@ -744,13 +790,32 @@ For example, selector `[-1]` selects the last and selector `[-2]` selects the pe
 As with non-negative indexes, it is not an error if such an element does
 not exist; this simply means that no element is selected.
 
+#### Examples
+{: unnumbered}
+
+JSON document:
+
+    {
+      o: {"j j": {"k.k": 3}},
+      a: ["a","b"]
+    }
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$.o['j j']['k.k']`   | `3` | `$['o']['j ']['k.k']`      | Named value in nested object      |
+| `$.o["j j"]["k.k"]`   | `3` | `$['o']['j ']['k.k']`      | Named value in nested object      |
+| `$.a[1]`   | `"b"` | `$['a'][1]`      | Member of array      |
+| `$.a[-2]`   | `"a"` | `$['a'][0]`      | Member of array, from the end      |
+{: title="Index selector examples"}
 
 ### Index Wildcard Selector
 
 #### Syntax
 {: unnumbered}
 
-The index wild card selector has the form `[*]`.
+The index wildcard selector has the form `[*]`.
 
 ~~~~ abnf
 index-wild-selector    = "[" "*" "]"  ;  asterisk enclosed by brackets
@@ -766,6 +831,25 @@ Applying the `index-wild-selector` to a primitive JSON value (such as
 a number, string, or true/false/null) selects no node.
 
 The `index-wild-selector` behaves identically to the `dot-wild-selector`.
+
+#### Examples
+{: unnumbered}
+
+JSON document:
+
+    {
+      o: {"j": 1, "k": 2},
+      a: [5, 3]
+    }
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$.o.[*]` | `1` <br> `2` | `$['o']['j']` <br> `$['o']['k']` | Object values      |
+| `$.o.[*]` | `2` <br> `1` | `$['o']['k']` <br> `$['o']['j']` | Alternative result |
+| `$.a.[*]` | `5` <br> `3` | `$['a'][0]` <br> `$['a'][1]`     | Array members      |
+{: title="Index wildcard selector examples"}
 
 ### Array Slice Selector {#slice}
 
@@ -931,6 +1015,23 @@ When `step = 0`, no elements are selected and the result array is empty.
 To be valid, the slice expression parameters MUST be in the I-JSON
 range of exact values, see {{synsem-overview}}.
 
+#### Examples
+{: unnumbered}
+
+JSON document:
+
+    ["a", "b", "c", "d", "e", "f", "g"]
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$[1:3]` | `"b"` <br> `"c"` | `$[1]` <br> `$[2]` | Slice with default step |
+| `$[1:5:2]` | `"b"` <br> `"d"` | `$[1]` <br> `$[3]` | Slice with step 2 |
+| `$[5:1:-2]` | `"f"` <br> `"d"` | `$[5]` <br> `$[3]` | Slice with negative step |
+| `$[::-1]` | `"g"` <br> `"f"` <br> `"e"` <br> `"d"` <br> `"c"` <br> `"b"` <br> `"a"` | `$[6]` <br> `$[5]` <br> `$[4]` <br> `$[3]` <br> `$[2]` <br> `$[1]` <br> `$[0]` | Slice in reverse order |
+{: title="Array slice selector examples"}
+
 ### Descendant Selector
 
 #### Syntax
@@ -938,7 +1039,7 @@ range of exact values, see {{synsem-overview}}.
 
 The descendant selector starts with a double dot `..` and can be
 followed by an object member name (similar to the `dot-selector`),
-by an `index-selector` acting on objects or arrays, or by a wild card.
+by an `index-selector` acting on objects or arrays, or by a wildcard.
 
 ~~~~ abnf
 descendant-selector = ".." ( dot-member-name      /  ; ..<name>
@@ -958,6 +1059,33 @@ In the resultant nodelist:
 * nodes of an array occur in array order.
 
 Children of an object may occur in any order, since JSON objects are unordered.
+
+#### Examples
+{: unnumbered}
+
+JSON document:
+
+    {
+      o: {"j": 1, "k": 2},
+      a: [5, 3]
+    }
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$..j` | `1` | `$['o']['j']` | Object values      |
+| `$..[0]` | `5` | `$['a'][0]` | Array values |
+| `$..[*]` | `{o: {"j": 1, "k": 2}, a: [5, 3]}` <br> `{"j": 1, "k" : 2}` <br> `[5, 3]` <br> `1` <br> `2` <br> `5` <br> `3` | `$['0']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]`   | All values     |
+| `$..*` | `{o: {"j": 1, "k": 2}, a: [5, 3]}` <br> `{"j": 1, "k" : 2}` <br> `[5, 3]` <br> `1` <br> `2` <br> `5` <br> `3` | `$['0']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]`     | All values    |
+{: title="Descendant selector examples"}
+
+Note: This ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that:
+
+* `{o: {"j": 1, "k": 2}, a: [5, 3]}` must appear before `{"j": 1, "k": 2}` and `[5, 3]`,
+* `{"j": 1, "k": 2}` must appear before `1` and `2`,
+* `[5, 3]` must appear before `5` and `3`, and
+* `5` must appear before `3`.
 
 ### Filter Selector
 
