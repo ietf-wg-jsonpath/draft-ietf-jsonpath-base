@@ -1076,11 +1076,16 @@ Queries:
 | :---: | ------ | :----------: | ------- |
 | `$..j` | `1` | `$['o']['j']` | Object values      |
 | `$..[0]` | `5` | `$['a'][0]` | Array values |
-| `$..[*]` | `{"j": 1, "k" : 2}` <br> `[5, 3]` <br> `1` <br> `2` <br> `5` <br> `3` | `$['0']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]`   | All values     |
-| `$..*` | `{"j": 1, "k" : 2}` <br> `[5, 3]` <br> `1` <br> `2` <br> `5` <br> `3` | `$['0']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]`     | All values    |
+| `$..[*]` | `{o: {"j": 1, "k": 2}, a: [5, 3]}` <br> `{"j": 1, "k" : 2}` <br> `[5, 3]` <br> `1` <br> `2` <br> `5` <br> `3` | `$['0']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]`   | All values     |
+| `$..*` | `{o: {"j": 1, "k": 2}, a: [5, 3]}` <br> `{"j": 1, "k" : 2}` <br> `[5, 3]` <br> `1` <br> `2` <br> `5` <br> `3` | `$['0']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]`     | All values    |
 {: title="Descendant selector examples"}
 
-Note: This ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that `5` must appear before `3`.
+Note: This ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that:
+
+* `{o: {"j": 1, "k": 2}, a: [5, 3]}` must appear before `{"j": 1, "k": 2}` and `[5, 3]`,
+* `{"j": 1, "k": 2}` must appear before `1` and `2`,
+* `[5, 3]` must appear before `5` and `3`, and
+* `5` must appear before `3`.
 
 ### Filter Selector
 
