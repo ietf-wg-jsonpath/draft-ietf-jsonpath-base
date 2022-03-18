@@ -1,12 +1,11 @@
 ---
-stand_alone: true
-ipr: trust200902
+v: 3
+
 docname: draft-ietf-jsonpath-base-latest
 cat: std
-obsoletes: ''
-updates: ''
 consensus: 'true'
 submissiontype: IETF
+
 lang: en
 pi:
   toc: 'true'
