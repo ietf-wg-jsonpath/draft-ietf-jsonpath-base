@@ -1193,6 +1193,23 @@ Some examples:
 | `{"a":{"b":{5},c:0}}` | `$[?@.b==5 && !@.c]` | `[{"b":{5},c:0}]` | Existence  |
 
 
+#### Examples
+{: unnumbered}
+
+JSON document:
+
+    [3, 5, 1, 2, 4, 6, {"a": "ij"}, {"a": "ik"}]
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$[?@>3.5]` | `5` <br> `4` <br> `6` | `$[1]` <br> `$[4]` <br> `$[5]` | Comparison |
+| `$[?@.a]` | `{"a": "ij"}` <br> `{"a": "ik"}` | `$[6]` <br> `$[7]` | Existence |
+| `$[?@<2 || @.a == "ik"]` | `1` <br> `{"a": "ik"}` | `$[2]` <br> `$[7]` | Logical OR |
+| `$[?@.a =~ "i.*"]` | `{"a": "ij"}` <br> `{"a": "ik"}` | `$[6]` <br> `$[7]` | Regular expression |
+{: title="Filter selector examples"}
+
 ### List Selector
 
 The list selector allows combining member names, array indices, and
@@ -1236,6 +1253,22 @@ To be valid, integer values in the `element-index` and `slice-index`
 components MUST be in the I-JSON range of exact values, see
 {{synsem-overview}}.
 
+
+#### Examples
+{: unnumbered}
+
+JSON document:
+
+    ["a", "b", "c", "d", "e", "f", "g"]
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$[0, 3]` | `"a"` <br> `"d"` | `$[0]` <br> `$[3]` | Indices |
+| `$[0:2, 5]` | `"a"` <br> `"b"` <br> `"f"` | `$[0]` <br> `$[1]` <br> `$[5]` | Slice and index |
+| `$[0, 0]` | `"a"` <br> `"a"` | `$[0]` <br> `$[0]` | Duplicated entries |
+{: title="List selector examples"}
 
 ## Normalized Paths
 
