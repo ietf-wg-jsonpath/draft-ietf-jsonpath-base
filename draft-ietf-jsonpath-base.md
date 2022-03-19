@@ -1399,7 +1399,7 @@ protection and the implementations that are being protected by these.
 
 This also applies to underlying technologies such as UTF-8 (see
 {{Section 10 of -utf8}}), the Unicode character set, and JSON.
-A characteristic of JSON that can lead to diverging results is the
+A characteristic of JSON that can lead to varying results is the
 fact that JSON objects are unordered; therefore, the order in which
 results of a JSONPath query reflect the presence of JSON object
 members can vary with implementations.
