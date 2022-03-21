@@ -1195,10 +1195,10 @@ Queries:
 
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
-| `$.a[?@>3.5]` | `5` <br> `4` <br> `6` | `$[1]` <br> `$[4]` <br> `$[5]` | Array value comparison |
-| `$.a[?@.b]` | `{"b": "ij"}` <br> `{"b": "ik"}` | `$[6]` <br> `$[7]` | Array value existence |
-| `$.a[?@<2 || @.b == "ik"]` | `1` <br> `{"b": "ik"}` | `$[2]` <br> `$[7]` | Array value logical OR |
-| `$.a[?@.b =~ "i.*"]` | `{"b": "ij"}` <br> `{"b": "ik"}` | `$[6]` <br> `$[7]` | Array value regular expression |
+| `$.a[?@>3.5]` | `5` <br> `4` <br> `6` | `$['a'][1]` <br> `$['a'][4]` <br> `$['a'][5]` | Array value comparison |
+| `$.a[?@.b]` | `{"b": "ij"}` <br> `{"b": "ik"}` | `$['a'][6]` <br> `$['a'][7]` | Array value existence |
+| `$.a[?@<2 || @.b == "ik"]` | `1` <br> `{"b": "ik"}` | `$['a'][2]` <br> `$['a'][7]` | Array value logical OR |
+| `$.a[?@.b =~ "i.*"]` | `{"b": "ij"}` <br> `{"b": "ik"}` | `$['a'][6]` <br> `$['a'][7]` | Array value regular expression |
 | `$.o[?@>1 && @<4]` | `2` <br> `3` | `$['o']['q']` <br> `$['o']['r']` | Object value logical AND |
 | `$.o[?@>1 && @<4]` | `3` <br> `2` | `$['o']['r']` <br> `$['o']['q']` | Alternative result |
 | `$.o[?@.u || @.x]` | `{"u": 6}` | `$['o']['t']` | Object value logical OR |
