@@ -1186,16 +1186,19 @@ The `filter-selector` works with arrays and objects exclusively. Its result migh
 
 JSON document:
 
-    [3, 5, 1, 2, 4, 6, {"a": "ij"}, {"a": "ik"}]
+    {
+      a: [3, 5, 1, 2, 4, 6, {"b": "ij"}, {"b": "ik"}],
+      o: {}
+    }
 
 Queries:
 
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
-| `$[?@>3.5]` | `5` <br> `4` <br> `6` | `$[1]` <br> `$[4]` <br> `$[5]` | Comparison |
-| `$[?@.a]` | `{"a": "ij"}` <br> `{"a": "ik"}` | `$[6]` <br> `$[7]` | Existence |
-| `$[?@<2 || @.a == "ik"]` | `1` <br> `{"a": "ik"}` | `$[2]` <br> `$[7]` | Logical OR |
-| `$[?@.a =~ "i.*"]` | `{"a": "ij"}` <br> `{"a": "ik"}` | `$[6]` <br> `$[7]` | Regular expression |
+| `$.a[?@>3.5]` | `5` <br> `4` <br> `6` | `$[1]` <br> `$[4]` <br> `$[5]` | Comparison |
+| `$.a[?@.b]` | `{"b": "ij"}` <br> `{"b": "ik"}` | `$[6]` <br> `$[7]` | Existence |
+| `$.a[?@<2 || @.b == "ik"]` | `1` <br> `{"b": "ik"}` | `$[2]` <br> `$[7]` | Logical OR |
+| `$.a[?@.b =~ "i.*"]` | `{"b": "ij"}` <br> `{"b": "ik"}` | `$[6]` <br> `$[7]` | Regular expression |
 {: title="Filter selector examples"}
 
 ### List Selector
