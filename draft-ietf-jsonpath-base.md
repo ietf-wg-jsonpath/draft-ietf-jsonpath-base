@@ -663,8 +663,8 @@ string, or true/false/null) selects no node.
 JSON document:
 
     {
-      o: {"j": 1, "k": 2},
-      a: [5, 3]
+      "o": {"j": 1, "k": 2},
+      "a": [5, 3]
     }
 
 Queries:
@@ -795,8 +795,8 @@ not exist; this simply means that no element is selected.
 JSON document:
 
     {
-      o: {"j j": {"k.k": 3}},
-      a: ["a","b"]
+      "o": {"j j": {"k.k": 3}},
+      "a": ["a","b"]
     }
 
 Queries:
@@ -837,8 +837,8 @@ The `index-wild-selector` behaves identically to the `dot-wild-selector`.
 JSON document:
 
     {
-      o: {"j": 1, "k": 2},
-      a: [5, 3]
+      "o": {"j": 1, "k": 2},
+      "a": [5, 3]
     }
 
 Queries:
@@ -1065,8 +1065,8 @@ Children of an object may occur in any order, since JSON objects are unordered.
 JSON document:
 
     {
-      o: {"j": 1, "k": 2},
-      a: [5, 3]
+      "o": {"j": 1, "k": 2},
+      "a": [5, 3]
     }
 
 Queries:
@@ -1075,13 +1075,13 @@ Queries:
 | :---: | ------ | :----------: | ------- |
 | `$..j` | `1` | `$['o']['j']` | Object values      |
 | `$..[0]` | `5` | `$['a'][0]` | Array values |
-| `$..[*]` | `{o: {"j": 1, "k": 2}, a: [5, 3]}` <br> `{"j": 1, "k" : 2}` <br> `[5, 3]` <br> `1` <br> `2` <br> `5` <br> `3` | `$['0']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]`   | All values     |
-| `$..*` | `{o: {"j": 1, "k": 2}, a: [5, 3]}` <br> `{"j": 1, "k" : 2}` <br> `[5, 3]` <br> `1` <br> `2` <br> `5` <br> `3` | `$['0']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]`     | All values    |
+| `$..[*]` | `{"o": {"j": 1, "k": 2}, "a": [5, 3]}` <br> `{"j": 1, "k" : 2}` <br> `[5, 3]` <br> `1` <br> `2` <br> `5` <br> `3` | `$['0']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]`   | All values     |
+| `$..*` | `{"o": {"j": 1, "k": 2}, "a": [5, 3]}` <br> `{"j": 1, "k" : 2}` <br> `[5, 3]` <br> `1` <br> `2` <br> `5` <br> `3` | `$['0']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]`     | All values    |
 {: title="Descendant selector examples"}
 
 Note: This ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that:
 
-* `{o: {"j": 1, "k": 2}, a: [5, 3]}` must appear before `{"j": 1, "k": 2}` and `[5, 3]`,
+* `{"o": {"j": 1, "k": 2}, "a": [5, 3]}` must appear before `{"j": 1, "k": 2}` and `[5, 3]`,
 * `{"j": 1, "k": 2}` must appear before `1` and `2`,
 * `[5, 3]` must appear before `5` and `3`, and
 * `5` must appear before `3`.
@@ -1181,17 +1181,28 @@ The following table lists filter expression operators in order of precedence fro
 
 The `filter-selector` works with arrays and objects exclusively. Its result might be a list of *zero*, *one*, *multiple* or *all* of their element or member values then. Applied to other value types, it will select nothing.
 
-Some examples:
+#### Examples
+{: unnumbered}
 
-| JSON |  Query | Result | Comment |
-|:----|:---------:|:------:|:-------|
-| `{"a":1,"b":2}`<br>`[2,3,4]` | `$[?@]` | `[1,2]`<br>`[2,3,4]` | Same as `$.*` or `$[*]`  |
-| `./.` | `$[?@==2]` | `[2]`<br>`[2]` | Select by value.  |
-| `{"a":{"b":{"c":{}}}` | `$[?@.b]`<br>`$[?@.b.c]` | `[{"b":{"c":{}}]` | Existence  |
-| `{"key":false}` | `$[?index(@)=='key']`<br>`$[?index(@)==0]` | `[false]`<br>`[]` | Select object member |
-| `[3,4,5]` | `$[?index(@)==2]`<br>`$[?index(@)==17]` | `[5]`<br>`[]` | Select array element |
-| `{"a":{"b":{5},c:0}}` | `$[?@.b==5 && !@.c]` | `[{"b":{5},c:0}]` | Existence  |
+JSON document:
 
+    {
+      "a": [3, 5, 1, 2, 4, 6, {"b": "ij"}, {"b": "ik"}],
+      "o": {"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}}
+    }
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$.a[?@>3.5]` | `5` <br> `4` <br> `6` | `$['a'][1]` <br> `$['a'][4]` <br> `$['a'][5]` | Array value comparison |
+| `$.a[?@.b]` | `{"b": "ij"}` <br> `{"b": "ik"}` | `$['a'][6]` <br> `$['a'][7]` | Array value existence |
+| `$.a[?@<2 || @.b == "ik"]` | `1` <br> `{"b": "ik"}` | `$['a'][2]` <br> `$['a'][7]` | Array value logical OR |
+| `$.a[?@.b =~ "i.*"]` | `{"b": "ij"}` <br> `{"b": "ik"}` | `$['a'][6]` <br> `$['a'][7]` | Array value regular expression |
+| `$.o[?@>1 && @<4]` | `2` <br> `3` | `$['o']['q']` <br> `$['o']['r']` | Object value logical AND |
+| `$.o[?@>1 && @<4]` | `3` <br> `2` | `$['o']['r']` <br> `$['o']['q']` | Alternative result |
+| `$.o[?@.u || @.x]` | `{"u": 6}` | `$['o']['t']` | Object value logical OR |
+{: title="Filter selector examples"}
 
 ### List Selector
 
@@ -1236,6 +1247,22 @@ To be valid, integer values in the `element-index` and `slice-index`
 components MUST be in the I-JSON range of exact values, see
 {{synsem-overview}}.
 
+
+#### Examples
+{: unnumbered}
+
+JSON document:
+
+    ["a", "b", "c", "d", "e", "f", "g"]
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$[0, 3]` | `"a"` <br> `"d"` | `$[0]` <br> `$[3]` | Indices |
+| `$[0:2, 5]` | `"a"` <br> `"b"` <br> `"f"` | `$[0]` <br> `$[1]` <br> `$[5]` | Slice and index |
+| `$[0, 0]` | `"a"` <br> `"a"` | `$[0]` <br> `$[0]` | Duplicated entries |
+{: title="List selector examples"}
 
 ## Normalized Paths
 
