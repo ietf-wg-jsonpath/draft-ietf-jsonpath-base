@@ -205,14 +205,10 @@ Root Node:
 Children (of a node):
 : If the node is an array, each of its elements,
   or if the node is an object, each its member values (but not its
-  member names).
+  member names). If the node is neither an array nor an object, it has no descendants.
 
 Descendants (of a node):
-: The node itself, plus the descendants of each of its children. [^or-self]
-
-[^or-self]: Note that this is often more selectively called descendant-or-self.
-    Should we define descendants non-inclusive of the node itself?
-    We do have the language to say "node + descendants" in several places.
+: The children of the node, plus the descendants of each of its children. [^or-self]
 
 Nodelist:
 : A list of nodes.  <!-- ordered list?  Maybe TBD by issues #27 and #60 -->
@@ -285,7 +281,7 @@ to build paths that are input to a JSONPath implementation.
 
 JSONPath allows the wildcard symbol `*` to select any member of an
 object or any element of an array ({{wildcard}}).
-The descendant operator `..` selects the node and all its descendants ({{descendant-selector}}).
+The descendant operator `..` selects all the descendants ({{descendant-selector}}) of a node.
 The array slice
 syntax `[start:end:step]` allows selecting a regular selection of an
 element from an array, giving a start position, an end position, and
@@ -503,8 +499,6 @@ to form the result nodelist of the selector.
 
 For each node in the list, the selector selects zero or more nodes,
 each of which is a descendant of the node or the node itself.
-
-<!-- To do: Define "descendants" (making sure that member values are, but member names aren't). -->
 
 For instance, with the argument `{"a":[{"b":0},{"b":1},{"c":2}]}`, the
 query `$.a[*].b` selects the following list of nodes: `0`, `1`
@@ -1051,7 +1045,10 @@ descendant-selector = ".." ( dot-member-name      /  ; ..<name>
 #### Semantics
 {: unnumbered}
 
-The `descendant-selector` selects the node and all its descendants.
+The `descendant-selector` selects certain descendants of a node:
+* the `..<name>` form (and the `..[<index>]` form where `<index>` is a `quoted-member-name`) selects those descendants of the node that are member values of an object with the given member name.
+* the `..[<index>]` where `<index>` is an `element-index` selects those descendants of the node that are array elements with the given index.
+* the `..[*]` and `..*` forms select all the descendants of the node.
 
 In the resultant nodelist:
 * nodes occur before their children, and
@@ -1073,15 +1070,14 @@ Queries:
 
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
-| `$..j` | `1` | `$['o']['j']` | Object values      |
+| `$..j`   | `1` | `$['o']['j']` | Object values      |
 | `$..[0]` | `5` | `$['a'][0]` | Array values |
-| `$..[*]` | `{"o": {"j": 1, "k": 2}, "a": [5, 3]}` <br> `{"j": 1, "k" : 2}` <br> `[5, 3]` <br> `1` <br> `2` <br> `5` <br> `3` | `$['0']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]`   | All values     |
-| `$..*` | `{"o": {"j": 1, "k": 2}, "a": [5, 3]}` <br> `{"j": 1, "k" : 2}` <br> `[5, 3]` <br> `1` <br> `2` <br> `5` <br> `3` | `$['0']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]`     | All values    |
+| `$..[*]` | `{"j": 1, "k" : 2}` <br> `[5, 3]` <br> `1` <br> `2` <br> `5` <br> `3` | `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]`   | All values    |
+| `$..*`   | `{"j": 1, "k" : 2}` <br> `[5, 3]` <br> `1` <br> `2` <br> `5` <br> `3` | `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]`   | All values    |
 {: title="Descendant selector examples"}
 
-Note: This ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that:
+Note: The ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that:
 
-* `{"o": {"j": 1, "k": 2}, "a": [5, 3]}` must appear before `{"j": 1, "k": 2}` and `[5, 3]`,
 * `{"j": 1, "k": 2}` must appear before `1` and `2`,
 * `[5, 3]` must appear before `5` and `3`, and
 * `5` must appear before `3`.
