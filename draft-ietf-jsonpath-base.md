@@ -1048,11 +1048,13 @@ descendant-selector = ".." ( dot-member-name      /  ; ..<name>
 {: unnumbered}
 
 The `descendant-selector` selects certain descendants of a node:
+
 * the `..<name>` form (and the `..[<index>]` form where `<index>` is a `quoted-member-name`) selects those descendants of the node that are member values of an object with the given member name.
 * the `..[<index>]` where `<index>` is an `element-index` selects those descendants of the node that are array elements with the given index.
 * the `..[*]` and `..*` forms select all the descendants of the node.
 
 In the resultant nodelist:
+
 * nodes occur before their children, and
 * nodes of an array occur in array order.
 
