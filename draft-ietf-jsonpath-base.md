@@ -302,7 +302,7 @@ $.store.book[?(@.price < 10)].title
 | `@`         | the current node: within [filter selectors](#filter-selector)                                                                     |
 | `.name`     | child selectors for JSON objects: [dot selector](#dot-selector)                                                                     |
 | `['name']`  | child selectors for JSON objects: [index selector](#index-selector)                                                                 |
-| `..`        | nested descendants: [descendant selector](#descendant-selector)                                                                     |
+| `..`        | descendants: [descendant selector](#descendant-selector)                                                                     |
 | `*`         | all child member values and array elements: [dot wildcard selector](#wildcard), [index wildcard selector](#index-wildcard-selector) |
 | `[3]`       | [index (subscript) selector](#index-selector): index current node as an array (from 0)                                              |
 | `[..,..]`   | [list selector](#list-selector): allow combining selector styles                                                                    |
@@ -546,7 +546,7 @@ A JSONPath query consists of a sequence of selectors. Valid selectors are
   * Index wildcard selector `[*]`.
   * Array slice selector `[<start>:<end>:<step>]`, where the optional
     values `<start>`, `<end>`, and `<step>` are integer literals.
-  * Nested descendants selector `..`.
+  * Descendants selector `..`.
   * List selector `[<sel1>,<sel2>,...,<selN>]`, holding a comma
     separated list of index and slice selectors.
   * Filter selector `[?(<expr>)]`
@@ -1477,7 +1477,7 @@ with similar XPath concepts.
 | `.`   | `@`                | the current XML element                                                                                                               |
 | `/`   | `.` or `[]`        | child operator                                                                                                                        |
 | `..`  | n/a                | parent operator                                                                                                                       |
-| `//`  | `..`               | nested descendants (JSONPath borrows this syntax from E4X)                                                                            |
+| `//`  | `..`               | descendants (JSONPath borrows this syntax from E4X)                                                                            |
 | `*`   | `*`                | wildcard: All XML elements regardless of their names                                                                                  |
 | `@`   | n/a                | attribute access: JSON values do not have attributes                                                                                  |
 | `[]`  | `[]`               | subscript operator used to iterate over XML element collections and for predicates                                                    |
