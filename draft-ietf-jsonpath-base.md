@@ -208,7 +208,9 @@ Children (of a node):
   member names). If the node is neither an array nor an object, it has no descendants.
 
 Descendants (of a node):
-: The children of the node, plus the descendants of each of its children. [^or-self]
+: The children of the node, together with the children of its children, and so forth
+  recursively. More formally, the descendants relation between nodes is the transitive
+  closure of the children relation.
 
 Nodelist:
 : A list of nodes.  <!-- ordered list?  Maybe TBD by issues #27 and #60 -->
