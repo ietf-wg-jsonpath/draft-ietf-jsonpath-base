@@ -1067,24 +1067,28 @@ JSON document:
 
     {
       "o": {"j": 1, "k": 2},
-      "a": [5, 3]
+      "a": [5, 3, [{"j": 4}]]
     }
 
 Queries:
 
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
-| `$..j`   | `1` | `$['o']['j']` | Object values      |
-| `$..[0]` | `5` | `$['a'][0]` | Array values |
-| `$..[*]` | `{"j": 1, "k" : 2}` <br> `[5, 3]` <br> `1` <br> `2` <br> `5` <br> `3` | `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]`   | All values    |
-| `$..*`   | `{"j": 1, "k" : 2}` <br> `[5, 3]` <br> `1` <br> `2` <br> `5` <br> `3` | `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]`   | All values    |
+| `$..j`   | `1` <br> `4` | `$['o']['j']` <br> `$['a'][2][0]['j']` | Object values      |
+| `$..j`   | `4` <br> `1` | `$['a'][2][0]['j']` <br> `$['o']['j']` | Alternative result |
+| `$..[0]` | `5` <br> `{"j": 4}` | `$['a'][0]` <br> `$['a'][2][0]` | Array values       |
+| `$..[0]` | `{"j": 4}` <br> `5` | `$['a'][2][0]` <br> `$['a'][0]` | Alternative result |
+| `$..[*]` | `{"j": 1, "k" : 2}` <br> `[5, 3, [{"j": 4}]]` <br> `1` <br> `2` <br> `5` <br> `3` <br> `[{"j": 4}]` <br> `{"j": 4}` <br> `4` | `$['o']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][0]['j']` | All values    |
+| `$..*`   | `[5, 3, [{"j": 4}]]` <br> `{"j": 1, "k" : 2}` <br> `2` <br> `1` <br> `5` <br> `3` <br> `[{"j": 4}]` <br> `{"j": 4}` <br> `4` | `$['a']` <br> `$['o']` <br> `$['o']['k']` <br> `$['o']['j']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][0]['j']` | All values    |
 {: title="Descendant selector examples"}
 
 Note: The ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that:
 
 * `{"j": 1, "k": 2}` must appear before `1` and `2`,
-* `[5, 3]` must appear before `5` and `3`, and
-* `5` must appear before `3`.
+* `[5, 3, [{"j": 4}]]` must appear before `5`, `3`, and `[{"j": 4}]`,
+* `5` must appear before `3` which must appear before `[{"j": 4}]`,
+* `[{"j": 4}]` must appear before `{"j": 4}`, and
+* `{"j": 4}` must appear before `4`.
 
 ### Filter Selector
 
