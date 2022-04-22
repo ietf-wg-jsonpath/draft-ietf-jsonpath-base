@@ -1266,7 +1266,7 @@ Queries:
 
 ## Semantics of `null`
 
-JSON `null` is treated as a valid value, rather than "undefined" nor "missing."
+Note that JSON `null` is not  treated differently from any other JSON value (there is no special treatment as "undefined" or "missing").
 
 ### Examples
 {: unnumbered}
