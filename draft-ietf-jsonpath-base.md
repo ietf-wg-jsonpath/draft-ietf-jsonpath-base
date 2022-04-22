@@ -1316,6 +1316,17 @@ normal-HEXDIG             = DIGIT / %x61-66   ; "0"-"9", "a"-"f"
 normal-element-index      = "0" / (DIGIT1 *DIGIT) ; non-negative decimal integer
 ~~~~
 
+#### Examples
+{: unnumbered}
+
+| Path | Normalized Path | Comment |
+| :---: | :---: | ------- |
+| `$.a` | `$['a']` | Object value |
+| `$[1]` | `$[1]`  | Array index |
+| `$.a.b[1:2]` | `$['a']['b'][1]` | Nested structure |
+{: title="Normalized Path examples"}
+
+
 # IANA Considerations {#IANA}
 
 ##  Registration of Media Type application/jsonpath
