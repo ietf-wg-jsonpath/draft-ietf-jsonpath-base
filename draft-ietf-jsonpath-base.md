@@ -205,14 +205,12 @@ Root Node:
 Children (of a node):
 : If the node is an array, each of its elements,
   or if the node is an object, each its member values (but not its
-  member names).
+  member names). If the node is neither an array nor an object, it has no descendants.
 
 Descendants (of a node):
-: The node itself, plus the descendants of each of its children. [^or-self]
-
-[^or-self]: Note that this is often more selectively called descendant-or-self.
-    Should we define descendants non-inclusive of the node itself?
-    We do have the language to say "node + descendants" in several places.
+: The children of the node, together with the children of its children, and so forth
+  recursively. More formally, the descendants relation between nodes is the transitive
+  closure of the children relation.
 
 Nodelist:
 : A list of nodes.  <!-- ordered list?  Maybe TBD by issues #27 and #60 -->
@@ -285,7 +283,7 @@ to build paths that are input to a JSONPath implementation.
 
 JSONPath allows the wildcard symbol `*` to select any member of an
 object or any element of an array ({{wildcard}}).
-The descendant operator `..` selects the node and all its descendants ({{descendant-selector}}).
+The descendant operator `..` selects all the descendants ({{descendant-selector}}) of a node.
 The array slice
 syntax `[start:end:step]` allows selecting a regular selection of an
 element from an array, giving a start position, an end position, and
@@ -306,7 +304,7 @@ $.store.book[?(@.price < 10)].title
 | `@`         | the current node: within [filter selectors](#filter-selector)                                                                     |
 | `.name`     | child selectors for JSON objects: [dot selector](#dot-selector)                                                                     |
 | `['name']`  | child selectors for JSON objects: [index selector](#index-selector)                                                                 |
-| `..`        | nested descendants: [descendant selector](#descendant-selector)                                                                     |
+| `..`        | descendants: [descendant selector](#descendant-selector)                                                                     |
 | `*`         | all child member values and array elements: [dot wildcard selector](#wildcard), [index wildcard selector](#index-wildcard-selector) |
 | `[3]`       | [index (subscript) selector](#index-selector): index current node as an array (from 0)                                              |
 | `[..,..]`   | [list selector](#list-selector): allow combining selector styles                                                                    |
@@ -504,8 +502,6 @@ to form the result nodelist of the selector.
 For each node in the list, the selector selects zero or more nodes,
 each of which is a descendant of the node or the node itself.
 
-<!-- To do: Define "descendants" (making sure that member values are, but member names aren't). -->
-
 For instance, with the argument `{"a":[{"b":0},{"b":1},{"c":2}]}`, the
 query `$.a[*].b` selects the following list of nodes: `0`, `1`
 (denoted here by their value).
@@ -552,7 +548,7 @@ A JSONPath query consists of a sequence of selectors. Valid selectors are
   * Index wildcard selector `[*]`.
   * Array slice selector `[<start>:<end>:<step>]`, where the optional
     values `<start>`, `<end>`, and `<step>` are integer literals.
-  * Nested descendants selector `..`.
+  * Descendants selector `..`.
   * List selector `[<sel1>,<sel2>,...,<selN>]`, holding a comma
     separated list of index and slice selectors.
   * Filter selector `[?(<expr>)]`
@@ -1051,9 +1047,14 @@ descendant-selector = ".." ( dot-member-name      /  ; ..<name>
 #### Semantics
 {: unnumbered}
 
-The `descendant-selector` selects the node and all its descendants.
+The `descendant-selector` selects certain descendants of a node:
+
+* the `..<name>` form (and the `..[<index>]` form where `<index>` is a `quoted-member-name`) selects those descendants of the node that are member values of an object with the given member name.
+* the `..[<index>]` where `<index>` is an `element-index` selects those descendants of the node that are array elements with the given index.
+* the `..[*]` and `..*` forms select all the descendants of the node.
 
 In the resultant nodelist:
+
 * nodes occur before their children, and
 * nodes of an array occur in array order.
 
@@ -1066,25 +1067,28 @@ JSON document:
 
     {
       "o": {"j": 1, "k": 2},
-      "a": [5, 3]
+      "a": [5, 3, [{"j": 4}]]
     }
 
 Queries:
 
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
-| `$..j` | `1` | `$['o']['j']` | Object values      |
-| `$..[0]` | `5` | `$['a'][0]` | Array values |
-| `$..[*]` | `{"o": {"j": 1, "k": 2}, "a": [5, 3]}` <br> `{"j": 1, "k" : 2}` <br> `[5, 3]` <br> `1` <br> `2` <br> `5` <br> `3` | `$['0']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]`   | All values     |
-| `$..*` | `{"o": {"j": 1, "k": 2}, "a": [5, 3]}` <br> `{"j": 1, "k" : 2}` <br> `[5, 3]` <br> `1` <br> `2` <br> `5` <br> `3` | `$['0']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]`     | All values    |
+| `$..j`   | `1` <br> `4` | `$['o']['j']` <br> `$['a'][2][0]['j']` | Object values      |
+| `$..j`   | `4` <br> `1` | `$['a'][2][0]['j']` <br> `$['o']['j']` | Alternative result |
+| `$..[0]` | `5` <br> `{"j": 4}` | `$['a'][0]` <br> `$['a'][2][0]` | Array values       |
+| `$..[0]` | `{"j": 4}` <br> `5` | `$['a'][2][0]` <br> `$['a'][0]` | Alternative result |
+| `$..[*]` | `{"j": 1, "k" : 2}` <br> `[5, 3, [{"j": 4}]]` <br> `1` <br> `2` <br> `5` <br> `3` <br> `[{"j": 4}]` <br> `{"j": 4}` <br> `4` | `$['o']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][0]['j']` | All values    |
+| `$..*`   | `[5, 3, [{"j": 4}]]` <br> `{"j": 1, "k" : 2}` <br> `2` <br> `1` <br> `5` <br> `3` <br> `[{"j": 4}]` <br> `{"j": 4}` <br> `4` | `$['a']` <br> `$['o']` <br> `$['o']['k']` <br> `$['o']['j']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][0]['j']` | All values    |
 {: title="Descendant selector examples"}
 
-Note: This ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that:
+Note: The ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that:
 
-* `{"o": {"j": 1, "k": 2}, "a": [5, 3]}` must appear before `{"j": 1, "k": 2}` and `[5, 3]`,
 * `{"j": 1, "k": 2}` must appear before `1` and `2`,
-* `[5, 3]` must appear before `5` and `3`, and
-* `5` must appear before `3`.
+* `[5, 3, [{"j": 4}]]` must appear before `5`, `3`, and `[{"j": 4}]`,
+* `5` must appear before `3` which must appear before `[{"j": 4}]`,
+* `[{"j": 4}]` must appear before `{"j": 4}`, and
+* `{"j": 4}` must appear before `4`.
 
 ### Filter Selector
 
@@ -1492,7 +1496,7 @@ with similar XPath concepts.
 | `.`   | `@`                | the current XML element                                                                                                               |
 | `/`   | `.` or `[]`        | child operator                                                                                                                        |
 | `..`  | n/a                | parent operator                                                                                                                       |
-| `//`  | `..`               | nested descendants (JSONPath borrows this syntax from E4X)                                                                            |
+| `//`  | `..`               | descendants (JSONPath borrows this syntax from E4X)                                                                            |
 | `*`   | `*`                | wildcard: All XML elements regardless of their names                                                                                  |
 | `@`   | n/a                | attribute access: JSON values do not have attributes                                                                                  |
 | `[]`  | `[]`               | subscript operator used to iterate over XML element collections and for predicates                                                    |
