@@ -1264,6 +1264,32 @@ Queries:
 | `$[0, 0]` | `"a"` <br> `"a"` | `$[0]` <br> `$[0]` | Duplicated entries |
 {: title="List selector examples"}
 
+## Semantics of `null`
+
+JSON `null` is treated as a valid value, rather than "undefined" nor "missing."
+
+### Examples
+{: unnumbered}
+
+JSON document:
+
+    {"a": null, "b": [null], "c": [{}], "null": 1}
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$.a` | `null` | `$['a']` | Object value |
+| `$.a[0]` | | | `null` used as array |
+| `$.a.d` | | | `null` used as object |
+| `$.b[0]` | `null` | `$['b'][0]` | Array value |
+| `$.b[*]` | `null` | `$['b'][0]` | Array value |
+| `$.b[?@]` | `null` | `$['b'][0]` | Existence |
+| `$.b[?@==null]` | `null` | `$['b'][0]` | Comparison |
+| `$.c[?(@.d==null)]` | | | Comparison with "missing" value |
+| `$.null` | `1` | `$['null']` | Object key |
+{: title="Examples involving null"}
+
 ## Normalized Paths
 
 A Normalized Path is a JSONPath with restricted syntax that identifies a node by providing a query that results in exactly that node. For example,
