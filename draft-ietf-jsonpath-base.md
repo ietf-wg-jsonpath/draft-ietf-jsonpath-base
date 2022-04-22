@@ -1266,7 +1266,7 @@ Queries:
 
 ## Semantics of `null`
 
-Note that JSON `null` is not  treated differently from any other JSON value (there is no special treatment as "undefined" or "missing").
+Note that JSON `null` is treated the same as any other JSON value: it is not taken to mean "undefined" or "missing".
 
 ### Examples
 {: unnumbered}
@@ -1287,7 +1287,6 @@ Queries:
 | `$.b[?@]` | `null` | `$['b'][0]` | Existence |
 | `$.b[?@==null]` | `null` | `$['b'][0]` | Comparison |
 | `$.c[?(@.d==null)]` | | | Comparison with "missing" value |
-| `$.null` | `1` | `$['null']` | Not JSON null at all, just a string as object key |
 {: title="Examples involving null"}
 
 ## Normalized Paths
