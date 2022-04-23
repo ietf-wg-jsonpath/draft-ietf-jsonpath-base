@@ -1212,7 +1212,7 @@ filter selector iterates over the array or object.
 Comparisons using one of the operators `<`, `<=`, `>`, and `>=` are between numeric values only.
 Using these operators to compare other types of values produces a "false" comparison result.
 
-The semantics of regular expressions is as defined in {{-iregexp}}.
+The semantics of regular expressions are as defined in {{-iregexp}}.
 
 #### Examples
 {: unnumbered}
