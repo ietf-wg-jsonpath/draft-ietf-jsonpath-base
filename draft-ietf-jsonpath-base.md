@@ -76,7 +76,7 @@ contributor:
   email: esurov.tsp@gmail.com
 
 informative:
-  RFC3552: seccons
+#  RFC3552: seccons
 #  RFC8126: ianacons
   RFC6901: pointer
   RFC6901: pointer
@@ -105,9 +105,10 @@ informative:
     author:
     - org: Ecma International
     date: 1999-12
+  RFC8949: cbor
 
 normative:
-  RFC3629:
+  RFC3629: utf8
   RFC5234: abnf
   RFC8259: json
   RFC7493: i-json
@@ -1457,9 +1458,46 @@ Provisional registration? (standards tree only):
 
 # Security Considerations {#Security}
 
-This section gives security considerations, as required by {{RFC3552}}.
+Security considerations for JSONPath can stem from
 
+* attack vectors on JSONPath implementations, and
+* the way JSONPath is used in security-relevant mechanisms.
 
+## Attack vectors on JSONPath Implementations
+
+Historically, JSONPath has often been implemented by feeding parts of
+the query to an underlying programming language engine, e.g.,
+JavaScript.
+This approach is well known to lead to injection attacks and would
+require perfect input validation to prevent these attacks (see
+{{Section 12 of -json}} for similar considerations for JSON itself).
+Instead, JSONPath implementations need to implement the entire syntax
+of the query without relying on the parsers of programming language
+engines.
+
+Attacks on availability may attempt to trigger unusually expensive
+runtime performance exhibited by certain implementations in certain
+cases.
+(See {{Section 10 of -cbor}} for issues in hash-table implementations,
+and {{Section 8 of -iregexp}} for performance issues in regular
+expression implementations.)
+Implementers need to be aware that good average performance is not
+sufficient as long as an attacker can choose to submit specially
+crafted JSONPath queries that trigger surprisingly high, possibly
+exponential, CPU usage.
+
+## Attacks on Security Mechanisms that Employ JSONPath
+
+Where JSONPath is used as a part of a security mechanism, attackers
+can attempt to evoke unexpected behavior, or take advantage of
+differences in behavior between JSONPath implementations.
+
+This also applies to underlying technologies such as UTF-8 (see
+{{Section 10 of -utf8}}), the Unicode character set, and JSON.
+A characteristic of JSON that can lead to varying results is the
+fact that JSON objects are unordered; therefore, the order in which
+results of a JSONPath query reflect the presence of JSON object
+members can vary with implementations.
 
 --- back
 
