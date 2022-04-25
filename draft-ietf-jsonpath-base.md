@@ -1119,15 +1119,40 @@ basic-expr        = exist-expr /
                     paren-expr /
                     relation-expr
 exist-expr        = [neg-op S] singular-path          ; path existence or non-existence
+~~~~
+
+Paths in filter expressions are Singular Paths, each of which selects at most one node.
+
+~~~~ abnf
 singular-path     = rel-singular-path / abs-singular-path
 rel-singular-path = "@" *(S (dot-selector / index-selector))
 abs-singular-path = root-selector *(S (dot-selector / index-selector))
+~~~~
+
+Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `[?(<expr>)]` is naturally contained in the current lean syntax `[?<expr>]` as a special case.
+
+~~~~ abnf
 paren-expr        = [neg-op S] "(" S boolean-expr S ")" ; parenthesized expression
 neg-op            = "!"                               ; not operator
 
 relation-expr = comp-expr /                           ; comparison test
                 regex-expr                            ; regular expression test
+~~~~
 
+Comparisons are restricted to Singular Path values and primitive values (such as number, string, `true`, `false`, `null`).
+
+Comparisons with complex values will fail, i.e. no selection occurs.
+<!-- issue: comparison with structured value -->
+
+Data types are not implicitly converted in comparisons.
+So `"13 == '13'"` selects no node.
+
+A member or element value by itself in a Boolean context is
+interpreted as `false` only if it does not exist.
+Otherwise it is interpreted as `true`.
+To be more specific about the actual value, explicit comparisons are necessary. This existence test — as an exception to the general rule — also works with structured values.
+
+~~~~ abnf
 comp-expr    = comparable S comp-op S comparable
 comparable   = number / string-literal /              ; primitive ...
                true / false / null /                  ; values only
@@ -1135,37 +1160,33 @@ comparable   = number / string-literal /              ; primitive ...
 comp-op      = "==" / "!=" /                          ; comparison ...
                "<"  / ">"  /                          ; operators
                "<=" / ">="
+~~~~
+
+Alphabetic characters in ABNF are case-insensitive, so "e" can be either "e" or "E".
+
+`true`, `false`, and `null` are lower-case only (case-sensitive).
+
+~~~~ abnf
 number       = int [ frac ] [ exp ]                   ; decimal number
 frac         = "." 1*DIGIT                            ; decimal fraction
 exp          = "e" [ "-" / "+" ] 1*DIGIT              ; decimal exponent
 true         = %x74.72.75.65                          ; true
 false        = %x66.61.6c.73.65                       ; false
 null         = %x6e.75.6c.6c                          ; null
+~~~~
 
+Regular expression tests can be applied to JSON string values
+({{Section 7 of -json}}) only
+(on the left-hand side of `=~`); they yield false otherwise.
+
+The syntax of regular expressions in the string-literals on the right-hand
+side of `=~` is as defined in {{-iregexp}}.
+
+~~~~ abnf
 regex-expr   = (singular-path / string-literal) S regex-op S regex
 regex-op     = "=~"                                   ; regular expression match
 regex        = string-literal                         ; I-Regexp
 ~~~~
-
-Notes:
-
-* Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `[?(<expr>)]` is naturally contained in the current lean syntax `[?<expr>]` as a special case.
-* Comparisons are restricted to primitive values (such as number, string, `true`, `false`, `null`). Comparisons with complex values will fail, i.e. no selection occurs.
-<!-- issue: comparison with structured value -->
-* Data types are not implicitly converted in comparisons.
-  So `"13 == '13'"` selects no node.
-* A member or element value by itself in a Boolean context is
-  interpreted as `false` only if it does not exist.
-  Otherwise it is interpreted as `true`.
-  To be more specific about the actual value, explicit comparisons are necessary. This existence test — as an exception to the general rule — also works with structured values.
-* Paths in filter expressions are Singular Paths, each of which selects at most one node.
-* The regular expressions in the string-literals on the right-hand
-  side of `=~` are as defined in {{-iregexp}}.
-  Regular expression tests can be applied to JSON string values
-  ({{Section 7 of -json}}) only
-  (on the left-hand side of `=~`); they yield false otherwise.
-* Alphabetic characters in ABNF are case-insensitive, so "e" can be either "e" or "E".
-* false, null, true are lower-case only (case-sensitive).
 
 The following table lists filter expression operators in order of precedence from highest (binds most tightly) to lowest (binds least tightly).
 
@@ -1175,7 +1196,7 @@ The following table lists filter expression operators in order of precedence fro
 |:--:|:--:|:--:|
 |  5  | Grouping | `(...)` |
 |  4  | Logical NOT | `!` |
-|  3  | Relations | `==`&nbsp;`!=`<br>`<`&nbsp;`<=`&nbsp;`>`&nbsp;`>=`<br>`=~`<br>` in ` |
+|  3  | Relations | `==`&nbsp;`!=`<br>`<`&nbsp;`<=`&nbsp;`>`&nbsp;`>=`<br>`=~` |
 |  2  | Logical AND | `&&` |
 |  1  | Logical OR | `¦¦`   |
 {: title="Filter expression operator precedence" }
@@ -1183,7 +1204,15 @@ The following table lists filter expression operators in order of precedence fro
 #### Semantics
 {: unnumbered}
 
-The `filter-selector` works with arrays and objects exclusively. Its result might be a list of *zero*, *one*, *multiple* or *all* of their element or member values then. Applied to other value types, it will select nothing.
+The `filter-selector` works with arrays and objects exclusively. Its result is a list of *zero*, *one*, *multiple* or *all* of their array elements or member values, respectively. Applied to other value types, it will select nothing.
+
+A relative path, beginning with `@`, refers to the current array element or member value as the
+filter selector iterates over the array or object.
+
+Comparisons using one of the operators `<`, `<=`, `>`, and `>=` are between numeric values only.
+Using these operators to compare other types of values produces a "false" comparison result.
+
+The semantics of regular expressions are as defined in {{-iregexp}}.
 
 #### Examples
 {: unnumbered}
