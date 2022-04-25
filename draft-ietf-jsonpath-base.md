@@ -1394,8 +1394,7 @@ exponential, CPU usage.
 
 Where JSONPath is used as a part of a security mechanism, attackers
 can attempt to evoke unexpected behavior, or take advantage of
-differences in behavior between implementations that implement some
-protection and the implementations that are being protected by these.
+differences in behavior between JSONPath implementations.
 
 This also applies to underlying technologies such as UTF-8 (see
 {{Section 10 of -utf8}}), the Unicode character set, and JSON.
