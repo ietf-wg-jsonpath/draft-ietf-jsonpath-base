@@ -1376,7 +1376,7 @@ normal-HEXDIG             = DIGIT / %x61-66   ; "0"-"9", "a"-"f"
 normal-element-index      = "0" / (DIGIT1 *DIGIT) ; non-negative decimal integer
 ~~~~
 
-#### Examples
+### Examples
 {: unnumbered}
 
 | Path | Normalized Path | Comment |
