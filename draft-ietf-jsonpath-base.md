@@ -555,6 +555,14 @@ A JSONPath query consists of a sequence of selectors. Valid selectors are
   * Filter selector `[?(<expr>)]`
   * Current item selector `@` (used in expressions)
 
+Note that processing the dot selector and string-valued index selectors
+requires matching strings from the JSONPath against member names and
+string values from the JSON to which it is being applied.  Two strings
+MUST be considered equal if and only if they are identical sequences
+of Unicode code points. In other words, normalization operations MUST
+NOT be applied to either the string from the JSONPath or from the JSON
+prior to comparison.
+
 ### Root Selector
 
 #### Syntax
