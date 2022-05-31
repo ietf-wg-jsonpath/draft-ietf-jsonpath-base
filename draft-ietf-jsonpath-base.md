@@ -789,6 +789,9 @@ not exist; this simply means that no element is selected.
 #### Examples
 {: unnumbered}
 
+<!-- EDITING NOTE: There are non-breaking spaces here between j and j -->
+<!-- i.e., j j and not j j -->
+
 JSON document:
 
     {
