@@ -1365,7 +1365,7 @@ normal-escapable          = ( %x62 / %x66 / %x6E / %x72 / %x74 / ; \b \f \n \r \
                                 ; r /         ;  CR carriage return U+000D
                                 "'" /         ;  ' apostrophe U+0027
                                 "\" /         ;  \ backslash (reverse solidus) U+005C
-                                (%x75 normal-hexchar) ;  certain values u00XX U+00XX
+                                (%x75 normal-hexchar) ;  certain values u00xx U+00XX
                             )
 normal-hexchar            = "0" "0"
                             (
@@ -1386,6 +1386,8 @@ normal-element-index      = "0" / (DIGIT1 *DIGIT) ; non-negative decimal integer
 | `$.a` | `$['a']` | Object value |
 | `$[1]` | `$[1]`  | Array index |
 | `$.a.b[1:2]` | `$['a']['b'][1]` | Nested structure |
+| `$["\u000B"]`| `$['\u000b']` | Unicode escape |
+| `$["\u0061"]`| `$['a']` | Unicode character |
 {: title="Normalized Path examples"}
 
 
