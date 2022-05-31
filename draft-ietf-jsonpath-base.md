@@ -792,7 +792,7 @@ not exist; this simply means that no element is selected.
 JSON document:
 
     {
-      "o": {"j j": {"k.k": 3}},
+      "o": {"j j": {"k.k": 3}},
       "a": ["a","b"],
       "'": {"@": 2}
     }
@@ -801,8 +801,8 @@ Queries:
 
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
-| `$.o['j j']['k.k']`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
-| `$.o["j j"]["k.k"]`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
+| `$.o['j j']['k.k']`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
+| `$.o["j j"]["k.k"]`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
 | `$.a[1]`   | `"b"` | `$['a'][1]`      | Member of array      |
 | `$.a[-2]`   | `"a"` | `$['a'][0]`      | Member of array, from the end      |
 | $["'"]["@"] | `2` | `$['\'']['@']` | Unusual member names
