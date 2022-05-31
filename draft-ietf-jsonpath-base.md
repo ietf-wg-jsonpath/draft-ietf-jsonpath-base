@@ -789,10 +789,13 @@ not exist; this simply means that no element is selected.
 #### Examples
 {: unnumbered}
 
+<!-- EDITING NOTE: There are non-breaking spaces here between j and j -->
+<!-- i.e., j j and not j j -->
+
 JSON document:
 
     {
-      "o": {"j j": {"k.k": 3}},
+      "o": {"j j": {"k.k": 3}},
       "a": ["a","b"],
       "'": {"@": 2}
     }
@@ -801,11 +804,11 @@ Queries:
 
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
-| `$.o['j j']['k.k']`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
-| `$.o["j j"]["k.k"]`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
+| `$.o['j j']['k.k']`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
+| `$.o["j j"]["k.k"]`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
 | `$.a[1]`   | `"b"` | `$['a'][1]`      | Member of array      |
 | `$.a[-2]`   | `"a"` | `$['a'][0]`      | Member of array, from the end      |
-| $["'"]["@"] | `2` | `$['\'']['@']` | Unusual member names
+| `$["'"]["@"]` | `2` | `$['\'']['@']` | Unusual member names
 {: title="Index selector examples"}
 
 ### Index Wildcard Selector
@@ -1365,7 +1368,7 @@ normal-escapable          = ( %x62 / %x66 / %x6E / %x72 / %x74 / ; \b \f \n \r \
                                 ; r /         ;  CR carriage return U+000D
                                 "'" /         ;  ' apostrophe U+0027
                                 "\" /         ;  \ backslash (reverse solidus) U+005C
-                                (%x75 normal-hexchar) ;  certain values u00XX U+00XX
+                                (%x75 normal-hexchar) ;  certain values u00xx U+00XX
                             )
 normal-hexchar            = "0" "0"
                             (
@@ -1386,8 +1389,15 @@ normal-element-index      = "0" / (DIGIT1 *DIGIT) ; non-negative decimal integer
 | `$.a` | `$['a']` | Object value |
 | `$[1]` | `$[1]`  | Array index |
 | `$.a.b[1:2]` | `$['a']['b'][1]` | Nested structure |
+| `$["\u000B"]`| `$['\u000b']` | Unicode escape |
+| `$["\u0061"]`| `$['a']` | Unicode character |
+| `$["\u00b1"]` | <u format='char-num'>$['±']</u> | Unicode character |
 {: title="Normalized Path examples"}
 
+`$["\u00b1"]` is normalized into {{{$['±']}}} (noise in the
+table and lack of typewriter font is due to RFCXMLv3 limitations).
+<!-- Note that this cannot be put into typewriter font or into the -->
+<!-- above table due to an RFCXMLv3 limitation. -->
 
 # IANA Considerations {#IANA}
 
