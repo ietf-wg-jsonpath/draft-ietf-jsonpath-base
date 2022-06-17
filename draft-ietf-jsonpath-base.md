@@ -1514,7 +1514,7 @@ can attempt to provoke unexpected or unpredictable behavior, or
 take advantage of differences in behavior between JSONPath implementations.
 
 Unexpected or unpredictable behaviour can arise from an argument with certain
-constructs described as unpredictable by {{-json}} [RFC8259].
+constructs described as unpredictable by {{-json}}.
 Predictable behavior can be expected, except in relation to the ordering
 of objects, for any argument conforming with {{-i-json}}.
 
