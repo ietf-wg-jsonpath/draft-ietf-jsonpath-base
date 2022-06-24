@@ -1511,15 +1511,16 @@ exponential, CPU usage.
 ## Attacks on Security Mechanisms that Employ JSONPath
 
 Where JSONPath is used as a part of a security mechanism, attackers
-can attempt to evoke unexpected behavior, or take advantage of
-differences in behavior between JSONPath implementations.
+can attempt to provoke unexpected or unpredictable behavior, or
+take advantage of differences in behavior between JSONPath implementations.
 
-This also applies to underlying technologies such as UTF-8 (see
-{{Section 10 of -utf8}}), the Unicode character set, and JSON.
-A characteristic of JSON that can lead to varying results is the
-fact that JSON objects are unordered; therefore, the order in which
-results of a JSONPath query reflect the presence of JSON object
-members can vary with implementations.
+Unexpected or unpredictable behaviour can arise from an argument with certain
+constructs described as unpredictable by {{-json}}.
+Predictable behavior can be expected, except in relation to the ordering
+of objects, for any argument conforming with {{-i-json}}.
+
+Other attacks can target the behaviour of underlying technologies such as UTF-8 (see
+{{Section 10 of -utf8}}) and the Unicode character set.
 
 --- back
 
