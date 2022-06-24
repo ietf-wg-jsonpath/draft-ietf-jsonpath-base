@@ -1134,7 +1134,7 @@ logical-and-expr = basic-expr *(S "&&" S basic-expr)  ; conjunction
 basic-expr        = exist-expr /
                     paren-expr /
                     relation-expr
-exist-expr        = [neg-op S] singular-path          ; path existence or non-existence
+exist-expr        = [logical-not-op S] singular-path  ; path existence or non-existence
 ~~~~
 
 Paths in filter expressions are Singular Paths, each of which selects at most one node.
@@ -1148,8 +1148,9 @@ abs-singular-path = root-selector *(S (dot-selector / index-selector))
 Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `[?(<expr>)]` is naturally contained in the current lean syntax `[?<expr>]` as a special case.
 
 ~~~~ abnf
-paren-expr        = [neg-op S] "(" S boolean-expr S ")" ; parenthesized expression
-neg-op            = "!"                               ; not operator
+paren-expr        = [logical-not-op S] "(" S boolean-expr S ")"
+                                                      ; parenthesized expression
+logical-not-op    = "!"                               ; logical NOT operator
 
 relation-expr = comp-expr /                           ; comparison test
                 regex-expr                            ; regular expression test
@@ -1229,6 +1230,34 @@ Comparisons using one of the operators `<`, `<=`, `>`, and `>=` are between nume
 Using these operators to compare other types of values produces a "false" comparison result.
 
 The semantics of regular expressions are as defined in {{-iregexp}}.
+
+The logical AND, OR, and NOT operators have the normal semantics of Boolean algebra and
+consequently obey these laws (where `P`, `Q`, and `R` are any expressions with syntax
+`logical-and-expr`, `T` is any true expression, such as `1 == 1`, and `F` is any false expression,
+such as `1 == 0`):
+
+| Law | Expression | Equivalent expression |
+|:--:|:--:|:--:|
+| Associativity of OR | `P || (Q || R)` | `(P || Q) || R`|
+| Associativity of AND | `P && (Q && R)` | `(P && Q) && R`|
+| Commutativity of OR | `P || Q` | `Q || R` |
+| Commutativity of AND | `P && Q` | `Q && R` |
+| Distributivity of OR over AND | `P || (Q && R)` | `(P || Q) && (P || R)`|
+| Distributivity of AND over OR | `P && (Q || R)` | `(P && Q) || (P && R)`|
+| Identity for OR | `P || F` | `P`|
+| Identity for AND | `P && T` | `P`|
+| Anihilator for OR | `P || T` | `T`|
+| Anihilator for AND | `P && F` | `F`|
+| Idempotency of OR | `P || P` | `P`|
+| Idempotency of AND | `P && P` | `P`|
+| Absorption 1 | `P && (P || Q)` | `P`|
+| Absorption 2 | `P || (P && Q)` | `P`|
+| Complementation 1 | `P && !(P)` | `F`|
+| Complementation 2 | `P || !(P)` | `T`|
+| Double negation | `!(!(P))` | `P`|
+| De Morgan 1 | `!(P) && !(Q)` | `!(P || Q)`|
+| De Morgan 2 | `!(P) || !(Q)` | `!(P && Q)`|
+{: title="Logical operator laws" }
 
 #### Examples
 {: unnumbered}
