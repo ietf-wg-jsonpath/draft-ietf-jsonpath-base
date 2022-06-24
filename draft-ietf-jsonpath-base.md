@@ -480,7 +480,7 @@ operations that might be considered erroneous, such as indexing beyond the
 end of an array,
 simply result in fewer nodes being selected.
 
-Let's walk through an example in detail. With the argument `{"a":[{"b":0},{"b":1},{"c":2}]}`, the
+Consider this example. With the argument `{"a":[{"b":0},{"b":1},{"c":2}]}`, the
 query `$.a[*].b` selects the following list of nodes: `0`, `1`
 (denoted here by their value).
 
