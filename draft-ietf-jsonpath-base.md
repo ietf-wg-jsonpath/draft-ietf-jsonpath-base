@@ -422,46 +422,6 @@ type errors when pondering well-formedness and validity, while
 resource depletion and related errors are comparable to 500 type
 errors.)
 
-## Processing Model
-
-In this specification, the semantics of a JSONPath query are defined
-in terms of a *processing model*.  That model is not prescriptive of
-the internal workings of an implementation:  Implementations may wish
-(or need) to design a different process that yields results that are
-consistent with this model.
-
-In the processing model,
-a valid query is executed against a value, the *argument*, and
-produces a list of zero or more nodes of the value.
-
-The query is a sequence of zero or more *selectors*, each of
-which is applied to the result of the previous selector and provides
-input to the next selector.
-These results and inputs take the form of a *nodelist*, i.e., a
-sequence of zero or more nodes.
-
-The nodelist going into the first selector contains a single node,
-the argument.
-The nodelist resulting from the last selector is presented as the
-result of the query; depending on the specific API, it might be
-presented as an array of the JSON values at the nodes, an array of
-Normalized Paths referencing the nodes, or both — or some other
-representation as desired by the implementation.
-Note that the API must be capable of presenting an empty nodelist as
-the result of the query.
-
-A selector performs its function on each of the nodes in its input
-nodelist, during such a function execution, such a node is referred to
-as the "current node".  Each of these function executions produces a
-nodelist, which are then concatenated into
-the result of the selector.
-
-The processing within a selector may execute nested queries,
-which are in turn handled with the processing model defined here.
-Typically, the argument to that query will be the current node of the
-selector or a set of nodes subordinate to that current node.
-
-
 ## Syntax
 
 Syntactically, a JSONPath query consists of a root selector (`$`), which
@@ -484,29 +444,49 @@ The syntax and semantics of each selector is defined below.
 
 ## Semantics
 
-The root selector `$` not only selects the root node of the argument,
-but it also produces as output a list consisting of one
-node: the argument itself.
+In this specification, the semantics of a JSONPath query define the
+required results and do not prescribe the internal workings of an
+implementation.
 
-A selector may select zero or more nodes for further processing.
+The semantics are that a valid query is executed against a value,
+the *argument*, and produces a list of zero or more nodes of the value.
+
+The query is a sequence of zero or more *selectors*, each of
+which is applied to the result of the previous selector and provides
+input to the next selector.
+These results and inputs take the form of a *nodelist*, i.e., a
+sequence of zero or more nodes.
+
+The nodelist presented to the first selector contains a single node,
+the argument.
+The nodelist resulting from the last selector is presented as the
+result of the query; depending on the specific API, it might be
+presented as an array of the JSON values at the nodes, an array of
+Normalized Paths referencing the nodes, or both — or some other
+representation as desired by the implementation.
+Note that the API must be capable of presenting an empty nodelist as
+the result of the query.
+
+A selector performs its function on each of the nodes in its input
+nodelist, during such a function execution, such a node is referred to
+as the "current node".  Each of these function executions produces a
+nodelist, which are then concatenated into
+the result of the selector.
+
+The processing within a selector may execute nested queries,
+which conform to the semantics defined here.
+Typically, the argument to that query will be the current node of the
+selector or a set of nodes subordinate to that current node.
+
 A syntactically valid selector MUST NOT produce errors.
 This means that some
 operations that might be considered erroneous, such as indexing beyond the
 end of an array,
 simply result in fewer nodes being selected.
 
-But a selector doesn't just act on a single node: a selector acts on
-each of the nodes in its input nodelist and concatenates the resultant nodelists
-to form the result nodelist of the selector.
-
-
-For each node in the list, the selector selects zero or more nodes,
-each of which is a descendant of the node or the node itself.
-
-For instance, with the argument `{"a":[{"b":0},{"b":1},{"c":2}]}`, the
+Let's walk through an example in detail. With the argument `{"a":[{"b":0},{"b":1},{"c":2}]}`, the
 query `$.a[*].b` selects the following list of nodes: `0`, `1`
 (denoted here by their value).
-Let's walk through this in detail.
 
 The query consists of `$` followed by three selectors: `.a`, `[*]`, and `.b`.
 
@@ -579,8 +559,8 @@ root-selector  = "$"
 #### Semantics
 {: unnumbered}
 
-The Argument — the root JSON value — becomes the root node, which is
-addressed by the root selector `$`.
+The root selector `$` selects the root node of the argument
+and produces a nodelist consisting of that root node.
 
 #### Examples
 {: unnumbered}
