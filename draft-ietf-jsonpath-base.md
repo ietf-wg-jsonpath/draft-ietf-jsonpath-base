@@ -283,7 +283,7 @@ $['store']['book'][0]['title']
 to build paths that are input to a JSONPath implementation.
 
 JSONPath allows the wildcard symbol `*` to select any member of an
-object or any element of an array ({{card}}).
+object or any element of an array ({{wildcard}}).
 The descendant operator `..` selects all the descendants ({{descendant-selector}}) of a node.
 The array slice
 syntax `[start:end:step]` allows selecting a regular selection of an
