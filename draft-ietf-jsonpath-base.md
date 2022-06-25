@@ -283,7 +283,7 @@ $['store']['book'][0]['title']
 to build paths that are input to a JSONPath implementation.
 
 JSONPath allows the wildcard symbol `*` to select any member of an
-object or any element of an array ({{wildcard}}).
+object or any element of an array ({{card}}).
 The descendant operator `..` selects all the descendants ({{descendant-selector}}) of a node.
 The array slice
 syntax `[start:end:step]` allows selecting a regular selection of an
@@ -857,9 +857,9 @@ Queries:
 
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
-| `$.o.[*]` | `1` <br> `2` | `$['o']['j']` <br> `$['o']['k']` | Object values      |
-| `$.o.[*]` | `2` <br> `1` | `$['o']['k']` <br> `$['o']['j']` | Alternative result |
-| `$.a.[*]` | `5` <br> `3` | `$['a'][0]` <br> `$['a'][1]`     | Array members      |
+| `$.o[*]` | `1` <br> `2` | `$['o']['j']` <br> `$['o']['k']` | Object values      |
+| `$.o[*]` | `2` <br> `1` | `$['o']['k']` <br> `$['o']['j']` | Alternative result |
+| `$.a[*]` | `5` <br> `3` | `$['a'][0]` <br> `$['a'][1]`     | Array members      |
 {: title="Index wildcard selector examples"}
 
 ### Array Slice Selector {#slice}
