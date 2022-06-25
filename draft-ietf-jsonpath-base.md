@@ -1226,7 +1226,11 @@ The `filter-selector` works with arrays and objects exclusively. Its result is a
 A relative path, beginning with `@`, refers to the current array element or member value as the
 filter selector iterates over the array or object.
 
-Comparisons using one of the operators `<`, `<=`, `>`, and `>=` are between numeric values only.
+Comparison using one of the operators `==` or `!=` are between primitive values or singular paths. A singular path that selects no nodes compares unequal to a primitive value or a singular path which selects a node and compares
+equal to a singular path that selects no nodes. Two singular paths that each select a node compare equal if and only
+if these nodes hold equal primitive values.
+
+Comparisons using one of the operators `<`, `<=`, `>`, or `>=` are between numeric values only.
 Using these operators to compare other types of values produces a "false" comparison result.
 
 The semantics of regular expressions are as defined in {{-iregexp}}.
@@ -1280,6 +1284,7 @@ Queries:
 | `$.o[?@>1 && @<4]` | `2` <br> `3` | `$['o']['q']` <br> `$['o']['r']` | Object value logical AND |
 | `$.o[?@>1 && @<4]` | `3` <br> `2` | `$['o']['r']` <br> `$['o']['q']` | Alternative result |
 | `$.o[?@.u || @.x]` | `{"u": 6}` | `$['o']['t']` | Object value logical OR |
+| `$.a[?(@.b == $.x)]`| `3` <br> `5` <br> `1` <br> `2` <br> `4` <br> `6` | `$['a'][0]` <br>`$['a'][1]` <br> `$['a'][2]` <br> `$['a'][3]` <br> `$['a'][4]` | Comparison of paths with no values |
 {: title="Filter selector examples"}
 
 ### List Selector
