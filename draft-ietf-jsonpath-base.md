@@ -1246,10 +1246,10 @@ such as `1 == 0`):
 | Distributivity of AND over OR | `P && (Q || R)` | `(P && Q) || (P && R)`|
 | Identity for OR | `P || F` | `P`|
 | Identity for AND | `P && T` | `P`|
-| Anihilator for OR | `P || T` | `T`|
-| Anihilator for AND | `P && F` | `F`|
-| Idempotency of OR | `P || P` | `P`|
-| Idempotency of AND | `P && P` | `P`|
+| Annihilator for OR | `P || T` | `T`|
+| Annihilator for AND | `P && F` | `F`|
+| Idempotence of OR | `P || P` | `P`|
+| Idempotence of AND | `P && P` | `P`|
 | Absorption 1 | `P && (P || Q)` | `P`|
 | Absorption 2 | `P || (P && Q)` | `P`|
 | Complementation 1 | `P && !(P)` | `F`|
