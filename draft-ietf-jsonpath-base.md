@@ -1226,12 +1226,19 @@ The `filter-selector` works with arrays and objects exclusively. Its result is a
 A relative path, beginning with `@`, refers to the current array element or member value as the
 filter selector iterates over the array or object.
 
-Comparison using one of the operators `==` or `!=` are between primitive values or singular paths. A singular path that selects no nodes compares unequal to a primitive value or a singular path which selects a node and compares
-equal to a singular path that selects no nodes. Two singular paths that each select a node compare equal if and only
-if these nodes hold equal primitive values.
+When a path resulting in an empty nodelist appears on either side of a comparison, the result of the comparison is
+true if and only if the comparison operator is `==`, `>=` or `<=` and the other side of the comparison is also a path
+resulting in an empty nodelist.
 
-Comparisons using one of the operators `<`, `<=`, `>`, or `>=` are between numeric values only.
-Using these operators to compare other types of values produces a "false" comparison result.
+When no path resulting in an empty nodelist appears on either side of a comparison, any path which appears on either
+side of the comparison and results in a nodelist consisting of a single node is replaced by the value of the node
+and then:
+
+* comparison using one of the operators `==` or `!=` produce a "true" comparison result if and only if the comparison
+is between primitive values which satisy the comparison.
+
+* comparisons using one of the operators `<`, `<=`, `>`, or `>=` produce a "true" comparison result if and only if
+the comparison is between numeric values which satisfy the comparison.
 
 The semantics of regular expressions are as defined in {{-iregexp}}.
 
