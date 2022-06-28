@@ -1156,6 +1156,9 @@ relation-expr = comp-expr /                           ; comparison test
                 regex-expr                            ; regular expression test
 ~~~~
 
+Comparisons are restricted to Singular Path values and primitive values (such as number, string, `true`, `false`,
+`null`).
+
 Data types are not implicitly converted in comparisons.
 So `"13 == '13'"` selects no node.
 
@@ -1230,7 +1233,7 @@ side of the comparison and results in a nodelist consisting of a single node is 
 and then:
 
 * comparison using one of the operators `==` or `!=` produce a "true" comparison result if and only if the comparison
-is between primitive values which satisy the comparison.
+is between primitive values which satisfy the comparison.
 
 * comparisons using one of the operators `<`, `<=`, `>`, or `>=` produce a "true" comparison result if and only if
 the comparison is between numeric values which satisfy the comparison.
