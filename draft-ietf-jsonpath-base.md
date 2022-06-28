@@ -1158,9 +1158,6 @@ relation-expr = comp-expr /                           ; comparison test
 
 Comparisons are restricted to Singular Path values and primitive values (such as number, string, `true`, `false`, `null`).
 
-Comparisons with complex values will fail, i.e. no selection occurs.
-<!-- issue: comparison with structured value -->
-
 Data types are not implicitly converted in comparisons.
 So `"13 == '13'"` selects no node.
 
@@ -1240,6 +1237,9 @@ is between primitive values which satisy the comparison.
 * comparisons using one of the operators `<`, `<=`, `>`, or `>=` produce a "true" comparison result if and only if
 the comparison is between numeric values which satisfy the comparison.
 
+Note that comparisons between structured values, even if the values are equal, produce a "false" comparison result.
+<!-- issue: comparison with structured value -->
+
 The semantics of regular expressions are as defined in {{-iregexp}}.
 
 The logical AND, OR, and NOT operators have the normal semantics of Boolean algebra and
@@ -1292,6 +1292,7 @@ Queries:
 | `$.o[?@>1 && @<4]` | `3` <br> `2` | `$['o']['r']` <br> `$['o']['q']` | Alternative result |
 | `$.o[?@.u || @.x]` | `{"u": 6}` | `$['o']['t']` | Object value logical OR |
 | `$.a[?(@.b == $.x)]`| `3` <br> `5` <br> `1` <br> `2` <br> `4` <br> `6` | `$['a'][0]` <br>`$['a'][1]` <br> `$['a'][2]` <br> `$['a'][3]` <br> `$['a'][4]` | Comparison of paths with no values |
+| `$[?(@ == @)]` | | | Comparison of structured values |
 {: title="Filter selector examples"}
 
 ### List Selector
