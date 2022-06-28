@@ -1233,7 +1233,9 @@ side of the comparison and results in a nodelist consisting of a single node is 
 and then:
 
 * comparison using one of the operators `==` or `!=` produce a "true" comparison result if and only if the comparison
-is between primitive values which satisfy the comparison.
+is between:
+    * primitive values which satisfy the comparison, or
+    * structured values compared using `!=`.
 
 * comparisons using one of the operators `<`, `<=`, `>`, or `>=` produce a "true" comparison result if and only if
 the comparison is between numeric values which satisfy the comparison.
