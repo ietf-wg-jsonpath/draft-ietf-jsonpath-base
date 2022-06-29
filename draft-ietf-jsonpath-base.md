@@ -1169,14 +1169,6 @@ relation-expr = comp-expr /                           ; comparison test
 Comparisons are restricted to Singular Path values and primitive values (such as number, string, `true`, `false`,
 `null`).
 
-Data types are not implicitly converted in comparisons.
-So `"13 == '13'"` selects no node.
-
-A member or element value by itself in a Boolean context is
-interpreted as `false` only if it does not exist.
-Otherwise it is interpreted as `true`.
-To be more specific about the actual value, explicit comparisons are necessary. This existence test — as an exception to the general rule — also works with structured values.
-
 ~~~~ abnf
 comp-expr    = comparable S comp-op S comparable
 comparable   = number / string-literal /              ; primitive ...
@@ -1199,10 +1191,6 @@ true         = %x74.72.75.65                          ; true
 false        = %x66.61.6c.73.65                       ; false
 null         = %x6e.75.6c.6c                          ; null
 ~~~~
-
-Regular expression tests can be applied to JSON string values
-({{Section 7 of -json}}) only
-(on the left-hand side of `=~`); they yield false otherwise.
 
 The syntax of regular expressions in the string-literals on the right-hand
 side of `=~` is as defined in {{-iregexp}}.
@@ -1234,6 +1222,11 @@ The `filter-selector` works with arrays and objects exclusively. Its result is a
 A relative path, beginning with `@`, refers to the current array element or member value as the
 filter selector iterates over the array or object.
 
+A member or element value by itself in a Boolean context is
+interpreted as `false` only if it does not exist.
+Otherwise it is interpreted as `true`.
+To be more specific about the actual value, explicit comparisons are necessary. This existence test — as an exception to the general rule — also works with structured values.
+
 When a path resulting in an empty nodelist appears on either side of a comparison, the result of the comparison is
 true if and only if the comparison operator is `==`, `>=` or `<=` and the other side of the comparison is also a path
 resulting in an empty nodelist.
@@ -1252,6 +1245,13 @@ the comparison is between numeric values which satisfy the comparison.
 
 Note that comparisons between structured values, even if the values are equal, produce a "false" comparison result.
 <!-- issue: comparison with structured value -->
+
+Data types are not implicitly converted in comparisons.
+So `"13 == '13'"` selects no node.
+
+Regular expression tests can be applied to JSON string values
+({{Section 7 of -json}}) only
+(on the left-hand side of `=~`); they yield false otherwise.
 
 The semantics of regular expressions are as defined in {{-iregexp}}.
 
