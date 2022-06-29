@@ -1156,10 +1156,8 @@ relation-expr = comp-expr /                           ; comparison test
                 regex-expr                            ; regular expression test
 ~~~~
 
-Comparisons are restricted to Singular Path values and primitive values (such as number, string, `true`, `false`, `null`).
-
-Comparisons with complex values will fail, i.e. no selection occurs.
-<!-- issue: comparison with structured value -->
+Comparisons are restricted to Singular Path values and primitive values (such as number, string, `true`, `false`,
+`null`).
 
 Data types are not implicitly converted in comparisons.
 So `"13 == '13'"` selects no node.
@@ -1226,8 +1224,24 @@ The `filter-selector` works with arrays and objects exclusively. Its result is a
 A relative path, beginning with `@`, refers to the current array element or member value as the
 filter selector iterates over the array or object.
 
-Comparisons using one of the operators `<`, `<=`, `>`, and `>=` are between numeric values only.
-Using these operators to compare other types of values produces a "false" comparison result.
+When a path resulting in an empty nodelist appears on either side of a comparison, the result of the comparison is
+true if and only if the comparison operator is `==`, `>=` or `<=` and the other side of the comparison is also a path
+resulting in an empty nodelist.
+
+When no path resulting in an empty nodelist appears on either side of a comparison, any path which appears on either
+side of the comparison and results in a nodelist consisting of a single node is replaced by the value of the node
+and then:
+
+* comparison using one of the operators `==` or `!=` produce a "true" comparison result if and only if the comparison
+is between:
+    * primitive values which satisfy the comparison, or
+    * structured values compared using `!=`.
+
+* comparisons using one of the operators `<`, `<=`, `>`, or `>=` produce a "true" comparison result if and only if
+the comparison is between numeric values which satisfy the comparison.
+
+Note that comparisons between structured values, even if the values are equal, produce a "false" comparison result.
+<!-- issue: comparison with structured value -->
 
 The semantics of regular expressions are as defined in {{-iregexp}}.
 
@@ -1280,6 +1294,8 @@ Queries:
 | `$.o[?@>1 && @<4]` | `2` <br> `3` | `$['o']['q']` <br> `$['o']['r']` | Object value logical AND |
 | `$.o[?@>1 && @<4]` | `3` <br> `2` | `$['o']['r']` <br> `$['o']['q']` | Alternative result |
 | `$.o[?@.u || @.x]` | `{"u": 6}` | `$['o']['t']` | Object value logical OR |
+| `$.a[?(@.b == $.x)]`| `3` <br> `5` <br> `1` <br> `2` <br> `4` <br> `6` | `$['a'][0]` <br>`$['a'][1]` <br> `$['a'][2]` <br> `$['a'][3]` <br> `$['a'][4]` | Comparison of paths with no values |
+| `$[?(@ == @)]` | | | Comparison of structured values |
 {: title="Filter selector examples"}
 
 ### List Selector
