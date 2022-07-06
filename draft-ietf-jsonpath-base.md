@@ -1336,7 +1336,7 @@ the selector entries in the list and yields the concatenation of the
 lists (in the order of the selector entries) of nodes selected by the
 selector entries.
 Note that any node selected in more than one of the selector entries is kept
-as many times in the node list.
+as many times in the nodelist.
 
 To be valid, integer values in the `element-index` and `slice-index`
 components MUST be in the I-JSON range of exact values, see
