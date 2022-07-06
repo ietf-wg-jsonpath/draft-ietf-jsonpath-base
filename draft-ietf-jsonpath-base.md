@@ -1073,7 +1073,7 @@ The `descendant-selector` selects certain descendants of a node:
 In the resultant nodelist:
 
 * nodes occur before their children, and
-* nodes of an array occur in array order.
+* nodes of a given array, and descendants of nodes of the given array, occur in array order.
 
 Children of an object may occur in any order, since JSON objects are unordered.
 
@@ -1104,6 +1104,7 @@ Note: The ordering of the results for the `$..[*]` and `$..*` examples above is 
 * `{"j": 1, "k": 2}` must appear before `1` and `2`,
 * `[5, 3, [{"j": 4}]]` must appear before `5`, `3`, and `[{"j": 4}]`,
 * `5` must appear before `3` which must appear before `[{"j": 4}]`,
+* `5` and `3` must appear before `{"j": 4}` and `4`,
 * `[{"j": 4}]` must appear before `{"j": 4}`, and
 * `{"j": 4}` must appear before `4`.
 
