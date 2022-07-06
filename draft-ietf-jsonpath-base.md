@@ -788,8 +788,9 @@ The `index-selector` applied with a `quoted-member-name` to an object
 selects the node of the corresponding member value from it, if and only if that object has a member with that name.
 Nothing is selected from a value that is not a object.
 
-Array indexing via `element-index` is a way of selecting a particular array element using a zero-based index.
+The `index-selector` applied with an `element-index` to an array selects an array element using a zero-based index.
 For example, selector `[0]` selects the first and selector `[4]` the fifth element of a sufficiently long array.
+Nothing is selected, and it is not an error, if the index lies outside the range of the array. Nothing is selected from a value that is not an array.
 
 A negative `element-index` counts from the array end.
 For example, selector `[-1]` selects the last and selector `[-2]` selects the penultimate element of an array with at least two elements.
@@ -1335,7 +1336,7 @@ the selector entries in the list and yields the concatenation of the
 lists (in the order of the selector entries) of nodes selected by the
 selector entries.
 Note that any node selected in more than one of the selector entries is kept
-as many times in the node list.
+as many times in the nodelist.
 
 To be valid, integer values in the `element-index` and `slice-index`
 components MUST be in the I-JSON range of exact values, see
