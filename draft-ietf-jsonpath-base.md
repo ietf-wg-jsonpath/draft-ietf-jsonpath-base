@@ -1068,12 +1068,14 @@ The `descendant-selector` selects certain descendants of a node:
 * the `..[<index>]` where `<index>` is an `element-index` selects those descendants of the node that are array elements with the given index.
 * the `..[*]` and `..*` forms select all the descendants of the node.
 
-In the resultant nodelist:
+The resultant nodelist is ordered as if:
 
-* nodes occur before their children, and
-* nodes of a given array, and descendants of nodes of the given array, occur in array order.
+* nodes are visited before their children, and
+* nodes of an array are visited in array order.
 
-Children of an object may occur in any order, since JSON objects are unordered.
+Children of an object may be visited in any order, since JSON objects are unordered.
+
+Implementations may visit descendants in any way providing the resultant nodelist could have been produced by visiting descendants as above.
 
 #### Examples
 {: unnumbered}
