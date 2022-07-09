@@ -1048,7 +1048,7 @@ Queries:
 
 The descendant selectors start with a double dot `..` and can be
 followed by an object member name (similar to the `dot-selector`),
-a wilcard (similar to the `dot-wild-selector`),
+a wildcard (similar to the `dot-wild-selector`),
 an `index-selector`, `index-wild-selector`, `filter-selector`, or `list-selector` acting on objects or arrays,
 or a `slice-selector` acting on arrays.
 
