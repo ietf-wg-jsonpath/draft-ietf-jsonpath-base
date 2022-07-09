@@ -284,7 +284,7 @@ to build paths that are input to a JSONPath implementation.
 
 JSONPath allows the wildcard symbol `*` to select any member of an
 object or any element of an array ({{wildcard}}).
-The descendant operator `..` selects all the descendants ({{descendant-selector}}) of a node.
+The descendant operators (which start with `..`) select some or all of the descendants ({{descendant-selectors}}) of a node.
 The array slice
 syntax `[start:end:step]` allows selecting a regular selection of an
 element from an array, giving a start position, an end position, and
@@ -305,7 +305,7 @@ $.store.book[?(@.price < 10)].title
 | `@`         | the current node: within [filter selectors](#filter-selector)                                                                     |
 | `.name`     | child selectors for JSON objects: [dot selector](#dot-selector)                                                                     |
 | `['name']`  | child selectors for JSON objects: [index selector](#index-selector)                                                                 |
-| `..`        | descendants: [descendant selector](#descendant-selector)                                                                     |
+| `..name` <br> `..[3]` | descendants: [descendant selector](#descendant-selectors)                                                                     |
 | `*`         | all child member values and array elements: [dot wildcard selector](#wildcard), [index wildcard selector](#index-wildcard-selector) |
 | `[3]`       | [index (subscript) selector](#index-selector): index current node as an array (from 0)                                              |
 | `[..,..]`   | [list selector](#list-selector): allow combining selector styles                                                                    |
@@ -374,10 +374,6 @@ constant.
 | `$..book[?(@.price<10)]`                  | filter all books cheaper than 10                             |
 | `$..*`                                    | all elements in XML document; all member values and array elements contained in input value |
 {: #tbl-example title="Example JSONPath expressions applied to the example JSON value"}
-
-<!-- XXX: fine tune: is $..* really member values + array elements -->
-
-<!-- back to normington draft; not yet merged up where needed (e.g., terminology). -->
 
 # JSONPath Syntax and Semantics
 
@@ -549,7 +545,7 @@ A JSONPath query consists of a sequence of selectors. Valid selectors are
   * Index wildcard selector `[*]`
   * Array slice selector `[<start>:<end>:<step>]`, where the optional
     values `<start>`, `<end>`, and `<step>` are integer literals
-  * Descendants selector starting with a double dot  `..`
+  * Descendants selectors starting with a double dot  `..`
   * List selector `[<sel1>,<sel2>,...,<selN>]`, holding a comma
 
     separated list of index and slice selectors
@@ -1044,12 +1040,12 @@ Queries:
 | `$[::-1]` | `"g"` <br> `"f"` <br> `"e"` <br> `"d"` <br> `"c"` <br> `"b"` <br> `"a"` | `$[6]` <br> `$[5]` <br> `$[4]` <br> `$[3]` <br> `$[2]` <br> `$[1]` <br> `$[0]` | Slice in reverse order |
 {: title="Array slice selector examples"}
 
-### Descendant Selector
+### Descendant Selectors
 
 #### Syntax
 {: unnumbered}
 
-The descendant selector starts with a double dot `..` and can be
+The descendant selectors start with a double dot `..` and can be
 followed by an object member name (similar to the `dot-selector`),
 by an `index-selector` acting on objects or arrays, or by a wildcard.
 
@@ -1061,6 +1057,8 @@ descendant-selector = ".." ( dot-member-name      /  ; ..<name>
                            )
 ~~~~
 
+Note that there is no "bald" descendant selector `..`.
+
 #### Semantics
 {: unnumbered}
 
@@ -1070,12 +1068,14 @@ The `descendant-selector` selects certain descendants of a node:
 * the `..[<index>]` where `<index>` is an `element-index` selects those descendants of the node that are array elements with the given index.
 * the `..[*]` and `..*` forms select all the descendants of the node.
 
-In the resultant nodelist:
+The resultant nodelist is ordered as if:
 
-* nodes occur before their children, and
-* nodes of an array occur in array order.
+* nodes are visited before their children, and
+* nodes of an array are visited in array order.
 
-Children of an object may occur in any order, since JSON objects are unordered.
+Children of an object may be visited in any order, since JSON objects are unordered.
+
+Implementations may visit descendants in any way providing the resultant nodelist could have been produced by visiting descendants as above.
 
 #### Examples
 {: unnumbered}
@@ -1104,6 +1104,7 @@ Note: The ordering of the results for the `$..[*]` and `$..*` examples above is 
 * `{"j": 1, "k": 2}` must appear before `1` and `2`,
 * `[5, 3, [{"j": 4}]]` must appear before `5`, `3`, and `[{"j": 4}]`,
 * `5` must appear before `3` which must appear before `[{"j": 4}]`,
+* `5` and `3` must appear before `{"j": 4}` and `4`,
 * `[{"j": 4}]` must appear before `{"j": 4}`, and
 * `{"j": 4}` must appear before `4`.
 
@@ -1639,7 +1640,7 @@ or the *bracket notation*
 heavyweight syntax replacing XPath's `/` within query expressions.
 
 Both JSONPath and XPath use `*` for a wildcard.
-The descendant operator `..`, borrowed from {{E4X}}, is similar to XPath's `//`.
+The descendant operators, starting with `..`, borrowed from {{E4X}}, are similar to XPath's `//`.
 The array slicing construct `[start:end:step]` is unique to JSONPath,
 inspired by {{SLICE}} from ECMASCRIPT 4.
 
@@ -1658,7 +1659,7 @@ with similar XPath concepts.
 | `.`   | `@`                | the current XML element                                                                                                               |
 | `/`   | `.` or `[]`        | child operator                                                                                                                        |
 | `..`  | n/a                | parent operator                                                                                                                       |
-| `//`  | `..`               | descendants (JSONPath borrows this syntax from E4X)                                                                            |
+| `//`  | `..name`, `..[index]`, `..*`, or `..[*]`               | descendants (JSONPath borrows this syntax from E4X)                                                                            |
 | `*`   | `*`                | wildcard: All XML elements regardless of their names                                                                                  |
 | `@`   | n/a                | attribute access: JSON values do not have attributes                                                                                  |
 | `[]`  | `[]`               | subscript operator used to iterate over XML element collections and for predicates                                                    |
