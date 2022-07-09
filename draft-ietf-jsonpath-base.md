@@ -1068,7 +1068,7 @@ Note that there is no "bald" descendant selector `..`.
 #### Semantics
 {: unnumbered}
 
-The `descendant-selector` selects certain descendants of a node:
+A `descendant-selector` selects certain descendants of a node:
 
 * the `..<name>` form (and the `..[<index>]` form where `<index>` is a `quoted-member-name`) selects those descendants that are member values of an object with the given member name.
 * the `..[<index>]` form, where `<index>` is an `element-index`, selects those descendants that are array elements with the given index.
@@ -1076,14 +1076,14 @@ The `descendant-selector` selects certain descendants of a node:
 * the `..[<filter>]` form selects those descendants that are array elements or object values selected by the given filter.
 * the `..[*]` and `..*` forms select all the descendants.
 
-The resultant nodelist is ordered as if:
+An _array preorder_ of the descendants of a node is a sequence of all the descendants in which:
 
-* nodes are visited before their children, and
-* nodes of an array are visited in array order.
+* nodes of an array appear in array order, and
+* nodes appear before their children.
 
-Children of an object may be visited in any order, since JSON objects are unordered.
+Children of an object may appear in any order, since JSON objects are unordered.
 
-Implementations may visit descendants in any way providing the resultant nodelist could have been produced by visiting descendants as above.
+The resultant nodelist of a `descendant-selector` applied to a node must be a sub-sequence of an array preorder of the descendants of the node.
 
 #### Examples
 {: unnumbered}
