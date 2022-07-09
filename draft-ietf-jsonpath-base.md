@@ -648,7 +648,8 @@ The dot wildcard selector has the form `.*` as defined in the
 following syntax:
 
 ~~~~ abnf
-dot-wild-selector    = "." "*"            ;  dot followed by asterisk
+dot-wild-selector    = "." wildcard       ;  dot followed by asterisk
+wildcard             = "*"
 ~~~~
 
 #### Semantics
@@ -826,7 +827,7 @@ Queries:
 The index wildcard selector has the form `[*]`.
 
 ~~~~ abnf
-index-wild-selector    = "[" "*" "]"  ;  asterisk enclosed by brackets
+index-wild-selector    = "[" wildcard "]"  ;  asterisk enclosed by brackets
 ~~~~
 
 #### Semantics
@@ -1047,13 +1048,18 @@ Queries:
 
 The descendant selectors start with a double dot `..` and can be
 followed by an object member name (similar to the `dot-selector`),
-by an `index-selector` acting on objects or arrays, or by a wildcard.
+a wildcard (similar to the `dot-wild-selector`),
+an `index-selector`, `index-wild-selector`, `filter-selector`, or `list-selector` acting on objects or arrays,
+or a `slice-selector` acting on arrays.
 
 ~~~~ abnf
 descendant-selector = ".." ( dot-member-name      /  ; ..<name>
+                             wildcard             /  ; ..*
                              index-selector       /  ; ..[<index>]
                              index-wild-selector  /  ; ..[*]
-                             "*"                     ; ..*
+                             slice-selector       /  ; ..[<slice-index>]
+                             filter-selector      /  ; ..[<filter>]
+                             list-selector           ; ..[<list-entry>,...]
                            )
 ~~~~
 
@@ -1064,9 +1070,11 @@ Note that there is no "bald" descendant selector `..`.
 
 The `descendant-selector` selects certain descendants of a node:
 
-* the `..<name>` form (and the `..[<index>]` form where `<index>` is a `quoted-member-name`) selects those descendants of the node that are member values of an object with the given member name.
-* the `..[<index>]` where `<index>` is an `element-index` selects those descendants of the node that are array elements with the given index.
-* the `..[*]` and `..*` forms select all the descendants of the node.
+* the `..<name>` form (and the `..[<index>]` form where `<index>` is a `quoted-member-name`) selects those descendants that are member values of an object with the given member name.
+* the `..[<index>]` form, where `<index>` is an `element-index`, selects those descendants that are array elements with the given index.
+* the `..[<slice-index>]` form selects those descendants that are array elements selected by the given slice.
+* the `..[<filter>]` form selects those descendants that are array elements or object values selected by the given filter.
+* the `..[*]` and `..*` forms select all the descendants.
 
 The resultant nodelist is ordered as if:
 
