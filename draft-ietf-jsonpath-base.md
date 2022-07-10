@@ -1063,7 +1063,7 @@ descendant-selector = ".." ( dot-member-name      /  ; ..<name>
                            )
 ~~~~
 
-Note that there is no "bald" descendant selector `..`.
+Note that there is no "bald" descendant selector (`..` on its own).
 
 #### Semantics
 {: unnumbered}
@@ -1076,14 +1076,14 @@ A `descendant-selector` selects certain descendants of a node:
 * the `..[<filter>]` form selects those descendants that are array elements or object values selected by the given filter.
 * the `..[*]` and `..*` forms select all the descendants.
 
-An _array preorder_ of the descendants of a node is a sequence of all the descendants in which:
+An _array-sequenced preorder_ of the descendants of a node is a sequence of all the descendants in which:
 
-* nodes of an array, immediately followed by their descendants appear in array order, and
-* nodes appear before their children.
+* nodes of any array appear in array order,
+* nodes appear immediately before all their descendants.
 
-Children of an object may appear in any order, since JSON objects are unordered.
+This definition does not stipulate the order in which the children of an object appear, since JSON objects are unordered.
 
-The resultant nodelist of a `descendant-selector` applied to a node must be a sub-sequence of an array preorder of the descendants of the node.
+The resultant nodelist of a `descendant-selector` applied to a node must be a sub-sequence of an array-sequenced preorder of the descendants of the node.
 
 #### Examples
 {: unnumbered}
