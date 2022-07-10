@@ -1078,7 +1078,7 @@ A `descendant-selector` selects certain descendants of a node:
 
 An _array preorder_ of the descendants of a node is a sequence of all the descendants in which:
 
-* nodes of an array appear in array order, and
+* nodes of an array, immediately followed by their descendants appear in array order, and
 * nodes appear before their children.
 
 Children of an object may appear in any order, since JSON objects are unordered.
