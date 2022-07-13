@@ -1560,8 +1560,10 @@ and {{Section 8 of -iregexp}} for performance issues in regular
 expression implementations.)
 Implementers need to be aware that good average performance is not
 sufficient as long as an attacker can choose to submit specially
-crafted JSONPath queries that trigger surprisingly high, possibly
-exponential, CPU usage.
+crafted JSONPath queries or arguments that trigger surprisingly high, possibly
+exponential, CPU usage or, for example via a naive recursive implementation of the descendant selector,
+stack overflow. Implementations need to have appropriate resource management
+to mitigate these attacks.
 
 ## Attacks on Security Mechanisms that Employ JSONPath
 
