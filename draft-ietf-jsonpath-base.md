@@ -1063,7 +1063,7 @@ descendant-selector = ".." ( dot-member-name      /  ; ..<name>
                            )
 ~~~~
 
-Note that there is no "bald" descendant selector (`..` on its own).
+Note that `..` on its own is not a valid selector.
 
 #### Semantics
 {: unnumbered}
