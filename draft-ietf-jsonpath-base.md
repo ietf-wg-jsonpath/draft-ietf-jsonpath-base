@@ -1222,10 +1222,8 @@ The `filter-selector` works with arrays and objects exclusively. Its result is a
 A relative path, beginning with `@`, refers to the current array element or member value as the
 filter selector iterates over the array or object.
 
-A member or element value by itself in a Boolean context is
-interpreted as `false` only if it does not exist.
-Otherwise it is interpreted as `true`.
-To be more specific about the actual value, explicit comparisons are necessary. This existence test — as an exception to the general rule — also works with structured values.
+A singular path by itself in a Boolean context is an existence test with result `true` if the path selects a node and result `false` if the path does not select a node.
+To be more specific about the actual value of a node selected by a path, explicit comparisons are necessary. This existence test — as an exception to the general rule — also works with nodes with structured values.
 
 When a path resulting in an empty nodelist appears on either side of a comparison, the result of the comparison is
 true if and only if the comparison operator is `==`, `>=` or `<=` and the other side of the comparison is also a path
