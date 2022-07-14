@@ -1311,8 +1311,8 @@ Queries:
 
 ### List Selector
 
-The list selector allows combining member names, array indices, and
-slices in a single selector.
+The list selector allows combining member names, array indices,
+slices, and filters in a single selector.
 
 Note: The list selector was called "union selector" in
 {{JSONPath-orig}}, as it was intended to solve use cases addressed by
@@ -1325,7 +1325,7 @@ renamed into "list selector".
 {: unnumbered}
 
 The list selector is syntactically related to the
-`index-selector` and the `slice-selector`.
+`dot-selector`, `index-selector`, `slice-selector`, and the `filter-selector`.
 It contains two or more entries, separated by commas.
 
 ~~~~ abnf
