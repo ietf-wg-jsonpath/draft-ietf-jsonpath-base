@@ -581,7 +581,7 @@ addressed by the root selector `$`.
 #### Examples
 {: unnumbered}
 
-JSON value:
+JSON:
 
     {"k": "v"}
 
@@ -627,7 +627,7 @@ to the member name from any JSON object in its input nodelist. It selects no nod
 #### Examples
 {: unnumbered}
 
-JSON value:
+JSON:
 
     {"j": {"k": 3}}
 
@@ -664,7 +664,7 @@ string, or true/false/null) selects no node.
 #### Examples
 {: unnumbered}
 
-JSON value:
+JSON:
 
     {
       "o": {"j": 1, "k": 2},
@@ -800,7 +800,7 @@ not exist; this simply means that no element is selected.
 <!-- EDITING NOTE: There are non-breaking spaces here between j and j -->
 <!-- i.e., j j and not j j -->
 
-JSON value:
+JSON:
 
     {
       "o": {"j j": {"k.k": 3}},
@@ -844,7 +844,7 @@ The `index-wild-selector` behaves identically to the `dot-wild-selector`.
 #### Examples
 {: unnumbered}
 
-JSON value:
+JSON:
 
     {
       "o": {"j": 1, "k": 2},
@@ -1027,7 +1027,7 @@ range of exact values, see {{synsem-overview}}.
 #### Examples
 {: unnumbered}
 
-JSON value:
+JSON:
 
     ["a", "b", "c", "d", "e", "f", "g"]
 
@@ -1088,7 +1088,7 @@ The resultant nodelist of a `descendant-selector` applied to a node must be a su
 #### Examples
 {: unnumbered}
 
-JSON value:
+JSON:
 
     {
       "o": {"j": 1, "k": 2},
@@ -1286,7 +1286,7 @@ such as `1 == 0`):
 #### Examples
 {: unnumbered}
 
-JSON value:
+JSON:
 
     {
       "a": [3, 5, 1, 2, 4, 6, {"b": "ij"}, {"b": "ik"}],
@@ -1355,7 +1355,7 @@ components MUST be in the I-JSON range of exact values, see
 #### Examples
 {: unnumbered}
 
-JSON value:
+JSON:
 
     ["a", "b", "c", "d", "e", "f", "g"]
 
@@ -1370,12 +1370,12 @@ Queries:
 
 ## Semantics of `null`
 
-Note that JSON `null` is treated the same as any other JSON value: it is not taken to mean "undefined" or "missing".
+Note that JSON `null` is treated the same as any other JSON: it is not taken to mean "undefined" or "missing".
 
 ### Examples
 {: unnumbered}
 
-JSON value:
+JSON:
 
     {"a": null, "b": [null], "c": [{}], "null": 1}
 
@@ -1405,7 +1405,7 @@ A JSONPath implementation may output Normalized Paths instead of, or in addition
 
 Since bracket notation is more general than dot notation, it is used to construct Normalized Paths.
 Single quotes are used to delimit string member names. This reduces the number of characters that
-need escaping when Normalized Paths appear as strings (which are delimited with double quotes) in JSON values.
+need escaping when Normalized Paths appear as strings (which are delimited with double quotes) in JSON texts.
 
 The syntax of Normalized Paths is restricted so that there is one and only one way of representing any
 given Normalized Path. Putting this another way, for any two distinct Normalized Paths, a JSON value exists
