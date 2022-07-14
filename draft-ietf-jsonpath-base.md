@@ -1370,7 +1370,7 @@ Queries:
 
 ## Semantics of `null`
 
-Note that JSON `null` is treated the same as any other JSON: it is not taken to mean "undefined" or "missing".
+Note that JSON `null` is treated the same as any other JSON value: it is not taken to mean "undefined" or "missing".
 
 ### Examples
 {: unnumbered}
