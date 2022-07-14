@@ -581,7 +581,7 @@ addressed by the root selector `$`.
 #### Examples
 {: unnumbered}
 
-JSON document:
+JSON value:
 
     {"k": "v"}
 
@@ -627,7 +627,7 @@ to the member name from any JSON object in its input nodelist. It selects no nod
 #### Examples
 {: unnumbered}
 
-JSON document:
+JSON value:
 
     {"j": {"k": 3}}
 
@@ -664,7 +664,7 @@ string, or true/false/null) selects no node.
 #### Examples
 {: unnumbered}
 
-JSON document:
+JSON value:
 
     {
       "o": {"j": 1, "k": 2},
@@ -800,7 +800,7 @@ not exist; this simply means that no element is selected.
 <!-- EDITING NOTE: There are non-breaking spaces here between j and j -->
 <!-- i.e., j j and not j j -->
 
-JSON document:
+JSON value:
 
     {
       "o": {"j j": {"k.k": 3}},
@@ -844,7 +844,7 @@ The `index-wild-selector` behaves identically to the `dot-wild-selector`.
 #### Examples
 {: unnumbered}
 
-JSON document:
+JSON value:
 
     {
       "o": {"j": 1, "k": 2},
@@ -1027,7 +1027,7 @@ range of exact values, see {{synsem-overview}}.
 #### Examples
 {: unnumbered}
 
-JSON document:
+JSON value:
 
     ["a", "b", "c", "d", "e", "f", "g"]
 
@@ -1088,7 +1088,7 @@ The resultant nodelist of a `descendant-selector` applied to a node must be a su
 #### Examples
 {: unnumbered}
 
-JSON document:
+JSON value:
 
     {
       "o": {"j": 1, "k": 2},
@@ -1286,7 +1286,7 @@ such as `1 == 0`):
 #### Examples
 {: unnumbered}
 
-JSON document:
+JSON value:
 
     {
       "a": [3, 5, 1, 2, 4, 6, {"b": "ij"}, {"b": "ik"}],
@@ -1355,7 +1355,7 @@ components MUST be in the I-JSON range of exact values, see
 #### Examples
 {: unnumbered}
 
-JSON document:
+JSON value:
 
     ["a", "b", "c", "d", "e", "f", "g"]
 
@@ -1375,7 +1375,7 @@ Note that JSON `null` is treated the same as any other JSON value: it is not tak
 ### Examples
 {: unnumbered}
 
-JSON document:
+JSON value:
 
     {"a": null, "b": [null], "c": [{}], "null": 1}
 
@@ -1398,17 +1398,17 @@ Queries:
 
 A Normalized Path is a JSONPath with restricted syntax that identifies a node by providing a query that results in exactly that node. For example,
 the JSONPath expression `$.book[?(@.price<10)]` could select two values with Normalized Paths
-`$['book'][3]` and `$['book'][5]`. For a given JSON document, there is a one to one correspondence between the document's
+`$['book'][3]` and `$['book'][5]`. For a given JSON value, there is a one to one correspondence between the value's
 nodes and the Normalized Paths that identify these nodes.
 
 A JSONPath implementation may output Normalized Paths instead of, or in addition to, the values identified by these paths.
 
 Since bracket notation is more general than dot notation, it is used to construct Normalized Paths.
 Single quotes are used to delimit string member names. This reduces the number of characters that
-need escaping when Normalized Paths appear as strings (which are delimited with double quotes) in JSON documents.
+need escaping when Normalized Paths appear as strings (which are delimited with double quotes) in JSON values.
 
 The syntax of Normalized Paths is restricted so that there is one and only one way of representing any
-given Normalized Path. Putting this another way, for any two distinct Normalized Paths, a JSON document exists
+given Normalized Path. Putting this another way, for any two distinct Normalized Paths, a JSON value exists
 that will yield distinct results when the Normalized Paths are applied to it.
 
 Certain characters are escaped, in one and only one way; all other characters are unescaped.
@@ -1719,18 +1719,18 @@ JSONPath is not intended as a replacement for, but as a more powerful
 companion to, JSON Pointer {{RFC6901}}. The purposes of the two standards
 are different.
 
-JSON Pointer is for identifying a single value within a JSON document whose
+JSON Pointer is for identifying a single value within a JSON value whose
 structure is known.
 
-JSONPath can identify a single value within a JSON document, for example by
+JSONPath can identify a single value within a JSON value, for example by
 using a Normalized Path. But JSONPath is also a query syntax that can be used
-to search for and extract multiple values from JSON documents whose structure
+to search for and extract multiple values from JSON values whose structure
 is known only in a general way.
 
 A Normalized JSONPath can be converted into a JSON Pointer by converting the syntax,
-without knowledge of any JSON document. The inverse is not generally true: a numeric
+without knowledge of any JSON value. The inverse is not generally true: a numeric
 path component in a JSON Pointer may identify a member of a JSON object or may index an array.
-For conversion to a JSONPath query, knowledge of the structure of the JSON document is
+For conversion to a JSONPath query, knowledge of the structure of the JSON value is
 needed to distinguish these cases.
 
 # Acknowledgements
