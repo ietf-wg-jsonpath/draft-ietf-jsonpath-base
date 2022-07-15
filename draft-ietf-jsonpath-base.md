@@ -449,7 +449,7 @@ the result of the query.
 A selector performs its function on each of the nodes in its input
 nodelist, during such a function execution, such a node is referred to
 as the "current node".  Each of these function executions produces a
-nodelist, which are then concatenated into
+nodelist, which are then concatenated to produce
 the result of the selector. A node may be selected more than once and
 appear that number of times in the nodelist. Duplicate nodes are not removed.
 
