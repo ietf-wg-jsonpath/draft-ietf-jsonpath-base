@@ -1130,7 +1130,7 @@ filter             = "?" S boolean-expr
 
 During iteration process each array element or object member is visited and its value — accessible via symbol `@` — or one of its descendants — uniquely defined by a relative path — is tested against a boolean expression `boolean-expr`.
 
-The current item is selected if and only if the result is `true`.
+The current item is selected if and only if the boolean expression yields true.
 
 
 ~~~~ abnf
@@ -1222,10 +1222,10 @@ The `filter-selector` works with arrays and objects exclusively. Its result is a
 A relative path, beginning with `@`, refers to the current array element or member value as the
 filter selector iterates over the array or object.
 
-A singular path by itself in a Boolean context is an existence test with result `true` if the path selects a node and result `false` if the path does not select a node.
+A singular path by itself in a Boolean context is an existence test which yields true if the path selects a node and yields false if the path does not select a node.
 To be more specific about the actual value of a node selected by a path, explicit comparisons are necessary. This existence test — as an exception to the general rule — also works with nodes with structured values.
 
-When a path resulting in an empty nodelist appears on either side of a comparison, the result of the comparison is
+When a path resulting in an empty nodelist appears on either side of a comparison, the comparison yields
 true if and only if the comparison operator is `==`, `>=` or `<=` and the other side of the comparison is also a path
 resulting in an empty nodelist.
 
@@ -1233,29 +1233,28 @@ When no path resulting in an empty nodelist appears on either side of a comparis
 side of the comparison and results in a nodelist consisting of a single node is replaced by the value of the node
 and then:
 
-* comparison using one of the operators `==` or `!=` produce a "true" comparison result if and only if the comparison
+* comparison using one of the operators `==` or `!=` yields true if and only if the comparison
 is between:
     * primitive values which satisfy the comparison, or
     * structured values compared using `!=`.
 
-* comparisons using one of the operators `<`, `<=`, `>`, or `>=` produce a "true" comparison result if and only if
+* comparisons using one of the operators `<`, `<=`, `>`, or `>=` yield true if and only if
 the comparison is between numeric values which satisfy the comparison.
 
-Note that comparisons between structured values, even if the values are equal, produce a "false" comparison result.
+Note that comparisons between structured values, even if the values are equal, yield false.
 <!-- issue: comparison with structured value -->
 
 Data types are not implicitly converted in comparisons.
-So `"13 == '13'"` selects no node.
+So `13 == '13'` yields false.
 
-Regular expression tests can be applied to JSON string values
-({{Section 7 of -json}}) only
-(on the left-hand side of `=~`); they yield false otherwise.
+A regular-expression test yields true if and only if the value on the left-hand side of `=~` is a string value and it
+matches the regular expression on the right-hand side according to the semantics of {{-iregexp}}.
 
 The semantics of regular expressions are as defined in {{-iregexp}}.
 
 The logical AND, OR, and NOT operators have the normal semantics of Boolean algebra and
 consequently obey these laws (where `P`, `Q`, and `R` are any expressions with syntax
-`logical-and-expr`, `T` is any true expression, such as `1 == 1`, and `F` is any false expression,
+`logical-and-expr`, `T` is any expression that yields true, such as `1 == 1`, and `F` is any expression that yields false,
 such as `1 == 0`):
 
 | Law | Expression | Equivalent expression |
