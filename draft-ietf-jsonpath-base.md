@@ -1203,7 +1203,8 @@ A relative path, beginning with `@`, refers to the current array element or memb
 filter selector iterates over the array or object.
 
 A singular path by itself in a Boolean context is an existence test which yields true if the path selects a node and yields false if the path does not select a node.
-To be more specific about the actual value of a node selected by a path, explicit comparisons are necessary. This existence test — as an exception to the general rule — also works with nodes with structured values.
+This existence test — as an exception to the general rule — also works with nodes with structured values.
+To make use of the JSON value of a node selected by a path, explicit comparisons are necessary.
 
 When a path resulting in an empty nodelist appears on either side of a comparison, the comparison yields
 true if and only if the comparison operator is `==`, `>=` or `<=` and the other side of the comparison is also a path
