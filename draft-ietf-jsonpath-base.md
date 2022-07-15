@@ -1207,8 +1207,11 @@ This existence test — as an exception to the general rule — also works with 
 To make use of the JSON value of a node selected by a path, explicit comparisons are necessary.
 
 When a path resulting in an empty nodelist appears on either side of a comparison, the comparison yields
-true if and only if the comparison operator is `==`, `>=` or `<=` and the other side of the comparison is also a path
-resulting in an empty nodelist.
+true if and only if:
+
+* the comparison operator is `==`, `>=` or `<=` and the other side of the comparison is also a path
+resulting in an empty nodelist, or
+* the comparison operator is `!=` and the other side of the comparison is not also a path resulting in an empty nodelist.
 
 When no path resulting in an empty nodelist appears on either side of a comparison, any path which appears on either
 side of the comparison and results in a nodelist consisting of a single node is replaced by the value of the node
