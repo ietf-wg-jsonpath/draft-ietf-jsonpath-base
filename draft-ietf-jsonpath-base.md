@@ -466,8 +466,9 @@ the result of the query.
 A selector performs its function on each of the nodes in its input
 nodelist, during such a function execution, such a node is referred to
 as the "current node".  Each of these function executions produces a
-nodelist, which are then concatenated into
-the result of the selector.
+nodelist, which are then concatenated to produce
+the result of the selector. A node may be selected more than once and
+appear that number of times in the nodelist. Duplicate nodes are not removed.
 
 The processing within a selector may execute nested queries,
 which conform to the semantics defined here.
@@ -1287,8 +1288,8 @@ Queries:
 
 ### List Selector
 
-The list selector allows combining member names, array indices, and
-slices in a single selector.
+The list selector allows combining member names, array indices,
+slices, and filters in a single selector.
 
 Note: The list selector was called "union selector" in
 {{JSONPath-orig}}, as it was intended to solve use cases addressed by
@@ -1301,7 +1302,7 @@ renamed into "list selector".
 {: unnumbered}
 
 The list selector is syntactically related to the
-`index-selector` and the `slice-selector`.
+`dot-selector`, `index-selector`, `slice-selector`, and the `filter-selector`.
 It contains two or more entries, separated by commas.
 
 ~~~~ abnf
