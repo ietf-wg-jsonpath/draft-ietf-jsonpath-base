@@ -889,7 +889,7 @@ For example, the expression `[0]` selects the first element of a non-empty array
 Negative indices index from the end of an array.
 For example, the expression `[-2]` selects the last but one element of an array with at least two elements.
 
-Array slicing is inspired by the behaviour of the `Array.prototype.slice` method
+Array slicing is inspired by the behavior of the `Array.prototype.slice` method
 of the JavaScript language as defined by the ECMA-262 standard {{ECMA-262}},
 with the addition of the `step` parameter, which is inspired by the Python slice expression.
 
@@ -905,11 +905,11 @@ that order and `[::-1]` selects all the elements of an array in
 reverse order.
 
 When `step` is `0`, no elements are selected.
-(This is the one case that differs from the behaviour of Python, which
+(This is the one case that differs from the behavior of Python, which
 raises an error in this case.)
 
-The following section specifies the behaviour fully, without depending on
-JavaScript or Python behaviour.
+The following section specifies the behavior fully, without depending on
+JavaScript or Python behavior.
 
 ##### Detailed Semantics
 {: unnumbered}
@@ -1549,12 +1549,12 @@ Where JSONPath is used as a part of a security mechanism, attackers
 can attempt to provoke unexpected or unpredictable behavior, or
 take advantage of differences in behavior between JSONPath implementations.
 
-Unexpected or unpredictable behaviour can arise from an argument with certain
+Unexpected or unpredictable behavior can arise from an argument with certain
 constructs described as unpredictable by {{-json}}.
 Predictable behavior can be expected, except in relation to the ordering
 of objects, for any argument conforming with {{-i-json}}.
 
-Other attacks can target the behaviour of underlying technologies such as UTF-8 (see
+Other attacks can target the behavior of underlying technologies such as UTF-8 (see
 {{Section 10 of -utf8}}) and the Unicode character set.
 
 --- back
@@ -1564,7 +1564,7 @@ Other attacks can target the behaviour of underlying technologies such as UTF-8 
 This appendix is informative.
 
 At the time JSONPath was invented, XML was noted for the availability of
-powerful tools to analyse, transform and selectively extract data from
+powerful tools to analyze, transform and selectively extract data from
 XML documents.
 {{XPath}} is one of these tools.
 
