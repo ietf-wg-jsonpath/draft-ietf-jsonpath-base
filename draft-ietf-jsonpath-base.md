@@ -205,7 +205,7 @@ Root Node:
 
 Children (of a node):
 : If the node is an array, each of its elements,
-  or if the node is an object, each its member values (but not its
+  or if the node is an object, each of its member values (but not its
   member names). If the node is neither an array nor an object, it has no descendants.
 
 Descendants (of a node):
@@ -358,7 +358,7 @@ typical XML example representing a bookstore (that also has bicycles).
 
 The examples in {{tbl-example}} use the expression mechanism to obtain
 the number of elements in an array, to test for the presence of a
-member in a object, and to perform numeric comparisons of member values with a
+member in an object, and to perform numeric comparisons of member values with a
 constant.
 
 | JSONPath                                  | Result                                                       |
@@ -1109,7 +1109,7 @@ filter-selector    = "[" S filter S "]"
 filter             = "?" S boolean-expr
 ~~~~
 
-During iteration process each array element or object member is visited and its value — accessible via symbol `@` — or one of its descendants — uniquely defined by a relative path — is tested against a boolean expression `boolean-expr`.
+During the iteration process each array element or object member is visited and its value — accessible via symbol `@` — or one of its descendants — uniquely defined by a relative path — is tested against a boolean expression `boolean-expr`.
 
 The current item is selected if and only if the boolean expression yields true.
 
