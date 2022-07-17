@@ -1204,7 +1204,9 @@ filter selector iterates over the array or object.
 
 A singular path by itself in a Boolean context is an existence test which yields true if the path selects a node and yields false if the path does not select a node.
 This existence test — as an exception to the general rule — also works with nodes with structured values.
-To make use of the JSON value of a node selected by a path, explicit comparisons are necessary.
+To test the value of a node selected by a path, an explicit comparison is necessary.
+For example, to test whether the node selected by the path `@.foo` has the value `null`, use `@.foo == null` (see {{null-semantics}})
+rather than the non-existence test `!@.foo` (which yields false if `@.foo` selects a node, regardless of the node's value).
 
 When a path resulting in an empty nodelist appears on either side of a comparison, the comparison yields
 true if and only if:
@@ -1349,7 +1351,7 @@ Queries:
 | `$[0, 0]` | `"a"` <br> `"a"` | `$[0]` <br> `$[0]` | Duplicated entries |
 {: title="List selector examples"}
 
-## Semantics of `null`
+## Semantics of `null` {#null-semantics}
 
 Note that JSON `null` is treated the same as any other JSON value: it is not taken to mean "undefined" or "missing".
 
