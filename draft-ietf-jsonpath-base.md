@@ -1714,7 +1714,7 @@ needed to distinguish these cases.
 # Acknowledgements
 {: numbered="no"}
 
-This specification is based on <contact fullname="Stefan Gössner"/>'s
+This specification is based on {{{Stefan Gössner}}}'s
 original online article defining JSONPath {{JSONPath-orig}}.
 
 The books example was taken from
