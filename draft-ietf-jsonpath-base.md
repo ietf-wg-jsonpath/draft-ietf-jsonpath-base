@@ -1235,10 +1235,9 @@ the comparison is between numeric values which satisfy the comparison.
 of the same values using the operator `==`, `<=`, `>=`, respectively.
 
 * data types are not implicitly converted in comparisons.
-So, for example, `13 == '13'` yields false.
 
-Note that `==` comparisons between structured values, even if the values are equal, yield false.
-Also `!=` comparisons between structured values, even if the values are equal, yield true.
+Note that `==` comparisons between a structured value and any value, including the same structured value, yield false.
+Also `!=` comparisons between a structured value and any value, including the same structured value, yield true.
 <!-- issue: comparison with structured value -->
 
 ##### Regular Expressions
