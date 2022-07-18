@@ -124,7 +124,7 @@ venue:
 --- abstract
 
 JSONPath defines a string syntax for selecting and extracting values
-within a JavaScript Object Notation (JSON, RFC 8259) value.
+within a JSON (RFC 8259) value.
 
 --- middle
 
@@ -137,7 +137,7 @@ within a JavaScript Object Notation (JSON, RFC 8259) value.
 
 # Introduction
 
-JavaScript Object Notation (JSON, {{-json}}) is a popular representation
+JSON {{-json}} is a popular representation
 format for structured data values.
 JSONPath defines a string syntax for identifying values
 within a JSON value.
