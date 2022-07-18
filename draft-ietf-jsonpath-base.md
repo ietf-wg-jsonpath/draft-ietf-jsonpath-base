@@ -1240,6 +1240,40 @@ Note that `==` comparisons between a structured value and any value, including t
 Also `!=` comparisons between a structured value and any value, including the same structured value, yield true.
 <!-- issue: comparison with structured value -->
 
+###### Examples
+{: unnumbered}
+
+JSON:
+
+
+    {
+      "struct": {"x": "y"},
+      "arr": [2, 3]
+    }
+
+| Comparison | Result | Comment |
+|:--:|:--:|:--:|
+| `$.nosuch1 == $.nosuch2` | true | Empty nodelists |
+| `$.nosuch1 == 'g'` | false | Empty nodelist |
+| `$.nosuch1 != $.nosuch2` | false | Empty nodelists |
+| `$.nosuch1 != 'g'` | true | Empty nodelist |
+| `1 <= 2` | true | Numeric comparison |
+| `1 > 2` | false | Strict, numeric comparison |
+| `13 == '13'` | false | No implicit type conversions |
+| `'a' <= 'b'` | false | Non-numeric comparison |
+| `'a' > 'b'` | true | Strict, non-numeric comparison |
+| `$.struct == $.struct` | false | Structured values |
+| `$.struct != $.struct` | true | Structured values |
+| `$.struct == 17` | false | Structured value |
+| `$.struct != 17` | true | Structured value |
+| `$.struct <= $.arr` | false | Structured values |
+| `$.struct < $.arr` | false | Strict comparison, structured values |
+| `1 <= $.arr` | false | Structured value |
+| `1 >= $.arr` | false | Sructured value |
+| `1 > $.arr` | true | Strict comparison, structured value |
+| `1 < $.arr` | true | Strict comparison, structured value |
+{: title="Comparison examples" }
+
 ##### Regular Expressions
 {: unnumbered}
 
