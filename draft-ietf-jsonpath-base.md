@@ -1202,11 +1202,21 @@ The `filter-selector` works with arrays and objects exclusively. Its result is a
 A relative path, beginning with `@`, refers to the current array element or member value as the
 filter selector iterates over the array or object.
 
+##### Existence Tests
+{: unnumbered}
+
 A singular path by itself in a Boolean context is an existence test which yields true if the path selects a node and yields false if the path does not select a node.
 This existence test — as an exception to the general rule — also works with nodes with structured values.
+
+A non-existence test (`!` followed by a singular path by itself, e.g. `!@.foo`) yields true if and only if the corresponding existence test with the same path yields true.
+In other words, a non-existence test yields true if the path does not select a node and yields false if the path selects a node.
+
 To test the value of a node selected by a path, an explicit comparison is necessary.
 For example, to test whether the node selected by the path `@.foo` has the value `null`, use `@.foo == null` (see {{null-semantics}})
 rather than the non-existence test `!@.foo` (which yields false if `@.foo` selects a node, regardless of the node's value).
+
+##### Comparisons
+{: unnumbered}
 
 When a path resulting in an empty nodelist appears on either side of a comparison, the comparison yields
 true if and only if:
@@ -1215,28 +1225,35 @@ true if and only if:
 resulting in an empty nodelist, or
 * the comparison operator is `!=` and the other side of the comparison is not also a path resulting in an empty nodelist.
 
-When no path resulting in an empty nodelist appears on either side of a comparison, any path which appears on either
-side of the comparison and results in a nodelist consisting of a single node is replaced by the value of the node
-and then:
+When any path on either side of a comparison results in a nodelist consisting of a single node, each such path is
+replaced by the value of its node and then:
 
-* comparison using one of the operators `==` or `!=` yields true if and only if the comparison
-is between:
-    * primitive values which satisfy the comparison, or
-    * structured values compared using `!=`.
+* comparison using one of the operators `==` yields true if and only if the comparison
+is between equal primitive values.
 
-* comparisons using one of the operators `<`, `<=`, `>`, or `>=` yield true if and only if
+* comparisons using one of the operators `<=` or `>=` yield true if and only if
 the comparison is between numeric values which satisfy the comparison.
 
-Note that comparisons between structured values, even if the values are equal, yield false.
+* any comparison of two values using one of the operators `!=`, `>`, `<` is defined as the negation of the comparison
+of the same values using the operator `==`, `<=`, `>=`, respectively.
+
+* data types are not implicitly converted in comparisons.
+So, for example, `13 == '13'` yields false.
+
+Note that `==` comparisons between structured values, even if the values are equal, yield false.
+Also `!=` comparisons between structured values, even if the values are equal, yield true.
 <!-- issue: comparison with structured value -->
 
-Data types are not implicitly converted in comparisons.
-So `13 == '13'` yields false.
+##### Regular Expressions
+{: unnumbered}
 
 A regular-expression test yields true if and only if the value on the left-hand side of `=~` is a string value and it
 matches the regular expression on the right-hand side according to the semantics of {{-iregexp}}.
 
 The semantics of regular expressions are as defined in {{-iregexp}}.
+
+##### Boolean Operators
+{: unnumbered}
 
 The logical AND, OR, and NOT operators have the normal semantics of Boolean algebra and
 consequently obey these laws (where `P`, `Q`, and `R` are any expressions with syntax
