@@ -1208,12 +1208,9 @@ filter selector iterates over the array or object.
 A singular path by itself in a Boolean context is an existence test which yields true if the path selects a node and yields false if the path does not select a node.
 This existence test — as an exception to the general rule — also works with nodes with structured values.
 
-A non-existence test (`!` followed by a singular path by itself, e.g. `!@.foo`) yields true if and only if the corresponding existence test with the same path yields true.
-In other words, a non-existence test yields true if the path does not select a node and yields false if the path selects a node.
-
 To test the value of a node selected by a path, an explicit comparison is necessary.
 For example, to test whether the node selected by the path `@.foo` has the value `null`, use `@.foo == null` (see {{null-semantics}})
-rather than the non-existence test `!@.foo` (which yields false if `@.foo` selects a node, regardless of the node's value).
+rather than the negated existence test `!@.foo` (which yields false if `@.foo` selects a node, regardless of the node's value).
 
 ##### Comparisons
 {: unnumbered}
