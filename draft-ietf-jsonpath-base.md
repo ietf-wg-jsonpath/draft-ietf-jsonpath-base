@@ -1238,7 +1238,7 @@ the comparison is between numeric values which satisfy the comparison.
 of the same values using the operator `==`, `<=`, `>=`, respectively.
 
 Note that `==` comparisons between a structured value and any value, including the same structured value, yield false.
-Consequently `!=` comparisons between a structured value and any value, including the same structured value, yield true.
+Consequently, `!=` comparisons between a structured value and any value, including the same structured value, yield true.
 <!-- issue: comparison with structured value -->
 
 ###### Examples
