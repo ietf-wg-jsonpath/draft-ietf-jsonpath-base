@@ -1234,8 +1234,6 @@ the comparison is between numeric values which satisfy the comparison.
 * any comparison of two values using one of the operators `!=`, `>`, `<` is defined as the negation of the comparison
 of the same values using the operator `==`, `<=`, `>=`, respectively.
 
-* data types are not implicitly converted in comparisons.
-
 Note that `==` comparisons between a structured value and any value, including the same structured value, yield false.
 Also `!=` comparisons between a structured value and any value, including the same structured value, yield true.
 <!-- issue: comparison with structured value -->
@@ -1259,7 +1257,7 @@ JSON:
 | `$.nosuch1 != 'g'` | true | Empty nodelist |
 | `1 <= 2` | true | Numeric comparison |
 | `1 > 2` | false | Strict, numeric comparison |
-| `13 == '13'` | false | No implicit type conversions |
+| `13 == '13'` | false | Type mismatch |
 | `'a' <= 'b'` | false | Non-numeric comparison |
 | `'a' > 'b'` | true | Strict, non-numeric comparison |
 | `$.struct == $.struct` | false | Structured values |
