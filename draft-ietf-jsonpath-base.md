@@ -172,6 +172,9 @@ Value:
   primitive data, namely numbers and text strings as well as the special
   values null, true, and false.
 
+Type:
+: As per {{-json}}, one of the six JSON types (strings, numbers, booleans, null, objects, arrays).
+
 Member:
 : A name/value pair in an object.  (Not itself a value.)
 
