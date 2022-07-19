@@ -172,6 +172,9 @@ Value:
   primitive data, namely numbers and text strings as well as the special
   values null, true, and false.
 
+Type:
+: As per {{-json}}, one of the six JSON types (strings, numbers, booleans, null, objects, arrays).
+
 Member:
 : A name/value pair in an object.  (Not itself a value.)
 
@@ -1203,35 +1206,86 @@ The `filter-selector` works with arrays and objects exclusively. Its result is a
 A relative path, beginning with `@`, refers to the current array element or member value as the
 filter selector iterates over the array or object.
 
+##### Existence Tests
+{: unnumbered}
+
 A singular path by itself in a Boolean context is an existence test which yields true if the path selects a node and yields false if the path does not select a node.
-To be more specific about the actual value of a node selected by a path, explicit comparisons are necessary. This existence test — as an exception to the general rule — also works with nodes with structured values.
+This existence test — as an exception to the general rule — also works with nodes with structured values.
+
+To test the value of a node selected by a path, an explicit comparison is necessary.
+For example, to test whether the node selected by the path `@.foo` has the value `null`, use `@.foo == null` (see {{null-semantics}})
+rather than the negated existence test `!@.foo` (which yields false if `@.foo` selects a node, regardless of the node's value).
+
+##### Comparisons
+{: unnumbered}
 
 When a path resulting in an empty nodelist appears on either side of a comparison, the comparison yields
-true if and only if the comparison operator is `==`, `>=` or `<=` and the other side of the comparison is also a path
-resulting in an empty nodelist.
+true if and only if:
 
-When no path resulting in an empty nodelist appears on either side of a comparison, any path which appears on either
-side of the comparison and results in a nodelist consisting of a single node is replaced by the value of the node
-and then:
+* the comparison operator is `==`, `>=` or `<=` and the other side of the comparison is also a path
+resulting in an empty nodelist, or
+* the comparison operator is `!=` and the other side of the comparison is not also a path resulting in an empty nodelist.
 
-* comparison using one of the operators `==` or `!=` yields true if and only if the comparison
-is between:
-    * primitive values which satisfy the comparison, or
-    * structured values compared using `!=`.
+When any path on either side of a comparison results in a nodelist consisting of a single node, each such path is
+replaced by the value of its node and then:
 
-* comparisons using one of the operators `<`, `<=`, `>`, or `>=` yield true if and only if
+* comparison using one of the operators `==` yields true if and only if the comparison
+is between equal primitive values.
+
+* comparisons using one of the operators `<=` or `>=` yield true if and only if
 the comparison is between numeric values which satisfy the comparison.
 
-Note that comparisons between structured values, even if the values are equal, yield false.
+* any comparison of two values using one of the operators `!=`, `>`, `<` is defined as the negation of the comparison
+of the same values using the operator `==`, `<=`, `>=`, respectively.
+
+Note that `==` comparisons between a structured value and any value, including the same structured value, yield false.
+Consequently, `!=` comparisons between a structured value and any value, including the same structured value, yield true.
 <!-- issue: comparison with structured value -->
 
-Data types are not implicitly converted in comparisons.
-So `13 == '13'` yields false.
+###### Examples
+{: unnumbered}
+
+JSON:
+
+
+    {
+      "struct": {"x": "y"},
+      "arr": [2, 3]
+    }
+
+| Comparison | Result | Comment |
+|:--:|:--:|:--:|
+| `$.nosuch1 == $.nosuch2` | true | Empty nodelists |
+| `$.nosuch1 == 'g'` | false | Empty nodelist |
+| `$.nosuch1 != $.nosuch2` | false | Empty nodelists |
+| `$.nosuch1 != 'g'` | true | Empty nodelist |
+| `1 <= 2` | true | Numeric comparison |
+| `1 > 2` | false | Strict, numeric comparison |
+| `13 == '13'` | false | Type mismatch |
+| `'a' <= 'b'` | false | Non-numeric comparison |
+| `'a' > 'b'` | true | Strict, non-numeric comparison |
+| `$.struct == $.struct` | false | Structured values |
+| `$.struct != $.struct` | true | Structured values |
+| `$.struct == 17` | false | Structured value |
+| `$.struct != 17` | true | Structured value |
+| `$.struct <= $.arr` | false | Structured values |
+| `$.struct < $.arr` | false | Strict comparison, structured values |
+| `1 <= $.arr` | false | Structured value |
+| `1 >= $.arr` | false | Sructured value |
+| `1 > $.arr` | true | Strict comparison, structured value |
+| `1 < $.arr` | true | Strict comparison, structured value |
+{: title="Comparison examples" }
+
+##### Regular Expressions
+{: unnumbered}
 
 A regular-expression test yields true if and only if the value on the left-hand side of `=~` is a string value and it
 matches the regular expression on the right-hand side according to the semantics of {{-iregexp}}.
 
 The semantics of regular expressions are as defined in {{-iregexp}}.
+
+##### Boolean Operators
+{: unnumbered}
 
 The logical AND, OR, and NOT operators have the normal semantics of Boolean algebra and
 consequently obey these laws (where `P`, `Q`, and `R` are any expressions with syntax
@@ -1346,7 +1400,7 @@ Queries:
 | `$[0, 0]` | `"a"` <br> `"a"` | `$[0]` <br> `$[0]` | Duplicated entries |
 {: title="List selector examples"}
 
-## Semantics of `null`
+## Semantics of `null` {#null-semantics}
 
 Note that JSON `null` is treated the same as any other JSON value: it is not taken to mean "undefined" or "missing".
 
