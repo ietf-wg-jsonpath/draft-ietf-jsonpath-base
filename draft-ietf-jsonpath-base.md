@@ -433,9 +433,9 @@ json-path = root-selector *(S (dot-selector        /
                                index-selector      /
                                index-wild-selector /
                                slice-selector      /
-                               descendant-selector /
                                filter-selector     /
-                               list-selector))
+                               list-selector       /
+                               descendant-selector))
 ~~~~
 
 The syntax and semantics of each selector is defined below.
@@ -529,12 +529,11 @@ A JSONPath query consists of a sequence of selectors. Valid selectors are
   * Index wildcard selector `[*]`
   * Array slice selector `[<start>:<end>:<step>]`, where the optional
     values `<start>`, `<end>`, and `<step>` are integer literals
-  * Descendants selectors starting with a double dot  `..`
   * List selector `[<sel1>,<sel2>,...,<selN>]`, holding a comma
-
     separated list of index and slice selectors
   * Filter selector `[?(<expr>)]`
   * Current item selector `@` (used in expressions)
+  * Descendants selectors starting with a double dot `..`
 
 Note that processing the dot selector, string-valued index selector,
 and filter selector all potentially require matching strings against
@@ -1025,81 +1024,6 @@ Queries:
 | `$[::-1]` | `"g"` <br> `"f"` <br> `"e"` <br> `"d"` <br> `"c"` <br> `"b"` <br> `"a"` | `$[6]` <br> `$[5]` <br> `$[4]` <br> `$[3]` <br> `$[2]` <br> `$[1]` <br> `$[0]` | Slice in reverse order |
 {: title="Array slice selector examples"}
 
-### Descendant Selectors
-
-#### Syntax
-{: unnumbered}
-
-The descendant selectors start with a double dot `..` and can be
-followed by an object member name (similar to the `dot-selector`),
-a wildcard (similar to the `dot-wild-selector`),
-an `index-selector`, `index-wild-selector`, `filter-selector`, or `list-selector` acting on objects or arrays,
-or a `slice-selector` acting on arrays.
-
-~~~~ abnf
-descendant-selector = ".." ( dot-member-name      /  ; ..<name>
-                             wildcard             /  ; ..*
-                             index-selector       /  ; ..[<index>]
-                             index-wild-selector  /  ; ..[*]
-                             slice-selector       /  ; ..[<slice-index>]
-                             filter-selector      /  ; ..[<filter>]
-                             list-selector           ; ..[<list-entry>,...]
-                           )
-~~~~
-
-Note that `..` on its own is not a valid selector.
-
-#### Semantics
-{: unnumbered}
-
-A `descendant-selector` selects certain descendants of a node:
-
-* the `..<name>` form (and the `..[<index>]` form where `<index>` is a `quoted-member-name`) selects those descendants that are member values of an object with the given member name.
-* the `..[<index>]` form, where `<index>` is an `element-index`, selects those descendants that are array elements with the given index.
-* the `..[<slice-index>]` form selects those descendants that are array elements selected by the given slice.
-* the `..[<filter>]` form selects those descendants that are array elements or object values selected by the given filter.
-* the `..[*]` and `..*` forms select all the descendants.
-
-An _array-sequenced preorder_ of the descendants of a node is a sequence of all the descendants in which:
-
-* nodes of any array appear in array order,
-* nodes appear immediately before all their descendants.
-
-This definition does not stipulate the order in which the children of an object appear, since JSON objects are unordered.
-
-The resultant nodelist of a `descendant-selector` applied to a node must be a sub-sequence of an array-sequenced preorder of the descendants of the node.
-
-#### Examples
-{: unnumbered}
-
-JSON:
-
-    {
-      "o": {"j": 1, "k": 2},
-      "a": [5, 3, [{"j": 4}]]
-    }
-
-Queries:
-
-| Query | Result | Result Paths | Comment |
-| :---: | ------ | :----------: | ------- |
-| `$..j`   | `1` <br> `4` | `$['o']['j']` <br> `$['a'][2][0]['j']` | Object values      |
-| `$..j`   | `4` <br> `1` | `$['a'][2][0]['j']` <br> `$['o']['j']` | Alternative result |
-| `$..[0]` | `5` <br> `{"j": 4}` | `$['a'][0]` <br> `$['a'][2][0]` | Array values       |
-| `$..[0]` | `{"j": 4}` <br> `5` | `$['a'][2][0]` <br> `$['a'][0]` | Alternative result |
-| `$..[*]` | `{"j": 1, "k" : 2}` <br> `[5, 3, [{"j": 4}]]` <br> `1` <br> `2` <br> `5` <br> `3` <br> `[{"j": 4}]` <br> `{"j": 4}` <br> `4` | `$['o']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][0]['j']` | All values    |
-| `$..*`   | `[5, 3, [{"j": 4}]]` <br> `{"j": 1, "k" : 2}` <br> `2` <br> `1` <br> `5` <br> `3` <br> `[{"j": 4}]` <br> `{"j": 4}` <br> `4` | `$['a']` <br> `$['o']` <br> `$['o']['k']` <br> `$['o']['j']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][0]['j']` | All values    |
-{: title="Descendant selector examples"}
-
-Note: The ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that:
-
-* `{"j": 1, "k": 2}` must appear before `1` and `2`,
-* `[5, 3, [{"j": 4}]]` must appear before `5`, `3`, and `[{"j": 4}]`,
-* `5` must appear before `3` which must appear before `[{"j": 4}]`,
-* `5` and `3` must appear before `{"j": 4}` and `4`,
-* `[{"j": 4}]` must appear before `{"j": 4}`, and
-* `{"j": 4}` must appear before `4`.
-
 ### Filter Selector
 
 #### Syntax
@@ -1399,6 +1323,81 @@ Queries:
 | `$[0:2, 5]` | `"a"` <br> `"b"` <br> `"f"` | `$[0]` <br> `$[1]` <br> `$[5]` | Slice and index |
 | `$[0, 0]` | `"a"` <br> `"a"` | `$[0]` <br> `$[0]` | Duplicated entries |
 {: title="List selector examples"}
+
+### Descendant Selectors
+
+#### Syntax
+{: unnumbered}
+
+The descendant selectors start with a double dot `..` and can be
+followed by an object member name (similar to the `dot-selector`),
+a wildcard (similar to the `dot-wild-selector`),
+an `index-selector`, `index-wild-selector`, `filter-selector`, or `list-selector` acting on objects or arrays,
+or a `slice-selector` acting on arrays.
+
+~~~~ abnf
+descendant-selector = ".." ( dot-member-name      /  ; ..<name>
+                             wildcard             /  ; ..*
+                             index-selector       /  ; ..[<index>]
+                             index-wild-selector  /  ; ..[*]
+                             slice-selector       /  ; ..[<slice-index>]
+                             filter-selector      /  ; ..[<filter>]
+                             list-selector           ; ..[<list-entry>,...]
+                           )
+~~~~
+
+Note that `..` on its own is not a valid selector.
+
+#### Semantics
+{: unnumbered}
+
+A `descendant-selector` selects certain descendants of a node:
+
+* the `..<name>` form (and the `..[<index>]` form where `<index>` is a `quoted-member-name`) selects those descendants that are member values of an object with the given member name.
+* the `..[<index>]` form, where `<index>` is an `element-index`, selects those descendants that are array elements with the given index.
+* the `..[<slice-index>]` form selects those descendants that are array elements selected by the given slice.
+* the `..[<filter>]` form selects those descendants that are array elements or object values selected by the given filter.
+* the `..[*]` and `..*` forms select all the descendants.
+
+An _array-sequenced preorder_ of the descendants of a node is a sequence of all the descendants in which:
+
+* nodes of any array appear in array order,
+* nodes appear immediately before all their descendants.
+
+This definition does not stipulate the order in which the children of an object appear, since JSON objects are unordered.
+
+The resultant nodelist of a `descendant-selector` applied to a node must be a sub-sequence of an array-sequenced preorder of the descendants of the node.
+
+#### Examples
+{: unnumbered}
+
+JSON:
+
+    {
+      "o": {"j": 1, "k": 2},
+      "a": [5, 3, [{"j": 4}]]
+    }
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$..j`   | `1` <br> `4` | `$['o']['j']` <br> `$['a'][2][0]['j']` | Object values      |
+| `$..j`   | `4` <br> `1` | `$['a'][2][0]['j']` <br> `$['o']['j']` | Alternative result |
+| `$..[0]` | `5` <br> `{"j": 4}` | `$['a'][0]` <br> `$['a'][2][0]` | Array values       |
+| `$..[0]` | `{"j": 4}` <br> `5` | `$['a'][2][0]` <br> `$['a'][0]` | Alternative result |
+| `$..[*]` | `{"j": 1, "k" : 2}` <br> `[5, 3, [{"j": 4}]]` <br> `1` <br> `2` <br> `5` <br> `3` <br> `[{"j": 4}]` <br> `{"j": 4}` <br> `4` | `$['o']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][0]['j']` | All values    |
+| `$..*`   | `[5, 3, [{"j": 4}]]` <br> `{"j": 1, "k" : 2}` <br> `2` <br> `1` <br> `5` <br> `3` <br> `[{"j": 4}]` <br> `{"j": 4}` <br> `4` | `$['a']` <br> `$['o']` <br> `$['o']['k']` <br> `$['o']['j']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][0]['j']` | All values    |
+{: title="Descendant selector examples"}
+
+Note: The ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that:
+
+* `{"j": 1, "k": 2}` must appear before `1` and `2`,
+* `[5, 3, [{"j": 4}]]` must appear before `5`, `3`, and `[{"j": 4}]`,
+* `5` must appear before `3` which must appear before `[{"j": 4}]`,
+* `5` and `3` must appear before `{"j": 4}` and `4`,
+* `[{"j": 4}]` must appear before `{"j": 4}`, and
+* `{"j": 4}` must appear before `4`.
 
 ## Semantics of `null` {#null-semantics}
 
