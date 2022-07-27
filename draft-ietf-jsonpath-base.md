@@ -641,8 +641,8 @@ wildcard             = "*"
 A `dot-wild-selector` acts as a wildcard by selecting the nodes of
 all member values of an object in its input nodelist as well as all
 element nodes of an array in its input nodelist.
-Applying the `dot-wild-selector` to a primitive JSON value (number,
-string, or true/false/null) selects no node.
+Applying the `dot-wild-selector` to a primitive JSON value (a number,
+a string, `true`, `false`, or `null`) selects no node.
 
 #### Examples
 {: unnumbered}
@@ -819,8 +819,8 @@ index-wild-selector    = "[" wildcard "]"  ;  asterisk enclosed by brackets
 An `index-wild-selector`
 selects the nodes of all member values of an object as well as of all elements of an
 array.
-Applying the `index-wild-selector` to a primitive JSON value (such as
-a number, string, or true/false/null) selects no node.
+Applying the `index-wild-selector` to a primitive JSON value (that is,
+a number, a string, `true`, `false`, or `null`) selects no node.
 
 The `index-wild-selector` behaves identically to the `dot-wild-selector`.
 
@@ -1074,8 +1074,8 @@ relation-expr = comp-expr /                           ; comparison test
                 regex-expr                            ; regular expression test
 ~~~~
 
-Comparisons are restricted to Singular Path values and primitive values (such as number, string, `true`, `false`,
-`null`).
+Comparisons are restricted to Singular Path values and primitive values (that is, numbers, strings, `true`, `false`,
+or `null`).
 
 ~~~~ abnf
 comp-expr    = comparable S comp-op S comparable
@@ -1153,17 +1153,24 @@ resulting in an empty nodelist, or
 When any path on either side of a comparison results in a nodelist consisting of a single node, each such path is
 replaced by the value of its node and then:
 
-* comparison using one of the operators `==` yields true if and only if the comparison
-is between equal primitive values.
+* a comparison using the operator `==` yields true if and only if the comparison
+is between equal primitive values (numbers, strings, `true`, `false`, or `null`).
 
-* comparisons using one of the operators `<=` or `>=` yield true if and only if
-the comparison is between numeric values which satisfy the comparison.
+* a comparison using the operator `!=` yields true if and only if the comparison
+is not between equal primitive values (numbers, strings, `true`, `false`, or `null`).
 
-* any comparison of two values using one of the operators `!=`, `>`, `<` is defined as the negation of the comparison
-of the same values using the operator `==`, `<=`, `>=`, respectively.
+* a comparison using one of the operators `<`, `<=`, `>`, or `>=` yields true if and only if
+the comparison is between numbers, or between strings, which satisfy the comparison:
 
-Note that `==` comparisons between a structured value and any value, including the same structured value, yield false.
-Consequently, `!=` comparisons between a structured value and any value, including the same structured value, yield true.
+    * numbers in the I-JSON {{-i-json}} range of exact values MUST compare using the normal mathematical ordering;
+      one or both numbers outside that range MAY compare using an implementation specific ordering
+    * the empty string compares less than any non-empty string
+    * a non-empty string compares less than another non-empty string if and only if the first string starts with a
+      lower Unicode codepoint than the second string or if both strings start with the same Unicode codepoint and
+      the remainder of the first string compares less than the remainder of the second string. 
+
+Note that `==` comparisons between a structured value (that is, an object or an array) and any value, including the same structured value, yield false
+and `!=` comparisons between a structured value and any value, including the same structured value, yield true.
 <!-- issue: comparison with structured value -->
 
 ###### Examples
@@ -1186,8 +1193,8 @@ JSON:
 | `1 <= 2` | true | Numeric comparison |
 | `1 > 2` | false | Strict, numeric comparison |
 | `13 == '13'` | false | Type mismatch |
-| `'a' <= 'b'` | false | Non-numeric comparison |
-| `'a' > 'b'` | true | Strict, non-numeric comparison |
+| `'a' <= 'b'` | true | String comparison |
+| `'a' > 'b'` | false | Strict, string comparison |
 | `$.struct == $.struct` | false | Structured values |
 | `$.struct != $.struct` | true | Structured values |
 | `$.struct == 17` | false | Structured value |
@@ -1196,8 +1203,8 @@ JSON:
 | `$.struct < $.arr` | false | Strict comparison, structured values |
 | `1 <= $.arr` | false | Structured value |
 | `1 >= $.arr` | false | Sructured value |
-| `1 > $.arr` | true | Strict comparison, structured value |
-| `1 < $.arr` | true | Strict comparison, structured value |
+| `1 > $.arr` | false | Strict comparison, structured value |
+| `1 < $.arr` | false | Strict comparison, structured value |
 {: title="Comparison examples" }
 
 ##### Regular Expressions
@@ -1304,7 +1311,7 @@ Note that any node selected in more than one of the selector entries is kept
 as many times in the nodelist.
 
 To be valid, integer values in the `element-index` and `slice-index`
-components MUST be in the I-JSON range of exact values, see
+components MUST be in the I-JSON {{-i-json}} range of exact values, see
 {{synsem-overview}}.
 
 
