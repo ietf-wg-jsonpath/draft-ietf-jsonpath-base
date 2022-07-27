@@ -421,7 +421,7 @@ type errors when pondering well-formedness and validity, while
 resource depletion and related errors are comparable to 500 type
 errors.)
 
-The JSON value the JSONPath query is applied to is, by definition, valid JSON.
+The JSON value the JSONPath query is applied to is, by definition, a valid JSON value.
 The parsing of a JSON text into a JSON value and what happens if a JSON
 text does not represent valid JSON are not defined by this specification.
 
