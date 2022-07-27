@@ -1167,7 +1167,7 @@ the comparison is between numbers, or between strings, which satisfy the compari
     * the empty string compares less than any non-empty string
     * a non-empty string compares less than another non-empty string if and only if the first string starts with a
       lower Unicode codepoint than the second string or if both strings start with the same Unicode codepoint and
-      the remainder of the first string compares less than the remainder of the second string. 
+      the remainder of the first string compares less than the remainder of the second string.
 
 Note that `==` comparisons between a structured value (that is, an object or an array) and any value, including the same structured value, yield false
 and `!=` comparisons between a structured value and any value, including the same structured value, yield true.
