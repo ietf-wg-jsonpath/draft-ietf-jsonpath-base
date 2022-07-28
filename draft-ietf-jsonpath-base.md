@@ -1166,8 +1166,11 @@ the comparison is between values of the same type which are both numbers or both
       one or both numbers outside that range MAY compare using an implementation specific ordering
     * the empty string compares less than any non-empty string
     * a non-empty string compares less than another non-empty string if and only if the first string starts with a
-      lower Unicode codepoint than the second string or if both strings start with the same Unicode codepoint and
+      lower Unicode scalar value than the second string or if both strings start with the same Unicode scalar value and
       the remainder of the first string compares less than the remainder of the second string.
+
+A Unicode scalar value is any Unicode code point except high-surrogate and low-surrogate code points.
+In other words, base 16 integers in either of the inclusive ranges 0 to D7FF and E000 to 10FFFF.
 
 Note that `==` comparisons between a structured value (that is, an object or an array) and any value, including the same structured value, yield false
 and `!=` comparisons between a structured value and any value, including the same structured value, yield true.
