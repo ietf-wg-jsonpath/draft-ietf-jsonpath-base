@@ -114,6 +114,16 @@ normative:
   RFC7493: i-json
   RFC6838: media-types-reg
   I-D.draft-bormann-jsonpath-iregexp: iregexp
+  UNICODE:
+    target: https://www.unicode.org/versions/Unicode14.0.0/UnicodeStandard-14.0.pdf
+    title: >
+      The Unicode® Standard
+      Version 14.0 - Core Specification
+    author:
+    - org: The Unicode Consortium
+    date: 2021-09
+    format:
+      PDF: https://www.unicode.org/versions/Unicode14.0.0/UnicodeStandard-14.0.pdf
 
 venue:
   group: JSON Path
@@ -228,7 +238,7 @@ Normalized Path:
   to, but syntactically different from, a JSON Pointer {{-pointer}}.
 
 Unicode Scalar Value:
-: Any Unicode code point except high-surrogate and low-surrogate code points.
+: Any Unicode {{UNICODE}} code point except high-surrogate and low-surrogate code points.
   In other words, base 16 integers in either of the inclusive ranges 0 to D7FF and
   E000 to 10FFFF. JSON values of type string are sequences of Unicode scalar values.
 
