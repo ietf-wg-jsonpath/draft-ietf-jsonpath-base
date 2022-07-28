@@ -1180,7 +1180,7 @@ JSON:
 
 
     {
-      "struct": {"x": "y"},
+      "obj": {"x": "y"},
       "arr": [2, 3]
     }
 
@@ -1195,12 +1195,16 @@ JSON:
 | `13 == '13'` | false | Type mismatch |
 | `'a' <= 'b'` | true | String comparison |
 | `'a' > 'b'` | false | Strict, string comparison |
-| `$.struct == $.struct` | false | Structured values |
-| `$.struct != $.struct` | true | Structured values |
-| `$.struct == 17` | false | Structured value |
-| `$.struct != 17` | true | Structured value |
-| `$.struct <= $.arr` | false | Structured values |
-| `$.struct < $.arr` | false | Strict comparison, structured values |
+| `$.obj == $.arr` | false | Structured values |
+| `$.obj != $.arr` | true | Structured values |
+| `$.obj == $.obj` | false | Structured values |
+| `$.obj != $.obj` | true | Structured values |
+| `$.arr == $.arr` | false | Structured values |
+| `$.arr != $.arr` | true | Structured values |
+| `$.obj == 17` | false | Structured value |
+| `$.obj != 17` | true | Structured value |
+| `$.obj <= $.arr` | false | Structured values |
+| `$.obj < $.arr` | false | Strict comparison, structured values |
 | `1 <= $.arr` | false | Structured value |
 | `1 >= $.arr` | false | Sructured value |
 | `1 > $.arr` | false | Strict comparison, structured value |
