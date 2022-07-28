@@ -179,7 +179,7 @@ Member:
 : A name/value pair in an object.  (Not itself a value.)
 
 Name:
-: The name in a name/value pair constituting a member.  (Also known as
+: The name in a name/value pair constituting a member.  (Also known as <!-- should we make it clear that names are (Unicode) strings? -->
   "key", "tag", or "label".)
   This is also used in {{-json}}, but that specification does not
   formally define it.
@@ -545,7 +545,7 @@ and filter selector all potentially require matching strings against
 strings, with those strings coming from the JSONPath and from member
 names and string values in the JSON to which it is being applied.
 Two strings MUST be considered equal if and only if they are identical
-sequences of Unicode code points. In other words, normalization operations
+sequences of Unicode scalar values. In other words, normalization operations
 MUST NOT be applied to either the string from the JSONPath or from the JSON
 prior to comparison.
 
