@@ -1154,13 +1154,13 @@ When any path on either side of a comparison results in a nodelist consisting of
 replaced by the value of its node and then:
 
 * a comparison using the operator `==` yields true if and only if the comparison
-is between equal primitive values (numbers, strings, `true`, `false`, or `null`).
+is between values of the same primitive type (numbers, strings, `true`, `false`, or `null`) which are equal.
 
 * a comparison using the operator `!=` yields true if and only if the comparison
-is not between equal primitive values (numbers, strings, `true`, `false`, or `null`).
+is not between values of the same primitive type (numbers, strings, `true`, `false`, or `null`) which are equal.
 
 * a comparison using one of the operators `<`, `<=`, `>`, or `>=` yields true if and only if
-the comparison is between numbers, or between strings, which satisfy the comparison:
+the comparison is between values of the same type which are both numbers or both strings and which satisfy the comparison:
 
     * numbers in the I-JSON {{-i-json}} range of exact values MUST compare using the normal mathematical ordering;
       one or both numbers outside that range MAY compare using an implementation specific ordering
