@@ -227,6 +227,11 @@ Normalized Path:
   providing a query that results in exactly that node.  Similar
   to, but syntactically different from, a JSON Pointer {{-pointer}}.
 
+Unicode Scalar Value:
+: Any Unicode code point except high-surrogate and low-surrogate code points.
+  In other words, base 16 integers in either of the inclusive ranges 0 to D7FF and
+  E000 to 10FFFF. JSON values of type string are sequences of Unicode scalar values.
+
 Singular Path:
 : A JSONPath expression built from selectors which each select at most one node.
 
@@ -1168,9 +1173,6 @@ the comparison is between values of the same type which are both numbers or both
     * a non-empty string compares less than another non-empty string if and only if the first string starts with a
       lower Unicode scalar value than the second string or if both strings start with the same Unicode scalar value and
       the remainder of the first string compares less than the remainder of the second string.
-
-A Unicode scalar value is any Unicode code point except high-surrogate and low-surrogate code points.
-In other words, base 16 integers in either of the inclusive ranges 0 to D7FF and E000 to 10FFFF.
 
 Note that `==` comparisons between a structured value (that is, an object or an array) and any value, including the same structured value, yield false
 and `!=` comparisons between a structured value and any value, including the same structured value, yield true.
