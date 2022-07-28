@@ -1080,7 +1080,7 @@ relation-expr = comp-expr /                           ; comparison test
 ~~~~
 
 Comparisons are restricted to Singular Path values and primitive values (that is, numbers, strings, `true`, `false`,
-or `null`).
+and `null`).
 
 ~~~~ abnf
 comp-expr    = comparable S comp-op S comparable
@@ -1159,10 +1159,10 @@ When any path on either side of a comparison results in a nodelist consisting of
 replaced by the value of its node and then:
 
 * a comparison using the operator `==` yields true if and only if the comparison
-is between values of the same primitive type (numbers, strings, `true`, `false`, or `null`) which are equal.
+is between values of the same primitive type (numbers, strings, booleans, and `null`) which are equal.
 
 * a comparison using the operator `!=` yields true if and only if the comparison
-is not between values of the same primitive type (numbers, strings, `true`, `false`, or `null`) which are equal.
+is not between values of the same primitive type (numbers, strings, booleans, and `null`) which are equal.
 
 * a comparison using one of the operators `<`, `<=`, `>`, or `>=` yields true if and only if
 the comparison is between values of the same type which are both numbers or both strings and which satisfy the comparison:
