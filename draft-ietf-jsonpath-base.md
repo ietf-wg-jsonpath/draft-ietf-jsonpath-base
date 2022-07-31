@@ -397,7 +397,7 @@ constant.
 
 ## Overview {#synsem-overview}
 
-A JSONPath query is a string which selects zero or more nodes of a piece of JSON.
+A JSONPath query is a string which selects zero or more nodes of a JSON value.
 
 A query MUST be encoded using UTF-8.
 The grammar for queries given in this document assumes that its UTF-8 form is first decoded into
@@ -435,6 +435,10 @@ the query, the implementation MUST provide an indication of overflow.
 type errors when pondering well-formedness and validity, while
 resource depletion and related errors are comparable to 500 type
 errors.)
+
+The JSON value the JSONPath query is applied to is, by definition, a valid JSON value.
+The parsing of a JSON text into a JSON value and what happens if a JSON
+text does not represent valid JSON are not defined by this specification.
 
 ## Syntax
 
