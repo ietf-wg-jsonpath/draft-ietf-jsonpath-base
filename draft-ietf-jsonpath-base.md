@@ -117,7 +117,7 @@ normative:
   UNICODE:
     target: https://www.unicode.org/versions/Unicode14.0.0/UnicodeStandard-14.0.pdf
     title: >
-      The Unicode® Standard
+      The Unicode® Standard:
       Version 14.0 - Core Specification
     author:
     - org: The Unicode Consortium
