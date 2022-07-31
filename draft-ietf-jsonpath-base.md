@@ -114,6 +114,16 @@ normative:
   RFC7493: i-json
   RFC6838: media-types-reg
   I-D.draft-bormann-jsonpath-iregexp: iregexp
+  UNICODE:
+    target: https://www.unicode.org/versions/Unicode14.0.0/UnicodeStandard-14.0.pdf
+    title: >
+      The Unicode® Standard:
+      Version 14.0 - Core Specification
+    author:
+    - org: The Unicode Consortium
+    date: 2021-09
+    format:
+      PDF: https://www.unicode.org/versions/Unicode14.0.0/UnicodeStandard-14.0.pdf
 
 venue:
   group: JSON Path
@@ -179,7 +189,7 @@ Member:
 : A name/value pair in an object.  (Not itself a value.)
 
 Name:
-: The name in a name/value pair constituting a member.  (Also known as
+: The name in a name/value pair constituting a member.  (Also known as <!-- should we make it clear that names are (Unicode) strings? -->
   "key", "tag", or "label".)
   This is also used in {{-json}}, but that specification does not
   formally define it.
@@ -226,6 +236,11 @@ Normalized Path:
 : A simple form of JSONPath expression that identifies a node by
   providing a query that results in exactly that node.  Similar
   to, but syntactically different from, a JSON Pointer {{-pointer}}.
+
+Unicode Scalar Value:
+: Any Unicode {{UNICODE}} code point except high-surrogate and low-surrogate code points.
+  In other words, base 16 integers in either of the inclusive ranges 0 to D7FF and
+  E000 to 10FFFF. JSON values of type string are sequences of Unicode scalar values.
 
 Singular Path:
 : A JSONPath expression built from selectors which each select at most one node.
@@ -540,7 +555,7 @@ and filter selector all potentially require matching strings against
 strings, with those strings coming from the JSONPath and from member
 names and string values in the JSON to which it is being applied.
 Two strings MUST be considered equal if and only if they are identical
-sequences of Unicode code points. In other words, normalization operations
+sequences of Unicode scalar values. In other words, normalization operations
 MUST NOT be applied to either the string from the JSONPath or from the JSON
 prior to comparison.
 
@@ -641,8 +656,8 @@ wildcard             = "*"
 A `dot-wild-selector` acts as a wildcard by selecting the nodes of
 all member values of an object in its input nodelist as well as all
 element nodes of an array in its input nodelist.
-Applying the `dot-wild-selector` to a primitive JSON value (number,
-string, or true/false/null) selects no node.
+Applying the `dot-wild-selector` to a primitive JSON value (a number,
+a string, `true`, `false`, or `null`) selects no node.
 
 #### Examples
 {: unnumbered}
@@ -819,8 +834,8 @@ index-wild-selector    = "[" wildcard "]"  ;  asterisk enclosed by brackets
 An `index-wild-selector`
 selects the nodes of all member values of an object as well as of all elements of an
 array.
-Applying the `index-wild-selector` to a primitive JSON value (such as
-a number, string, or true/false/null) selects no node.
+Applying the `index-wild-selector` to a primitive JSON value (that is,
+a number, a string, `true`, `false`, or `null`) selects no node.
 
 The `index-wild-selector` behaves identically to the `dot-wild-selector`.
 
@@ -1074,8 +1089,8 @@ relation-expr = comp-expr /                           ; comparison test
                 regex-expr                            ; regular expression test
 ~~~~
 
-Comparisons are restricted to Singular Path values and primitive values (such as number, string, `true`, `false`,
-`null`).
+Comparisons are restricted to Singular Path values and primitive values (that is, numbers, strings, `true`, `false`,
+and `null`).
 
 ~~~~ abnf
 comp-expr    = comparable S comp-op S comparable
@@ -1153,17 +1168,24 @@ resulting in an empty nodelist, or
 When any path on either side of a comparison results in a nodelist consisting of a single node, each such path is
 replaced by the value of its node and then:
 
-* comparison using one of the operators `==` yields true if and only if the comparison
-is between equal primitive values.
+* a comparison using the operator `==` yields true if and only if the comparison
+is between values of the same primitive type (numbers, strings, booleans, and `null`) which are equal.
 
-* comparisons using one of the operators `<=` or `>=` yield true if and only if
-the comparison is between numeric values which satisfy the comparison.
+* a comparison using the operator `!=` yields true if and only if the comparison
+is not between values of the same primitive type (numbers, strings, booleans, and `null`) which are equal.
 
-* any comparison of two values using one of the operators `!=`, `>`, `<` is defined as the negation of the comparison
-of the same values using the operator `==`, `<=`, `>=`, respectively.
+* a comparison using one of the operators `<`, `<=`, `>`, or `>=` yields true if and only if
+the comparison is between values of the same type which are both numbers or both strings and which satisfy the comparison:
 
-Note that `==` comparisons between a structured value and any value, including the same structured value, yield false.
-Consequently, `!=` comparisons between a structured value and any value, including the same structured value, yield true.
+    * numbers in the I-JSON {{-i-json}} range of exact values MUST compare using the normal mathematical ordering;
+      one or both numbers outside that range MAY compare using an implementation specific ordering
+    * the empty string compares less than any non-empty string
+    * a non-empty string compares less than another non-empty string if and only if the first string starts with a
+      lower Unicode scalar value than the second string or if both strings start with the same Unicode scalar value and
+      the remainder of the first string compares less than the remainder of the second string.
+
+Note that `==` comparisons between a structured value (that is, an object or an array) and any value, including the same structured value, yield false
+and `!=` comparisons between a structured value and any value, including the same structured value, yield true.
 <!-- issue: comparison with structured value -->
 
 ###### Examples
@@ -1173,7 +1195,7 @@ JSON:
 
 
     {
-      "struct": {"x": "y"},
+      "obj": {"x": "y"},
       "arr": [2, 3]
     }
 
@@ -1186,18 +1208,22 @@ JSON:
 | `1 <= 2` | true | Numeric comparison |
 | `1 > 2` | false | Strict, numeric comparison |
 | `13 == '13'` | false | Type mismatch |
-| `'a' <= 'b'` | false | Non-numeric comparison |
-| `'a' > 'b'` | true | Strict, non-numeric comparison |
-| `$.struct == $.struct` | false | Structured values |
-| `$.struct != $.struct` | true | Structured values |
-| `$.struct == 17` | false | Structured value |
-| `$.struct != 17` | true | Structured value |
-| `$.struct <= $.arr` | false | Structured values |
-| `$.struct < $.arr` | false | Strict comparison, structured values |
+| `'a' <= 'b'` | true | String comparison |
+| `'a' > 'b'` | false | Strict, string comparison |
+| `$.obj == $.arr` | false | Structured values |
+| `$.obj != $.arr` | true | Structured values |
+| `$.obj == $.obj` | false | Structured values |
+| `$.obj != $.obj` | true | Structured values |
+| `$.arr == $.arr` | false | Structured values |
+| `$.arr != $.arr` | true | Structured values |
+| `$.obj == 17` | false | Structured value |
+| `$.obj != 17` | true | Structured value |
+| `$.obj <= $.arr` | false | Structured values |
+| `$.obj < $.arr` | false | Strict comparison, structured values |
 | `1 <= $.arr` | false | Structured value |
 | `1 >= $.arr` | false | Sructured value |
-| `1 > $.arr` | true | Strict comparison, structured value |
-| `1 < $.arr` | true | Strict comparison, structured value |
+| `1 > $.arr` | false | Strict comparison, structured value |
+| `1 < $.arr` | false | Strict comparison, structured value |
 {: title="Comparison examples" }
 
 ##### Regular Expressions
@@ -1304,7 +1330,7 @@ Note that any node selected in more than one of the selector entries is kept
 as many times in the nodelist.
 
 To be valid, integer values in the `element-index` and `slice-index`
-components MUST be in the I-JSON range of exact values, see
+components MUST be in the I-JSON {{-i-json}} range of exact values, see
 {{synsem-overview}}.
 
 
