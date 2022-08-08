@@ -1393,7 +1393,7 @@ Note that `..` on its own is not a valid selector.
 
 A descendant selector selects zero or more descendants of a node.
 
-The descendants are first enumerated in a nodelist known as a _descendant nodelist_, such that:
+A nodelist enumerating the descendants is known as a _descendant nodelist_ when:
 
 * nodes of any array appear in array order,
 * nodes appear immediately before all their descendants.
