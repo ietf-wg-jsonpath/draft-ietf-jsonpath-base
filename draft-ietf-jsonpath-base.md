@@ -1334,7 +1334,7 @@ list-entry     =  ( quoted-member-name /
 #### Semantics
 {: unnumbered}
 
-A list selector selects the nodes that are selected by at least one of
+A list selector selects the nodes that are selected by
 the selector entries in the list and yields the concatenation of the
 lists (in the order of the selector entries) of nodes selected by the
 selector entries.
