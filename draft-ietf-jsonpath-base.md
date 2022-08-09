@@ -336,8 +336,7 @@ $.store.book[?(@.price < 10)].title
 
 This section provides some more examples for JSONPath expressions.
 The examples are based on the simple JSON value shown in
-{{fig-example-value}}, which was patterned after a
-typical XML example representing a bookstore (that also has bicycles).
+{{fig-example-value}}, representing a bookstore (that also has bicycles).
 
 ~~~~json
 { "store": {
