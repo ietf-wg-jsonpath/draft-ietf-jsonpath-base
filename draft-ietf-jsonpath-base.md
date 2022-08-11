@@ -1172,10 +1172,17 @@ When any path on either side of a comparison results in a nodelist consisting of
 replaced by the value of its node and then:
 
 * a comparison using the operator `==` yields true if and only if the comparison
-is between values of the same primitive type (numbers, strings, booleans, and `null`) which are equal.
-
+is between:
+    * values of the same primitive type (numbers, strings, booleans, and `null`) which are equal,
+    * equal arrays, that is arrays of the same length where each element of the first array yields true when
+      compared using `==` to the corresponding element of the second array, or
+    * equal objects, that is objects where:
+        * for each member of the first object with name `n` and value `v`, there is a member of the second object
+          with name `n` and value `w` where `v` and `w` yield true when comparsed using `==`, and
+        * for each member of the second object with name `n` and value `v`, there is a member of the first object
+          with name `n` and value `w` where `v` and `w` yield true when comparsed using `==`.
 * a comparison using the operator `!=` yields true if and only if the comparison
-is not between values of the same primitive type (numbers, strings, booleans, and `null`) which are equal.
+is not between equal values of the same type.
 
 * a comparison using one of the operators `<`, `<=`, `>`, or `>=` yields true if and only if
 the comparison is between values of the same type which are both numbers or both strings and which satisfy the comparison:
@@ -1187,9 +1194,8 @@ the comparison is between values of the same type which are both numbers or both
       lower Unicode scalar value than the second string or if both strings start with the same Unicode scalar value and
       the remainder of the first string compares less than the remainder of the second string.
 
-Note that `==` comparisons between a structured value (that is, an object or an array) and any value, including the same structured value, yield false
-and `!=` comparisons between a structured value and any value, including the same structured value, yield true.
-<!-- issue: comparison with structured value -->
+Note that comparisons using any of the operators `<`, `<=`, `>`, or `>=` yield false if either value being
+compared is an object, array, boolean, or `null`.
 
 ###### Examples
 {: unnumbered}
@@ -1213,20 +1219,24 @@ JSON:
 | `13 == '13'` | false | Type mismatch |
 | `'a' <= 'b'` | true | String comparison |
 | `'a' > 'b'` | false | Strict, string comparison |
-| `$.obj == $.arr` | false | Structured values |
-| `$.obj != $.arr` | true | Structured values |
-| `$.obj == $.obj` | false | Structured values |
-| `$.obj != $.obj` | true | Structured values |
-| `$.arr == $.arr` | false | Structured values |
-| `$.arr != $.arr` | true | Structured values |
-| `$.obj == 17` | false | Structured value |
-| `$.obj != 17` | true | Structured value |
-| `$.obj <= $.arr` | false | Structured values |
-| `$.obj < $.arr` | false | Strict comparison, structured values |
-| `1 <= $.arr` | false | Structured value |
-| `1 >= $.arr` | false | Sructured value |
-| `1 > $.arr` | false | Strict comparison, structured value |
-| `1 < $.arr` | false | Strict comparison, structured value |
+| `$.obj == $.arr` | false | Type mismatch |
+| `$.obj != $.arr` | true | Type mismatch |
+| `$.obj == $.obj` | true | Object comparison |
+| `$.obj != $.obj` | false | Object comparison |
+| `$.arr == $.arr` | true | Array comparison |
+| `$.arr != $.arr` | false | Array comparison |
+| `$.obj == 17` | false | Type mismatch |
+| `$.obj != 17` | true | Type mismatch |
+| `$.obj <= $.arr` | false | Objects and arrays are not ordered |
+| `$.obj < $.arr` | false | Objects and arrays are not ordered |
+| `$.obj <= $.obj` | false | Objects are not ordered |
+| `$.arr <= $.arr` | false | Arrays are not ordered |
+| `1 <= $.arr` | false | Arrays are not ordered |
+| `1 >= $.arr` | false | Arrays are not ordered |
+| `1 > $.arr` | false | Arrays are not ordered |
+| `1 < $.arr` | false | Arrays are not ordered |
+| `true <= true` | false | Booleans are not ordered |
+| `true > true` | false | Booleans are not ordered |
 {: title="Comparison examples" }
 
 ##### Regular Expressions
