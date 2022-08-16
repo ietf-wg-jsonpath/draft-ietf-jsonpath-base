@@ -387,7 +387,7 @@ constant.
 | `$..book[2]`                              | the third book                                               |
 | `$..book[-1]`                             | the last book in order                                       |
 | `$..book[0,1]`<br>`$..book[:2]`           | the first two books                                          |
-| `$..book[?(@.isbn)]`                      | filter all books with isbn number                            |
+| `$..book[?(@.isbn)]`                      | filter all books with ISBN number                            |
 | `$..book[?(@.price<10)]`                  | filter all books cheaper than 10                             |
 | `$..*`                                    | all member values and array elements contained in input value |
 {: #tbl-example title="Example JSONPath expressions applied to the example JSON value"}
