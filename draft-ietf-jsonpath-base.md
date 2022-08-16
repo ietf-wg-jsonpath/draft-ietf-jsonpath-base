@@ -1330,7 +1330,7 @@ components MUST be in the I-JSON {{-i-json}} range of exact values, see
 
 JSON:
 
-    ["a", "b", "c", "d", "e", "f", "g"]
+    ["a", "b", "c", "d", "e", "f", "g", {"n": "v", "o": "w", "p": "x"}]
 
 Queries:
 
@@ -1339,6 +1339,8 @@ Queries:
 | `$[0, 3]` | `"a"` <br> `"d"` | `$[0]` <br> `$[3]` | Indices |
 | `$[0:2, 5]` | `"a"` <br> `"b"` <br> `"f"` | `$[0]` <br> `$[1]` <br> `$[5]` | Slice and index |
 | `$[0, 0]` | `"a"` <br> `"a"` | `$[0]` <br> `$[0]` | Duplicated entries |
+| `$[7]["n", "p"]` | `"v"` <br> `"x"` | `$[7]['n']` <br> `$[7]['p']` | Dot child |
+| `$[? @ <= "b" || @ >= "g", 2]` | `"a"` <br> `"b"` <br> `"g"` <br> `"c"` | `$[0]` <br> `$[1]` <br> `$[6]` <br> `$[2]` | Filter and index |
 {: title="List selector examples"}
 
 ### Descendant Selectors
