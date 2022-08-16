@@ -415,7 +415,7 @@ to the JSONPath processing (e.g., index values and steps) MUST be
 within the range of exact values defined in I-JSON {{-i-json}}, namely
 within the interval \[-(2<sup>53</sup>)+1, (2<sup>53</sup>)-1]).
 
-To be valid, strings on the right hand side of the `=~` regex matching
+To be valid, strings on the right-hand side of the `=~` regex matching
 operator need to conform to {{-iregexp}}.
 
 The well-formedness and the validity of JSONPath queries are independent of
