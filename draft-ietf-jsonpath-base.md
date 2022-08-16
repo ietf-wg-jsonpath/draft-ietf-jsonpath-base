@@ -324,7 +324,7 @@ $.store.book[?(@.price < 10)].title
 | `.name`     | child selectors for JSON objects: [dot selector](#dot-selector)                                                                     |
 | `['name']`  | child selectors for JSON objects: [index selector](#index-selector)                                                                 |
 | `..name` <br> `..[3]` | descendants: [descendant selector](#descendant-selectors)                                                                     |
-| `*`         | all child member values and array elements: [dot wildcard selector](#wildcard), [index wildcard selector](#index-wildcard-selector) |
+| `.*` <br> `[*]` | all child member values and array elements: [dot wildcard selector](#wildcard), [index wildcard selector](#index-wildcard-selector) |
 | `[3]`       | [index (subscript) selector](#index-selector): index current node as an array (from 0)                                              |
 | `[..,..]`   | [list selector](#list-selector): allow combining selector styles                                                                    |
 | `[0:100:5]` | [array slice selector](#slice): start:end:step                                                                                      |
