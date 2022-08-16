@@ -239,7 +239,7 @@ Normalized Path:
 
 Unicode Scalar Value:
 : Any Unicode {{UNICODE}} code point except high-surrogate and low-surrogate code points.
-  In other words, base 16 integers in either of the inclusive ranges 0 to D7FF and
+  In other words, integers in either of the inclusive base 16 ranges 0 to D7FF and
   E000 to 10FFFF. JSON values of type string are sequences of Unicode scalar values.
 
 Singular Path:
