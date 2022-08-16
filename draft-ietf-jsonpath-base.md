@@ -1178,9 +1178,9 @@ is between:
       compared using `==` to the corresponding element of the second array, or
     * equal objects, that is objects where:
         * for each member of the first object with name `n` and value `v`, there is a member of the second object
-          with name `n` and value `w` where `v` and `w` yield true when comparsed using `==`, and
+          with name `n` and value `w` where `v` and `w` yield true when compared using `==`, and
         * for each member of the second object with name `n` and value `v`, there is a member of the first object
-          with name `n` and value `w` where `v` and `w` yield true when comparsed using `==`.
+          with name `n` and value `w` where `v` and `w` yield true when compared using `==`.
 * a comparison using the operator `!=` yields true if and only if the comparison
 is not between equal values of the same type.
 
