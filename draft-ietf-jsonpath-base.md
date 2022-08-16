@@ -106,6 +106,9 @@ informative:
     - org: Ecma International
     date: 1999-12
   RFC8949: cbor
+  BOOLEAN-LAWS:
+    target: https://en.wikipedia.org/wiki/Boolean_algebra#Laws
+    title: Boolean algebra laws
 
 normative:
   RFC3629: utf8
@@ -1251,32 +1254,7 @@ The semantics of regular expressions are as defined in {{-iregexp}}.
 {: unnumbered}
 
 The logical AND, OR, and NOT operators have the normal semantics of Boolean algebra and
-consequently obey these laws (where `P`, `Q`, and `R` are any expressions with syntax
-`logical-and-expr`, `T` is any expression that yields true, such as `1 == 1`, and `F` is any expression that yields false,
-such as `1 == 0`):
-
-| Law | Expression | Equivalent expression |
-|:--:|:--:|:--:|
-| Associativity of OR | `P || (Q || R)` | `(P || Q) || R`|
-| Associativity of AND | `P && (Q && R)` | `(P && Q) && R`|
-| Commutativity of OR | `P || Q` | `Q || R` |
-| Commutativity of AND | `P && Q` | `Q && R` |
-| Distributivity of OR over AND | `P || (Q && R)` | `(P || Q) && (P || R)`|
-| Distributivity of AND over OR | `P && (Q || R)` | `(P && Q) || (P && R)`|
-| Identity for OR | `P || F` | `P`|
-| Identity for AND | `P && T` | `P`|
-| Annihilator for OR | `P || T` | `T`|
-| Annihilator for AND | `P && F` | `F`|
-| Idempotence of OR | `P || P` | `P`|
-| Idempotence of AND | `P && P` | `P`|
-| Absorption 1 | `P && (P || Q)` | `P`|
-| Absorption 2 | `P || (P && Q)` | `P`|
-| Complementation 1 | `P && !(P)` | `F`|
-| Complementation 2 | `P || !(P)` | `T`|
-| Double negation | `!(!(P))` | `P`|
-| De Morgan 1 | `!(P) && !(Q)` | `!(P || Q)`|
-| De Morgan 2 | `!(P) || !(Q)` | `!(P && Q)`|
-{: title="Logical operator laws" }
+obey its laws (see, for example, {{BOOLEAN-LAWS}}).
 
 #### Examples
 {: unnumbered}
