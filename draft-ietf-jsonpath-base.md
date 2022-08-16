@@ -257,7 +257,7 @@ A query is applied to an argument, and the output is a nodelist.
 
 ## History
 
-This document picks up Stefan Gössner's popular JSONPath proposal
+This document picks up {{{Stefan Gössner}}}'s popular JSONPath proposal
 dated 2007-02-21 {{JSONPath-orig}} and provides a normative definition
 for it.
 
