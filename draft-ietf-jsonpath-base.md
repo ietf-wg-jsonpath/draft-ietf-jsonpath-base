@@ -1187,7 +1187,7 @@ is not between equal values of the same type.
 * a comparison using one of the operators `<`, `<=`, `>`, or `>=` yields true if and only if
 the comparison is between values of the same type which are both numbers or both strings and which satisfy the comparison:
 
-    * numbers conforming to I-JSON {{-i-json}} MUST compare using the normal mathematical ordering;
+    * numbers expected to interoperate as per {{Section 2.2 of -i-json (I-JSON)}} MUST compare using the normal mathematical ordering;
       numbers not conforming to I-JSON MAY compare using an implementation specific ordering
     * the empty string compares less than any non-empty string
     * a non-empty string compares less than another non-empty string if and only if the first string starts with a
