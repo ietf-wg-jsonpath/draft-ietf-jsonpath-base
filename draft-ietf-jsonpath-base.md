@@ -113,7 +113,7 @@ normative:
   RFC8259: json
   RFC7493: i-json
   RFC6838: media-types-reg
-  I-D.draft-bormann-jsonpath-iregexp: iregexp
+  I-D.draft-ietf-jsonpath-iregexp: iregexp
   UNICODE:
     target: https://www.unicode.org/versions/Unicode14.0.0/UnicodeStandard-14.0.pdf
     title: >
