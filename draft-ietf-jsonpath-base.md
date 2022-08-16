@@ -613,8 +613,14 @@ DIGIT           =  %x30-39              ; 0-9
 ALPHA           =  %x41-5A / %x61-7A    ; A-Z / a-z
 ~~~~
 
+
+[^render-error]: The character juggling below triggers xml2rfc rendering
+    errors both in HTML and TXT, even with the fixes applied.  Do we
+    need to give those translations?
+
+[^render-error]
 Member names containing characters other than allowed by
-`dot-selector` — such as space ` `, minus `-`, or dot `.`
+`dot-selector` — such as space (``` ```), minus (`-`), or dot (`.`)
 characters — MUST NOT be used with the `dot-selector`.
 (Such member names can be addressed by the
 `index-selector` instead.)
