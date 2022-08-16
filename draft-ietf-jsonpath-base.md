@@ -1405,8 +1405,7 @@ Queries:
 | `$..j`   | `4` <br> `1` | `$['a'][2][0]['j']` <br> `$['o']['j']` | Alternative result |
 | `$..[0]` | `5` <br> `{"j": 4}` | `$['a'][0]` <br> `$['a'][2][0]` | Array values       |
 | `$..[0]` | `{"j": 4}` <br> `5` | `$['a'][2][0]` <br> `$['a'][0]` | Alternative result |
-| `$..[*]` | `{"j": 1, "k" : 2}` <br> `[5, 3, [{"j": 4}]]` <br> `1` <br> `2` <br> `5` <br> `3` <br> `[{"j": 4}]` <br> `{"j": 4}` <br> `4` | `$['o']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][0]['j']` | All values    |
-| `$..*`   | `[5, 3, [{"j": 4}]]` <br> `{"j": 1, "k" : 2}` <br> `2` <br> `1` <br> `5` <br> `3` <br> `[{"j": 4}]` <br> `{"j": 4}` <br> `4` | `$['a']` <br> `$['o']` <br> `$['o']['k']` <br> `$['o']['j']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][0]['j']` | All values    |
+| `$..[*]` <br> `$..*` | `{"j": 1, "k" : 2}` <br> `[5, 3, [{"j": 4}]]` <br> `1` <br> `2` <br> `5` <br> `3` <br> `[{"j": 4}]` <br> `{"j": 4}` <br> `4` | `$['o']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][0]['j']` | All values    |
 {: title="Descendant selector examples"}
 
 Note: The ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that:
