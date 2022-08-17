@@ -521,7 +521,7 @@ node corresponding to the member name `"a"`.
 The result is again a list of one node: `[{"b":0},{"b":1},{"c":2}]`.
 
 Next, `[*]` selects from an input node of type array all its elements
-(if the input note were of type object, it would select all its member
+(if the input node were of type object, it would select all its member
 values, but not the member names).
 The result is a list of three nodes: `{"b":0}`, `{"b":1}`, and `{"c":2}`.
 
