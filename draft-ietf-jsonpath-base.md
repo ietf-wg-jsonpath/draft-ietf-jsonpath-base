@@ -376,7 +376,7 @@ The examples are based on the simple JSON value shown in
 ~~~~
 {: #fig-example-value title="Example JSON value"}
 
-{{tbl-example}} shows some JSONPath expressions and their intended results.
+{{tbl-example}} shows some JSONPath queries that might be applied to this example and their intended results.
 
 | JSONPath                                  | Intended result                                              |
 |-------------------------------------------|--------------------------------------------------------------|
