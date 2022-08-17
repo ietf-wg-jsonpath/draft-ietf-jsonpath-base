@@ -1456,10 +1456,6 @@ Since bracket notation is more general than dot notation, it is used to construc
 Single quotes are used to delimit string member names. This reduces the number of characters that
 need escaping when Normalized Paths appear as strings (which are delimited with double quotes) in JSON texts.
 
-The syntax of Normalized Paths is restricted so that there is one and only one way of identifying a given node.
-Putting this another way, two distinct Normalized Paths are never equivalent to each other: there will always be at least one JSON value
-that yields distinct results when those paths are applied to it.
-
 Certain characters are escaped, in one and only one way; all other characters are unescaped.
 
 Normalized Paths are Singular Paths. Not all Singular Paths are Normalized Paths: `$[-3]`, for example, is a Singular
