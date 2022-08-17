@@ -222,7 +222,7 @@ Root Node:
 Children (of a node):
 : If the node is an array, each of its elements,
   or if the node is an object, each of its member values (but not its
-  member names). If the node is neither an array nor an object, it has no descendants.
+  member names). If the node is neither an array nor an object, it has no children.
 
 Descendants (of a node):
 : The children of the node, together with the children of its children, and so forth
@@ -242,7 +242,7 @@ Normalized Path:
 
 Unicode Scalar Value:
 : Any Unicode {{UNICODE}} code point except high-surrogate and low-surrogate code points.
-  In other words, base 16 integers in either of the inclusive ranges 0 to D7FF and
+  In other words, integers in either of the inclusive base 16 ranges 0 to D7FF and
   E000 to 10FFFF. JSON values of type string are sequences of Unicode scalar values.
 
 Singular Path:
@@ -1181,17 +1181,17 @@ is between:
       compared using `==` to the corresponding element of the second array, or
     * equal objects, that is objects where:
         * for each member of the first object with name `n` and value `v`, there is a member of the second object
-          with name `n` and value `w` where `v` and `w` yield true when comparsed using `==`, and
+          with name `n` and value `w` where `v` and `w` yield true when compared using `==`, and
         * for each member of the second object with name `n` and value `v`, there is a member of the first object
-          with name `n` and value `w` where `v` and `w` yield true when comparsed using `==`.
+          with name `n` and value `w` where `v` and `w` yield true when compared using `==`.
 * a comparison using the operator `!=` yields true if and only if the comparison
 is not between equal values of the same type.
 
 * a comparison using one of the operators `<`, `<=`, `>`, or `>=` yields true if and only if
 the comparison is between values of the same type which are both numbers or both strings and which satisfy the comparison:
 
-    * numbers in the I-JSON {{-i-json}} range of exact values MUST compare using the normal mathematical ordering;
-      one or both numbers outside that range MAY compare using an implementation specific ordering
+    * numbers expected to interoperate as per {{Section 2.2 of -i-json (I-JSON)}} MUST compare using the normal mathematical ordering;
+      numbers not expected to interoperate as per I-JSON MAY compare using an implementation specific ordering
     * the empty string compares less than any non-empty string
     * a non-empty string compares less than another non-empty string if and only if the first string starts with a
       lower Unicode scalar value than the second string or if both strings start with the same Unicode scalar value and
