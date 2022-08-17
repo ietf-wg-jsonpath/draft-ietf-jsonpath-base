@@ -1457,7 +1457,7 @@ Single quotes are used to delimit string member names. This reduces the number o
 need escaping when Normalized Paths appear as strings (which are delimited with double quotes) in JSON texts.
 
 The syntax of Normalized Paths is restricted so that there is one and only one way of identifying a given node.
-Putting this another way, two distinct Normalized Paths are never equivalent to each other: there will always be a JSON value
+Putting this another way, two distinct Normalized Paths are never equivalent to each other: there will always be at least one JSON value
 that yields distinct results when those paths are applied to it.
 
 Certain characters are escaped, in one and only one way; all other characters are unescaped.
