@@ -620,7 +620,7 @@ ALPHA           =  %x41-5A / %x61-7A    ; A-Z / a-z
 
 [^render-error]
 Member names containing characters other than allowed by
-`dot-selector` — such as space (``` ```), minus (`-`), or dot (`.`)
+`dot-selector` — such as space (U+0020), minus (U+002D), or dot (U+002E)
 characters — MUST NOT be used with the `dot-selector`.
 (Such member names can be addressed by the
 `index-selector` instead.)
