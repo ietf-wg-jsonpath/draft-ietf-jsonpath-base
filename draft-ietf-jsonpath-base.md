@@ -1177,16 +1177,13 @@ replaced by the value of its node and then:
 * a comparison using the operator `==` yields true if and only if the comparison
 is between:
     * values of the same primitive type (numbers, strings, booleans, and `null`) which are equal,
-    * equal arrays, that is arrays of the same length where each element of the first array yields true when
-      compared using `==` to the corresponding element of the second array, or
-    * equal objects, that is objects with no duplicate names where:
-        * for each member of the first object with name `n` and value `v`, there is a member of the second object
-          with name `n` and value `w` where `v` and `w` yield true when compared using `==`, and
-        * for each member of the second object with name `n` and value `v`, there is a member of the first object
-          with name `n` and value `w` where `v` and `w` yield true when compared using `==`.
+    * equal arrays, that is arrays of the same length where each element of the first array is equal to the corresponding
+      element of the second array, or
+    * equal objects with no duplicate names, that is where:
+        * both objects have the same collection of names (with no duplicates), and
+        * for each of those names, the values associated with the name by the objects are equal.
 * a comparison using the operator `!=` yields true if and only if the comparison
 is not between equal values of the same type.
-* a comparison between objects at least one of which has duplicate names is implementation dependent but MUST yield true or false.
 
 * a comparison using one of the operators `<`, `<=`, `>`, or `>=` yields true if and only if
 the comparison is between values of the same type which are both numbers or both strings and which satisfy the comparison:
