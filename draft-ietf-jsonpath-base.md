@@ -116,7 +116,7 @@ normative:
   RFC8259: json
   RFC7493: i-json
   RFC6838: media-types-reg
-  I-D.draft-bormann-jsonpath-iregexp: iregexp
+  I-D.draft-ietf-jsonpath-iregexp: iregexp
   UNICODE:
     target: https://www.unicode.org/versions/Unicode14.0.0/UnicodeStandard-14.0.pdf
     title: >
@@ -260,7 +260,7 @@ A query is applied to an argument, and the output is a nodelist.
 
 ## History
 
-This document picks up Stefan Gössner's popular JSONPath proposal
+This document picks up {{{Stefan Gössner}}}'s popular JSONPath proposal
 dated 2007-02-21 {{JSONPath-orig}} and provides a normative definition
 for it.
 
@@ -390,7 +390,7 @@ constant.
 | `$..book[2]`                              | the third book                                               |
 | `$..book[-1]`                             | the last book in order                                       |
 | `$..book[0,1]`<br>`$..book[:2]`           | the first two books                                          |
-| `$..book[?(@.isbn)]`                      | filter all books with isbn number                            |
+| `$..book[?(@.isbn)]`                      | filter all books with ISBN number                            |
 | `$..book[?(@.price<10)]`                  | filter all books cheaper than 10                             |
 | `$..*`                                    | all member values and array elements contained in input value |
 {: #tbl-example title="Example JSONPath expressions applied to the example JSON value"}
@@ -418,7 +418,7 @@ to the JSONPath processing (e.g., index values and steps) MUST be
 within the range of exact values defined in I-JSON {{-i-json}}, namely
 within the interval \[-(2<sup>53</sup>)+1, (2<sup>53</sup>)-1]).
 
-To be valid, strings on the right hand side of the `=~` regex matching
+To be valid, strings on the right-hand side of the `=~` regex matching
 operator need to conform to {{-iregexp}}.
 
 The well-formedness and the validity of JSONPath queries are independent of
@@ -617,7 +617,7 @@ ALPHA           =  %x41-5A / %x61-7A    ; A-Z / a-z
 ~~~~
 
 Member names containing characters other than allowed by
-`dot-selector` — such as space ` `, minus `-`, or dot `.`
+`dot-selector` — such as space (U+0020), minus (U+002D), or dot (U+002E)
 characters — MUST NOT be used with the `dot-selector`.
 (Such member names can be addressed by the
 `index-selector` instead.)
