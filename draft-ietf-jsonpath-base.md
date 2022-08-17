@@ -106,6 +106,9 @@ informative:
     - org: Ecma International
     date: 1999-12
   RFC8949: cbor
+  BOOLEAN-LAWS:
+    target: https://en.wikipedia.org/wiki/Boolean_algebra#Laws
+    title: Boolean algebra laws
 
 normative:
   RFC3629: utf8
@@ -324,7 +327,7 @@ $.store.book[?(@.price < 10)].title
 | `.name`     | child selectors for JSON objects: [dot selector](#dot-selector)                                                                     |
 | `['name']`  | child selectors for JSON objects: [index selector](#index-selector)                                                                 |
 | `..name` <br> `..[3]` | descendants: [descendant selector](#descendant-selectors)                                                                     |
-| `*`         | all child member values and array elements: [dot wildcard selector](#wildcard), [index wildcard selector](#index-wildcard-selector) |
+| `.*` <br> `[*]` | all child member values and array elements: [dot wildcard selector](#wildcard), [index wildcard selector](#index-wildcard-selector) |
 | `[3]`       | [index (subscript) selector](#index-selector): index current node as an array (from 0)                                              |
 | `[..,..]`   | [list selector](#list-selector): allow combining selector styles                                                                    |
 | `[0:100:5]` | [array slice selector](#slice): start:end:step                                                                                      |
@@ -1210,10 +1213,10 @@ JSON:
 
 | Comparison | Result | Comment |
 |:--:|:--:|:--:|
-| `$.nosuch1 == $.nosuch2` | true | Empty nodelists |
-| `$.nosuch1 == 'g'` | false | Empty nodelist |
-| `$.nosuch1 != $.nosuch2` | false | Empty nodelists |
-| `$.nosuch1 != 'g'` | true | Empty nodelist |
+| `$.absent1 == $.absent2` | true | Empty nodelists |
+| `$.absent1 == 'g'` | false | Empty nodelist |
+| `$.absent1 != $.absent2` | false | Empty nodelists |
+| `$.absent1 != 'g'` | true | Empty nodelist |
 | `1 <= 2` | true | Numeric comparison |
 | `1 > 2` | false | Strict, numeric comparison |
 | `13 == '13'` | false | Type mismatch |
@@ -1251,32 +1254,7 @@ The semantics of regular expressions are as defined in {{-iregexp}}.
 {: unnumbered}
 
 The logical AND, OR, and NOT operators have the normal semantics of Boolean algebra and
-consequently obey these laws (where `P`, `Q`, and `R` are any expressions with syntax
-`logical-and-expr`, `T` is any expression that yields true, such as `1 == 1`, and `F` is any expression that yields false,
-such as `1 == 0`):
-
-| Law | Expression | Equivalent expression |
-|:--:|:--:|:--:|
-| Associativity of OR | `P || (Q || R)` | `(P || Q) || R`|
-| Associativity of AND | `P && (Q && R)` | `(P && Q) && R`|
-| Commutativity of OR | `P || Q` | `Q || R` |
-| Commutativity of AND | `P && Q` | `Q && R` |
-| Distributivity of OR over AND | `P || (Q && R)` | `(P || Q) && (P || R)`|
-| Distributivity of AND over OR | `P && (Q || R)` | `(P && Q) || (P && R)`|
-| Identity for OR | `P || F` | `P`|
-| Identity for AND | `P && T` | `P`|
-| Annihilator for OR | `P || T` | `T`|
-| Annihilator for AND | `P && F` | `F`|
-| Idempotence of OR | `P || P` | `P`|
-| Idempotence of AND | `P && P` | `P`|
-| Absorption 1 | `P && (P || Q)` | `P`|
-| Absorption 2 | `P || (P && Q)` | `P`|
-| Complementation 1 | `P && !(P)` | `F`|
-| Complementation 2 | `P || !(P)` | `T`|
-| Double negation | `!(!(P))` | `P`|
-| De Morgan 1 | `!(P) && !(Q)` | `!(P || Q)`|
-| De Morgan 2 | `!(P) || !(Q)` | `!(P && Q)`|
-{: title="Logical operator laws" }
+obey its laws (see, for example, {{BOOLEAN-LAWS}}).
 
 #### Examples
 {: unnumbered}
@@ -1284,7 +1262,7 @@ such as `1 == 0`):
 JSON:
 
     {
-      "a": [3, 5, 1, 2, 4, 6, {"b": "ij"}, {"b": "ik"}],
+      "a": [3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}],
       "o": {"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}}
     }
 
@@ -1293,9 +1271,9 @@ Queries:
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
 | `$.a[?@>3.5]` | `5` <br> `4` <br> `6` | `$['a'][1]` <br> `$['a'][4]` <br> `$['a'][5]` | Array value comparison |
-| `$.a[?@.b]` | `{"b": "ij"}` <br> `{"b": "ik"}` | `$['a'][6]` <br> `$['a'][7]` | Array value existence |
-| `$.a[?@<2 || @.b == "ik"]` | `1` <br> `{"b": "ik"}` | `$['a'][2]` <br> `$['a'][7]` | Array value logical OR |
-| `$.a[?@.b =~ "i.*"]` | `{"b": "ij"}` <br> `{"b": "ik"}` | `$['a'][6]` <br> `$['a'][7]` | Array value regular expression |
+| `$.a[?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` | `$['a'][6]` <br> `$['a'][7]` | Array value existence |
+| `$.a[?@<2 || @.b == "k"]` | `1` <br> `{"b": "k"}` | `$['a'][2]` <br> `$['a'][7]` | Array value logical OR |
+| `$.a[?@.b =~ "i.*"]` | `{"b": "j"}` <br> `{"b": "k"}` | `$['a'][6]` <br> `$['a'][7]` | Array value regular expression |
 | `$.o[?@>1 && @<4]` | `2` <br> `3` | `$['o']['q']` <br> `$['o']['r']` | Object value logical AND |
 | `$.o[?@>1 && @<4]` | `3` <br> `2` | `$['o']['r']` <br> `$['o']['q']` | Alternative result |
 | `$.o[?@.u || @.x]` | `{"u": 6}` | `$['o']['t']` | Object value logical OR |
@@ -1352,7 +1330,7 @@ components MUST be in the I-JSON {{-i-json}} range of exact values, see
 
 JSON:
 
-    ["a", "b", "c", "d", "e", "f", "g"]
+    ["a", "b", "c", "d", "e", "f", "g", {"n": "v", "o": "w", "p": "x"}]
 
 Queries:
 
@@ -1361,6 +1339,8 @@ Queries:
 | `$[0, 3]` | `"a"` <br> `"d"` | `$[0]` <br> `$[3]` | Indices |
 | `$[0:2, 5]` | `"a"` <br> `"b"` <br> `"f"` | `$[0]` <br> `$[1]` <br> `$[5]` | Slice and index |
 | `$[0, 0]` | `"a"` <br> `"a"` | `$[0]` <br> `$[0]` | Duplicated entries |
+| `$[7]["n", "p"]` | `"v"` <br> `"x"` | `$[7]['n']` <br> `$[7]['p']` | Dot child |
+| `$[? @ <= "b" || @ >= "g", 2]` | `"a"` <br> `"b"` <br> `"g"` <br> `"c"` | `$[0]` <br> `$[1]` <br> `$[6]` <br> `$[2]` | Filter and index |
 {: title="List selector examples"}
 
 ### Descendant Selectors
@@ -1425,8 +1405,7 @@ Queries:
 | `$..j`   | `4` <br> `1` | `$['a'][2][0]['j']` <br> `$['o']['j']` | Alternative result |
 | `$..[0]` | `5` <br> `{"j": 4}` | `$['a'][0]` <br> `$['a'][2][0]` | Array values       |
 | `$..[0]` | `{"j": 4}` <br> `5` | `$['a'][2][0]` <br> `$['a'][0]` | Alternative result |
-| `$..[*]` | `{"j": 1, "k" : 2}` <br> `[5, 3, [{"j": 4}]]` <br> `1` <br> `2` <br> `5` <br> `3` <br> `[{"j": 4}]` <br> `{"j": 4}` <br> `4` | `$['o']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][0]['j']` | All values    |
-| `$..*`   | `[5, 3, [{"j": 4}]]` <br> `{"j": 1, "k" : 2}` <br> `2` <br> `1` <br> `5` <br> `3` <br> `[{"j": 4}]` <br> `{"j": 4}` <br> `4` | `$['a']` <br> `$['o']` <br> `$['o']['k']` <br> `$['o']['j']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][0]['j']` | All values    |
+| `$..[*]` <br> `$..*` | `{"j": 1, "k" : 2}` <br> `[5, 3, [{"j": 4}]]` <br> `1` <br> `2` <br> `5` <br> `3` <br> `[{"j": 4}]` <br> `{"j": 4}` <br> `4` | `$['o']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][0]['j']` | All values    |
 {: title="Descendant selector examples"}
 
 Note: The ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that:
@@ -1477,9 +1456,9 @@ Since bracket notation is more general than dot notation, it is used to construc
 Single quotes are used to delimit string member names. This reduces the number of characters that
 need escaping when Normalized Paths appear as strings (which are delimited with double quotes) in JSON texts.
 
-The syntax of Normalized Paths is restricted so that there is one and only one way of representing any
-given Normalized Path. Putting this another way, for any two distinct Normalized Paths, a JSON value exists
-that will yield distinct results when the Normalized Paths are applied to it.
+The syntax of Normalized Paths is restricted so that there is one and only one way of identifying a given node.
+Putting this another way, two distinct Normalized Paths are never equivalent to each other: there will always be at least one JSON value
+that yields distinct results when those paths are applied to it.
 
 Certain characters are escaped, in one and only one way; all other characters are unescaped.
 
