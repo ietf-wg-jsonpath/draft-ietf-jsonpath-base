@@ -422,7 +422,7 @@ To be valid, strings on the right-hand side of the `=~` regex matching
 operator need to conform to {{-iregexp}}.
 
 The well-formedness and the validity of JSONPath queries are independent of
-the JSON value the query is applied to; no further errors relating to the 
+the JSON value the query is applied to; no further errors relating to the
 well-formedness and the validity of a JSONPath query can be
 raised during application of the query to a value.
 
