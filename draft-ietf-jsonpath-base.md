@@ -613,12 +613,6 @@ DIGIT           =  %x30-39              ; 0-9
 ALPHA           =  %x41-5A / %x61-7A    ; A-Z / a-z
 ~~~~
 
-
-[^render-error]: The character juggling below triggers xml2rfc rendering
-    errors both in HTML and TXT, even with the fixes applied.  Do we
-    need to give those translations?
-
-[^render-error]
 Member names containing characters other than allowed by
 `dot-selector` — such as space (U+0020), minus (U+002D), or dot (U+002E)
 characters — MUST NOT be used with the `dot-selector`.
