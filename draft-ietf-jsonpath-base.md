@@ -1200,17 +1200,22 @@ is between:
 is not between equal values of the same type.
 
 * a comparison using one of the operators `<`, `<=`, `>`, or `>=` yields true if and only if
-the comparison is between values of the same type which are both numbers or both strings and which satisfy the comparison:
+the comparison is between values of the same type which are both numbers, both strings, or both arrays and which satisfy the comparison:
 
     * numbers expected to interoperate as per {{Section 2.2 of -i-json (I-JSON)}} MUST compare using the normal mathematical ordering;
       numbers not expected to interoperate as per I-JSON MAY compare using an implementation specific ordering
     * the empty string compares less than any non-empty string
     * a non-empty string compares less than another non-empty string if and only if the first string starts with a
       lower Unicode scalar value than the second string or if both strings start with the same Unicode scalar value and
-      the remainder of the first string compares less than the remainder of the second string.
+      the remainder of the first string compares less than the remainder of the second string
+    * the empty array compares less than any non-empty array whose descendants do not include an object, a boolean, or `null`
+    * a non-empty array compares less than another non-empty array if and only if the first element of the first array is
+      less than the first element of the second array or if both arrays start with the same number, string, or
+      array (whose descendants do not include an object, a boolean, or `null`) and
+      the remainder of the first array compares less than the remainder of the second array.
 
 Note that comparisons using any of the operators `<`, `<=`, `>`, or `>=` yield false if either value being
-compared is an object, array, boolean, or `null`.
+compared is an object, a boolean, `null`, or an array whose descendants include an object, a boolean, or `null`.
 
 ###### Examples
 {: unnumbered}
@@ -1220,7 +1225,11 @@ JSON:
 
     {
       "obj": {"x": "y"},
-      "arr": [2, 3]
+      "arr": [2, 3],
+      "empty": [],
+      "b": [true],
+      "c": [2],
+      "d": [2, 1]
     }
 
 | Comparison | Result | Comment |
@@ -1242,17 +1251,21 @@ JSON:
 | `$.arr != $.arr` | false | Array comparison |
 | `$.obj == 17` | false | Type mismatch |
 | `$.obj != 17` | true | Type mismatch |
-| `$.obj <= $.arr` | false | Objects and arrays are not ordered |
-| `$.obj < $.arr` | false | Objects and arrays are not ordered |
+| `$.obj <= $.arr` | false | Type mismatch |
+| `$.obj < $.arr` | false | Type mismatch |
 | `$.obj <= $.obj` | false | Objects are not ordered |
-| `$.arr <= $.arr` | false | Arrays are not ordered |
-| `1 <= $.arr` | false | Arrays are not ordered |
-| `1 >= $.arr` | false | Arrays are not ordered |
-| `1 > $.arr` | false | Arrays are not ordered |
-| `1 < $.arr` | false | Arrays are not ordered |
+| `1 <= $.arr` | false | Type mismatch |
+| `1 >= $.arr` | false | Type mismatch |
+| `1 > $.arr` | false | Type mismatch |
+| `1 < $.arr` | false | Type mismatch |
 | `true <= true` | false | Booleans are not ordered |
 | `true > true` | false | Booleans are not ordered |
+| `$.c < $.arr`| true | Array comparison |
+| `$.d < $.arr` | true | Array comparison |
+| `$.arr <= $.arr` | true | Array comparison |
+| `$.empty < $.b`| false | Booleans are not ordered |
 {: title="Comparison examples" }
+<!-- May be worth deleting some examples from the above table -->
 
 ##### Regular Expressions
 {: unnumbered}
