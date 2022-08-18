@@ -376,12 +376,9 @@ The examples are based on the simple JSON value shown in
 ~~~~
 {: #fig-example-value title="Example JSON value"}
 
-The examples in {{tbl-example}} use the expression mechanism to obtain
-the number of elements in an array, to test for the presence of a
-member in an object, and to perform numeric comparisons of member values with a
-constant.
+{{tbl-example}} shows some JSONPath queries that might be applied to this example and their intended results.
 
-| JSONPath                                  | Result                                                       |
+| JSONPath                                  | Intended result                                              |
 |-------------------------------------------|--------------------------------------------------------------|
 | `$.store.book[*].author`                  | the authors of all books in the store                        |
 | `$..author`                               | all authors                                                  |
@@ -393,7 +390,7 @@ constant.
 | `$..book[?(@.isbn)]`                      | filter all books with ISBN number                            |
 | `$..book[?(@.price<10)]`                  | filter all books cheaper than 10                             |
 | `$..*`                                    | all member values and array elements contained in input value |
-{: #tbl-example title="Example JSONPath expressions applied to the example JSON value"}
+{: #tbl-example title="Example JSONPath expressions and their intended results when applied to the example JSON value"}
 
 # JSONPath Syntax and Semantics
 
