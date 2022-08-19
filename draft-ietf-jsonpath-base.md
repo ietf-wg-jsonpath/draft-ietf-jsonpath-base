@@ -1227,7 +1227,7 @@ JSON:
       "obj": {"x": "y"},
       "arr": [2, 3],
       "empty": [],
-      "b": [true],
+      "b": [2, 3, 1, [7, true]],
       "c": [2],
       "d": [2, 1]
     }
@@ -1263,9 +1263,12 @@ JSON:
 | `$.c < $.arr`| true | Array comparison |
 | `$.d < $.arr` | true | Array comparison |
 | `$.arr <= $.arr` | true | Array comparison |
-| `$.empty < $.b`| false | Booleans are not ordered |
+| `$.c < $.b`| false | Booleans are not ordered |
 {: title="Comparison examples" }
 <!-- May be worth deleting some examples from the above table -->
+
+Note: The `$.c < $.b` example shows that the descendants of each array need to be
+taken into account in ordered comparisons.
 
 ##### Regular Expressions
 {: unnumbered}
