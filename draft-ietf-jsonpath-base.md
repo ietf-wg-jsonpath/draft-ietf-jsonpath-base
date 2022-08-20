@@ -419,7 +419,8 @@ To be valid, strings on the right-hand side of the `=~` regex matching
 operator need to conform to {{-iregexp}}.
 
 The well-formedness and the validity of JSONPath queries are independent of
-the JSON value the query is applied to; no further errors can be
+the JSON value the query is applied to; no further errors relating to the
+well-formedness and the validity of a JSONPath query can be
 raised during application of the query to a value.
 
 Obviously, an implementation can still fail when executing a JSONPath
@@ -438,6 +439,12 @@ errors.)
 The JSON value the JSONPath query is applied to is, by definition, a valid JSON value.
 The parsing of a JSON text into a JSON value and what happens if a JSON
 text does not represent valid JSON are not defined by this specification.
+
+When a JSONPath query is applied to a JSON value containing an object with duplicate
+names, the behaviour is unpredictable. (Such a value usually originates
+in JSON text containing an object with duplicate keys, but how such a value could
+be constructed depends on how the JSON text is parsed and how the parsed value is
+represented.)
 
 ## Syntax
 
@@ -623,7 +630,10 @@ characters — MUST NOT be used with the `dot-selector`.
 {: unnumbered}
 
 The `dot-selector` selects the node of the member value corresponding
-to the member name from any JSON object in its input nodelist. It selects no nodes from any other JSON value.
+to the member name from any JSON object in its input nodelist.
+The behaviour is unpredictable if the JSON object has duplicate names.
+
+It selects no nodes from any other JSON value.
 
 #### Examples
 {: unnumbered}
@@ -659,6 +669,8 @@ wildcard             = "*"
 A `dot-wild-selector` acts as a wildcard by selecting the nodes of
 all member values of an object in its input nodelist as well as all
 element nodes of an array in its input nodelist.
+The behaviour is unpredictable for an object with duplicate names.
+
 Applying the `dot-wild-selector` to a primitive JSON value (a number,
 a string, `true`, `false`, or `null`) selects no node.
 
@@ -784,6 +796,7 @@ in the table below:
 
 The `index-selector` applied with a `quoted-member-name` to an object
 selects the node of the corresponding member value from it, if and only if that object has a member with that name.
+The behaviour is unpredictable if the object has duplicate names.
 Nothing is selected from a value that is not a object.
 
 The `index-selector` applied with an `element-index` to an array selects an array element using a zero-based index.
@@ -837,6 +850,8 @@ index-wild-selector    = "[" wildcard "]"  ;  asterisk enclosed by brackets
 An `index-wild-selector`
 selects the nodes of all member values of an object as well as of all elements of an
 array.
+The behaviour is unpredictable for an object with duplicate names.
+
 Applying the `index-wild-selector` to a primitive JSON value (that is,
 a number, a string, `true`, `false`, or `null`) selects no node.
 
@@ -1143,7 +1158,9 @@ The following table lists filter expression operators in order of precedence fro
 #### Semantics
 {: unnumbered}
 
-The `filter-selector` works with arrays and objects exclusively. Its result is a list of *zero*, *one*, *multiple* or *all* of their array elements or member values, respectively. Applied to other value types, it will select nothing.
+The `filter-selector` works with arrays and objects exclusively. Its result is a list of *zero*, *one*, *multiple* or *all* of their array elements or member values, respectively.
+The behaviour is unpredictable for objects with duplicate names.
+Applied to other value types, it will select nothing.
 
 A relative path, beginning with `@`, refers to the current array element or member value as the
 filter selector iterates over the array or object.
@@ -1174,13 +1191,11 @@ replaced by the value of its node and then:
 * a comparison using the operator `==` yields true if and only if the comparison
 is between:
     * values of the same primitive type (numbers, strings, booleans, and `null`) which are equal,
-    * equal arrays, that is arrays of the same length where each element of the first array yields true when
-      compared using `==` to the corresponding element of the second array, or
-    * equal objects, that is objects where:
-        * for each member of the first object with name `n` and value `v`, there is a member of the second object
-          with name `n` and value `w` where `v` and `w` yield true when compared using `==`, and
-        * for each member of the second object with name `n` and value `v`, there is a member of the first object
-          with name `n` and value `w` where `v` and `w` yield true when compared using `==`.
+    * equal arrays, that is arrays of the same length where each element of the first array is equal to the corresponding
+      element of the second array, or
+    * equal objects with no duplicate names, that is where:
+        * both objects have the same collection of names (with no duplicates), and
+        * for each of those names, the values associated with the name by the objects are equal.
 * a comparison using the operator `!=` yields true if and only if the comparison
 is not between equal values of the same type.
 
@@ -1381,6 +1396,8 @@ An _array-sequenced preorder_ of the descendants of a node is a sequence of all 
 * nodes appear immediately before all their descendants.
 
 This definition does not stipulate the order in which the children of an object appear, since JSON objects are unordered.
+
+The behaviour of a `descendant-selector` is unpredictable if the node or one of its descendants is an object with duplicate names.
 
 The resultant nodelist of a `descendant-selector` applied to a node must be a sub-sequence of an array-sequenced preorder of the descendants of the node.
 
