@@ -439,12 +439,25 @@ errors.)
 The JSON value the JSONPath query is applied to is, by definition, a valid JSON value.
 The parsing of a JSON text into a JSON value and what happens if a JSON
 text does not represent valid JSON are not defined by this specification.
+{{Sections 4 and 8 of -json}} identify specific situations that may
+conform to the grammar for JSON texts but are not interoperable uses
+of JSON, for instance as they may cause unpredictable behavior.
+The present specification does not attempt to define predictable
+behavior for JSONPath queries in these situations.
+(Note that another warning about interoperability, in {{Section 2 of
+-json}}, at the time of writing is generally considered to be overtaken
+by events and causes no issues with the present specification.)
 
-When a JSONPath query is applied to a JSON value containing an object with duplicate
-names, the behaviour is unpredictable. (Such a value usually originates
-in JSON text containing an object with duplicate keys, but how such a value could
-be constructed depends on how the JSON text is parsed and how the parsed value is
-represented.)
+Specifically, the "Semantics" subsections of Sections {{<dot-selector}},
+{{<wildcard}}, {{<index-selector}}, {{<index-wildcard-selector}},
+{{<filter-selector}}, and {{<descendant-selectors}} describe behavior that
+turns into unpredictable when the JSON value for one of the objects
+under consideration was constructed out of JSON text that exhibits
+multiple members for a single object that share the same member name
+({{Section 4 of -json}}), and matching ({{selectors}}) and comparing
+({{comparisons}} in Section {{<filter-selector}}) of strings assumes these
+strings are sequences of Unicode scalar values, turning unpredictable
+if they aren't ({{Section 8.2 of -json}}).
 
 ## Syntax
 
@@ -631,7 +644,6 @@ characters — MUST NOT be used with the `dot-selector`.
 
 The `dot-selector` selects the node of the member value corresponding
 to the member name from any JSON object in its input nodelist.
-The behaviour is unpredictable if the JSON object has duplicate names.
 
 It selects no nodes from any other JSON value.
 
@@ -669,7 +681,6 @@ wildcard             = "*"
 A `dot-wild-selector` acts as a wildcard by selecting the nodes of
 all member values of an object in its input nodelist as well as all
 element nodes of an array in its input nodelist.
-The behaviour is unpredictable for an object with duplicate names.
 
 Applying the `dot-wild-selector` to a primitive JSON value (a number,
 a string, `true`, `false`, or `null`) selects no node.
@@ -796,7 +807,6 @@ in the table below:
 
 The `index-selector` applied with a `quoted-member-name` to an object
 selects the node of the corresponding member value from it, if and only if that object has a member with that name.
-The behaviour is unpredictable if the object has duplicate names.
 Nothing is selected from a value that is not a object.
 
 The `index-selector` applied with an `element-index` to an array selects an array element using a zero-based index.
@@ -850,7 +860,6 @@ index-wild-selector    = "[" wildcard "]"  ;  asterisk enclosed by brackets
 An `index-wild-selector`
 selects the nodes of all member values of an object as well as of all elements of an
 array.
-The behaviour is unpredictable for an object with duplicate names.
 
 Applying the `index-wild-selector` to a primitive JSON value (that is,
 a number, a string, `true`, `false`, or `null`) selects no node.
@@ -1159,7 +1168,6 @@ The following table lists filter expression operators in order of precedence fro
 {: unnumbered}
 
 The `filter-selector` works with arrays and objects exclusively. Its result is a list of *zero*, *one*, *multiple* or *all* of their array elements or member values, respectively.
-The behaviour is unpredictable for objects with duplicate names.
 Applied to other value types, it will select nothing.
 
 A relative path, beginning with `@`, refers to the current array element or member value as the
@@ -1396,8 +1404,6 @@ An _array-sequenced preorder_ of the descendants of a node is a sequence of all 
 * nodes appear immediately before all their descendants.
 
 This definition does not stipulate the order in which the children of an object appear, since JSON objects are unordered.
-
-The behaviour of a `descendant-selector` is unpredictable if the node or one of its descendants is an object with duplicate names.
 
 The resultant nodelist of a `descendant-selector` applied to a node must be a sub-sequence of an array-sequenced preorder of the descendants of the node.
 
