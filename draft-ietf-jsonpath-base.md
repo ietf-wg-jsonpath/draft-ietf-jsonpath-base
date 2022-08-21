@@ -451,7 +451,7 @@ by events and causes no issues with the present specification.)
 Specifically, the "Semantics" subsections of Sections {{<dot-selector}},
 {{<wildcard}}, {{<index-selector}}, {{<index-wildcard-selector}},
 {{<filter-selector}}, and {{<descendant-selectors}} describe behavior that
-turns into unpredictable when the JSON value for one of the objects
+turns unpredictable when the JSON value for one of the objects
 under consideration was constructed out of JSON text that exhibits
 multiple members for a single object that share the same member name
 ({{Section 4 of -json}}), and matching ({{selectors}}) and comparing
