@@ -1391,22 +1391,31 @@ Note that `..` on its own is not a valid selector.
 #### Semantics
 {: unnumbered}
 
-A `descendant-selector` selects certain descendants of a node:
+A descendant selector selects zero or more descendants of a node.
 
-* the `..<name>` form (and the `..[<index>]` form where `<index>` is a `quoted-member-name`) selects those descendants that are member values of an object with the given member name.
-* the `..[<index>]` form, where `<index>` is an `element-index`, selects those descendants that are array elements with the given index.
-* the `..[<slice-index>]` form selects those descendants that are array elements selected by the given slice.
-* the `..[<filter>]` form selects those descendants that are array elements or object values selected by the given filter.
-* the `..[*]` and `..*` forms select all the descendants.
-
-An _array-sequenced preorder_ of the descendants of a node is a sequence of all the descendants in which:
+The descendants are first enumerated in a nodelist known as a _descendant nodelist_, such that:
 
 * nodes of any array appear in array order,
 * nodes appear immediately before all their descendants.
 
-This definition does not stipulate the order in which the children of an object appear, since JSON objects are unordered.
+This definition does not stipulate the order in which the children of an object appear, since
+JSON objects are unordered.
 
-The resultant nodelist of a `descendant-selector` applied to a node must be a sub-sequence of an array-sequenced preorder of the descendants of the node.
+
+The resultant nodelist of a descendant selector is the result of applying a selector
+(or no selector), depending on the variant of the descendant selector, to a
+descendant nodelist, as shown below:
+
+| Variant | Selector to apply | Comment |
+| :---: | :---: | ------- |
+| `..<name>` | `.<name>`| [Dot selector](#dot-selector)  |
+| `..*` | _none_ | All descendants |
+| `..[<name>]` | `[<name>]`| [Index selector](#index-selector) |
+| `..[*]` | _none_ | All descendants |
+| `..[<slice-index>]` | `[<slice-index>]` | [Array slice selector](#slice) |
+| `..[<filter>]` | `[<filter>]` | [Filter selector](#filter-selector) |
+| `..[<list-entry>,...]` | `[<list-entry>,...]` | [List selector](#list-selector) |
+{: title="Descendant selector variant semantics"}
 
 #### Examples
 {: unnumbered}
