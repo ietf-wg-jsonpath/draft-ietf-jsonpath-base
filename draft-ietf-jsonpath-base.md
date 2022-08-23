@@ -1205,10 +1205,11 @@ is between:
     * equal objects with no duplicate names, that is where:
         * both objects have the same collection of names (with no duplicates), and
         * for each of those names, the values associated with the name by the objects are equal.
+
 * a comparison using the operator `!=` yields true if and only if the comparison
 is not between equal values of the same type.
 
-* a comparison using one of the operators `<`, `<=`, `>`, or `>=` yields true if and only if
+* a comparison using either of the operators `<` or `>` yields true if and only if
 the comparison is between values of the same type which are both numbers or both strings and which satisfy the comparison:
 
     * numbers expected to interoperate as per {{Section 2.2 of -i-json (I-JSON)}} MUST compare using the normal mathematical ordering;
@@ -1218,8 +1219,13 @@ the comparison is between values of the same type which are both numbers or both
       lower Unicode scalar value than the second string or if both strings start with the same Unicode scalar value and
       the remainder of the first string compares less than the remainder of the second string.
 
-Note that comparisons using any of the operators `<`, `<=`, `>`, or `>=` yield false if either value being
+Note that comparisons using either of the operators `<` or `>` yield false if either value being
 compared is an object, array, boolean, or `null`.
+
+For any `a` and `b`:
+
+* The comparison `a <= b` yields true if and only if either `a < b` yields true or `a == b` yields true.
+* The comparison `a >= b` yields true if and only if either `a > b` yields true or `a == b` yields true.
 
 ###### Examples
 {: unnumbered}
@@ -1235,6 +1241,7 @@ JSON:
 | Comparison | Result | Comment |
 |:--:|:--:|:--:|
 | `$.absent1 == $.absent2` | true | Empty nodelists |
+| `$.absent1 <= $.absent2` | true | `==` implies `<=` |
 | `$.absent1 == 'g'` | false | Empty nodelist |
 | `$.absent1 != $.absent2` | false | Empty nodelists |
 | `$.absent1 != 'g'` | true | Empty nodelist |
@@ -1253,13 +1260,13 @@ JSON:
 | `$.obj != 17` | true | Type mismatch |
 | `$.obj <= $.arr` | false | Objects and arrays are not ordered |
 | `$.obj < $.arr` | false | Objects and arrays are not ordered |
-| `$.obj <= $.obj` | false | Objects are not ordered |
-| `$.arr <= $.arr` | false | Arrays are not ordered |
+| `$.obj <= $.obj` | true | `==` implies `<=` |
+| `$.arr <= $.arr` | true | `==` implies `<=` |
 | `1 <= $.arr` | false | Arrays are not ordered |
 | `1 >= $.arr` | false | Arrays are not ordered |
 | `1 > $.arr` | false | Arrays are not ordered |
 | `1 < $.arr` | false | Arrays are not ordered |
-| `true <= true` | false | Booleans are not ordered |
+| `true <= true` | true | `==` implies `<=` |
 | `true > true` | false | Booleans are not ordered |
 {: title="Comparison examples" }
 
