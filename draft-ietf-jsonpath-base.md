@@ -1240,9 +1240,9 @@ JSON:
 |:--:|:--:|:--:|
 | `$.absent1 == $.absent2` | true | Empty nodelists |
 | `$.absent1 <= $.absent2` | true | `==` implies `<=` |
-| `$.absent1 == 'g'` | false | Empty nodelist |
+| `$.absent == 'g'` | false | Empty nodelist |
 | `$.absent1 != $.absent2` | false | Empty nodelists |
-| `$.absent1 != 'g'` | true | Empty nodelist |
+| `$.absent != 'g'` | true | Empty nodelist |
 | `1 <= 2` | true | Numeric comparison |
 | `1 > 2` | false | Strict, numeric comparison |
 | `13 == '13'` | false | Type mismatch |
