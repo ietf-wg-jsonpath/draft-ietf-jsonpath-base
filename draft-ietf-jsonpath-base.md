@@ -1187,6 +1187,8 @@ rather than the negated existence test `!@.foo` (which yields false if `@.foo` s
 ##### Comparisons
 {: unnumbered}
 
+The comparison operators `==`, `<`, and `>` are defined first and then these are used to define `!=`, `<=`, and `>=`.
+
 When a path resulting in an empty nodelist appears on either side of a comparison:
 
 * a comparison using the operator `==` yields true if and only if the comparison
