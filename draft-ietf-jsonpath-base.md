@@ -1192,9 +1192,6 @@ When a path resulting in an empty nodelist appears on either side of a compariso
 * a comparison using the operator `==` yields true if and only if the comparison
 is between two paths each of which result in an empty nodelist.
 
-* a comparison using the operator `!=` yields true if and only if the comparison
-is not between two paths each of which result in an empty nodelist.
-
 * a comparison using either of the operators `<` or `>` yields false.
 
 When any path on either side of a comparison results in a nodelist consisting of a single node, each such path is
@@ -1209,9 +1206,6 @@ is between:
         * both objects have the same collection of names (with no duplicates), and
         * for each of those names, the values associated with the name by the objects are equal.
 
-* a comparison using the operator `!=` yields true if and only if the comparison
-is not between equal values of the same type.
-
 * a comparison using either of the operators `<` or `>` yields true if and only if
 the comparison is between values of the same type which are both numbers or both strings and which satisfy the comparison:
 
@@ -1225,10 +1219,11 @@ the comparison is between values of the same type which are both numbers or both
 Note that comparisons using either of the operators `<` or `>` yield false if either value being
 compared is an object, array, boolean, or `null`.
 
-For any `a` and `b`:
+`!=`, `<=` and `>=` are defined in terms of the other comparison operators. For any `a` and `b`:
 
-* The comparison `a <= b` yields true if and only if either `a < b` yields true or `a == b` yields true.
-* The comparison `a >= b` yields true if and only if either `a > b` yields true or `a == b` yields true.
+* The comparison `a != b` yields true if and only if `a == b` yields false.
+* The comparison `a <= b` yields true if and only if `a < b` yields true or `a == b` yields true.
+* The comparison `a >= b` yields true if and only if `a > b` yields true or `a == b` yields true.
 
 ###### Examples
 {: unnumbered}
