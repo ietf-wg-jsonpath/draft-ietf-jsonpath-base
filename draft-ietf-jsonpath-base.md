@@ -1187,12 +1187,15 @@ rather than the negated existence test `!@.foo` (which yields false if `@.foo` s
 ##### Comparisons
 {: unnumbered}
 
-When a path resulting in an empty nodelist appears on either side of a comparison, the comparison yields
-true if and only if:
+When a path resulting in an empty nodelist appears on either side of a comparison:
 
-* the comparison operator is `==`, `>=` or `<=` and the other side of the comparison is also a path
-resulting in an empty nodelist, or
-* the comparison operator is `!=` and the other side of the comparison is not also a path resulting in an empty nodelist.
+* a comparison using the operator `==` yields true if and only if the comparison
+is between two paths each of which result in an empty nodelist.
+
+* a comparison using the operator `!=` yields true if and only if the comparison
+is not between two paths each of which result in an empty nodelist.
+
+* a comparison using either of the operators `<` or `>` yields false.
 
 When any path on either side of a comparison results in a nodelist consisting of a single node, each such path is
 replaced by the value of its node and then:
