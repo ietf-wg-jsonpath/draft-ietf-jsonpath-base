@@ -1187,12 +1187,14 @@ rather than the negated existence test `!@.foo` (which yields false if `@.foo` s
 ##### Comparisons
 {: unnumbered}
 
-When a path resulting in an empty nodelist appears on either side of a comparison, the comparison yields
-true if and only if:
+The comparison operators `==`, `<`, and `>` are defined first and then these are used to define `!=`, `<=`, and `>=`.
 
-* the comparison operator is `==`, `>=` or `<=` and the other side of the comparison is also a path
-resulting in an empty nodelist, or
-* the comparison operator is `!=` and the other side of the comparison is not also a path resulting in an empty nodelist.
+When a path resulting in an empty nodelist appears on either side of a comparison:
+
+* a comparison using the operator `==` yields true if and only if the comparison
+is between two paths each of which result in an empty nodelist.
+
+* a comparison using either of the operators `<` or `>` yields false.
 
 When any path on either side of a comparison results in a nodelist consisting of a single node, each such path is
 replaced by the value of its node and then:
@@ -1205,10 +1207,8 @@ is between:
     * equal objects with no duplicate names, that is where:
         * both objects have the same collection of names (with no duplicates), and
         * for each of those names, the values associated with the name by the objects are equal.
-* a comparison using the operator `!=` yields true if and only if the comparison
-is not between equal values of the same type.
 
-* a comparison using one of the operators `<`, `<=`, `>`, or `>=` yields true if and only if
+* a comparison using either of the operators `<` or `>` yields true if and only if
 the comparison is between values of the same type which are both numbers or both strings and which satisfy the comparison:
 
     * numbers expected to interoperate as per {{Section 2.2 of -i-json (I-JSON)}} MUST compare using the normal mathematical ordering;
@@ -1218,8 +1218,14 @@ the comparison is between values of the same type which are both numbers or both
       lower Unicode scalar value than the second string or if both strings start with the same Unicode scalar value and
       the remainder of the first string compares less than the remainder of the second string.
 
-Note that comparisons using any of the operators `<`, `<=`, `>`, or `>=` yield false if either value being
+Note that comparisons using either of the operators `<` or `>` yield false if either value being
 compared is an object, array, boolean, or `null`.
+
+`!=`, `<=` and `>=` are defined in terms of the other comparison operators. For any `a` and `b`:
+
+* The comparison `a != b` yields true if and only if `a == b` yields false.
+* The comparison `a <= b` yields true if and only if `a < b` yields true or `a == b` yields true.
+* The comparison `a >= b` yields true if and only if `a > b` yields true or `a == b` yields true.
 
 ###### Examples
 {: unnumbered}
@@ -1235,9 +1241,10 @@ JSON:
 | Comparison | Result | Comment |
 |:--:|:--:|:--:|
 | `$.absent1 == $.absent2` | true | Empty nodelists |
-| `$.absent1 == 'g'` | false | Empty nodelist |
+| `$.absent1 <= $.absent2` | true | `==` implies `<=` |
+| `$.absent == 'g'` | false | Empty nodelist |
 | `$.absent1 != $.absent2` | false | Empty nodelists |
-| `$.absent1 != 'g'` | true | Empty nodelist |
+| `$.absent != 'g'` | true | Empty nodelist |
 | `1 <= 2` | true | Numeric comparison |
 | `1 > 2` | false | Strict, numeric comparison |
 | `13 == '13'` | false | Type mismatch |
@@ -1253,13 +1260,13 @@ JSON:
 | `$.obj != 17` | true | Type mismatch |
 | `$.obj <= $.arr` | false | Objects and arrays are not ordered |
 | `$.obj < $.arr` | false | Objects and arrays are not ordered |
-| `$.obj <= $.obj` | false | Objects are not ordered |
-| `$.arr <= $.arr` | false | Arrays are not ordered |
+| `$.obj <= $.obj` | true | `==` implies `<=` |
+| `$.arr <= $.arr` | true | `==` implies `<=` |
 | `1 <= $.arr` | false | Arrays are not ordered |
 | `1 >= $.arr` | false | Arrays are not ordered |
 | `1 > $.arr` | false | Arrays are not ordered |
 | `1 < $.arr` | false | Arrays are not ordered |
-| `true <= true` | false | Booleans are not ordered |
+| `true <= true` | true | `==` implies `<=` |
 | `true > true` | false | Booleans are not ordered |
 {: title="Comparison examples" }
 
