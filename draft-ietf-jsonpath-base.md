@@ -1400,7 +1400,7 @@ Note that `..` on its own is not a valid selector.
 
 A descendant selector selects zero or more descendants of a node.
 
-A nodelist enumerating the descendants is known as a _descendant nodelist_ when:
+A nodelist enumerating the node and its descendants is known as a _reflexive descendant nodelist_ when:
 
 * nodes of any array appear in array order,
 * nodes appear immediately before all their descendants.
@@ -1411,7 +1411,7 @@ JSON objects are unordered.
 
 The resultant nodelist of a descendant selector is the result of applying a selector
 (or no selector), depending on the variant of the descendant selector, to a
-descendant nodelist, as shown below:
+reflexive descendant nodelist, as shown below:
 
 | Variant | Selector to apply | Comment |
 | :---: | :---: | ------- |
@@ -1443,6 +1443,7 @@ Queries:
 | `$..[0]` | `5` <br> `{"j": 4}` | `$['a'][0]` <br> `$['a'][2][0]` | Array values       |
 | `$..[0]` | `{"j": 4}` <br> `5` | `$['a'][2][0]` <br> `$['a'][0]` | Alternative result |
 | `$..[*]` <br> `$..*` | `{"j": 1, "k" : 2}` <br> `[5, 3, [{"j": 4}]]` <br> `1` <br> `2` <br> `5` <br> `3` <br> `[{"j": 4}]` <br> `{"j": 4}` <br> `4` | `$['o']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][0]['j']` | All values    |
+| `$..o`   | `{"j": 1, "k": 2}` | `$['o']` | Reflexive descendant nodelist includes input value |
 {: title="Descendant selector examples"}
 
 Note: The ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that:
