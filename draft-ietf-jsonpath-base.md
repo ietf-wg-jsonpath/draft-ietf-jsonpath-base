@@ -1400,7 +1400,9 @@ Note that `..` on its own is not a valid selector.
 
 A descendant selector selects zero or more descendants of a node.
 
-A nodelist enumerating the node and its descendants is known as a _reflexive descendant nodelist_ when:
+The resultant nodelist of a descendant selector is the result of applying a selector,
+depending on the variant of the descendant selector, to a
+nodelist enumerating the node and its descendants such that:
 
 * nodes of any array appear in array order,
 * nodes appear immediately before all their descendants.
@@ -1408,17 +1410,14 @@ A nodelist enumerating the node and its descendants is known as a _reflexive des
 This definition does not stipulate the order in which the children of an object appear, since
 JSON objects are unordered.
 
-
-The resultant nodelist of a descendant selector is the result of applying a selector
-(or no selector), depending on the variant of the descendant selector, to a
-reflexive descendant nodelist, as shown below:
+The selector to apply is shown below:
 
 | Variant | Selector to apply | Comment |
 | :---: | :---: | ------- |
 | `..<name>` | `.<name>`| [Dot selector](#dot-selector)  |
-| `..*` | _none_ | All descendants |
+| `..*` | `.*` | All descendants |
 | `..[<name>]` | `[<name>]`| [Index selector](#index-selector) |
-| `..[*]` | _none_ | All descendants |
+| `..[*]` | `.[*]` | All descendants |
 | `..[<slice-index>]` | `[<slice-index>]` | [Array slice selector](#slice) |
 | `..[<filter>]` | `[<filter>]` | [Filter selector](#filter-selector) |
 | `..[<list-entry>,...]` | `[<list-entry>,...]` | [List selector](#list-selector) |
