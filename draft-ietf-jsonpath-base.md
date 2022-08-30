@@ -1117,14 +1117,14 @@ rather than the negated existence test `!@.foo` (which yields false if `@.foo` s
 ##### Comparisons
 {: unnumbered}
 
-The comparison operators `==`, `<`, and `>` are defined first and then these are used to define `!=`, `<=`, and `>=`.
+The comparison operators `==` and `<` are defined first and then these are used to define `!=`, `<=`, `>`, and `>=`.
 
 When a path resulting in an empty nodelist appears on either side of a comparison:
 
 * a comparison using the operator `==` yields true if and only if the comparison
 is between two paths each of which result in an empty nodelist.
 
-* a comparison using either of the operators `<` or `>` yields false.
+* a comparison using the operator `<` yields false.
 
 When any path on either side of a comparison results in a nodelist consisting of a single node, each such path is
 replaced by the value of its node and then:
@@ -1138,7 +1138,7 @@ is between:
         * both objects have the same collection of names (with no duplicates), and
         * for each of those names, the values associated with the name by the objects are equal.
 
-* a comparison using either of the operators `<` or `>` yields true if and only if
+* a comparison using the operator `<` yields true if and only if
 the comparison is between values of the same type which are both numbers or both strings and which satisfy the comparison:
 
     * numbers expected to interoperate as per {{Section 2.2 of -i-json (I-JSON)}} MUST compare using the normal mathematical ordering;
@@ -1148,14 +1148,15 @@ the comparison is between values of the same type which are both numbers or both
       lower Unicode scalar value than the second string or if both strings start with the same Unicode scalar value and
       the remainder of the first string compares less than the remainder of the second string.
 
-Note that comparisons using either of the operators `<` or `>` yield false if either value being
+Note that comparisons using the operator `<` yield false if either value being
 compared is an object, array, boolean, or `null`.
 
-`!=`, `<=` and `>=` are defined in terms of the other comparison operators. For any `a` and `b`:
+`!=`, `<=`, `>`, and `>=` are defined in terms of the other comparison operators. For any `a` and `b`:
 
 * The comparison `a != b` yields true if and only if `a == b` yields false.
 * The comparison `a <= b` yields true if and only if `a < b` yields true or `a == b` yields true.
-* The comparison `a >= b` yields true if and only if `a > b` yields true or `a == b` yields true.
+* The comparison `a > b` yields true if and only if `b < a` yields true.
+* The comparison `a >= b` yields true if and only if `b < a` yields true or `a == b` yields true.
 
 ##### Regular Expressions
 {: unnumbered}
