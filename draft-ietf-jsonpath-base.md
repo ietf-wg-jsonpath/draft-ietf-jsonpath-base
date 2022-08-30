@@ -1325,7 +1325,7 @@ renamed into "list selector".
 {: unnumbered}
 
 The list selector is syntactically related to the
-`dot-selector`, `index-selector`, `slice-selector`, and the `filter-selector`.
+`dot-selector`, `index-selector`, `index-wild-selector`, `slice-selector`, and the `filter-selector`.
 It contains two or more entries, separated by commas.
 
 ~~~~ abnf
@@ -1333,6 +1333,7 @@ list-selector  = "[" S list-entry 1*(S "," S list-entry) S "]"
 
 list-entry     =  ( quoted-member-name /
                     element-index      /
+                    wildcard /
                     slice-index /
                     filter
                   )
@@ -1369,6 +1370,7 @@ Queries:
 | `$[0, 0]` | `"a"` <br> `"a"` | `$[0]` <br> `$[0]` | Duplicated entries |
 | `$[7]["n", "p"]` | `"v"` <br> `"x"` | `$[7]['n']` <br> `$[7]['p']` | Dot child |
 | `$[? @ <= "b" || @ >= "g", 2]` | `"a"` <br> `"b"` <br> `"g"` <br> `"c"` | `$[0]` <br> `$[1]` <br> `$[6]` <br> `$[2]` | Filter and index |
+| `$[*, 0]` | `"a"` <br> `"b"` <br> `"c"` <br> `"d"` <br> `"e"` <br> `"f"` <br> `"g"` <br> `{"n": "v", "o": "w", "p": "x"}` <br> `"a"` | `$[0]` <br> `$[1]` <br> `$[2]` <br> `$[3]` <br> `$[4]` <br> `$[5]` <br> `$[6]` <br> `$[7]` <br><br> `$[0]` | Wildcard and index |
 {: title="List selector examples"}
 
 ### Descendant Selectors
