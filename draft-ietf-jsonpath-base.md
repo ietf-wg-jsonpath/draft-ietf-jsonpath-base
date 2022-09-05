@@ -457,17 +457,15 @@ behavior for JSONPath queries in these situations.
 -json}}, at the time of writing is generally considered to be overtaken
 by events and causes no issues with the present specification.)
 
-<!-- GREG: revisit these sections once they're restructured -->
-
-Specifically, the "Semantics" subsections of Sections {{<dot-selector}},
-{{<wildcard}}, {{<index-selector}}, {{<index-wildcard-selector}},
-{{<filter-selector}}, and {{<descendant-selectors}} describe behavior that
+Specifically, the "Semantics" subsections of Sections
+{{<wildcard}}, {{<name-//PICKER//}},
+{{<filter-//PICKER//}}, and {{<descendant-selectors}} describe behavior that
 turns unpredictable when the JSON value for one of the objects
 under consideration was constructed out of JSON text that exhibits
 multiple members for a single object that share the same member name
 ("duplicate names", see {{Section 4 of -json}}).
 Also, matching ({{selectors}}) and comparing
-({{comparisons}} in Section {{<filter-selector}}) of strings assumes these
+({{comparisons}} in Section {{<filter-//PICKER//}}) of strings assumes these
 strings are sequences of Unicode scalar values, turning unpredictable
 if they aren't ({{Section 8.2 of -json}}).
 
@@ -660,7 +658,7 @@ Queries:
 ### Child Selector
 
 #### Syntax
-{: unnumbered}
+<!-- {: unnumbered} -->
 
 The child selector has the form `[<//PICKERS//>]` where `<//PICKERS//>` is a comma-delimited
 collection of one or more //PICKERS//.
@@ -677,7 +675,7 @@ list-entry     =  ( quoted-member-name /
 ~~~~
 
 #### Semantics
-{: unnumbered}
+<!-- {: unnumbered} -->
 
 A child selector operates on objects and arrays only.
 It contains a comma-delimited collection of //PICKERS// to indicate which
@@ -1102,11 +1100,12 @@ exist-expr        = [logical-not-op S] singular-path  ; path existence or non-ex
 
 Paths in filter expressions are Singular Paths, each of which selects at most one node.
 
-<!-- GREG: update singular path definition -->
 ~~~~ abnf
 singular-path     = rel-singular-path / abs-singular-path
-rel-singular-path = "@" *(S (dot-selector / index-selector))
-abs-singular-path = root-selector *(S (dot-selector / index-selector))
+rel-singular-path = "@" *(S (name-selector / index-selector))
+abs-singular-path = root-selector *(S (name-selector / index-selector))
+name-selector     = "[" quoted-member-name "]" / dotted-member-name
+index-selector    = "[" element-index "]"
 ~~~~
 
 Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `?(<expr>)` is naturally contained in the current lean syntax `?<expr>` as a special case.
@@ -1230,13 +1229,24 @@ compared is an object, array, boolean, or `null`.
 * The comparison `a <= b` yields true if and only if `a < b` yields true or `a == b` yields true.
 * The comparison `a >= b` yields true if and only if `a > b` yields true or `a == b` yields true.
 
-<!-- GREG: 7 levels?  Maybe join with section examples below -->
+###### Regular Expressions
+{: unnumbered}
 
-####### Examples
+A regular-expression test yields true if and only if the value on the left-hand side of `=~` is a string value and it
+matches the regular expression on the right-hand side according to the semantics of {{-iregexp}}.
+
+The semantics of regular expressions are as defined in {{-iregexp}}.
+
+###### Boolean Operators
+{: unnumbered}
+
+The logical AND, OR, and NOT operators have the normal semantics of Boolean algebra and
+obey its laws (see, for example, {{BOOLEAN-LAWS}}).
+
+##### Examples
 {: unnumbered}
 
 JSON:
-
 
     {
       "obj": {"x": "y"},
@@ -1274,23 +1284,6 @@ JSON:
 | `true <= true` | true | `==` implies `<=` |
 | `true > true` | false | Booleans are not ordered |
 {: title="Comparison examples" }
-
-###### Regular Expressions
-{: unnumbered}
-
-A regular-expression test yields true if and only if the value on the left-hand side of `=~` is a string value and it
-matches the regular expression on the right-hand side according to the semantics of {{-iregexp}}.
-
-The semantics of regular expressions are as defined in {{-iregexp}}.
-
-###### Boolean Operators
-{: unnumbered}
-
-The logical AND, OR, and NOT operators have the normal semantics of Boolean algebra and
-obey its laws (see, for example, {{BOOLEAN-LAWS}}).
-
-##### Examples
-{: unnumbered}
 
 JSON:
 
