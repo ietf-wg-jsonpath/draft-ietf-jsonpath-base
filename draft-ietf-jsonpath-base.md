@@ -248,6 +248,10 @@ Unicode Scalar Value:
 Singular Path:
 : A JSONPath expression built from selectors which each select at most one node.
 
+//PICKER//:
+: A single item within a bracketed (`[]`) value selector that identifies which values
+  are to be selected.
+
 For the purposes of this specification, a value as defined by
 {{-json}} is also viewed as a tree of nodes.
 Each node, in turn, holds a value.
@@ -289,23 +293,25 @@ JSONPath expressions are applied to a JSON value, the *argument*.
 Within the JSONPath expression, the abstract name `$` is used to refer
 to the *root node* of the argument, i.e., to the argument as a whole.
 
-JSONPath expressions can use the *dot notation*
-
-~~~~
-$.store.book[0].title
-~~~~
-
-or the more general *bracket notation*
+JSONPath expressions primarily use the *bracket notation*
 
 ~~~~
 $['store']['book'][0]['title']
 ~~~~
 
+but may also use the shorthand *dot notation*
+
+~~~~
+$.store.book[0].title
+~~~~
+
 to build paths that are input to a JSONPath implementation.
+Generally, the dot notation is preferred for most applications.
+Mixing these syntaxes within a single path is also useful.
 
 JSONPath allows the wildcard symbol `*` to select any member of an
 object or any element of an array ({{wildcard}}).
-The descendant operators (which start with `..`) select some or all of the descendants ({{descendant-selectors}}) of a node.
+The descendant selectors (which start with `..`) select some or all of the descendants ({{descendant-selectors}}) of a node.
 The array slice
 syntax `[start:end:step]` allows selecting a regular selection of an
 element from an array, giving a start position, an end position, and
@@ -320,19 +326,22 @@ $.store.book[?(@.price < 10)].title
 
 {{tbl-overview}} provides a quick overview of the JSONPath syntax elements.
 
-| JSONPath    | Description                                                                                                                         |
-|-------------|-------------------------------------------------------------------------------------------------------------------------------------|
-| `$`         | [the root node](#root-selector)                                                                                                     |
-| `@`         | the current node: within [filter selectors](#filter-selector)                                                                     |
-| `.name`     | child selectors for JSON objects: [dot selector](#dot-selector)                                                                     |
-| `['name']`  | child selectors for JSON objects: [index selector](#index-selector)                                                                 |
-| `..name` <br> `..[3]` | descendants: [descendant selector](#descendant-selectors)                                                                     |
-| `.*` <br> `[*]` | all child member values and array elements: [dot wildcard selector](#wildcard), [index wildcard selector](#index-wildcard-selector) |
-| `[3]`       | [index (subscript) selector](#index-selector): index current node as an array (from 0)                                              |
-| `[..,..]`   | [list selector](#list-selector): allow combining selector styles                                                                    |
-| `[0:100:5]` | [array slice selector](#slice): start:end:step                                                                                      |
-| `?...`      | [filter selector](#filter-selector)                                                                                                 |
-| `()`        | expression: within [filter selectors](#filter-selector)                                                                            |
+| JSONPath          | Description                                                                                                             |
+|-------------------|-------------------------------------------------------------------------------------------------------------------------|
+| `$`               | [root node selector](#root-selector)                                                                                    |
+| `[*]`             | [wildcard selector](#index-wildcard-selector): selects all immediate descendants of objects and arrays                  |
+| `..[*]`           | [descendant wildcard selector](#descendant-selectors): recursive version of the wildcard selector                       |
+| `[//PICKERS//]`   | [value selector](#value-selector) for JSON objects and arrays; contains one or more clauses, separated by commas        |
+| `..[//PICKERS//]` | [descendant value selector](#descendant-selectors): recursive version of the value selector                             |
+| `'name'`          | [name //PICKER//](#index-//PICKER//): index current node as an object                                                   |
+| `3`               | [index //PICKER//](#index-//PICKER//): index current node as an array (from 0)                                          |
+| `0:100:5`         | [array slice //PICKER//](#slice): start:end:step for arrays                                                             |
+| `?<expr>`         | [filter //PICKER//](#filter-//PICKER//): selection based on expressions by applying the expression to each child node   |
+| `@`               | [current node selector](#filter-//PICKER//) (valid only within filter clauses)                                          |
+| `.name`           | shorthand for `['name']`                                                                                                |
+| `.*`              | shorthand for `.*`                                                                                                      |
+| `..name`          | shorthand for `..['name']`                                                                                              |
+| `..*`             | shorthand for `..[*]`                                                                                                   |
 {: #tbl-overview title="Overview of JSONPath"}
 
 # JSONPath Examples
