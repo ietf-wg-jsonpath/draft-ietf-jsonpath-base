@@ -457,6 +457,8 @@ behavior for JSONPath queries in these situations.
 -json}}, at the time of writing is generally considered to be overtaken
 by events and causes no issues with the present specification.)
 
+<!-- GREG: revisit these sections once they're restructured -->
+
 Specifically, the "Semantics" subsections of Sections {{<dot-selector}},
 {{<wildcard}}, {{<index-selector}}, {{<index-wildcard-selector}},
 {{<filter-selector}}, and {{<descendant-selectors}} describe behavior that
@@ -476,18 +478,13 @@ stands for a nodelist that contains the root node of the argument,
 followed by a possibly empty sequence of *selectors*.
 
 ~~~~ abnf
-json-path = root-selector *(S (dot-selector        /
-                               dot-wild-selector   /
-                               index-selector      /
-                               index-wild-selector /
-                               slice-selector      /
-                               filter-selector     /
-                               list-selector       /
-                               descendant-selector))
+json-path = root-selector *(S (wildcard-selector            /
+                               descendant-wildcard-selector /
+                               child-selector               /
+                               descendant-child-selector))
 ~~~~
 
 The syntax and semantics of each selector is defined below.
-
 
 ## Semantics
 
