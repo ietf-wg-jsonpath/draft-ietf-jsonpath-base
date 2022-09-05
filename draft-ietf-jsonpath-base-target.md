@@ -660,11 +660,14 @@ Queries:
 
 ### Value Selector
 
+#### Syntax {#syntax-index}
+{: unnumbered}
+
 The value selector has the form `[<criteria>]` where `<criteria>` is a comma-delimited
 collection of one or more criteria.
 Each criterion is defined below.
 
-~~~~ anbf
+~~~~ abnf
 value-selector = "[" S list-entry 1*(S "," S list-entry) S "]"
 
 list-entry     =  ( quoted-member-name /
@@ -684,6 +687,7 @@ Each criterion type functions differently and may be defined to operate on only
 objects, only arrays, or both.
 
 Criteria of different types may be combined within a single value selector.
+
 
 #### Name Criterion
 

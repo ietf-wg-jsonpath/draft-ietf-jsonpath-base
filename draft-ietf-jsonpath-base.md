@@ -1319,22 +1319,30 @@ Queries:
 #### Syntax
 {: unnumbered}
 
-The descendant selectors start with a double dot `..` and can be
-followed by an object member name (similar to the `dot-selector`),
-a wildcard (similar to the `dot-wild-selector`),
-an `index-selector`, `index-wild-selector`, `filter-selector`, or `list-selector` acting on objects or arrays,
-or a `slice-selector` acting on arrays.
+The descendant selectors start with a double dot `..`
+followed by either a wildcard selector (`descendant-wild-selector`)
+or a child selector (`descendant-child-selector`).
 
 ~~~~ abnf
-descendant-selector = ".." ( dot-member-name      /  ; ..<name>
-                             wildcard             /  ; ..*
-                             index-selector       /  ; ..[<index>]
-                             index-wild-selector  /  ; ..[*]
-                             slice-selector       /  ; ..[<slice-index>]
-                             filter-selector      /  ; ..[<filter>]
-                             list-selector           ; ..[<list-entry>,...]
-                           )
+descendant-wild-selector    = (descendant-wild-index-selector \
+                               descendant-wild-shorthand)
+descendant-wild             = ".." index-wild-selector
+descendant-wild-shorthand = ".." wildcard
+
+descendant-child-selector   = (descendant-child \
+                               descendant-name-shorthand)
+descendant-child            = ".." child-selector
+descendant-name-shorthand = ".." dot-member-name
 ~~~~
+
+`descendant-wild` and `descendant-wild-shorthand` may be used interchangeably.
+
+`descendant-name-shorthand` is a shorthand notation for the occasion when a
+descendant child selector is used with a single name //PICKER// where the name
+can be used in its shorthand notation.
+The shorthand is not valid for child selectors containing more than one //PICKER//
+other //PICKER// types, or name //PICKERS// that cannot themselves be represented
+in shorthand.
 
 Note that `..` on its own is not a valid selector.
 
@@ -1351,20 +1359,14 @@ A nodelist enumerating the descendants is known as a _descendant nodelist_ when:
 This definition does not stipulate the order in which the children of an object appear, since
 JSON objects are unordered.
 
-
 The resultant nodelist of a descendant selector is the result of applying a selector
 (or no selector), depending on the variant of the descendant selector, to a
 descendant nodelist, as shown below:
 
 | Variant | Selector to apply | Comment |
 | :---: | :---: | ------- |
-| `..<name>` | `.<name>`| [Dot selector](#dot-selector)  |
-| `..*` | _none_ | All descendants |
-| `..[<name>]` | `[<name>]`| [Index selector](#index-selector) |
-| `..[*]` | _none_ | All descendants |
-| `..[<slice-index>]` | `[<slice-index>]` | [Array slice selector](#slice) |
-| `..[<filter>]` | `[<filter>]` | [Filter selector](#filter-selector) |
-| `..[<list-entry>,...]` | `[<list-entry>,...]` | [List selector](#list-selector) |
+| `..[*]` | _none_ | All descendants, recursively |
+| `..[<//PICKERS//>]` | `[<//PICKERS//>]` | [Child selector](#child-selector) |
 {: title="Descendant selector variant semantics"}
 
 #### Examples
