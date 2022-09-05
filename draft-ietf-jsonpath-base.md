@@ -311,7 +311,7 @@ Mixing these syntaxes within a single path is also useful.
 
 JSONPath allows the wildcard symbol `*` to select any member of an
 object or any element of an array ({{wildcard}}).
-The descendant selectors (which start with `..`) select some or all of the descendants ({{descendant-selectors}}) of a node.
+The descendant selector (which starts with `..`) recursively selects some or all of the descendants ({{descendant-selectors}}) of a node.
 The array slice
 syntax `[start:end:step]` allows selecting a regular selection of an
 element from an array, giving a start position, an end position, and
