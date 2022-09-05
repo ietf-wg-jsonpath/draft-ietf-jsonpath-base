@@ -899,13 +899,11 @@ Queries:
 ##### Syntax
 {: unnumbered}
 
-The array slice selector has the form `[<start>:<end>:<step>]`.
-It selects elements starting at index `<start>`, ending at — but
+The array slice //PICKER// has the form `<start>:<end>:<step>`.
+It selects elements from arrays starting at index `<start>`, ending at — but
 not including — `<end>`, while incrementing by `step`.
 
 ~~~~ abnf
-slice-selector = "[" S slice-index S "]"
-
 slice-index    =  [start S] ":" S [end S] [":" [S step ]]
 
 start          = int       ; included in selection
@@ -921,12 +919,12 @@ RS             = 1*B       ; required blank space
 
 ~~~~
 
-The `slice-selector` consists of three optional decimal integers separated by colons.
+The slice //PICKER// consists of three optional decimal integers separated by colons.
 
 ##### Semantics
 {: unnumbered}
 
-The `slice-selector` was inspired by the slice operator of ECMAScript
+The slice //PICKER// was inspired by the slice operator of ECMAScript
 4 (ES4), which was deprecated in 2014, and that of Python.
 
 
@@ -937,24 +935,24 @@ This section is non-normative.
 
 Array indexing is a way of selecting a particular element of an array using
 a 0-based index.
-For example, the expression `[0]` selects the first element of a non-empty array.
+For example, the expression `0` selects the first element of a non-empty array.
 
 Negative indices index from the end of an array.
-For example, the expression `[-2]` selects the last but one element of an array with at least two elements.
+For example, the expression `-2` selects the last but one element of an array with at least two elements.
 
 Array slicing is inspired by the behavior of the `Array.prototype.slice` method
 of the JavaScript language as defined by the ECMA-262 standard {{ECMA-262}},
 with the addition of the `step` parameter, which is inspired by the Python slice expression.
 
-The array slice expression `[start:end:step]` selects elements at indices starting at `start`,
+The array slice expression `start:end:step` selects elements at indices starting at `start`,
 incrementing by `step`, and ending with `end` (which is itself excluded).
-So, for example, the expression `[1:3]` (where `step` defaults to `1`)
+So, for example, the expression `1:3` (where `step` defaults to `1`)
 selects elements with indices `1` and `2` (in that order) whereas
-`[1:5:2]` selects elements with indices `1` and `3`.
+`1:5:2` selects elements with indices `1` and `3`.
 
 When `step` is negative, elements are selected in reverse order. Thus,
-for example, `[5:1:-2]` selects elements with indices `5` and `3`, in
-that order and `[::-1]` selects all the elements of an array in
+for example, `5:1:-2` selects elements with indices `5` and `3`, in
+that order and `::-1` selects all the elements of an array in
 reverse order.
 
 When `step` is `0`, no elements are selected.
@@ -966,9 +964,6 @@ JavaScript or Python behavior.
 
 ###### Detailed Semantics
 {: unnumbered}
-
-An array selector is either an array slice or an array index, which is defined
-in terms of an array slice.
 
 A slice expression selects a subset of the elements of the input array, in
 the same order
@@ -1003,9 +998,9 @@ FUNCTION Normalize(i, len):
   END IF
 ~~~~
 
-The result of the array indexing expression `[i]` applied to an array
+The result of the array indexing expression `i` applied to an array
 of length `len` is defined to be the result of the array
-slicing expression `[i:Normalize(i, len)+1:1]`.
+slicing expression `i:Normalize(i, len)+1:1`.
 
 Slice expression parameters `start` and `end` are used to derive slice bounds `lower` and `upper`.
 The direction of the iteration, defined
@@ -1073,7 +1068,7 @@ Queries:
 | `$[1:5:2]` | `"b"` <br> `"d"` | `$[1]` <br> `$[3]` | Slice with step 2 |
 | `$[5:1:-2]` | `"f"` <br> `"d"` | `$[5]` <br> `$[3]` | Slice with negative step |
 | `$[::-1]` | `"g"` <br> `"f"` <br> `"e"` <br> `"d"` <br> `"c"` <br> `"b"` <br> `"a"` | `$[6]` <br> `$[5]` <br> `$[4]` <br> `$[3]` <br> `$[2]` <br> `$[1]` <br> `$[0]` | Slice in reverse order |
-{: title="Array slice selector examples"}
+{: title="Array slice //PICKER// examples"}
 
 #### Filter //PICKER//
 
