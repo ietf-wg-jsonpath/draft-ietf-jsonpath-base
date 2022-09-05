@@ -657,9 +657,9 @@ Queries:
 | `$.a[*]` | `5` <br> `3` | `$['a'][0]` <br> `$['a'][1]`     | Array members      |
 {: title="Index wildcard selector examples"}
 
-### Name Selector
+#### Name //PICKER//
 
-#### Syntax {#syntax-name}
+##### Syntax {#syntax-name}
 {: unnumbered}
 
 An name selector `['<name>']` addresses at most one object member value.
@@ -722,7 +722,7 @@ HEXDIG = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
 Note: `double-quoted` strings follow the JSON string syntax ({{Section 7 of RFC8259}});
 `single-quoted` strings follow an analogous pattern ({{syntax-index}}).
 
-#### Semantics {#index-semantics}
+##### Semantics {#name-semantics}
 {: unnumbered}
 
 A `quoted-member-name` string MUST be converted to a
@@ -748,7 +748,7 @@ The `name-selector` applied with a `quoted-member-name` to an object
 selects the node of the corresponding member value from it, if and only if that object has a member with that name.
 Nothing is selected from a value that is not a object.
 
-#### Examples
+##### Examples
 {: unnumbered}
 
 <!-- EDITING NOTE: There are non-breaking spaces here between j and j -->
@@ -758,7 +758,6 @@ JSON:
 
     {
       "o": {"j j": {"k.k": 3}},
-      "a": ["a","b"],
       "'": {"@": 2}
     }
 
@@ -771,9 +770,9 @@ Queries:
 | `$["'"]["@"]` | `2` | `$['\'']['@']` | Unusual member names
 {: title="Name selector examples"}
 
-### Index Selector
+#### Index //PICKER//
 
-#### Syntax {#syntax-index}
+##### Syntax {#syntax-index}
 {: unnumbered}
 
 An index selector `[<index>]` addresses at most one array element value.
@@ -796,7 +795,7 @@ Notes:
 1. An `element-index` is an integer (in base 10, as in JSON numbers).
 2. As in JSON numbers, the syntax does not allow octal-like integers with leading zeros such as `01` or `-01`.
 
-#### Semantics {#index-semantics}
+##### Semantics {#index-semantics}
 {: unnumbered}
 
 The `index-selector` applied with an `element-index` to an array selects an array element using a zero-based index.
@@ -808,7 +807,7 @@ For example, selector `[-1]` selects the last and selector `[-2]` selects the pe
 As with non-negative indexes, it is not an error if such an element does
 not exist; this simply means that no element is selected.
 
-#### Examples
+##### Examples
 {: unnumbered}
 
 <!-- EDITING NOTE: There are non-breaking spaces here between j and j -->
@@ -830,9 +829,9 @@ Queries:
 | `$.a[-2]`   | `"a"` | `$['a'][0]`      | Member of array, from the end      |
 {: title="Index selector examples"}
 
-### Array Slice Selector {#slice}
+#### Array Slice //PICKER// {#slice}
 
-#### Syntax
+##### Syntax
 {: unnumbered}
 
 The array slice selector has the form `[<start>:<end>:<step>]`.
@@ -859,14 +858,14 @@ RS             = 1*B       ; required blank space
 
 The `slice-selector` consists of three optional decimal integers separated by colons.
 
-#### Semantics
+##### Semantics
 {: unnumbered}
 
 The `slice-selector` was inspired by the slice operator of ECMAScript
 4 (ES4), which was deprecated in 2014, and that of Python.
 
 
-##### Informal Introduction
+###### Informal Introduction
 {: unnumbered}
 
 This section is non-normative.
@@ -900,7 +899,7 @@ raises an error in this case.)
 The following section specifies the behavior fully, without depending on
 JavaScript or Python behavior.
 
-##### Detailed Semantics
+###### Detailed Semantics
 {: unnumbered}
 
 An array selector is either an array slice or an array index, which is defined
@@ -994,7 +993,7 @@ When `step = 0`, no elements are selected and the result array is empty.
 To be valid, the slice expression parameters MUST be in the I-JSON
 range of exact values, see {{synsem-overview}}.
 
-#### Examples
+##### Examples
 {: unnumbered}
 
 JSON:
@@ -1011,9 +1010,9 @@ Queries:
 | `$[::-1]` | `"g"` <br> `"f"` <br> `"e"` <br> `"d"` <br> `"c"` <br> `"b"` <br> `"a"` | `$[6]` <br> `$[5]` <br> `$[4]` <br> `$[3]` <br> `$[2]` <br> `$[1]` <br> `$[0]` | Slice in reverse order |
 {: title="Array slice selector examples"}
 
-### Filter Selector
+#### Filter //PICKER//
 
-#### Syntax
+##### Syntax
 {: unnumbered}
 
 The filter selector has the form `[?<expr>]`. It works via iterating over structured values, i.e. arrays and objects.
@@ -1109,7 +1108,7 @@ The following table lists filter expression operators in order of precedence fro
 |  1  | Logical OR | `¦¦`   |
 {: title="Filter expression operator precedence" }
 
-#### Semantics
+##### Semantics
 {: unnumbered}
 
 The `filter-selector` works with arrays and objects exclusively. Its result is a list of *zero*, *one*, *multiple* or *all* of their array elements or member values, respectively.
@@ -1118,7 +1117,7 @@ Applied to other value types, it will select nothing.
 A relative path, beginning with `@`, refers to the current array element or member value as the
 filter selector iterates over the array or object.
 
-##### Existence Tests
+###### Existence Tests
 {: unnumbered}
 
 A singular path by itself in a Boolean context is an existence test which yields true if the path selects a node and yields false if the path does not select a node.
@@ -1128,7 +1127,7 @@ To test the value of a node selected by a path, an explicit comparison is necess
 For example, to test whether the node selected by the path `@.foo` has the value `null`, use `@.foo == null` (see {{null-semantics}})
 rather than the negated existence test `!@.foo` (which yields false if `@.foo` selects a node, regardless of the node's value).
 
-##### Comparisons
+###### Comparisons
 {: unnumbered}
 
 The comparison operators `==`, `<`, and `>` are defined first and then these are used to define `!=`, `<=`, and `>=`.
@@ -1171,7 +1170,9 @@ compared is an object, array, boolean, or `null`.
 * The comparison `a <= b` yields true if and only if `a < b` yields true or `a == b` yields true.
 * The comparison `a >= b` yields true if and only if `a > b` yields true or `a == b` yields true.
 
-###### Examples
+<!-- GREG: 7 levels?  Maybe join with section examples below -->
+
+####### Examples
 {: unnumbered}
 
 JSON:
@@ -1214,7 +1215,7 @@ JSON:
 | `true > true` | false | Booleans are not ordered |
 {: title="Comparison examples" }
 
-##### Regular Expressions
+###### Regular Expressions
 {: unnumbered}
 
 A regular-expression test yields true if and only if the value on the left-hand side of `=~` is a string value and it
@@ -1222,13 +1223,13 @@ matches the regular expression on the right-hand side according to the semantics
 
 The semantics of regular expressions are as defined in {{-iregexp}}.
 
-##### Boolean Operators
+###### Boolean Operators
 {: unnumbered}
 
 The logical AND, OR, and NOT operators have the normal semantics of Boolean algebra and
 obey its laws (see, for example, {{BOOLEAN-LAWS}}).
 
-#### Examples
+##### Examples
 {: unnumbered}
 
 JSON:
