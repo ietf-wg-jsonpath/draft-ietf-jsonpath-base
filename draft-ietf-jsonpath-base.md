@@ -657,27 +657,17 @@ Queries:
 | `$.a[*]` | `5` <br> `3` | `$['a'][0]` <br> `$['a'][1]`     | Array members      |
 {: title="Index wildcard selector examples"}
 
-### List Selector
-
-The list selector allows combining member names, array indices,
-slices, and filters in a single selector.
-
-Note: The list selector was called "union selector" in
-{{JSONPath-orig}}, as it was intended to solve use cases addressed by
-the union selector in XPath.
-However, the term "union" has the connotation of a set operation that involves
-merging input sets while avoiding duplicates, so the concept was
-renamed into "list selector".
+### Child Selector
 
 #### Syntax
 {: unnumbered}
 
-The list selector is syntactically related to the
-`dot-selector`, `index-selector`, `slice-selector`, and the `filter-selector`.
-It contains two or more entries, separated by commas.
+The child selector has the form `[<//PICKERS//>]` where `<//PICKERS//>` is a comma-delimited
+collection of one or more //PICKERS//.
+Each //PICKER// is defined below.
 
 ~~~~ abnf
-list-selector  = "[" S list-entry 1*(S "," S list-entry) S "]"
+child-selector  = "[" S list-entry 1*(S "," S list-entry) S "]"
 
 list-entry     =  ( quoted-member-name /
                     element-index      /
@@ -689,35 +679,20 @@ list-entry     =  ( quoted-member-name /
 #### Semantics
 {: unnumbered}
 
-A list selector selects the nodes that are selected by
-the selector entries in the list and yields the concatenation of the
-lists (in the order of the selector entries) of nodes selected by the
-selector entries.
+A child selector operates on objects and arrays only.
+It contains a comma-delimited collection of //PICKERS// to indicate which
+object members and array elements to selects.
+
+Each criterion type functions differently and may be defined to operate on only
+objects, only arrays, or both.
+
+Criteria of different types may be combined within a single value selector.
+
+The resulting nodelist of a child selector is the concatenation of
+the nodelists from each of its //PICKERS// in the order that the //PICKERS//
+appear in the list.
 Note that any node selected in more than one of the selector entries is kept
 as many times in the nodelist.
-
-To be valid, integer values in the `element-index` and `slice-index`
-components MUST be in the I-JSON {{-i-json}} range of exact values, see
-{{synsem-overview}}.
-
-
-#### Examples
-{: unnumbered}
-
-JSON:
-
-    ["a", "b", "c", "d", "e", "f", "g", {"n": "v", "o": "w", "p": "x"}]
-
-Queries:
-
-| Query | Result | Result Paths | Comment |
-| :---: | ------ | :----------: | ------- |
-| `$[0, 3]` | `"a"` <br> `"d"` | `$[0]` <br> `$[3]` | Indices |
-| `$[0:2, 5]` | `"a"` <br> `"b"` <br> `"f"` | `$[0]` <br> `$[1]` <br> `$[5]` | Slice and index |
-| `$[0, 0]` | `"a"` <br> `"a"` | `$[0]` <br> `$[0]` | Duplicated entries |
-| `$[7]["n", "p"]` | `"v"` <br> `"x"` | `$[7]['n']` <br> `$[7]['p']` | Dot child |
-| `$[? @ <= "b" || @ >= "g", 2]` | `"a"` <br> `"b"` <br> `"g"` <br> `"c"` | `$[0]` <br> `$[1]` <br> `$[6]` <br> `$[2]` | Filter and index |
-{: title="List selector examples"}
 
 #### Name //PICKER//
 
