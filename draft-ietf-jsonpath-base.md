@@ -844,14 +844,7 @@ Queries:
 ##### Syntax {#syntax-index}
 {: unnumbered}
 
-An index selector `[<index>]` addresses at most one array element value.
-
-~~~~ abnf
-index-selector      = "[" S element-index S "]"
-~~~~
-Applying the `index-selector` to an array, a numerical `element-index`
-is required to select the corresponding
-element. JSONPath allows it to be negative (see {{index-semantics}}).
+An index //PICKER// `<index>` addresses at most one array element value.
 
 ~~~~ abnf
 element-index   = int                             ; decimal integer
@@ -860,6 +853,9 @@ int             = ["-"] ( "0" / (DIGIT1 *DIGIT) ) ; -  optional
 DIGIT1          = %x31-39                         ; 1-9 non-zero digit
 ~~~~
 
+Applying the numerical `element-index` is required to select the corresponding
+element. JSONPath allows it to be negative (see {{index-semantics}}).
+
 Notes:
 1. An `element-index` is an integer (in base 10, as in JSON numbers).
 2. As in JSON numbers, the syntax does not allow octal-like integers with leading zeros such as `01` or `-01`.
@@ -867,12 +863,12 @@ Notes:
 ##### Semantics {#index-semantics}
 {: unnumbered}
 
-The `index-selector` applied with an `element-index` to an array selects an array element using a zero-based index.
-For example, selector `[0]` selects the first and selector `[4]` the fifth element of a sufficiently long array.
+The `element-index` applied to an array selects an array element using a zero-based index.
+For example, selector `0` selects the first and selector `4` the fifth element of a sufficiently long array.
 Nothing is selected, and it is not an error, if the index lies outside the range of the array. Nothing is selected from a value that is not an array.
 
 A negative `element-index` counts from the array end.
-For example, selector `[-1]` selects the last and selector `[-2]` selects the penultimate element of an array with at least two elements.
+For example, selector `-1` selects the last and selector `-2` selects the penultimate element of an array with at least two elements.
 As with non-negative indexes, it is not an error if such an element does
 not exist; this simply means that no element is selected.
 
@@ -896,7 +892,7 @@ Queries:
 | :---: | ------ | :----------: | ------- |
 | `$.a[1]`   | `"b"` | `$['a'][1]`      | Member of array      |
 | `$.a[-2]`   | `"a"` | `$['a'][0]`      | Member of array, from the end      |
-{: title="Index selector examples"}
+{: title="Index //PICKER// examples"}
 
 #### Array Slice //PICKER// {#slice}
 
