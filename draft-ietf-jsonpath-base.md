@@ -657,18 +657,18 @@ Queries:
 | `$.a[*]` | `5` <br> `3` | `$['a'][0]` <br> `$['a'][1]`     | Array members      |
 {: title="Index wildcard selector examples"}
 
-### Index Selector
+### Name Selector
 
-#### Syntax {#syntax-index}
+#### Syntax {#syntax-name}
 {: unnumbered}
 
-An index selector `[<index>]` addresses at most one object member value or at most one array element value.
+An name selector `['<name>']` addresses at most one object member value.
 
 ~~~~ abnf
-index-selector      = "[" S (quoted-member-name / element-index) S "]"
+name-selector      = "[" S quoted-member-name S "]"
 ~~~~
 
-Applying the `index-selector` to an object value in its input nodelist, a
+Applying the `name-selector` to an object value in its input nodelist, a
 `quoted-member-name` string is required to select the corresponding
 member value.
 In contrast to JSON,
@@ -719,22 +719,8 @@ HEXDIG = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
 ; Task from 2021-06-15 interim: update ABNF later
 ~~~~
 
-Applying the `index-selector` to an array, a numerical `element-index`
-is required to select the corresponding
-element. JSONPath allows it to be negative (see {{index-semantics}}).
-
-~~~~ abnf
-element-index   = int                             ; decimal integer
-
-int             = ["-"] ( "0" / (DIGIT1 *DIGIT) ) ; -  optional
-DIGIT1          = %x31-39                         ; 1-9 non-zero digit
-~~~~
-
-Notes:
-1. `double-quoted` strings follow the JSON string syntax ({{Section 7 of RFC8259}});
-   `single-quoted` strings follow an analogous pattern ({{syntax-index}}).
-2. An `element-index` is an integer (in base 10, as in JSON numbers).
-3. As in JSON numbers, the syntax does not allow octal-like integers with leading zeros such as `01` or `-01`.
+Note: `double-quoted` strings follow the JSON string syntax ({{Section 7 of RFC8259}});
+`single-quoted` strings follow an analogous pattern ({{syntax-index}}).
 
 #### Semantics {#index-semantics}
 {: unnumbered}
@@ -758,9 +744,60 @@ in the table below:
 | \\uXXXX            | U+XXXX              | unicode character           |
 {: title="Escape Sequence Replacements" cols="c c"}
 
-The `index-selector` applied with a `quoted-member-name` to an object
+The `name-selector` applied with a `quoted-member-name` to an object
 selects the node of the corresponding member value from it, if and only if that object has a member with that name.
 Nothing is selected from a value that is not a object.
+
+#### Examples
+{: unnumbered}
+
+<!-- EDITING NOTE: There are non-breaking spaces here between j and j -->
+<!-- i.e., j j and not j j -->
+
+JSON:
+
+    {
+      "o": {"j j": {"k.k": 3}},
+      "a": ["a","b"],
+      "'": {"@": 2}
+    }
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$.o['j j']['k.k']`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
+| `$.o["j j"]["k.k"]`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
+| `$["'"]["@"]` | `2` | `$['\'']['@']` | Unusual member names
+{: title="Name selector examples"}
+
+### Index Selector
+
+#### Syntax {#syntax-index}
+{: unnumbered}
+
+An index selector `[<index>]` addresses at most one array element value.
+
+~~~~ abnf
+index-selector      = "[" S element-index S "]"
+~~~~
+Applying the `index-selector` to an array, a numerical `element-index`
+is required to select the corresponding
+element. JSONPath allows it to be negative (see {{index-semantics}}).
+
+~~~~ abnf
+element-index   = int                             ; decimal integer
+
+int             = ["-"] ( "0" / (DIGIT1 *DIGIT) ) ; -  optional
+DIGIT1          = %x31-39                         ; 1-9 non-zero digit
+~~~~
+
+Notes:
+1. An `element-index` is an integer (in base 10, as in JSON numbers).
+2. As in JSON numbers, the syntax does not allow octal-like integers with leading zeros such as `01` or `-01`.
+
+#### Semantics {#index-semantics}
+{: unnumbered}
 
 The `index-selector` applied with an `element-index` to an array selects an array element using a zero-based index.
 For example, selector `[0]` selects the first and selector `[4]` the fifth element of a sufficiently long array.
@@ -789,11 +826,8 @@ Queries:
 
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
-| `$.o['j j']['k.k']`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
-| `$.o["j j"]["k.k"]`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
 | `$.a[1]`   | `"b"` | `$['a'][1]`      | Member of array      |
 | `$.a[-2]`   | `"a"` | `$['a'][0]`      | Member of array, from the end      |
-| `$["'"]["@"]` | `2` | `$['\'']['@']` | Unusual member names
 {: title="Index selector examples"}
 
 ### Array Slice Selector {#slice}
