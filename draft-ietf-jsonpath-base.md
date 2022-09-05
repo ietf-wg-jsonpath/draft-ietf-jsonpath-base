@@ -329,17 +329,17 @@ $.store.book[?(@.price < 10)].title
 | JSONPath          | Description                                                                                                             |
 |-------------------|-------------------------------------------------------------------------------------------------------------------------|
 | `$`               | [root node selector](#root-selector)                                                                                    |
-| `[*]`             | [wildcard selector](#index-wildcard-selector): selects all immediate descendants of objects and arrays                  |
+| `[*]`             | [wildcard selector](#wildcard-selector): selects all immediate descendants of objects and arrays                        |
 | `..[*]`           | [descendant wildcard selector](#descendant-selectors): recursive version of the wildcard selector                       |
-| `[//PICKERS//]`   | [value selector](#value-selector) for JSON objects and arrays; contains one or more clauses, separated by commas        |
-| `..[//PICKERS//]` | [descendant value selector](#descendant-selectors): recursive version of the value selector                             |
-| `'name'`          | [name //PICKER//](#index-//PICKER//): index current node as an object                                                   |
+| `[//PICKERS//]`   | [child selector](#child-selector) for JSON objects and arrays; contains one or more clauses, separated by commas        |
+| `..[//PICKERS//]` | [descendant child selector](#descendant-selectors): recursive version of the value selector                             |
+| `'name'`          | [name //PICKER//](#name-//PICKER//): index current node as an object                                                    |
 | `3`               | [index //PICKER//](#index-//PICKER//): index current node as an array (from 0)                                          |
 | `0:100:5`         | [array slice //PICKER//](#slice): start:end:step for arrays                                                             |
 | `?<expr>`         | [filter //PICKER//](#filter-//PICKER//): selection based on expressions by applying the expression to each child node   |
 | `@`               | [current node selector](#filter-//PICKER//) (valid only within filter clauses)                                          |
 | `.name`           | shorthand for `['name']`                                                                                                |
-| `.*`              | shorthand for `.*`                                                                                                      |
+| `.*`              | shorthand for `[*]`                                                                                                     |
 | `..name`          | shorthand for `..['name']`                                                                                              |
 | `..*`             | shorthand for `..[*]`                                                                                                   |
 {: #tbl-overview title="Overview of JSONPath"}
