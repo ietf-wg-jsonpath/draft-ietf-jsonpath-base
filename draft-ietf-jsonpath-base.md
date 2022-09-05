@@ -699,15 +699,10 @@ as many times in the nodelist.
 ##### Syntax {#syntax-name}
 {: unnumbered}
 
-An name selector `['<name>']` addresses at most one object member value.
+A name //PICKER// `'<name>'` addresses at most one object member value.
 
-~~~~ abnf
-name-selector      = "[" S quoted-member-name S "]"
-~~~~
-
-Applying the `name-selector` to an object value in its input nodelist, a
-`quoted-member-name` string is required to select the corresponding
-member value.
+Applying the `quoted-member-name` to an object value in its input nodelist,
+it string is required to select the corresponding member value.
 In contrast to JSON,
 the JSONPath syntax allows strings to be enclosed in _single_ or _double_ quotes.
 
@@ -756,6 +751,30 @@ HEXDIG = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
 ; Task from 2021-06-15 interim: update ABNF later
 ~~~~
 
+A shorthand for `quoted-member-name` exists as `dotted-member-name`.
+These may be used interchangeably.
+
+A `dotted-member-name` starts with a dot `.` followed by an object's member name.
+
+~~~~ abnf
+dotted-member-name    = "." dot-member-name
+dot-member-name       = name-first *name-char
+name-first            =
+                           ALPHA /
+                           "_"   /            ; _
+                           %x80-10FFFF        ; any non-ASCII Unicode character
+name-char = DIGIT / name-first
+
+DIGIT                 =  %x30-39              ; 0-9
+ALPHA                 =  %x41-5A / %x61-7A    ; A-Z / a-z
+~~~~
+
+Member names containing characters other than allowed by
+`dotted-member-name` — such as space (U+0020), minus (U+002D), dot (U+002E)
+or escaped characters which appear in the semantic section below —
+MUST NOT be used with the `dotted-member-name`.
+(Such member names can be addressed by the `quoted-member-name` syntax instead.)
+
 Note: `double-quoted` strings follow the JSON string syntax ({{Section 7 of RFC8259}});
 `single-quoted` strings follow an analogous pattern ({{syntax-index}}).
 
@@ -781,9 +800,20 @@ in the table below:
 | \\uXXXX            | U+XXXX              | unicode character           |
 {: title="Escape Sequence Replacements" cols="c c"}
 
-The `name-selector` applied with a `quoted-member-name` to an object
+A `dotted-member-name` string is converted to a member name by removing
+the initial dot.
+
+The name //PICKER// applied to an object
 selects the node of the corresponding member value from it, if and only if that object has a member with that name.
 Nothing is selected from a value that is not a object.
+
+Note that processing the name criterion potentially requires matching strings against
+strings, with those strings coming from the JSONPath and from member
+names and string values in the JSON to which it is being applied.
+Two strings MUST be considered equal if and only if they are identical
+sequences of Unicode scalar values. In other words, normalization operations
+MUST NOT be applied to either the string from the JSONPath or from the JSON
+prior to comparison.
 
 ##### Examples
 {: unnumbered}
@@ -805,7 +835,9 @@ Queries:
 | `$.o['j j']['k.k']`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
 | `$.o["j j"]["k.k"]`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
 | `$["'"]["@"]` | `2` | `$['\'']['@']` | Unusual member names
-{: title="Name selector examples"}
+| `$.j`   | `{"k": 3}` | `$['j']`      | Named value of an object      |
+| `$.j.k` | `3`        | `$['j']['k']` | Named value in nested object  |
+{: title="Name //PICKER// examples"}
 
 #### Index //PICKER//
 
