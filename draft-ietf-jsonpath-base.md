@@ -1075,10 +1075,9 @@ Queries:
 ##### Syntax
 {: unnumbered}
 
-The filter selector has the form `[?<expr>]`. It works via iterating over structured values, i.e. arrays and objects.
+The filter //PICKER// has the form `?<expr>`. It works via iterating over structured values, i.e. arrays and objects.
 
 ~~~~ abnf
-filter-selector    = "[" S filter S "]"
 filter             = "?" S boolean-expr
 ~~~~
 
@@ -1103,13 +1102,14 @@ exist-expr        = [logical-not-op S] singular-path  ; path existence or non-ex
 
 Paths in filter expressions are Singular Paths, each of which selects at most one node.
 
+<!-- GREG: update singular path definition -->
 ~~~~ abnf
 singular-path     = rel-singular-path / abs-singular-path
 rel-singular-path = "@" *(S (dot-selector / index-selector))
 abs-singular-path = root-selector *(S (dot-selector / index-selector))
 ~~~~
 
-Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `[?(<expr>)]` is naturally contained in the current lean syntax `[?<expr>]` as a special case.
+Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `?(<expr>)` is naturally contained in the current lean syntax `?<expr>` as a special case.
 
 ~~~~ abnf
 paren-expr        = [logical-not-op S] "(" S boolean-expr S ")"
@@ -1171,11 +1171,11 @@ The following table lists filter expression operators in order of precedence fro
 ##### Semantics
 {: unnumbered}
 
-The `filter-selector` works with arrays and objects exclusively. Its result is a list of *zero*, *one*, *multiple* or *all* of their array elements or member values, respectively.
+The filter //PICKER// works with arrays and objects exclusively. Its result is a list of *zero*, *one*, *multiple* or *all* of their array elements or member values, respectively.
 Applied to other value types, it will select nothing.
 
 A relative path, beginning with `@`, refers to the current array element or member value as the
-filter selector iterates over the array or object.
+filter //PICKER// iterates over the array or object.
 
 ###### Existence Tests
 {: unnumbered}
@@ -1312,7 +1312,7 @@ Queries:
 | `$.o[?@.u || @.x]` | `{"u": 6}` | `$['o']['t']` | Object value logical OR |
 | `$.a[?(@.b == $.x)]`| `3` <br> `5` <br> `1` <br> `2` <br> `4` <br> `6` | `$['a'][0]` <br>`$['a'][1]` <br> `$['a'][2]` <br> `$['a'][3]` <br> `$['a'][4]` | Comparison of paths with no values |
 | `$[?(@ == @)]` | | | Comparison of structured values |
-{: title="Filter selector examples"}
+{: title="Filter //PICKER// examples"}
 
 ### Descendant Selectors
 
