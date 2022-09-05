@@ -567,27 +567,17 @@ of node.
 A JSONPath query consists of a sequence of selectors. Valid selectors are
 
   * Root selector `$` (used at the start of a query and in expressions)
-  * Dot selector `.<name>`, used with object member names exclusively
-  * Dot wildcard selector `.*`
-  * Index selector `[<index>]`, where `<index>` is either a (possibly
-    negative, see {{index-semantics}}) array index or an object member name
-  * Index wildcard selector `[*]`
-  * Array slice selector `[<start>:<end>:<step>]`, where the optional
-    values `<start>`, `<end>`, and `<step>` are integer literals
-  * List selector `[<sel1>,<sel2>,...,<selN>]`, holding a comma
-    separated list of index and slice selectors
-  * Filter selector `[?(<expr>)]`
-  * Current item selector `@` (used in expressions)
-  * Descendants selectors starting with a double dot `..`
+  * Wildcard selector `[*]`
+  * Child selector `[//PICKERS//]`, where `//PICKERS//` is one or more of
+    several criteria types, which are used to identify the nodes to select,
+    delineated by commas
+  * Current item selector `@` (only valid in filter expressions)
 
-Note that processing the dot selector, string-valued index selector,
-and filter selector all potentially require matching strings against
-strings, with those strings coming from the JSONPath and from member
-names and string values in the JSON to which it is being applied.
-Two strings MUST be considered equal if and only if they are identical
-sequences of Unicode scalar values. In other words, normalization operations
-MUST NOT be applied to either the string from the JSONPath or from the JSON
-prior to comparison.
+The wildcard and value selectors can be made to recursively select values within
+nested objects and arrays be prefixing them with `..` turning them into
+
+  * Descendant wildcard selector `..[*]`
+  * Descendant child selector `..[//PICKERS//]`
 
 ### Root Selector
 
