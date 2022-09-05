@@ -610,77 +610,28 @@ Queries:
 | `$` | `{"k": "v"}` | `$` | Root node |
 {: title="Root selector examples"}
 
-### Dot Selector
+### Index Wildcard Selector
 
 #### Syntax
 {: unnumbered}
 
-A dot selector starts with a dot `.` followed by an object's member name.
+The index wildcard selector has the form `[*]`.
 
 ~~~~ abnf
-dot-selector    = "." dot-member-name
-dot-member-name = name-first *name-char
-name-first      =
-                      ALPHA /
-                      "_"   /           ; _
-                      %x80-10FFFF       ; any non-ASCII Unicode character
-name-char = DIGIT / name-first
-
-DIGIT           =  %x30-39              ; 0-9
-ALPHA           =  %x41-5A / %x61-7A    ; A-Z / a-z
-~~~~
-
-Member names containing characters other than allowed by
-`dot-selector` — such as space (U+0020), minus (U+002D), or dot (U+002E)
-characters — MUST NOT be used with the `dot-selector`.
-(Such member names can be addressed by the
-`index-selector` instead.)
-
-#### Semantics
-{: unnumbered}
-
-The `dot-selector` selects the node of the member value corresponding
-to the member name from any JSON object in its input nodelist.
-
-It selects no nodes from any other JSON value.
-
-#### Examples
-{: unnumbered}
-
-JSON:
-
-    {"j": {"k": 3}}
-
-Queries:
-
-| Query | Result | Result Paths | Comment |
-| :---: | ------ | :----------: | ------- |
-| `$.j`   | `{"k": 3}` | `$['j']`      | Named value of an object      |
-| `$.j.k` | `3`        | `$['j']['k']` | Named value in nested object  |
-{: title="Dot selector examples"}
-
-### Dot Wildcard Selector {#wildcard}
-
-#### Syntax
-{: unnumbered}
-
-The dot wildcard selector has the form `.*` as defined in the
-following syntax:
-
-~~~~ abnf
-dot-wild-selector    = "." wildcard       ;  dot followed by asterisk
-wildcard             = "*"
+index-wild-selector    = "[" wildcard "]"  ;  asterisk enclosed by brackets
 ~~~~
 
 #### Semantics
 {: unnumbered}
 
-A `dot-wild-selector` acts as a wildcard by selecting the nodes of
-all member values of an object in its input nodelist as well as all
-element nodes of an array in its input nodelist.
+An `index-wild-selector`
+selects the nodes of all member values of an object as well as of all elements of an
+array.
 
-Applying the `dot-wild-selector` to a primitive JSON value (a number,
-a string, `true`, `false`, or `null`) selects no node.
+Applying the `index-wild-selector` to a primitive JSON value (that is,
+a number, a string, `true`, `false`, or `null`) selects no node.
+
+The `index-wild-selector` behaves identically to the `dot-wild-selector`.
 
 #### Examples
 {: unnumbered}
@@ -696,10 +647,10 @@ Queries:
 
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
-| `$.o.*` | `1` <br> `2` | `$['o']['j']` <br> `$['o']['k']` | Object values      |
-| `$.o.*` | `2` <br> `1` | `$['o']['k']` <br> `$['o']['j']` | Alternative result |
-| `$.a.*` | `5` <br> `3` | `$['a'][0]` <br> `$['a'][1]`     | Array members      |
-{: title="Dot wildcard selector examples"}
+| `$.o[*]` | `1` <br> `2` | `$['o']['j']` <br> `$['o']['k']` | Object values      |
+| `$.o[*]` | `2` <br> `1` | `$['o']['k']` <br> `$['o']['j']` | Alternative result |
+| `$.a[*]` | `5` <br> `3` | `$['a'][0]` <br> `$['a'][1]`     | Array members      |
+{: title="Index wildcard selector examples"}
 
 ### Index Selector
 
@@ -839,48 +790,6 @@ Queries:
 | `$.a[-2]`   | `"a"` | `$['a'][0]`      | Member of array, from the end      |
 | `$["'"]["@"]` | `2` | `$['\'']['@']` | Unusual member names
 {: title="Index selector examples"}
-
-### Index Wildcard Selector
-
-#### Syntax
-{: unnumbered}
-
-The index wildcard selector has the form `[*]`.
-
-~~~~ abnf
-index-wild-selector    = "[" wildcard "]"  ;  asterisk enclosed by brackets
-~~~~
-
-#### Semantics
-{: unnumbered}
-
-An `index-wild-selector`
-selects the nodes of all member values of an object as well as of all elements of an
-array.
-
-Applying the `index-wild-selector` to a primitive JSON value (that is,
-a number, a string, `true`, `false`, or `null`) selects no node.
-
-The `index-wild-selector` behaves identically to the `dot-wild-selector`.
-
-#### Examples
-{: unnumbered}
-
-JSON:
-
-    {
-      "o": {"j": 1, "k": 2},
-      "a": [5, 3]
-    }
-
-Queries:
-
-| Query | Result | Result Paths | Comment |
-| :---: | ------ | :----------: | ------- |
-| `$.o[*]` | `1` <br> `2` | `$['o']['j']` <br> `$['o']['k']` | Object values      |
-| `$.o[*]` | `2` <br> `1` | `$['o']['k']` <br> `$['o']['j']` | Alternative result |
-| `$.a[*]` | `5` <br> `3` | `$['a'][0]` <br> `$['a'][1]`     | Array members      |
-{: title="Index wildcard selector examples"}
 
 ### Array Slice Selector {#slice}
 
