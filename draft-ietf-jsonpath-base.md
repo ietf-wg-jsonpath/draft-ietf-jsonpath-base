@@ -329,7 +329,7 @@ $.store.book[?(@.price < 10)].title
 | JSONPath          | Description                                                                                                             |
 |-------------------|-------------------------------------------------------------------------------------------------------------------------|
 | `$`               | [root node selector](#root-selector)                                                                                    |
-| `[*]`             | [wildcard selector](#wildcard-selector): selects all immediate descendants of objects and arrays                        |
+| `[*]`             | [wildcard selector](#wildcard): selects all immediate descendants of objects and arrays                        |
 | `..[*]`           | [descendant wildcard selector](#descendant-selectors): recursive version of the wildcard selector                       |
 | `[//PICKERS//]`   | [child selector](#child-selector) for JSON objects and arrays; contains one or more clauses, separated by commas        |
 | `..[//PICKERS//]` | [descendant child selector](#descendant-selectors): recursive version of the value selector                             |
@@ -610,28 +610,33 @@ Queries:
 | `$` | `{"k": "v"}` | `$` | Root node |
 {: title="Root selector examples"}
 
-### Index Wildcard Selector
+### Wildcard Selector {#wildcard}
 
 #### Syntax
 {: unnumbered}
 
-The index wildcard selector has the form `[*]`.
+The wildcard selector has either the form `[*]` or the shorthand form `.*`.
 
 ~~~~ abnf
-index-wild-selector    = "[" wildcard "]"  ;  asterisk enclosed by brackets
+wild-selector        = (index-wild-selector /
+                        dot-wild-selector)
+index-wild-selector  = "[" wildcard "]"       ;  asterisk enclosed by brackets
+dot-wild-selector    = "." wildcard           ;  dot followed by asterisk
+wildcard             = "*"
 ~~~~
 
 #### Semantics
 {: unnumbered}
 
-An `index-wild-selector`
+A `wild-selector`
 selects the nodes of all member values of an object as well as of all elements of an
 array.
 
-Applying the `index-wild-selector` to a primitive JSON value (that is,
+Applying the `wild-selector` to a primitive JSON value (that is,
 a number, a string, `true`, `false`, or `null`) selects no node.
 
-The `index-wild-selector` behaves identically to the `dot-wild-selector`.
+The two formats, `index-wild-selector` and `dot-wild-selector`,
+are functionally identical and may be used interchangeably.
 
 #### Examples
 {: unnumbered}
