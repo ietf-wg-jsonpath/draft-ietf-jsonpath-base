@@ -567,7 +567,7 @@ A JSONPath query consists of a sequence of selectors. Valid selectors are
   * Root selector `$` (used at the start of a query and in expressions)
   * Wildcard selector `[*]`
   * Child selector `[//PICKERS//]`, where `//PICKERS//` is one or more of
-    several criteria types, which are used to identify the nodes to select,
+    several //PICKER// types, which are used to identify the nodes to select,
     delineated by commas
   * Current item selector `@` (only valid in filter expressions)
 
@@ -681,10 +681,10 @@ A child selector operates on objects and arrays only.
 It contains a comma-delimited collection of //PICKERS// to indicate which
 object members and array elements to selects.
 
-Each criterion type functions differently and may be defined to operate on only
+Each //PICKER// type functions differently and may be defined to operate on only
 objects, only arrays, or both.
 
-Criteria of different types may be combined within a single value selector.
+//PICKERS// of different types may be combined within a single value selector.
 
 The resulting nodelist of a child selector is the concatenation of
 the nodelists from each of its //PICKERS// in the order that the //PICKERS//
@@ -805,7 +805,7 @@ The name //PICKER// applied to an object
 selects the node of the corresponding member value from it, if and only if that object has a member with that name.
 Nothing is selected from a value that is not a object.
 
-Note that processing the name criterion potentially requires matching strings against
+Note that processing the name //PICKER// potentially requires matching strings against
 strings, with those strings coming from the JSONPath and from member
 names and string values in the JSON to which it is being applied.
 Two strings MUST be considered equal if and only if they are identical
