@@ -326,22 +326,22 @@ $.store.book[?(@.price < 10)].title
 
 {{tbl-overview}} provides a quick overview of the JSONPath syntax elements.
 
-| JSONPath          | Description                                                                                                             |
-|-------------------|-------------------------------------------------------------------------------------------------------------------------|
-| `$`               | [root node selector](#root-selector)                                                                                    |
-| `[*]`             | [wildcard selector](#wildcard): selects all immediate descendants of objects and arrays                        |
-| `..[*]`           | [descendant wildcard selector](#descendant-selectors): recursive version of the wildcard selector                       |
-| `[//PICKERS//]`   | [child selector](#child-selector) for JSON objects and arrays; contains one or more clauses, separated by commas        |
-| `..[//PICKERS//]` | [descendant child selector](#descendant-selectors): recursive version of the value selector                             |
-| `'name'`          | [name //PICKER//](#name-//PICKER//): index current node as an object                                                    |
-| `3`               | [index //PICKER//](#index-//PICKER//): index current node as an array (from 0)                                          |
-| `0:100:5`         | [array slice //PICKER//](#slice): start:end:step for arrays                                                             |
-| `?<expr>`         | [filter //PICKER//](#filter-//PICKER//): selection based on expressions by applying the expression to each child node   |
-| `@`               | [current node selector](#filter-//PICKER//) (valid only within filter clauses)                                          |
-| `.name`           | shorthand for `['name']`                                                                                                |
-| `.*`              | shorthand for `[*]`                                                                                                     |
-| `..name`          | shorthand for `..['name']`                                                                                              |
-| `..*`             | shorthand for `..[*]`                                                                                                   |
+| JSONPath          | Description                                                                                                               |
+|-------------------|---------------------------------------------------------------------------------------------------------------------------|
+| `$`                 | [root node selector](#root-selector)                                                                                    |
+| `[*]`               | [wildcard selector](#wildcard): selects all immediate descendants of objects and arrays                                 |
+| `..[*]`             | [descendant wildcard selector](#descendant-selectors): recursive version of the wildcard selector                       |
+| `[<//PICKERS//>]`   | [child selector](#child-selector) for JSON objects and arrays; contains one or more clauses, separated by commas        |
+| `..[<//PICKERS//>]` | [descendant child selector](#descendant-selectors): recursive version of the value selector                             |
+| `'name'`            | [name //PICKER//](#name-//PICKER//): index current node as an object                                                    |
+| `3`                 | [index //PICKER//](#index-//PICKER//): index current node as an array (from 0)                                          |
+| `0:100:5`           | [array slice //PICKER//](#slice): start:end:step for arrays                                                             |
+| `?<expr>`           | [filter //PICKER//](#filter-//PICKER//): selection based on expressions by applying the expression to each child node   |
+| `@`                 | [current node selector](#filter-//PICKER//) (valid only within filter clauses)                                          |
+| `.name`             | shorthand for `['name']`                                                                                                |
+| `.*`                | shorthand for `[*]`                                                                                                     |
+| `..name`            | shorthand for `..['name']`                                                                                              |
+| `..*`               | shorthand for `..[*]`                                                                                                   |
 {: #tbl-overview title="Overview of JSONPath"}
 
 # JSONPath Examples
@@ -566,7 +566,7 @@ A JSONPath query consists of a sequence of selectors. Valid selectors are
 
   * Root selector `$` (used at the start of a query and in expressions)
   * Wildcard selector `[*]`
-  * Child selector `[//PICKERS//]`, where `//PICKERS//` is one or more of
+  * Child selector `[<//PICKERS//>]`, where `<//PICKERS//>` is one or more of
     several //PICKER// types, which are used to identify the nodes to select,
     delineated by commas
   * Current item selector `@` (only valid in filter expressions)
@@ -575,7 +575,7 @@ The wildcard and value selectors can be made to recursively select values within
 nested objects and arrays be prefixing them with `..` turning them into
 
   * Descendant wildcard selector `..[*]`
-  * Descendant child selector `..[//PICKERS//]`
+  * Descendant child selector `..[<//PICKERS//>]`
 
 ### Root Selector
 
