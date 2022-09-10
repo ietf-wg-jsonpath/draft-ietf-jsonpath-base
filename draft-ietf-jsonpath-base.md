@@ -567,8 +567,8 @@ A JSONPath query consists of a sequence of selectors. Valid selectors are
   * Root selector `$` (used at the start of a query and in expressions)
   * Wildcard selector `[*]`
   * Child selector `[<//PICKERS//>]`, where `<//PICKERS//>` is one or more of
-    several //PICKER// types, which are used to identify the nodes to select,
-    delineated by commas
+    several //PICKER// types, which identify the nodes to select,
+    separated by commas
   * Current item selector `@` (only valid in filter expressions)
 
 The wildcard and value selectors can be made to recursively select values within
