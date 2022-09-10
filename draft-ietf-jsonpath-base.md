@@ -249,7 +249,7 @@ Singular Path:
 : A JSONPath expression built from selectors which each select at most one node.
 
 //PICKER//:
-: A single item within a bracketed (`[]`) value selector that identifies which values
+: A single item within a bracketed (`[]`) child selector that identifies which values
   are to be selected.
 
 For the purposes of this specification, a value as defined by
