@@ -336,7 +336,7 @@ $.store.book[?(@.price < 10)].title
 | `'name'`            | [name //PICKER//](#name-//PICKER//): selects a named child of an object                                                    |
 | `3`                 | [index //PICKER//](#index-//PICKER//): selects an indexed child of an array (from 0)                                          |
 | `0:100:5`           | [array slice //PICKER//](#slice): start:end:step for arrays                                                             |
-| `?<expr>`           | [filter //PICKER//](#filter-//PICKER//): selection based on expressions by applying the expression to each child node   |
+| `?<expr>`           | [filter //PICKER//](#filter-//PICKER//): selects particular children using a boolean expression  |
 | `@`                 | [current node selector](#filter-//PICKER//) (valid only within filter clauses)                                          |
 | `.name`             | shorthand for `['name']`                                                                                                |
 | `.*`                | shorthand for `[*]`                                                                                                     |
