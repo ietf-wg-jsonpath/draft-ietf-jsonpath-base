@@ -626,9 +626,7 @@ wildcard             = "*"
 #### Semantics
 {: unnumbered}
 
-A `wild-selector`
-selects the nodes of all member values of an object as well as of all elements of an
-array.
+A `wild-selector` selects the nodes of all children of an object or array.
 
 Applying the `wild-selector` to a primitive JSON value (that is,
 a number, a string, `true`, `false`, or `null`) selects no node.
@@ -689,7 +687,7 @@ objects, only arrays, or both.
 The resulting nodelist of a child selector is the concatenation of
 the nodelists from each of its //PICKERS// in the order that the //PICKERS//
 appear in the list.
-Note that any node selected in more than one of the selector entries is kept
+Note that any node selected by more than one //PICKER// is kept
 as many times in the nodelist.
 
 #### Name //PICKER//
