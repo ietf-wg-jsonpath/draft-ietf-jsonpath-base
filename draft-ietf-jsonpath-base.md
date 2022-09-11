@@ -695,7 +695,7 @@ as many times in the nodelist.
 ##### Syntax {#syntax-name}
 {: unnumbered}
 
-A name //PICKER// `'<name>'` addresses at most one object member value.
+A name //PICKER// `'<name>'` matches at most one object member value.
 
 Applying the `quoted-member-name` to an object value in its input nodelist,
 it string is required to select the corresponding member value.
