@@ -249,7 +249,7 @@ Singular Path:
 : A JSONPath expression built from selectors which each select at most one node.
 
 //PICKER//:
-: A single item within a bracketed (`[]`) child selector that identifies which values
+: A single item within a bracketed (`[]`) child selector that matches the values which
   are to be selected.
 
 For the purposes of this specification, a value as defined by
@@ -331,7 +331,7 @@ $.store.book[?(@.price < 10)].title
 | `$`                 | [root node selector](#root-selector)                                                                                    |
 | `[*]`               | [wildcard selector](#wildcard): selects all immediate descendants of objects and arrays                                 |
 | `..[*]`             | [descendant wildcard selector](#descendant-selectors): recursive version of the wildcard selector                       |
-| `[<//PICKERS//>]`   | [child selector](#child-selector) for JSON objects and arrays; contains one or more clauses, separated by commas        |
+| `[<//PICKERS//>]`   | [child selector](#child-selector) selects zero or more children of JSON objects and arrays; contains one or more //PICKERS//, separated by commas        |
 | `..[<//PICKERS//>]` | [descendant child selector](#descendant-selectors): recursive version of the child selector                             |
 | `'name'`            | [name //PICKER//](#name-//PICKER//): selects a named child of an object                                                    |
 | `3`                 | [index //PICKER//](#index-//PICKER//): selects an indexed child of an array (from 0)                                          |
@@ -567,7 +567,7 @@ A JSONPath query consists of a sequence of selectors. Valid selectors are
   * Root selector `$` (used at the start of a query and in expressions)
   * Wildcard selector `[*]`
   * Child selector `[<//PICKERS//>]`, where `<//PICKERS//>` is one or more of
-    several //PICKER// types, which identify the nodes to select,
+    several //PICKER// types, which match the nodes to select,
     separated by commas
   * Current item selector `@` (only valid in filter expressions)
 
@@ -687,7 +687,7 @@ objects, only arrays, or both.
 The resulting nodelist of a child selector is the concatenation of
 the nodelists from each of its //PICKERS// in the order that the //PICKERS//
 appear in the list.
-Note that any node selected by more than one //PICKER// is kept
+Note that any node matched by more than one //PICKER// is kept
 as many times in the nodelist.
 
 #### Name //PICKER//
@@ -698,7 +698,7 @@ as many times in the nodelist.
 A name //PICKER// `'<name>'` matches at most one object member value.
 
 Applying the `quoted-member-name` to an object value in its input nodelist,
-it string is required to select the corresponding member value.
+its string is required to match the corresponding member value.
 In contrast to JSON,
 the JSONPath syntax allows strings to be enclosed in _single_ or _double_ quotes.
 
@@ -800,7 +800,7 @@ A `dotted-member-name` string is converted to a member name by removing
 the initial dot.
 
 The name //PICKER// applied to an object
-selects the node of the corresponding member value from it, if and only if that object has a member with that name.
+matches the node of the corresponding member value from it, if and only if that object has a member with that name.
 Nothing is selected from a value that is not a object.
 
 Note that processing the name //PICKER// potentially requires matching strings against
@@ -840,7 +840,7 @@ Queries:
 ##### Syntax {#syntax-index}
 {: unnumbered}
 
-An index //PICKER// `<index>` addresses at most one array element value.
+An index //PICKER// `<index>` matches at most one array element value.
 
 ~~~~ abnf
 element-index   = int                             ; decimal integer
@@ -896,7 +896,7 @@ Queries:
 {: unnumbered}
 
 The array slice //PICKER// has the form `<start>:<end>:<step>`.
-It selects elements from arrays starting at index `<start>`, ending at — but
+It matches elements from arrays starting at index `<start>`, ending at — but
 not including — `<end>`, while incrementing by `step`.
 
 ~~~~ abnf
