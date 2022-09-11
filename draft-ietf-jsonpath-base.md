@@ -332,7 +332,7 @@ $.store.book[?(@.price < 10)].title
 | `[*]`               | [wildcard selector](#wildcard): selects all immediate descendants of objects and arrays                                 |
 | `..[*]`             | [descendant wildcard selector](#descendant-selectors): recursive version of the wildcard selector                       |
 | `[<//PICKERS//>]`   | [child selector](#child-selector) for JSON objects and arrays; contains one or more clauses, separated by commas        |
-| `..[<//PICKERS//>]` | [descendant child selector](#descendant-selectors): recursive version of the value selector                             |
+| `..[<//PICKERS//>]` | [descendant child selector](#descendant-selectors): recursive version of the child selector                             |
 | `'name'`            | [name //PICKER//](#name-//PICKER//): selects a named child of an object                                                    |
 | `3`                 | [index //PICKER//](#index-//PICKER//): selects an indexed child of an array (from 0)                                          |
 | `0:100:5`           | [array slice //PICKER//](#slice): start:end:step for arrays                                                             |
