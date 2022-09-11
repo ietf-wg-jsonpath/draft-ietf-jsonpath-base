@@ -679,7 +679,7 @@ A child selector operates on objects and arrays only.
 It contains a comma-delimited collection of //PICKERS// to indicate which
 object members and array elements to selects.
 
-Each //PICKER// type functions differently and may be defined to operate on only
+Each type of //PICKER// functions differently and may be defined to operate on only
 objects, only arrays, or both.
 
 //PICKERS// of different types may be combined within a single child selector.
