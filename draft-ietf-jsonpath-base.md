@@ -333,11 +333,11 @@ $.store.book[?(@.price < 10)].title
 | `..[*]`             | [descendant wildcard selector](#descendant-selectors): recursive version of the wildcard selector                       |
 | `[<//PICKERS//>]`   | [child selector](#child-selector) selects zero or more children of JSON objects and arrays; contains one or more //PICKERS//, separated by commas        |
 | `..[<//PICKERS//>]` | [descendant child selector](#descendant-selectors): recursive version of the child selector                             |
-| `'name'`            | [name //PICKER//](#name-//PICKER//): selects a named child of an object                                                    |
-| `3`                 | [index //PICKER//](#index-//PICKER//): selects an indexed child of an array (from 0)                                          |
+| `'name'`            | [name //PICKER//](#name-__PICKER__): selects a named child of an object                                                    |
+| `3`                 | [index //PICKER//](#index-__PICKER__): selects an indexed child of an array (from 0)                                          |
 | `0:100:5`           | [array slice //PICKER//](#slice): start:end:step for arrays                                                             |
-| `?<expr>`           | [filter //PICKER//](#filter-//PICKER//): selects particular children using a boolean expression  |
-| `@`                 | [current node selector](#filter-//PICKER//) (valid only within filter //PICKERS//)                                          |
+| `?<expr>`           | [filter //PICKER//](#filter-__PICKER__): selects particular children using a boolean expression  |
+| `@`                 | [current node selector](#filter-__PICKER__) (valid only within filter //PICKERS//)                                          |
 | `.name`             | shorthand for `['name']`                                                                                                |
 | `.*`                | shorthand for `[*]`                                                                                                     |
 | `..name`            | shorthand for `..['name']`                                                                                              |
@@ -458,14 +458,14 @@ behavior for JSONPath queries in these situations.
 by events and causes no issues with the present specification.)
 
 Specifically, the "Semantics" subsections of Sections
-{{<wildcard}}, {{<name-//PICKER//}},
-{{<filter-//PICKER//}}, and {{<descendant-selectors}} describe behavior that
+{{<wildcard}}, {{<name-__PICKER__}},
+{{<filter-__PICKER__}}, and {{<descendant-selectors}} describe behavior that
 turns unpredictable when the JSON value for one of the objects
 under consideration was constructed out of JSON text that exhibits
 multiple members for a single object that share the same member name
 ("duplicate names", see {{Section 4 of -json}}).
 Also, matching ({{selectors}}) and comparing
-({{comparisons}} in Section {{<filter-//PICKER//}}) of strings assumes these
+({{comparisons}} in Section {{<filter-__PICKER__}}) of strings assumes these
 strings are sequences of Unicode scalar values, turning unpredictable
 if they aren't ({{Section 8.2 of -json}}).
 
@@ -690,7 +690,7 @@ appear in the list.
 Note that any node matched by more than one //PICKER// is kept
 as many times in the nodelist.
 
-#### Name //PICKER//
+#### Name //PICKER// {#name-__PICKER__}
 
 ##### Syntax {#syntax-name}
 {: unnumbered}
@@ -835,7 +835,7 @@ Queries:
 | `$.j.k` | `3`        | `$['j']['k']` | Named value in nested object  |
 {: title="Name //PICKER// examples"}
 
-#### Index //PICKER//
+#### Index //PICKER// {#index-__PICKER__}
 
 ##### Syntax {#syntax-index}
 {: unnumbered}
@@ -1066,7 +1066,7 @@ Queries:
 | `$[::-1]` | `"g"` <br> `"f"` <br> `"e"` <br> `"d"` <br> `"c"` <br> `"b"` <br> `"a"` | `$[6]` <br> `$[5]` <br> `$[4]` <br> `$[3]` <br> `$[2]` <br> `$[1]` <br> `$[0]` | Slice in reverse order |
 {: title="Array slice //PICKER// examples"}
 
-#### Filter //PICKER//
+#### Filter //PICKER// {#filter-__PICKER__}
 
 ##### Syntax
 {: unnumbered}
