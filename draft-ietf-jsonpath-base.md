@@ -476,8 +476,8 @@ stands for a nodelist that contains the root node of the argument,
 followed by a possibly empty sequence of *selectors*.
 
 ~~~~ abnf
-json-path = root-selector *(S (wildcard-selector            /
-                               descendant-wildcard-selector /
+json-path = root-selector *(S (wild-selector            /
+                               descendant-wild-selector /
                                child-selector               /
                                descendant-child-selector))
 ~~~~
@@ -1315,12 +1315,12 @@ followed by either a wildcard selector (`descendant-wild-selector`)
 or a child selector (`descendant-child-selector`).
 
 ~~~~ abnf
-descendant-wild-selector    = (descendant-wild-index-selector \
+descendant-wild-selector    = (descendant-wild /
                                descendant-wild-shorthand)
 descendant-wild             = ".." index-wild-selector
 descendant-wild-shorthand = ".." wildcard
 
-descendant-child-selector   = (descendant-child \
+descendant-child-selector   = (descendant-child /
                                descendant-name-shorthand)
 descendant-child            = ".." child-selector
 descendant-name-shorthand = ".." dot-member-name
