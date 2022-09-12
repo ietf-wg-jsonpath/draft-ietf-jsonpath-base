@@ -248,7 +248,7 @@ Unicode Scalar Value:
 Singular Path:
 : A JSONPath expression built from selectors which each select at most one node.
 
-//PICKER//:
+__PICKER__:
 : A single item within a bracketed (`[]`) child selector that matches the values which
   are to be selected.
 
@@ -331,13 +331,13 @@ $.store.book[?(@.price < 10)].title
 | `$`                 | [root node selector](#root-selector)                                                                                    |
 | `[*]`               | [wildcard selector](#wildcard): selects all immediate descendants of objects and arrays                                 |
 | `..[*]`             | [descendant wildcard selector](#descendant-selectors): recursive version of the wildcard selector                       |
-| `[<//PICKERS//>]`   | [child selector](#child-selector) selects zero or more children of JSON objects and arrays; contains one or more //PICKERS//, separated by commas        |
-| `..[<//PICKERS//>]` | [descendant child selector](#descendant-selectors): recursive version of the child selector                             |
-| `'name'`            | [name //PICKER//](#name-__PICKER__): selects a named child of an object                                                    |
-| `3`                 | [index //PICKER//](#index-__PICKER__): selects an indexed child of an array (from 0)                                          |
-| `0:100:5`           | [array slice //PICKER//](#slice): start:end:step for arrays                                                             |
-| `?<expr>`           | [filter //PICKER//](#filter-__PICKER__): selects particular children using a boolean expression  |
-| `@`                 | [current node selector](#filter-__PICKER__) (valid only within filter //PICKERS//)                                          |
+| `[<__PICKERS__>]`   | [child selector](#child-selector) selects zero or more children of JSON objects and arrays; contains one or more __PICKERS__, separated by commas        |
+| `..[<__PICKERS__>]` | [descendant child selector](#descendant-selectors): recursive version of the child selector                             |
+| `'name'`            | [name __PICKER__](#name-__PICKER__): selects a named child of an object                                                    |
+| `3`                 | [index __PICKER__](#index-__PICKER__): selects an indexed child of an array (from 0)                                          |
+| `0:100:5`           | [array slice __PICKER__](#slice): start:end:step for arrays                                                             |
+| `?<expr>`           | [filter __PICKER__](#filter-__PICKER__): selects particular children using a boolean expression  |
+| `@`                 | [current node selector](#filter-__PICKER__) (valid only within filter __PICKERS__)                                          |
 | `.name`             | shorthand for `['name']`                                                                                                |
 | `.*`                | shorthand for `[*]`                                                                                                     |
 | `..name`            | shorthand for `..['name']`                                                                                              |
@@ -566,8 +566,8 @@ A JSONPath query consists of a sequence of selectors. Valid selectors are
 
   * Root selector `$` (used at the start of a query and in expressions)
   * Wildcard selector `[*]`
-  * Child selector `[<//PICKERS//>]`, where `<//PICKERS//>` is one or more of
-    several //PICKER// types, which match the nodes to select,
+  * Child selector `[<__PICKERS__>]`, where `<__PICKERS__>` is one or more of
+    several __PICKER__ types, which match the nodes to select,
     separated by commas
   * Current item selector `@` (only valid in filter expressions)
 
@@ -575,7 +575,7 @@ The wildcard and value selectors can be made to recursively select values within
 nested objects and arrays be prefixing them with `..` turning them into
 
   * Descendant wildcard selector `..[*]`
-  * Descendant child selector `..[<//PICKERS//>]`
+  * Descendant child selector `..[<__PICKERS__>]`
 
 ### Root Selector
 
@@ -658,9 +658,9 @@ Queries:
 #### Syntax
 <!-- {: unnumbered} -->
 
-The child selector has the form `[<//PICKERS//>]` where `<//PICKERS//>` is a comma-delimited
-collection of one or more //PICKERS//.
-Each //PICKER// is defined below.
+The child selector has the form `[<__PICKERS__>]` where `<__PICKERS__>` is a comma-delimited
+collection of one or more __PICKERS__.
+Each __PICKER__ is defined below.
 
 ~~~~ abnf
 child-selector  = "[" S list-entry 1*(S "," S list-entry) S "]"
@@ -676,26 +676,26 @@ list-entry     =  ( quoted-member-name /
 <!-- {: unnumbered} -->
 
 A child selector operates on objects and arrays only.
-It contains a comma-delimited collection of //PICKERS// to indicate which
+It contains a comma-delimited collection of __PICKERS__ to indicate which
 object members and array elements to selects.
 
-Each type of //PICKER// functions differently and may be defined to operate on only
+Each type of __PICKER__ functions differently and may be defined to operate on only
 objects, only arrays, or both.
 
-//PICKERS// of different types may be combined within a single child selector.
+__PICKERS__ of different types may be combined within a single child selector.
 
 The resulting nodelist of a child selector is the concatenation of
-the nodelists from each of its //PICKERS// in the order that the //PICKERS//
+the nodelists from each of its __PICKERS__ in the order that the __PICKERS__
 appear in the list.
-Note that any node matched by more than one //PICKER// is kept
+Note that any node matched by more than one __PICKER__ is kept
 as many times in the nodelist.
 
-#### Name //PICKER// {#name-__PICKER__}
+#### Name __PICKER__ {#name-__PICKER__}
 
 ##### Syntax {#syntax-name}
 {: unnumbered}
 
-A name //PICKER// `'<name>'` matches at most one object member value.
+A name __PICKER__ `'<name>'` matches at most one object member value.
 
 Applying the `quoted-member-name` to an object value in its input nodelist,
 its string is required to match the corresponding member value.
@@ -799,11 +799,11 @@ in the table below:
 A `dotted-member-name` string is converted to a member name by removing
 the initial dot.
 
-The name //PICKER// applied to an object
+The name __PICKER__ applied to an object
 matches the node of the corresponding member value from it, if and only if that object has a member with that name.
 Nothing is selected from a value that is not a object.
 
-Note that processing the name //PICKER// potentially requires matching strings against
+Note that processing the name __PICKER__ potentially requires matching strings against
 strings, with those strings coming from the JSONPath and from member
 names and string values in the JSON to which it is being applied.
 Two strings MUST be considered equal if and only if they are identical
@@ -833,14 +833,14 @@ Queries:
 | `$["'"]["@"]` | `2` | `$['\'']['@']` | Unusual member names
 | `$.j`   | `{"k": 3}` | `$['j']`      | Named value of an object      |
 | `$.j.k` | `3`        | `$['j']['k']` | Named value in nested object  |
-{: title="Name //PICKER// examples"}
+{: title="Name __PICKER__ examples"}
 
-#### Index //PICKER// {#index-__PICKER__}
+#### Index __PICKER__ {#index-__PICKER__}
 
 ##### Syntax {#syntax-index}
 {: unnumbered}
 
-An index //PICKER// `<index>` matches at most one array element value.
+An index __PICKER__ `<index>` matches at most one array element value.
 
 ~~~~ abnf
 element-index   = int                             ; decimal integer
@@ -888,14 +888,14 @@ Queries:
 | :---: | ------ | :----------: | ------- |
 | `$.a[1]`   | `"b"` | `$['a'][1]`      | Member of array      |
 | `$.a[-2]`   | `"a"` | `$['a'][0]`      | Member of array, from the end      |
-{: title="Index //PICKER// examples"}
+{: title="Index __PICKER__ examples"}
 
-#### Array Slice //PICKER// {#slice}
+#### Array Slice __PICKER__ {#slice}
 
 ##### Syntax
 {: unnumbered}
 
-The array slice //PICKER// has the form `<start>:<end>:<step>`.
+The array slice __PICKER__ has the form `<start>:<end>:<step>`.
 It matches elements from arrays starting at index `<start>`, ending at — but
 not including — `<end>`, while incrementing by `step`.
 
@@ -915,12 +915,12 @@ RS             = 1*B       ; required blank space
 
 ~~~~
 
-The slice //PICKER// consists of three optional decimal integers separated by colons.
+The slice __PICKER__ consists of three optional decimal integers separated by colons.
 
 ##### Semantics
 {: unnumbered}
 
-The slice //PICKER// was inspired by the slice operator of ECMAScript
+The slice __PICKER__ was inspired by the slice operator of ECMAScript
 4 (ES4), which was deprecated in 2014, and that of Python.
 
 
@@ -1064,14 +1064,14 @@ Queries:
 | `$[1:5:2]` | `"b"` <br> `"d"` | `$[1]` <br> `$[3]` | Slice with step 2 |
 | `$[5:1:-2]` | `"f"` <br> `"d"` | `$[5]` <br> `$[3]` | Slice with negative step |
 | `$[::-1]` | `"g"` <br> `"f"` <br> `"e"` <br> `"d"` <br> `"c"` <br> `"b"` <br> `"a"` | `$[6]` <br> `$[5]` <br> `$[4]` <br> `$[3]` <br> `$[2]` <br> `$[1]` <br> `$[0]` | Slice in reverse order |
-{: title="Array slice //PICKER// examples"}
+{: title="Array slice __PICKER__ examples"}
 
-#### Filter //PICKER// {#filter-__PICKER__}
+#### Filter __PICKER__ {#filter-__PICKER__}
 
 ##### Syntax
 {: unnumbered}
 
-The filter //PICKER// has the form `?<expr>`. It works via iterating over structured values, i.e. arrays and objects.
+The filter __PICKER__ has the form `?<expr>`. It works via iterating over structured values, i.e. arrays and objects.
 
 ~~~~ abnf
 filter             = "?" S boolean-expr
@@ -1168,11 +1168,11 @@ The following table lists filter expression operators in order of precedence fro
 ##### Semantics
 {: unnumbered}
 
-The filter //PICKER// works with arrays and objects exclusively. Its result is a list of *zero*, *one*, *multiple* or *all* of their array elements or member values, respectively.
+The filter __PICKER__ works with arrays and objects exclusively. Its result is a list of *zero*, *one*, *multiple* or *all* of their array elements or member values, respectively.
 Applied to other value types, it will select nothing.
 
 A relative path, beginning with `@`, refers to the current array element or member value as the
-filter //PICKER// iterates over the array or object.
+filter __PICKER__ iterates over the array or object.
 
 ###### Existence Tests
 {: unnumbered}
@@ -1303,7 +1303,7 @@ Queries:
 | `$.o[?@.u || @.x]` | `{"u": 6}` | `$['o']['t']` | Object value logical OR |
 | `$.a[?(@.b == $.x)]`| `3` <br> `5` <br> `1` <br> `2` <br> `4` <br> `6` | `$['a'][0]` <br>`$['a'][1]` <br> `$['a'][2]` <br> `$['a'][3]` <br> `$['a'][4]` | Comparison of paths with no values |
 | `$[?(@ == @)]` | | | Comparison of structured values |
-{: title="Filter //PICKER// examples"}
+{: title="Filter __PICKER__ examples"}
 
 ### Descendant Selectors
 
@@ -1329,10 +1329,10 @@ descendant-name-shorthand = ".." dot-member-name
 `descendant-wild` and `descendant-wild-shorthand` may be used interchangeably.
 
 `descendant-name-shorthand` is a shorthand notation for the occasion when a
-descendant child selector is used with a single name //PICKER// where the name
+descendant child selector is used with a single name __PICKER__ where the name
 can be used in its shorthand notation.
-The shorthand is not valid for child selectors containing more than one //PICKER//
-other //PICKER// types, or name //PICKERS// that cannot themselves be represented
+The shorthand is not valid for child selectors containing more than one __PICKER__
+other __PICKER__ types, or name __PICKERS__ that cannot themselves be represented
 in shorthand.
 
 Note that `..` on its own is not a valid selector.
@@ -1357,7 +1357,7 @@ descendant nodelist, as shown below:
 | Variant | Selector to apply | Comment |
 | :---: | :---: | ------- |
 | `..[*]` | _none_ | All descendants, recursively |
-| `..[<//PICKERS//>]` | `[<//PICKERS//>]` | [Child selector](#child-selector) |
+| `..[<__PICKERS__>]` | `[<__PICKERS__>]` | [Child selector](#child-selector) |
 {: title="Descendant selector variant semantics"}
 
 #### Examples
