@@ -329,7 +329,7 @@ $.store.book[?(@.price < 10)].title
 | `..name` <br> `..[3]` | descendants: [descendant selector](#descendant-selectors)                                                                     |
 | `.*` <br> `[*]` | all child member values and array elements: [dot wildcard selector](#wildcard), [index wildcard selector](#index-wildcard-selector) |
 | `[3]`       | [index (subscript) selector](#index-selector): index current node as an array (from 0)                                              |
-| `[..,..]`   | [list selector](#list-selector): allow combining selector styles                                                                    |
+| `[..,..]`   | [child selector](#child-selector): allow combining selector styles                                                                    |
 | `[0:100:5]` | [array slice selector](#slice): start:end:step                                                                                      |
 | `?...`      | [filter selector](#filter-selector)                                                                                                 |
 | `()`        | expression: within [filter selectors](#filter-selector)                                                                            |
@@ -469,11 +469,8 @@ followed by a possibly empty sequence of *selectors*.
 ~~~~ abnf
 json-path = root-selector *(S (dot-selector        /
                                dot-wild-selector   /
-                               index-selector      /
                                index-wild-selector /
-                               slice-selector      /
-                               filter-selector     /
-                               list-selector       /
+                               child-selector      /
                                descendant-selector))
 ~~~~
 
@@ -568,8 +565,8 @@ A JSONPath query consists of a sequence of selectors. Valid selectors are
   * Index wildcard selector `[*]`
   * Array slice selector `[<start>:<end>:<step>]`, where the optional
     values `<start>`, `<end>`, and `<step>` are integer literals
-  * List selector `[<sel1>,<sel2>,...,<selN>]`, holding a comma
-    separated list of index and slice selectors
+  * Child selector `[<matcher1>,...,<matcherN>]`, holding a comma
+    separated list of index, slice, and filter matchers
   * Filter selector `[?(<expr>)]`
   * Current item selector `@` (used in expressions)
   * Descendants selectors starting with a double dot `..`
@@ -710,10 +707,11 @@ Queries:
 #### Syntax {#syntax-index}
 {: unnumbered}
 
-An index selector `[<index>]` addresses at most one object member value or at most one array element value.
+An index selector `[<index>]` selects at most one object member value or at most one array element value.
 
 ~~~~ abnf
-index-selector      = "[" S (quoted-member-name / element-index) S "]"
+index-selector      = "[" S index-matcher S "]"
+index-matcher       = quoted-member-name / element-index
 ~~~~
 
 Applying the `index-selector` to an object value in its input nodelist, a
@@ -896,7 +894,8 @@ It selects elements starting at index `<start>`, ending at — but
 not including — `<end>`, while incrementing by `step`.
 
 ~~~~ abnf
-slice-selector = "[" S slice-index S "]"
+slice-selector = "[" S slice-matcher S "]"
+slice-matcher = slice-index
 
 slice-index    =  [start S] ":" S [end S] [":" [S step ]]
 
@@ -1075,7 +1074,8 @@ Queries:
 The filter selector has the form `[?<expr>]`. It works via iterating over structured values, i.e. arrays and objects.
 
 ~~~~ abnf
-filter-selector    = "[" S filter S "]"
+filter-selector    = "[" S value-matcher S "]"
+value-matcher     =  filter
 filter             = "?" S boolean-expr
 ~~~~
 
@@ -1309,43 +1309,42 @@ Queries:
 | `$[?(@ == @)]` | | | Comparison of structured values |
 {: title="Filter selector examples"}
 
-### List Selector
+### Child Selector
 
-The list selector allows combining member names, array indices,
+The child selector allows combining member names, array indices,
 slices, and filters in a single selector.
 
-Note: The list selector was called "union selector" in
+Note: The child selector was called "union selector" in
 {{JSONPath-orig}}, as it was intended to solve use cases addressed by
 the union selector in XPath.
 However, the term "union" has the connotation of a set operation that involves
 merging input sets while avoiding duplicates, so the concept was
-renamed into "list selector".
+renamed into "child selector".
 
 #### Syntax
 {: unnumbered}
 
-The list selector is syntactically related to the
-`dot-selector`, `index-selector`, `slice-selector`, and the `filter-selector`.
-It contains two or more entries, separated by commas.
+The child selector unifies the
+`index-selector`, `slice-selector`, and the `filter-selector`.
+It contains one or more entries, separated by commas.
 
 ~~~~ abnf
-list-selector  = "[" S list-entry 1*(S "," S list-entry) S "]"
+child-selector  = "[" S child-matcher *(S "," S child-matcher) S "]"
 
-list-entry     =  ( quoted-member-name /
-                    element-index      /
-                    slice-index /
-                    filter
+child-matcher  =  ( index-matcher /
+                    slice-matcher /
+                    value-matcher
                   )
 ~~~~
 
 #### Semantics
 {: unnumbered}
 
-A list selector selects the nodes that are selected by
-the selector entries in the list and yields the concatenation of the
-lists (in the order of the selector entries) of nodes selected by the
-selector entries.
-Note that any node selected in more than one of the selector entries is kept
+A child selector selects the nodes that are matched by
+the matcher entries in the list and yields the concatenation of the
+nodelists (in the order of the matchers) matched by the
+matchers. //// NOT QUITE RIGHT WORDING
+Note that any node matched by more than one of the matchers is kept
 as many times in the nodelist.
 
 To be valid, integer values in the `element-index` and `slice-index`
@@ -1369,7 +1368,7 @@ Queries:
 | `$[0, 0]` | `"a"` <br> `"a"` | `$[0]` <br> `$[0]` | Duplicated entries |
 | `$[7]["n", "p"]` | `"v"` <br> `"x"` | `$[7]['n']` <br> `$[7]['p']` | Dot child |
 | `$[? @ <= "b" || @ >= "g", 2]` | `"a"` <br> `"b"` <br> `"g"` <br> `"c"` | `$[0]` <br> `$[1]` <br> `$[6]` <br> `$[2]` | Filter and index |
-{: title="List selector examples"}
+{: title="Child selector examples"}
 
 ### Descendant Selectors
 
@@ -1379,17 +1378,14 @@ Queries:
 The descendant selectors start with a double dot `..` and can be
 followed by an object member name (similar to the `dot-selector`),
 a wildcard (similar to the `dot-wild-selector`),
-an `index-selector`, `index-wild-selector`, `filter-selector`, or `list-selector` acting on objects or arrays,
+an `index-selector`, `index-wild-selector`, `filter-selector`, or `child-selector` acting on objects or arrays,
 or a `slice-selector` acting on arrays.
 
 ~~~~ abnf
 descendant-selector = ".." ( dot-member-name      /  ; ..<name>
                              wildcard             /  ; ..*
-                             index-selector       /  ; ..[<index>]
                              index-wild-selector  /  ; ..[*]
-                             slice-selector       /  ; ..[<slice-index>]
-                             filter-selector      /  ; ..[<filter>]
-                             list-selector           ; ..[<list-entry>,...]
+                             child-selector           ; ..[<child-matcher>,...]
                            )
 ~~~~
 
@@ -1417,11 +1413,8 @@ descendant nodelist, as shown below:
 | :---: | :---: | ------- |
 | `..<name>` | `.<name>`| [Dot selector](#dot-selector)  |
 | `..*` | _none_ | All descendants |
-| `..[<name>]` | `[<name>]`| [Index selector](#index-selector) |
 | `..[*]` | _none_ | All descendants |
-| `..[<slice-index>]` | `[<slice-index>]` | [Array slice selector](#slice) |
-| `..[<filter>]` | `[<filter>]` | [Filter selector](#filter-selector) |
-| `..[<list-entry>,...]` | `[<list-entry>,...]` | [List selector](#list-selector) |
+| `..[<matcher>,...]` | `[<matcher>,...]` | [Child selector](#child-selector) |
 {: title="Descendant selector variant semantics"}
 
 #### Examples
