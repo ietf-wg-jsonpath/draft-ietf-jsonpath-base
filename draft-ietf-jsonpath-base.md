@@ -1340,11 +1340,12 @@ child-matcher  =  ( index-matcher /
 #### Semantics
 {: unnumbered}
 
-A child selector selects the nodes that are matched by
-the matcher entries in the list and yields the concatenation of the
-nodelists (in the order of the matchers) matched by the
-matchers. //// NOT QUITE RIGHT WORDING
-Note that any node matched by more than one of the matchers is kept
+A child selector behaves as a sequence of index, slice, and filter selectors
+corresponding to, and in the same order as, the `child-matcher`s in the child selector.
+Each of these selectors is applied to the input value and the resultant
+nodelists are concatenated together.
+
+Note that any node selected by more than one of these selectors is kept
 as many times in the nodelist.
 
 To be valid, integer values in the `element-index` and `slice-index`
