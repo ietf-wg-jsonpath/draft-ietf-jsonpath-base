@@ -559,6 +559,622 @@ then the whole query selects no nodes.
 In what follows, the semantics of each selector are defined for each type
 of node.
 
+## __PICKERS__
+
+### Name __PICKER__ {#name-__PICKER__}
+
+#### Syntax {#syntax-name}
+{: unnumbered}
+
+A name __PICKER__ `'<name>'` matches at most one object member value.
+
+Applying the `quoted-member-name` to an object value in its input nodelist,
+its string is required to match the corresponding member value.
+In contrast to JSON,
+the JSONPath syntax allows strings to be enclosed in _single_ or _double_ quotes.
+
+~~~~ abnf
+quoted-member-name  = string-literal
+
+string-literal      = %x22 *double-quoted %x22 /       ; "string"
+                      %x27 *single-quoted %x27         ; 'string'
+
+double-quoted       = unescaped /
+                      %x27      /                       ; '
+                      ESC %x22  /                       ; \"
+                      ESC escapable
+
+single-quoted       = unescaped /
+                      %x22      /                       ; "
+                      ESC %x27  /                       ; \'
+                      ESC escapable
+
+ESC                 = %x5C                              ; \  backslash
+
+unescaped           = %x20-21 /                         ; s. RFC 8259
+                      %x23-26 /                         ; omit "
+                      %x28-5B /                         ; omit '
+                      %x5D-10FFFF                       ; omit \
+
+escapable           = ( %x62 / %x66 / %x6E / %x72 / %x74 / ; \b \f \n \r \t
+                          ; b /         ;  BS backspace U+0008
+                          ; t /         ;  HT horizontal tab U+0009
+                          ; n /         ;  LF line feed U+000A
+                          ; f /         ;  FF form feed U+000C
+                          ; r /         ;  CR carriage return U+000D
+                          "/" /          ;  /  slash (solidus) U+002F
+                          "\" /          ;  \  backslash (reverse solidus) U+005C
+                          (%x75 hexchar) ;  uXXXX      U+XXXX
+                      )
+
+hexchar = non-surrogate / (high-surrogate "\" %x75 low-surrogate)
+non-surrogate = ((DIGIT / "A"/"B"/"C" / "E"/"F") 3HEXDIG) /
+                 ("D" %x30-37 2HEXDIG )
+high-surrogate = "D" ("8"/"9"/"A"/"B") 2HEXDIG
+low-surrogate = "D" ("C"/"D"/"E"/"F") 2HEXDIG
+
+HEXDIG = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
+
+; Task from 2021-06-15 interim: update ABNF later
+~~~~
+
+A shorthand for `quoted-member-name` exists as `dotted-member-name`.
+These may be used interchangeably.
+
+A `dotted-member-name` starts with a dot `.` followed by an object's member name.
+
+~~~~ abnf
+dotted-member-name    = "." dot-member-name
+dot-member-name       = name-first *name-char
+name-first            =
+                           ALPHA /
+                           "_"   /            ; _
+                           %x80-10FFFF        ; any non-ASCII Unicode character
+name-char = DIGIT / name-first
+
+DIGIT                 =  %x30-39              ; 0-9
+ALPHA                 =  %x41-5A / %x61-7A    ; A-Z / a-z
+~~~~
+
+Member names containing characters other than allowed by
+`dotted-member-name` — such as space (U+0020), minus (U+002D), dot (U+002E)
+or escaped characters which appear in the semantic section below —
+MUST NOT be used with the `dotted-member-name`.
+(Such member names can be addressed by the `quoted-member-name` syntax instead.)
+
+Note: `double-quoted` strings follow the JSON string syntax ({{Section 7 of RFC8259}});
+`single-quoted` strings follow an analogous pattern ({{syntax-index}}).
+
+#### Semantics {#name-semantics}
+{: unnumbered}
+
+A `quoted-member-name` string MUST be converted to a
+member name by removing the surrounding quotes and
+replacing each escape sequence with its equivalent Unicode character, as
+in the table below:
+
+| Escape Sequence    | Unicode Character   |  Description                |
+| :----------------: | :-----------------: |:--------------------------- |
+| \\b                | U+0008              | BS backspace                |
+| \\t                | U+0009              | HT horizontal tab           |
+| \\n                | U+000A              | LF line feed                |
+| \\f                | U+000C              | FF form feed                |
+| \\r                | U+000D              | CR carriage return          |
+| \\"                | U+0022              | quotation mark              |
+| \\'                | U+0027              | apostrophe                  |
+| \\/                | U+002F              | slash (solidus)             |
+| \\\\               | U+005C              | backslash (reverse solidus) |
+| \\uXXXX            | U+XXXX              | unicode character           |
+{: title="Escape Sequence Replacements" cols="c c"}
+
+A `dotted-member-name` string is converted to a member name by removing
+the initial dot.
+
+The name __PICKER__ applied to an object
+matches the node of the corresponding member value from it, if and only if that object has a member with that name.
+Nothing is selected from a value that is not a object.
+
+Note that processing the name __PICKER__ potentially requires matching strings against
+strings, with those strings coming from the JSONPath and from member
+names and string values in the JSON to which it is being applied.
+Two strings MUST be considered equal if and only if they are identical
+sequences of Unicode scalar values. In other words, normalization operations
+MUST NOT be applied to either the string from the JSONPath or from the JSON
+prior to comparison.
+
+#### Examples
+{: unnumbered}
+
+<!-- EDITING NOTE: There are non-breaking spaces here between j and j -->
+<!-- i.e., j j and not j j -->
+
+JSON:
+
+    {
+      "o": {"j j": {"k.k": 3}},
+      "'": {"@": 2}
+    }
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$.o['j j']['k.k']`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
+| `$.o["j j"]["k.k"]`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
+| `$["'"]["@"]` | `2` | `$['\'']['@']` | Unusual member names
+| `$.j`   | `{"k": 3}` | `$['j']`      | Named value of an object      |
+| `$.j.k` | `3`        | `$['j']['k']` | Named value in nested object  |
+{: title="Name __PICKER__ examples"}
+
+### Index __PICKER__ {#index-__PICKER__}
+
+#### Syntax {#syntax-index}
+{: unnumbered}
+
+An index __PICKER__ `<index>` matches at most one array element value.
+
+~~~~ abnf
+element-index   = int                             ; decimal integer
+
+int             = ["-"] ( "0" / (DIGIT1 *DIGIT) ) ; -  optional
+DIGIT1          = %x31-39                         ; 1-9 non-zero digit
+~~~~
+
+Applying the numerical `element-index` is required to select the corresponding
+element. JSONPath allows it to be negative (see {{index-semantics}}).
+
+Notes:
+1. An `element-index` is an integer (in base 10, as in JSON numbers).
+2. As in JSON numbers, the syntax does not allow octal-like integers with leading zeros such as `01` or `-01`.
+
+#### Semantics {#index-semantics}
+{: unnumbered}
+
+The `element-index` applied to an array selects an array element using a zero-based index.
+For example, selector `0` selects the first and selector `4` the fifth element of a sufficiently long array.
+Nothing is selected, and it is not an error, if the index lies outside the range of the array. Nothing is selected from a value that is not an array.
+
+A negative `element-index` counts from the array end.
+For example, selector `-1` selects the last and selector `-2` selects the penultimate element of an array with at least two elements.
+As with non-negative indexes, it is not an error if such an element does
+not exist; this simply means that no element is selected.
+
+#### Examples
+{: unnumbered}
+
+<!-- EDITING NOTE: There are non-breaking spaces here between j and j -->
+<!-- i.e., j j and not j j -->
+
+JSON:
+
+    {
+      "o": {"j j": {"k.k": 3}},
+      "a": ["a","b"],
+      "'": {"@": 2}
+    }
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$.a[1]`   | `"b"` | `$['a'][1]`      | Member of array      |
+| `$.a[-2]`   | `"a"` | `$['a'][0]`      | Member of array, from the end      |
+{: title="Index __PICKER__ examples"}
+
+### Array Slice __PICKER__ {#slice}
+
+#### Syntax
+{: unnumbered}
+
+The array slice __PICKER__ has the form `<start>:<end>:<step>`.
+It matches elements from arrays starting at index `<start>`, ending at — but
+not including — `<end>`, while incrementing by `step`.
+
+~~~~ abnf
+slice-index    =  [start S] ":" S [end S] [":" [S step ]]
+
+start          = int       ; included in selection
+end            = int       ; not included in selection
+step           = int       ; default: 1
+
+B              =    %x20 / ; Space
+                    %x09 / ; Horizontal tab
+                    %x0A / ; Line feed or New line
+                    %x0D   ; Carriage return
+S              = *B        ; optional blank space
+RS             = 1*B       ; required blank space
+
+~~~~
+
+The slice __PICKER__ consists of three optional decimal integers separated by colons.
+
+#### Semantics
+{: unnumbered}
+
+The slice __PICKER__ was inspired by the slice operator of ECMAScript
+4 (ES4), which was deprecated in 2014, and that of Python.
+
+
+##### Informal Introduction
+{: unnumbered}
+
+This section is non-normative.
+
+Array indexing is a way of selecting a particular element of an array using
+a 0-based index.
+For example, the expression `0` selects the first element of a non-empty array.
+
+Negative indices index from the end of an array.
+For example, the expression `-2` selects the last but one element of an array with at least two elements.
+
+Array slicing is inspired by the behavior of the `Array.prototype.slice` method
+of the JavaScript language as defined by the ECMA-262 standard {{ECMA-262}},
+with the addition of the `step` parameter, which is inspired by the Python slice expression.
+
+The array slice expression `start:end:step` selects elements at indices starting at `start`,
+incrementing by `step`, and ending with `end` (which is itself excluded).
+So, for example, the expression `1:3` (where `step` defaults to `1`)
+selects elements with indices `1` and `2` (in that order) whereas
+`1:5:2` selects elements with indices `1` and `3`.
+
+When `step` is negative, elements are selected in reverse order. Thus,
+for example, `5:1:-2` selects elements with indices `5` and `3`, in
+that order and `::-1` selects all the elements of an array in
+reverse order.
+
+When `step` is `0`, no elements are selected.
+(This is the one case that differs from the behavior of Python, which
+raises an error in this case.)
+
+The following section specifies the behavior fully, without depending on
+JavaScript or Python behavior.
+
+##### Detailed Semantics
+{: unnumbered}
+
+A slice expression selects a subset of the elements of the input array, in
+the same order
+as the array or the reverse order, depending on the sign of the `step` parameter.
+It selects no nodes from a node that is not an array.
+
+A slice is defined by the two slice parameters, `start` and `end`, and
+an iteration delta, `step`.
+Each of these parameters is
+optional. `len` is the length of the input array.
+
+The default value for `step` is `1`.
+The default values for `start` and `end` depend on the sign of `step`,
+as follows:
+
+| Condition    | start   | end      |
+|--------------|---------|----------|
+| step >= 0    | 0       | len      |
+| step < 0     | len - 1 | -len - 1 |
+{: title="Default array slice start and end values"}
+
+Slice expression parameters `start` and `end` are not directly usable
+as slice bounds and must first be normalized.
+Normalization for this purpose is defined as:
+
+~~~~
+FUNCTION Normalize(i, len):
+  IF i >= 0 THEN
+    RETURN i
+  ELSE
+    RETURN len + i
+  END IF
+~~~~
+
+The result of the array indexing expression `i` applied to an array
+of length `len` is defined to be the result of the array
+slicing expression `i:Normalize(i, len)+1:1`.
+
+Slice expression parameters `start` and `end` are used to derive slice bounds `lower` and `upper`.
+The direction of the iteration, defined
+by the sign of `step`, determines which of the parameters is the lower bound and which
+is the upper bound:
+
+~~~~
+FUNCTION Bounds(start, end, step, len):
+  n_start = Normalize(start, len)
+  n_end = Normalize(end, len)
+
+  IF step >= 0 THEN
+    lower = MIN(MAX(n_start, 0), len)
+    upper = MIN(MAX(n_end, 0), len)
+  ELSE
+    upper = MIN(MAX(n_start, -1), len-1)
+    lower = MIN(MAX(n_end, -1), len-1)
+  END IF
+
+  RETURN (lower, upper)
+~~~~
+
+The slice expression selects elements with indices between the lower and
+upper bounds.
+In the following pseudocode, the `a(i)` construct expresses the
+0-based indexing operation on the underlying array.
+
+~~~~
+IF step > 0 THEN
+
+  i = lower
+  WHILE i < upper:
+    SELECT a(i)
+    i = i + step
+  END WHILE
+
+ELSE if step < 0 THEN
+
+  i = upper
+  WHILE lower < i:
+    SELECT a(i)
+    i = i + step
+  END WHILE
+
+END IF
+~~~~
+
+When `step = 0`, no elements are selected and the result array is empty.
+
+To be valid, the slice expression parameters MUST be in the I-JSON
+range of exact values, see {{synsem-overview}}.
+
+#### Examples
+{: unnumbered}
+
+JSON:
+
+    ["a", "b", "c", "d", "e", "f", "g"]
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$[1:3]` | `"b"` <br> `"c"` | `$[1]` <br> `$[2]` | Slice with default step |
+| `$[1:5:2]` | `"b"` <br> `"d"` | `$[1]` <br> `$[3]` | Slice with step 2 |
+| `$[5:1:-2]` | `"f"` <br> `"d"` | `$[5]` <br> `$[3]` | Slice with negative step |
+| `$[::-1]` | `"g"` <br> `"f"` <br> `"e"` <br> `"d"` <br> `"c"` <br> `"b"` <br> `"a"` | `$[6]` <br> `$[5]` <br> `$[4]` <br> `$[3]` <br> `$[2]` <br> `$[1]` <br> `$[0]` | Slice in reverse order |
+{: title="Array slice __PICKER__ examples"}
+
+### Filter __PICKER__ {#filter-__PICKER__}
+
+#### Syntax
+{: unnumbered}
+
+The filter __PICKER__ has the form `?<expr>`. It works via iterating over structured values, i.e. arrays and objects.
+
+~~~~ abnf
+filter             = "?" S boolean-expr
+~~~~
+
+During the iteration process each array element or object member is visited and its value — accessible via symbol `@` — or one of its descendants — uniquely defined by a relative path — is tested against a boolean expression `boolean-expr`.
+
+The current item is selected if and only if the boolean expression yields true.
+
+
+~~~~ abnf
+boolean-expr     = logical-or-expr
+logical-or-expr  = logical-and-expr *(S "||" S logical-and-expr)
+                                                      ; disjunction
+                                                      ; binds less tightly than conjunction
+logical-and-expr = basic-expr *(S "&&" S basic-expr)  ; conjunction
+                                                      ; binds more tightly than disjunction
+
+basic-expr        = exist-expr /
+                    paren-expr /
+                    relation-expr
+exist-expr        = [logical-not-op S] singular-path  ; path existence or non-existence
+~~~~
+
+Paths in filter expressions are Singular Paths, each of which selects at most one node.
+
+~~~~ abnf
+singular-path     = rel-singular-path / abs-singular-path
+rel-singular-path = "@" *(S (name-selector / index-selector))
+abs-singular-path = root-selector *(S (name-selector / index-selector))
+name-selector     = "[" quoted-member-name "]" / dotted-member-name
+index-selector    = "[" element-index "]"
+~~~~
+
+Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `?(<expr>)` is naturally contained in the current lean syntax `?<expr>` as a special case.
+
+~~~~ abnf
+paren-expr        = [logical-not-op S] "(" S boolean-expr S ")"
+                                                      ; parenthesized expression
+logical-not-op    = "!"                               ; logical NOT operator
+
+relation-expr = comp-expr /                           ; comparison test
+                regex-expr                            ; regular expression test
+~~~~
+
+Comparisons are restricted to Singular Path values and primitive values (that is, numbers, strings, `true`, `false`,
+and `null`).
+
+~~~~ abnf
+comp-expr    = comparable S comp-op S comparable
+comparable   = number / string-literal /              ; primitive ...
+               true / false / null /                  ; values only
+               singular-path                          ; Singular Path value
+comp-op      = "==" / "!=" /                          ; comparison ...
+               "<"  / ">"  /                          ; operators
+               "<=" / ">="
+~~~~
+
+Alphabetic characters in ABNF are case-insensitive, so "e" can be either "e" or "E".
+
+`true`, `false`, and `null` are lower-case only (case-sensitive).
+
+~~~~ abnf
+number       = int [ frac ] [ exp ]                   ; decimal number
+frac         = "." 1*DIGIT                            ; decimal fraction
+exp          = "e" [ "-" / "+" ] 1*DIGIT              ; decimal exponent
+true         = %x74.72.75.65                          ; true
+false        = %x66.61.6c.73.65                       ; false
+null         = %x6e.75.6c.6c                          ; null
+~~~~
+
+The syntax of regular expressions in the string-literals on the right-hand
+side of `=~` is as defined in {{-iregexp}}.
+
+~~~~ abnf
+regex-expr   = (singular-path / string-literal) S regex-op S regex
+regex-op     = "=~"                                   ; regular expression match
+regex        = string-literal                         ; I-Regexp
+~~~~
+
+The following table lists filter expression operators in order of precedence from highest (binds most tightly) to lowest (binds least tightly).
+
+<!-- FIXME: Should the syntax column be split between unary and binary operators? -->
+
+| Precedence | Operator type | Syntax |
+|:--:|:--:|:--:|
+|  5  | Grouping | `(...)` |
+|  4  | Logical NOT | `!` |
+|  3  | Relations | `==`&nbsp;`!=`<br>`<`&nbsp;`<=`&nbsp;`>`&nbsp;`>=`<br>`=~` |
+|  2  | Logical AND | `&&` |
+|  1  | Logical OR | `¦¦`   |
+{: title="Filter expression operator precedence" }
+
+#### Semantics
+{: unnumbered}
+
+The filter __PICKER__ works with arrays and objects exclusively. Its result is a list of *zero*, *one*, *multiple* or *all* of their array elements or member values, respectively.
+Applied to other value types, it will select nothing.
+
+A relative path, beginning with `@`, refers to the current array element or member value as the
+filter __PICKER__ iterates over the array or object.
+
+##### Existence Tests
+{: unnumbered}
+
+A singular path by itself in a Boolean context is an existence test which yields true if the path selects a node and yields false if the path does not select a node.
+This existence test — as an exception to the general rule — also works with nodes with structured values.
+
+To test the value of a node selected by a path, an explicit comparison is necessary.
+For example, to test whether the node selected by the path `@.foo` has the value `null`, use `@.foo == null` (see {{null-semantics}})
+rather than the negated existence test `!@.foo` (which yields false if `@.foo` selects a node, regardless of the node's value).
+
+##### Comparisons
+{: unnumbered}
+
+The comparison operators `==`, `<`, and `>` are defined first and then these are used to define `!=`, `<=`, and `>=`.
+
+When a path resulting in an empty nodelist appears on either side of a comparison:
+
+* a comparison using the operator `==` yields true if and only if the comparison
+is between two paths each of which result in an empty nodelist.
+
+* a comparison using either of the operators `<` or `>` yields false.
+
+When any path on either side of a comparison results in a nodelist consisting of a single node, each such path is
+replaced by the value of its node and then:
+
+* a comparison using the operator `==` yields true if and only if the comparison
+is between:
+    * values of the same primitive type (numbers, strings, booleans, and `null`) which are equal,
+    * equal arrays, that is arrays of the same length where each element of the first array is equal to the corresponding
+      element of the second array, or
+    * equal objects with no duplicate names, that is where:
+        * both objects have the same collection of names (with no duplicates), and
+        * for each of those names, the values associated with the name by the objects are equal.
+
+* a comparison using either of the operators `<` or `>` yields true if and only if
+the comparison is between values of the same type which are both numbers or both strings and which satisfy the comparison:
+
+    * numbers expected to interoperate as per {{Section 2.2 of -i-json (I-JSON)}} MUST compare using the normal mathematical ordering;
+      numbers not expected to interoperate as per I-JSON MAY compare using an implementation specific ordering
+    * the empty string compares less than any non-empty string
+    * a non-empty string compares less than another non-empty string if and only if the first string starts with a
+      lower Unicode scalar value than the second string or if both strings start with the same Unicode scalar value and
+      the remainder of the first string compares less than the remainder of the second string.
+
+Note that comparisons using either of the operators `<` or `>` yield false if either value being
+compared is an object, array, boolean, or `null`.
+
+`!=`, `<=` and `>=` are defined in terms of the other comparison operators. For any `a` and `b`:
+
+* The comparison `a != b` yields true if and only if `a == b` yields false.
+* The comparison `a <= b` yields true if and only if `a < b` yields true or `a == b` yields true.
+* The comparison `a >= b` yields true if and only if `a > b` yields true or `a == b` yields true.
+
+##### Regular Expressions
+{: unnumbered}
+
+A regular-expression test yields true if and only if the value on the left-hand side of `=~` is a string value and it
+matches the regular expression on the right-hand side according to the semantics of {{-iregexp}}.
+
+The semantics of regular expressions are as defined in {{-iregexp}}.
+
+##### Boolean Operators
+{: unnumbered}
+
+The logical AND, OR, and NOT operators have the normal semantics of Boolean algebra and
+obey its laws (see, for example, {{BOOLEAN-LAWS}}).
+
+#### Examples
+{: unnumbered}
+
+JSON:
+
+    {
+      "obj": {"x": "y"},
+      "arr": [2, 3]
+    }
+
+| Comparison | Result | Comment |
+|:--:|:--:|:--:|
+| `$.absent1 == $.absent2` | true | Empty nodelists |
+| `$.absent1 <= $.absent2` | true | `==` implies `<=` |
+| `$.absent == 'g'` | false | Empty nodelist |
+| `$.absent1 != $.absent2` | false | Empty nodelists |
+| `$.absent != 'g'` | true | Empty nodelist |
+| `1 <= 2` | true | Numeric comparison |
+| `1 > 2` | false | Strict, numeric comparison |
+| `13 == '13'` | false | Type mismatch |
+| `'a' <= 'b'` | true | String comparison |
+| `'a' > 'b'` | false | Strict, string comparison |
+| `$.obj == $.arr` | false | Type mismatch |
+| `$.obj != $.arr` | true | Type mismatch |
+| `$.obj == $.obj` | true | Object comparison |
+| `$.obj != $.obj` | false | Object comparison |
+| `$.arr == $.arr` | true | Array comparison |
+| `$.arr != $.arr` | false | Array comparison |
+| `$.obj == 17` | false | Type mismatch |
+| `$.obj != 17` | true | Type mismatch |
+| `$.obj <= $.arr` | false | Objects and arrays are not ordered |
+| `$.obj < $.arr` | false | Objects and arrays are not ordered |
+| `$.obj <= $.obj` | true | `==` implies `<=` |
+| `$.arr <= $.arr` | true | `==` implies `<=` |
+| `1 <= $.arr` | false | Arrays are not ordered |
+| `1 >= $.arr` | false | Arrays are not ordered |
+| `1 > $.arr` | false | Arrays are not ordered |
+| `1 < $.arr` | false | Arrays are not ordered |
+| `true <= true` | true | `==` implies `<=` |
+| `true > true` | false | Booleans are not ordered |
+{: title="Comparison examples" }
+
+JSON:
+
+    {
+      "a": [3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}],
+      "o": {"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}}
+    }
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$.a[?@>3.5]` | `5` <br> `4` <br> `6` | `$['a'][1]` <br> `$['a'][4]` <br> `$['a'][5]` | Array value comparison |
+| `$.a[?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` | `$['a'][6]` <br> `$['a'][7]` | Array value existence |
+| `$.a[?@<2 || @.b == "k"]` | `1` <br> `{"b": "k"}` | `$['a'][2]` <br> `$['a'][7]` | Array value logical OR |
+| `$.a[?@.b =~ "i.*"]` | `{"b": "j"}` <br> `{"b": "k"}` | `$['a'][6]` <br> `$['a'][7]` | Array value regular expression |
+| `$.o[?@>1 && @<4]` | `2` <br> `3` | `$['o']['q']` <br> `$['o']['r']` | Object value logical AND |
+| `$.o[?@>1 && @<4]` | `3` <br> `2` | `$['o']['r']` <br> `$['o']['q']` | Alternative result |
+| `$.o[?@.u || @.x]` | `{"u": 6}` | `$['o']['t']` | Object value logical OR |
+| `$.a[?(@.b == $.x)]`| `3` <br> `5` <br> `1` <br> `2` <br> `4` <br> `6` | `$['a'][0]` <br>`$['a'][1]` <br> `$['a'][2]` <br> `$['a'][3]` <br> `$['a'][4]` | Comparison of paths with no values |
+| `$[?(@ == @)]` | | | Comparison of structured values |
+{: title="Filter __PICKER__ examples"}
 
 ## Selectors
 
@@ -656,7 +1272,7 @@ Queries:
 ### Child Selector
 
 #### Syntax
-<!-- {: unnumbered} -->
+{: unnumbered}
 
 The child selector has the form `[<__PICKERS__>]` where `<__PICKERS__>` is a comma-delimited
 collection of one or more __PICKERS__.
@@ -673,7 +1289,7 @@ list-entry     =  ( quoted-member-name /
 ~~~~
 
 #### Semantics
-<!-- {: unnumbered} -->
+{: unnumbered}
 
 A child selector operates on objects and arrays only.
 It contains a comma-delimited collection of __PICKERS__ to indicate which
@@ -689,621 +1305,6 @@ the nodelists from each of its __PICKERS__ in the order that the __PICKERS__
 appear in the list.
 Note that any node matched by more than one __PICKER__ is kept
 as many times in the nodelist.
-
-#### Name __PICKER__ {#name-__PICKER__}
-
-##### Syntax {#syntax-name}
-{: unnumbered}
-
-A name __PICKER__ `'<name>'` matches at most one object member value.
-
-Applying the `quoted-member-name` to an object value in its input nodelist,
-its string is required to match the corresponding member value.
-In contrast to JSON,
-the JSONPath syntax allows strings to be enclosed in _single_ or _double_ quotes.
-
-~~~~ abnf
-quoted-member-name  = string-literal
-
-string-literal      = %x22 *double-quoted %x22 /       ; "string"
-                      %x27 *single-quoted %x27         ; 'string'
-
-double-quoted       = unescaped /
-                      %x27      /                       ; '
-                      ESC %x22  /                       ; \"
-                      ESC escapable
-
-single-quoted       = unescaped /
-                      %x22      /                       ; "
-                      ESC %x27  /                       ; \'
-                      ESC escapable
-
-ESC                 = %x5C                              ; \  backslash
-
-unescaped           = %x20-21 /                         ; s. RFC 8259
-                      %x23-26 /                         ; omit "
-                      %x28-5B /                         ; omit '
-                      %x5D-10FFFF                       ; omit \
-
-escapable           = ( %x62 / %x66 / %x6E / %x72 / %x74 / ; \b \f \n \r \t
-                          ; b /         ;  BS backspace U+0008
-                          ; t /         ;  HT horizontal tab U+0009
-                          ; n /         ;  LF line feed U+000A
-                          ; f /         ;  FF form feed U+000C
-                          ; r /         ;  CR carriage return U+000D
-                          "/" /          ;  /  slash (solidus) U+002F
-                          "\" /          ;  \  backslash (reverse solidus) U+005C
-                          (%x75 hexchar) ;  uXXXX      U+XXXX
-                      )
-
-hexchar = non-surrogate / (high-surrogate "\" %x75 low-surrogate)
-non-surrogate = ((DIGIT / "A"/"B"/"C" / "E"/"F") 3HEXDIG) /
-                 ("D" %x30-37 2HEXDIG )
-high-surrogate = "D" ("8"/"9"/"A"/"B") 2HEXDIG
-low-surrogate = "D" ("C"/"D"/"E"/"F") 2HEXDIG
-
-HEXDIG = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
-
-; Task from 2021-06-15 interim: update ABNF later
-~~~~
-
-A shorthand for `quoted-member-name` exists as `dotted-member-name`.
-These may be used interchangeably.
-
-A `dotted-member-name` starts with a dot `.` followed by an object's member name.
-
-~~~~ abnf
-dotted-member-name    = "." dot-member-name
-dot-member-name       = name-first *name-char
-name-first            =
-                           ALPHA /
-                           "_"   /            ; _
-                           %x80-10FFFF        ; any non-ASCII Unicode character
-name-char = DIGIT / name-first
-
-DIGIT                 =  %x30-39              ; 0-9
-ALPHA                 =  %x41-5A / %x61-7A    ; A-Z / a-z
-~~~~
-
-Member names containing characters other than allowed by
-`dotted-member-name` — such as space (U+0020), minus (U+002D), dot (U+002E)
-or escaped characters which appear in the semantic section below —
-MUST NOT be used with the `dotted-member-name`.
-(Such member names can be addressed by the `quoted-member-name` syntax instead.)
-
-Note: `double-quoted` strings follow the JSON string syntax ({{Section 7 of RFC8259}});
-`single-quoted` strings follow an analogous pattern ({{syntax-index}}).
-
-##### Semantics {#name-semantics}
-{: unnumbered}
-
-A `quoted-member-name` string MUST be converted to a
-member name by removing the surrounding quotes and
-replacing each escape sequence with its equivalent Unicode character, as
-in the table below:
-
-| Escape Sequence    | Unicode Character   |  Description                |
-| :----------------: | :-----------------: |:--------------------------- |
-| \\b                | U+0008              | BS backspace                |
-| \\t                | U+0009              | HT horizontal tab           |
-| \\n                | U+000A              | LF line feed                |
-| \\f                | U+000C              | FF form feed                |
-| \\r                | U+000D              | CR carriage return          |
-| \\"                | U+0022              | quotation mark              |
-| \\'                | U+0027              | apostrophe                  |
-| \\/                | U+002F              | slash (solidus)             |
-| \\\\               | U+005C              | backslash (reverse solidus) |
-| \\uXXXX            | U+XXXX              | unicode character           |
-{: title="Escape Sequence Replacements" cols="c c"}
-
-A `dotted-member-name` string is converted to a member name by removing
-the initial dot.
-
-The name __PICKER__ applied to an object
-matches the node of the corresponding member value from it, if and only if that object has a member with that name.
-Nothing is selected from a value that is not a object.
-
-Note that processing the name __PICKER__ potentially requires matching strings against
-strings, with those strings coming from the JSONPath and from member
-names and string values in the JSON to which it is being applied.
-Two strings MUST be considered equal if and only if they are identical
-sequences of Unicode scalar values. In other words, normalization operations
-MUST NOT be applied to either the string from the JSONPath or from the JSON
-prior to comparison.
-
-##### Examples
-{: unnumbered}
-
-<!-- EDITING NOTE: There are non-breaking spaces here between j and j -->
-<!-- i.e., j j and not j j -->
-
-JSON:
-
-    {
-      "o": {"j j": {"k.k": 3}},
-      "'": {"@": 2}
-    }
-
-Queries:
-
-| Query | Result | Result Paths | Comment |
-| :---: | ------ | :----------: | ------- |
-| `$.o['j j']['k.k']`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
-| `$.o["j j"]["k.k"]`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
-| `$["'"]["@"]` | `2` | `$['\'']['@']` | Unusual member names
-| `$.j`   | `{"k": 3}` | `$['j']`      | Named value of an object      |
-| `$.j.k` | `3`        | `$['j']['k']` | Named value in nested object  |
-{: title="Name __PICKER__ examples"}
-
-#### Index __PICKER__ {#index-__PICKER__}
-
-##### Syntax {#syntax-index}
-{: unnumbered}
-
-An index __PICKER__ `<index>` matches at most one array element value.
-
-~~~~ abnf
-element-index   = int                             ; decimal integer
-
-int             = ["-"] ( "0" / (DIGIT1 *DIGIT) ) ; -  optional
-DIGIT1          = %x31-39                         ; 1-9 non-zero digit
-~~~~
-
-Applying the numerical `element-index` is required to select the corresponding
-element. JSONPath allows it to be negative (see {{index-semantics}}).
-
-Notes:
-1. An `element-index` is an integer (in base 10, as in JSON numbers).
-2. As in JSON numbers, the syntax does not allow octal-like integers with leading zeros such as `01` or `-01`.
-
-##### Semantics {#index-semantics}
-{: unnumbered}
-
-The `element-index` applied to an array selects an array element using a zero-based index.
-For example, selector `0` selects the first and selector `4` the fifth element of a sufficiently long array.
-Nothing is selected, and it is not an error, if the index lies outside the range of the array. Nothing is selected from a value that is not an array.
-
-A negative `element-index` counts from the array end.
-For example, selector `-1` selects the last and selector `-2` selects the penultimate element of an array with at least two elements.
-As with non-negative indexes, it is not an error if such an element does
-not exist; this simply means that no element is selected.
-
-##### Examples
-{: unnumbered}
-
-<!-- EDITING NOTE: There are non-breaking spaces here between j and j -->
-<!-- i.e., j j and not j j -->
-
-JSON:
-
-    {
-      "o": {"j j": {"k.k": 3}},
-      "a": ["a","b"],
-      "'": {"@": 2}
-    }
-
-Queries:
-
-| Query | Result | Result Paths | Comment |
-| :---: | ------ | :----------: | ------- |
-| `$.a[1]`   | `"b"` | `$['a'][1]`      | Member of array      |
-| `$.a[-2]`   | `"a"` | `$['a'][0]`      | Member of array, from the end      |
-{: title="Index __PICKER__ examples"}
-
-#### Array Slice __PICKER__ {#slice}
-
-##### Syntax
-{: unnumbered}
-
-The array slice __PICKER__ has the form `<start>:<end>:<step>`.
-It matches elements from arrays starting at index `<start>`, ending at — but
-not including — `<end>`, while incrementing by `step`.
-
-~~~~ abnf
-slice-index    =  [start S] ":" S [end S] [":" [S step ]]
-
-start          = int       ; included in selection
-end            = int       ; not included in selection
-step           = int       ; default: 1
-
-B              =    %x20 / ; Space
-                    %x09 / ; Horizontal tab
-                    %x0A / ; Line feed or New line
-                    %x0D   ; Carriage return
-S              = *B        ; optional blank space
-RS             = 1*B       ; required blank space
-
-~~~~
-
-The slice __PICKER__ consists of three optional decimal integers separated by colons.
-
-##### Semantics
-{: unnumbered}
-
-The slice __PICKER__ was inspired by the slice operator of ECMAScript
-4 (ES4), which was deprecated in 2014, and that of Python.
-
-
-###### Informal Introduction
-{: unnumbered}
-
-This section is non-normative.
-
-Array indexing is a way of selecting a particular element of an array using
-a 0-based index.
-For example, the expression `0` selects the first element of a non-empty array.
-
-Negative indices index from the end of an array.
-For example, the expression `-2` selects the last but one element of an array with at least two elements.
-
-Array slicing is inspired by the behavior of the `Array.prototype.slice` method
-of the JavaScript language as defined by the ECMA-262 standard {{ECMA-262}},
-with the addition of the `step` parameter, which is inspired by the Python slice expression.
-
-The array slice expression `start:end:step` selects elements at indices starting at `start`,
-incrementing by `step`, and ending with `end` (which is itself excluded).
-So, for example, the expression `1:3` (where `step` defaults to `1`)
-selects elements with indices `1` and `2` (in that order) whereas
-`1:5:2` selects elements with indices `1` and `3`.
-
-When `step` is negative, elements are selected in reverse order. Thus,
-for example, `5:1:-2` selects elements with indices `5` and `3`, in
-that order and `::-1` selects all the elements of an array in
-reverse order.
-
-When `step` is `0`, no elements are selected.
-(This is the one case that differs from the behavior of Python, which
-raises an error in this case.)
-
-The following section specifies the behavior fully, without depending on
-JavaScript or Python behavior.
-
-###### Detailed Semantics
-{: unnumbered}
-
-A slice expression selects a subset of the elements of the input array, in
-the same order
-as the array or the reverse order, depending on the sign of the `step` parameter.
-It selects no nodes from a node that is not an array.
-
-A slice is defined by the two slice parameters, `start` and `end`, and
-an iteration delta, `step`.
-Each of these parameters is
-optional. `len` is the length of the input array.
-
-The default value for `step` is `1`.
-The default values for `start` and `end` depend on the sign of `step`,
-as follows:
-
-| Condition    | start   | end      |
-|--------------|---------|----------|
-| step >= 0    | 0       | len      |
-| step < 0     | len - 1 | -len - 1 |
-{: title="Default array slice start and end values"}
-
-Slice expression parameters `start` and `end` are not directly usable
-as slice bounds and must first be normalized.
-Normalization for this purpose is defined as:
-
-~~~~
-FUNCTION Normalize(i, len):
-  IF i >= 0 THEN
-    RETURN i
-  ELSE
-    RETURN len + i
-  END IF
-~~~~
-
-The result of the array indexing expression `i` applied to an array
-of length `len` is defined to be the result of the array
-slicing expression `i:Normalize(i, len)+1:1`.
-
-Slice expression parameters `start` and `end` are used to derive slice bounds `lower` and `upper`.
-The direction of the iteration, defined
-by the sign of `step`, determines which of the parameters is the lower bound and which
-is the upper bound:
-
-~~~~
-FUNCTION Bounds(start, end, step, len):
-  n_start = Normalize(start, len)
-  n_end = Normalize(end, len)
-
-  IF step >= 0 THEN
-    lower = MIN(MAX(n_start, 0), len)
-    upper = MIN(MAX(n_end, 0), len)
-  ELSE
-    upper = MIN(MAX(n_start, -1), len-1)
-    lower = MIN(MAX(n_end, -1), len-1)
-  END IF
-
-  RETURN (lower, upper)
-~~~~
-
-The slice expression selects elements with indices between the lower and
-upper bounds.
-In the following pseudocode, the `a(i)` construct expresses the
-0-based indexing operation on the underlying array.
-
-~~~~
-IF step > 0 THEN
-
-  i = lower
-  WHILE i < upper:
-    SELECT a(i)
-    i = i + step
-  END WHILE
-
-ELSE if step < 0 THEN
-
-  i = upper
-  WHILE lower < i:
-    SELECT a(i)
-    i = i + step
-  END WHILE
-
-END IF
-~~~~
-
-When `step = 0`, no elements are selected and the result array is empty.
-
-To be valid, the slice expression parameters MUST be in the I-JSON
-range of exact values, see {{synsem-overview}}.
-
-##### Examples
-{: unnumbered}
-
-JSON:
-
-    ["a", "b", "c", "d", "e", "f", "g"]
-
-Queries:
-
-| Query | Result | Result Paths | Comment |
-| :---: | ------ | :----------: | ------- |
-| `$[1:3]` | `"b"` <br> `"c"` | `$[1]` <br> `$[2]` | Slice with default step |
-| `$[1:5:2]` | `"b"` <br> `"d"` | `$[1]` <br> `$[3]` | Slice with step 2 |
-| `$[5:1:-2]` | `"f"` <br> `"d"` | `$[5]` <br> `$[3]` | Slice with negative step |
-| `$[::-1]` | `"g"` <br> `"f"` <br> `"e"` <br> `"d"` <br> `"c"` <br> `"b"` <br> `"a"` | `$[6]` <br> `$[5]` <br> `$[4]` <br> `$[3]` <br> `$[2]` <br> `$[1]` <br> `$[0]` | Slice in reverse order |
-{: title="Array slice __PICKER__ examples"}
-
-#### Filter __PICKER__ {#filter-__PICKER__}
-
-##### Syntax
-{: unnumbered}
-
-The filter __PICKER__ has the form `?<expr>`. It works via iterating over structured values, i.e. arrays and objects.
-
-~~~~ abnf
-filter             = "?" S boolean-expr
-~~~~
-
-During the iteration process each array element or object member is visited and its value — accessible via symbol `@` — or one of its descendants — uniquely defined by a relative path — is tested against a boolean expression `boolean-expr`.
-
-The current item is selected if and only if the boolean expression yields true.
-
-
-~~~~ abnf
-boolean-expr     = logical-or-expr
-logical-or-expr  = logical-and-expr *(S "||" S logical-and-expr)
-                                                      ; disjunction
-                                                      ; binds less tightly than conjunction
-logical-and-expr = basic-expr *(S "&&" S basic-expr)  ; conjunction
-                                                      ; binds more tightly than disjunction
-
-basic-expr        = exist-expr /
-                    paren-expr /
-                    relation-expr
-exist-expr        = [logical-not-op S] singular-path  ; path existence or non-existence
-~~~~
-
-Paths in filter expressions are Singular Paths, each of which selects at most one node.
-
-~~~~ abnf
-singular-path     = rel-singular-path / abs-singular-path
-rel-singular-path = "@" *(S (name-selector / index-selector))
-abs-singular-path = root-selector *(S (name-selector / index-selector))
-name-selector     = "[" quoted-member-name "]" / dotted-member-name
-index-selector    = "[" element-index "]"
-~~~~
-
-Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `?(<expr>)` is naturally contained in the current lean syntax `?<expr>` as a special case.
-
-~~~~ abnf
-paren-expr        = [logical-not-op S] "(" S boolean-expr S ")"
-                                                      ; parenthesized expression
-logical-not-op    = "!"                               ; logical NOT operator
-
-relation-expr = comp-expr /                           ; comparison test
-                regex-expr                            ; regular expression test
-~~~~
-
-Comparisons are restricted to Singular Path values and primitive values (that is, numbers, strings, `true`, `false`,
-and `null`).
-
-~~~~ abnf
-comp-expr    = comparable S comp-op S comparable
-comparable   = number / string-literal /              ; primitive ...
-               true / false / null /                  ; values only
-               singular-path                          ; Singular Path value
-comp-op      = "==" / "!=" /                          ; comparison ...
-               "<"  / ">"  /                          ; operators
-               "<=" / ">="
-~~~~
-
-Alphabetic characters in ABNF are case-insensitive, so "e" can be either "e" or "E".
-
-`true`, `false`, and `null` are lower-case only (case-sensitive).
-
-~~~~ abnf
-number       = int [ frac ] [ exp ]                   ; decimal number
-frac         = "." 1*DIGIT                            ; decimal fraction
-exp          = "e" [ "-" / "+" ] 1*DIGIT              ; decimal exponent
-true         = %x74.72.75.65                          ; true
-false        = %x66.61.6c.73.65                       ; false
-null         = %x6e.75.6c.6c                          ; null
-~~~~
-
-The syntax of regular expressions in the string-literals on the right-hand
-side of `=~` is as defined in {{-iregexp}}.
-
-~~~~ abnf
-regex-expr   = (singular-path / string-literal) S regex-op S regex
-regex-op     = "=~"                                   ; regular expression match
-regex        = string-literal                         ; I-Regexp
-~~~~
-
-The following table lists filter expression operators in order of precedence from highest (binds most tightly) to lowest (binds least tightly).
-
-<!-- FIXME: Should the syntax column be split between unary and binary operators? -->
-
-| Precedence | Operator type | Syntax |
-|:--:|:--:|:--:|
-|  5  | Grouping | `(...)` |
-|  4  | Logical NOT | `!` |
-|  3  | Relations | `==`&nbsp;`!=`<br>`<`&nbsp;`<=`&nbsp;`>`&nbsp;`>=`<br>`=~` |
-|  2  | Logical AND | `&&` |
-|  1  | Logical OR | `¦¦`   |
-{: title="Filter expression operator precedence" }
-
-##### Semantics
-{: unnumbered}
-
-The filter __PICKER__ works with arrays and objects exclusively. Its result is a list of *zero*, *one*, *multiple* or *all* of their array elements or member values, respectively.
-Applied to other value types, it will select nothing.
-
-A relative path, beginning with `@`, refers to the current array element or member value as the
-filter __PICKER__ iterates over the array or object.
-
-###### Existence Tests
-{: unnumbered}
-
-A singular path by itself in a Boolean context is an existence test which yields true if the path selects a node and yields false if the path does not select a node.
-This existence test — as an exception to the general rule — also works with nodes with structured values.
-
-To test the value of a node selected by a path, an explicit comparison is necessary.
-For example, to test whether the node selected by the path `@.foo` has the value `null`, use `@.foo == null` (see {{null-semantics}})
-rather than the negated existence test `!@.foo` (which yields false if `@.foo` selects a node, regardless of the node's value).
-
-###### Comparisons
-{: unnumbered}
-
-The comparison operators `==`, `<`, and `>` are defined first and then these are used to define `!=`, `<=`, and `>=`.
-
-When a path resulting in an empty nodelist appears on either side of a comparison:
-
-* a comparison using the operator `==` yields true if and only if the comparison
-is between two paths each of which result in an empty nodelist.
-
-* a comparison using either of the operators `<` or `>` yields false.
-
-When any path on either side of a comparison results in a nodelist consisting of a single node, each such path is
-replaced by the value of its node and then:
-
-* a comparison using the operator `==` yields true if and only if the comparison
-is between:
-    * values of the same primitive type (numbers, strings, booleans, and `null`) which are equal,
-    * equal arrays, that is arrays of the same length where each element of the first array is equal to the corresponding
-      element of the second array, or
-    * equal objects with no duplicate names, that is where:
-        * both objects have the same collection of names (with no duplicates), and
-        * for each of those names, the values associated with the name by the objects are equal.
-
-* a comparison using either of the operators `<` or `>` yields true if and only if
-the comparison is between values of the same type which are both numbers or both strings and which satisfy the comparison:
-
-    * numbers expected to interoperate as per {{Section 2.2 of -i-json (I-JSON)}} MUST compare using the normal mathematical ordering;
-      numbers not expected to interoperate as per I-JSON MAY compare using an implementation specific ordering
-    * the empty string compares less than any non-empty string
-    * a non-empty string compares less than another non-empty string if and only if the first string starts with a
-      lower Unicode scalar value than the second string or if both strings start with the same Unicode scalar value and
-      the remainder of the first string compares less than the remainder of the second string.
-
-Note that comparisons using either of the operators `<` or `>` yield false if either value being
-compared is an object, array, boolean, or `null`.
-
-`!=`, `<=` and `>=` are defined in terms of the other comparison operators. For any `a` and `b`:
-
-* The comparison `a != b` yields true if and only if `a == b` yields false.
-* The comparison `a <= b` yields true if and only if `a < b` yields true or `a == b` yields true.
-* The comparison `a >= b` yields true if and only if `a > b` yields true or `a == b` yields true.
-
-###### Regular Expressions
-{: unnumbered}
-
-A regular-expression test yields true if and only if the value on the left-hand side of `=~` is a string value and it
-matches the regular expression on the right-hand side according to the semantics of {{-iregexp}}.
-
-The semantics of regular expressions are as defined in {{-iregexp}}.
-
-###### Boolean Operators
-{: unnumbered}
-
-The logical AND, OR, and NOT operators have the normal semantics of Boolean algebra and
-obey its laws (see, for example, {{BOOLEAN-LAWS}}).
-
-##### Examples
-{: unnumbered}
-
-JSON:
-
-    {
-      "obj": {"x": "y"},
-      "arr": [2, 3]
-    }
-
-| Comparison | Result | Comment |
-|:--:|:--:|:--:|
-| `$.absent1 == $.absent2` | true | Empty nodelists |
-| `$.absent1 <= $.absent2` | true | `==` implies `<=` |
-| `$.absent == 'g'` | false | Empty nodelist |
-| `$.absent1 != $.absent2` | false | Empty nodelists |
-| `$.absent != 'g'` | true | Empty nodelist |
-| `1 <= 2` | true | Numeric comparison |
-| `1 > 2` | false | Strict, numeric comparison |
-| `13 == '13'` | false | Type mismatch |
-| `'a' <= 'b'` | true | String comparison |
-| `'a' > 'b'` | false | Strict, string comparison |
-| `$.obj == $.arr` | false | Type mismatch |
-| `$.obj != $.arr` | true | Type mismatch |
-| `$.obj == $.obj` | true | Object comparison |
-| `$.obj != $.obj` | false | Object comparison |
-| `$.arr == $.arr` | true | Array comparison |
-| `$.arr != $.arr` | false | Array comparison |
-| `$.obj == 17` | false | Type mismatch |
-| `$.obj != 17` | true | Type mismatch |
-| `$.obj <= $.arr` | false | Objects and arrays are not ordered |
-| `$.obj < $.arr` | false | Objects and arrays are not ordered |
-| `$.obj <= $.obj` | true | `==` implies `<=` |
-| `$.arr <= $.arr` | true | `==` implies `<=` |
-| `1 <= $.arr` | false | Arrays are not ordered |
-| `1 >= $.arr` | false | Arrays are not ordered |
-| `1 > $.arr` | false | Arrays are not ordered |
-| `1 < $.arr` | false | Arrays are not ordered |
-| `true <= true` | true | `==` implies `<=` |
-| `true > true` | false | Booleans are not ordered |
-{: title="Comparison examples" }
-
-JSON:
-
-    {
-      "a": [3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}],
-      "o": {"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}}
-    }
-
-Queries:
-
-| Query | Result | Result Paths | Comment |
-| :---: | ------ | :----------: | ------- |
-| `$.a[?@>3.5]` | `5` <br> `4` <br> `6` | `$['a'][1]` <br> `$['a'][4]` <br> `$['a'][5]` | Array value comparison |
-| `$.a[?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` | `$['a'][6]` <br> `$['a'][7]` | Array value existence |
-| `$.a[?@<2 || @.b == "k"]` | `1` <br> `{"b": "k"}` | `$['a'][2]` <br> `$['a'][7]` | Array value logical OR |
-| `$.a[?@.b =~ "i.*"]` | `{"b": "j"}` <br> `{"b": "k"}` | `$['a'][6]` <br> `$['a'][7]` | Array value regular expression |
-| `$.o[?@>1 && @<4]` | `2` <br> `3` | `$['o']['q']` <br> `$['o']['r']` | Object value logical AND |
-| `$.o[?@>1 && @<4]` | `3` <br> `2` | `$['o']['r']` <br> `$['o']['q']` | Alternative result |
-| `$.o[?@.u || @.x]` | `{"u": 6}` | `$['o']['t']` | Object value logical OR |
-| `$.a[?(@.b == $.x)]`| `3` <br> `5` <br> `1` <br> `2` <br> `4` <br> `6` | `$['a'][0]` <br>`$['a'][1]` <br> `$['a'][2]` <br> `$['a'][3]` <br> `$['a'][4]` | Comparison of paths with no values |
-| `$[?(@ == @)]` | | | Comparison of structured values |
-{: title="Filter __PICKER__ examples"}
 
 ### Descendant Selectors
 
