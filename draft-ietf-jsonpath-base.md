@@ -561,6 +561,18 @@ of node.
 
 ## __PICKERS__
 
+__PICKERS__ are defined solely within the context of the [child selector](#child-selector).
+A __PICKER__ outside of a child selector is invalid.
+
+A __PICKER__ identifies, or matches, child elements to be selected for the
+resulting nodelist.
+
+Each type of __PICKER__ functions differently and may be defined to operate on only
+objects, only arrays, or both.
+
+The relationship between a __PICKER__ and the child selector that contains it
+is further defined in the child selector section below.
+
 ### Name __PICKER__ {#name-__PICKER__}
 
 #### Syntax {#syntax-name}
@@ -1295,10 +1307,10 @@ A child selector operates on objects and arrays only.
 It contains a comma-delimited collection of __PICKERS__ to indicate which
 object members and array elements to selects.
 
-Each type of __PICKER__ functions differently and may be defined to operate on only
-objects, only arrays, or both.
-
 __PICKERS__ of different types may be combined within a single child selector.
+
+A child selector iterates over its input nodelist and presents each node to each __PICKER__.
+The __PICKER__ then identifies which of that node's children are to be included in the resulting nodelist.
 
 The resulting nodelist of a child selector is the concatenation of
 the nodelists from each of its __PICKERS__ in the order that the __PICKERS__

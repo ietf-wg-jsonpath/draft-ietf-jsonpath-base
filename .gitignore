@@ -6,6 +6,7 @@
 *.upload
 *.abnf
 *~
+.vscode
 .refcache
 .tags
 .targets.mk
