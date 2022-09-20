@@ -580,13 +580,13 @@ is further defined in the child selector section below.
 
 A name __PICKER__ `'<name>'` matches at most one object member value.
 
-Applying the `quoted-member-name` to an object value in its input nodelist,
+Applying the `name-picker` to an object value in its input nodelist,
 its string is required to match the corresponding member value.
 In contrast to JSON,
 the JSONPath syntax allows strings to be enclosed in _single_ or _double_ quotes.
 
 ~~~~ abnf
-quoted-member-name  = string-literal
+name-picker         = string-literal
 
 string-literal      = %x22 *double-quoted %x22 /       ; "string"
                       %x27 *single-quoted %x27         ; 'string'
@@ -630,37 +630,13 @@ HEXDIG = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
 ; Task from 2021-06-15 interim: update ABNF later
 ~~~~
 
-A shorthand for `quoted-member-name` exists as `dotted-member-name`.
-These may be used interchangeably.
-
-A `dotted-member-name` starts with a dot `.` followed by an object's member name.
-
-~~~~ abnf
-dotted-member-name    = "." dot-member-name
-dot-member-name       = name-first *name-char
-name-first            =
-                           ALPHA /
-                           "_"   /            ; _
-                           %x80-10FFFF        ; any non-ASCII Unicode character
-name-char = DIGIT / name-first
-
-DIGIT                 =  %x30-39              ; 0-9
-ALPHA                 =  %x41-5A / %x61-7A    ; A-Z / a-z
-~~~~
-
-Member names containing characters other than allowed by
-`dotted-member-name` — such as space (U+0020), minus (U+002D), dot (U+002E)
-or escaped characters which appear in the semantic section below —
-MUST NOT be used with the `dotted-member-name`.
-(Such member names can be addressed by the `quoted-member-name` syntax instead.)
-
 Note: `double-quoted` strings follow the JSON string syntax ({{Section 7 of RFC8259}});
 `single-quoted` strings follow an analogous pattern ({{syntax-index}}).
 
 #### Semantics {#name-semantics}
 {: unnumbered}
 
-A `quoted-member-name` string MUST be converted to a
+A `name-picker` string MUST be converted to a
 member name by removing the surrounding quotes and
 replacing each escape sequence with its equivalent Unicode character, as
 in the table below:
@@ -726,27 +702,27 @@ Queries:
 An index __PICKER__ `<index>` matches at most one array element value.
 
 ~~~~ abnf
-element-index   = int                             ; decimal integer
+index-picker   = int                             ; decimal integer
 
 int             = ["-"] ( "0" / (DIGIT1 *DIGIT) ) ; -  optional
 DIGIT1          = %x31-39                         ; 1-9 non-zero digit
 ~~~~
 
-Applying the numerical `element-index` is required to select the corresponding
+Applying the numerical `index-picker` is required to select the corresponding
 element. JSONPath allows it to be negative (see {{index-semantics}}).
 
 Notes:
-1. An `element-index` is an integer (in base 10, as in JSON numbers).
+1. An `index-picker` is an integer (in base 10, as in JSON numbers).
 2. As in JSON numbers, the syntax does not allow octal-like integers with leading zeros such as `01` or `-01`.
 
 #### Semantics {#index-semantics}
 {: unnumbered}
 
-The `element-index` applied to an array selects an array element using a zero-based index.
+The `index-picker` applied to an array selects an array element using a zero-based index.
 For example, selector `0` selects the first and selector `4` the fifth element of a sufficiently long array.
 Nothing is selected, and it is not an error, if the index lies outside the range of the array. Nothing is selected from a value that is not an array.
 
-A negative `element-index` counts from the array end.
+A negative `index-picker` counts from the array end.
 For example, selector `-1` selects the last and selector `-2` selects the penultimate element of an array with at least two elements.
 As with non-negative indexes, it is not an error if such an element does
 not exist; this simply means that no element is selected.
@@ -783,7 +759,7 @@ It matches elements from arrays starting at index `<start>`, ending at — but
 not including — `<end>`, while incrementing by `step`.
 
 ~~~~ abnf
-slice-index    =  [start S] ":" S [end S] [":" [S step ]]
+slice-picker    =  [start S] ":" S [end S] [":" [S step ]]
 
 start          = int       ; included in selection
 end            = int       ; not included in selection
@@ -957,7 +933,7 @@ Queries:
 The filter __PICKER__ has the form `?<expr>`. It works via iterating over structured values, i.e. arrays and objects.
 
 ~~~~ abnf
-filter             = "?" S boolean-expr
+filter-picker = "?" S boolean-expr
 ~~~~
 
 During the iteration process each array element or object member is visited and its value — accessible via symbol `@` — or one of its descendants — uniquely defined by a relative path — is tested against a boolean expression `boolean-expr`.
@@ -985,8 +961,8 @@ Paths in filter expressions are Singular Paths, each of which selects at most on
 singular-path     = rel-singular-path / abs-singular-path
 rel-singular-path = "@" *(S (name-selector / index-selector))
 abs-singular-path = root-selector *(S (name-selector / index-selector))
-name-selector     = "[" quoted-member-name "]" / dotted-member-name
-index-selector    = "[" element-index "]"
+name-selector     = "[" name-picker "]" / dotted-member-name
+index-selector    = "[" index-picker "]"
 ~~~~
 
 Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `?(<expr>)` is naturally contained in the current lean syntax `?<expr>` as a special case.
@@ -1291,14 +1267,40 @@ collection of one or more __PICKERS__.
 Each __PICKER__ is defined below.
 
 ~~~~ abnf
-child-selector  = "[" S list-entry 1*(S "," S list-entry) S "]"
+child-selector  = "[" S __PICKER__ 1*(S "," S __PICKER__) S "]"
 
-list-entry     =  ( quoted-member-name /
-                    element-index      /
-                    slice-index /
-                    filter
+__PICKER__     =  ( name-picker /
+                    index-picker      /
+                    slice-picker /
+                    filter-picker
                   )
 ~~~~
+
+A shorthand for a child selector with a single element that is a `name-picker`
+exists as `dotted-member-name`.
+This shorthand entirely replaces the bracketed syntax.
+For example, `['child']` and `.child` are equivalent as selectors.
+
+A `dotted-member-name` starts with a dot `.` followed by an object member's name.
+
+~~~~ abnf
+dotted-member-name    = "." dot-member-name
+dot-member-name       = name-first *name-char
+name-first            =
+                           ALPHA /
+                           "_"   /            ; _
+                           %x80-10FFFF        ; any non-ASCII Unicode character
+name-char = DIGIT / name-first
+
+DIGIT                 =  %x30-39              ; 0-9
+ALPHA                 =  %x41-5A / %x61-7A    ; A-Z / a-z
+~~~~
+
+Member names containing characters other than allowed by
+`dotted-member-name` — such as space (U+0020), minus (U+002D), dot (U+002E)
+or escaped characters which appear in the [name picker semantics section](#name-semantics) —
+MUST NOT be used with the `dotted-member-name`.
+(Such member names can be addressed by the `name-picker` syntax instead.)
 
 #### Semantics
 {: unnumbered}
@@ -1449,8 +1451,8 @@ Path, but not a Normalized Path.
 
 ~~~~ abnf
 normalized-path           = root-selector *(normal-index-selector)
-normal-index-selector     = "[" (normal-quoted-member-name / normal-element-index) "]"
-normal-quoted-member-name = %x27 *normal-single-quoted %x27 ; 'string'
+normal-index-selector     = "[" (normal-name-picker / normal-index-picker) "]"
+normal-name-picker = %x27 *normal-single-quoted %x27 ; 'string'
 normal-single-quoted      = normal-unescaped /
                             ESC normal-escapable
 normal-unescaped          = %x20-26 /                       ; omit control codes
@@ -1474,7 +1476,7 @@ normal-hexchar            = "0" "0"
                               ("1" normal-HEXDIG)
                             )
 normal-HEXDIG             = DIGIT / %x61-66   ; "0"-"9", "a"-"f"
-normal-element-index      = "0" / (DIGIT1 *DIGIT) ; non-negative decimal integer
+normal-index-picker      = "0" / (DIGIT1 *DIGIT) ; non-negative decimal integer
 ~~~~
 
 ### Examples
