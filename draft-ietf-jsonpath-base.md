@@ -326,17 +326,16 @@ $.store.book[?(@.price < 10)].title
 
 {{tbl-overview}} provides a quick overview of the JSONPath syntax elements.
 
-| JSONPath          | Description                                                                                                               |
-|-------------------|---------------------------------------------------------------------------------------------------------------------------|
-| `$`                 | [root node identifier](#root-identifier)                                                                                    |
-| `[*]`               | [wildcard appender](#wildcard): selects all immediate descendants of objects and arrays                                 |
-| `..[*]`             | [descendant wildcard appender](#descendant-appenders): recursive version of the wildcard appender                       |
-| `[<selectors>]`   | [child appender](#child-appender) selects zero or more children of JSON objects and arrays; contains one or more selectors, separated by commas        |
-| `..[<selectors>]` | [descendant child appender](#descendant-appenders): recursive version of the child appender                             |
-| `'name'`            | [name selector](#name-selector): selects a named child of an object                                                    |
-| `3`                 | [index selector](#index-selector): selects an indexed child of an array (from 0)                                          |
-| `0:100:5`           | [array slice selector](#slice): start:end:step for arrays                                                             |
-| `?<expr>`           | [filter selector](#filter-selector): selects particular children using a boolean expression  |
+| JSONPath            | Description                                                                                                             |
+|---------------------|-------------------------------------------------------------------------------------------------------------------------|
+| `$`                 | [root node identifier](#root-identifier)                                                                                |
+| `[<selectors>]`     | [child appender](#child-appender) selects zero or more children of JSON objects and arrays; contains one or more selectors, separated by commas        |
+| `..[<selectors>]`   | [descendant child appender](#descendant-appenders): recursive version of the child appender                             |
+| `*`                 | [wildcard selector](#name-selector): selects all children of an array or object                                         |
+| `'name'`            | [name selector](#name-selector): selects a named child of an object                                                     |
+| `3`                 | [index selector](#index-selector): selects an indexed child of an array (from 0)                                        |
+| `0:100:5`           | [array slice selector](#slice): start:end:step for arrays                                                               |
+| `?<expr>`           | [filter selector](#filter-selector): selects particular children using a boolean expression                             |
 | `@`                 | [current node appender](#filter-selector) (valid only within filter selectors)                                          |
 | `.name`             | shorthand for `['name']`                                                                                                |
 | `.*`                | shorthand for `[*]`                                                                                                     |
@@ -476,10 +475,8 @@ stands for a nodelist that contains the root node of the argument,
 followed by a possibly empty sequence of *appenders*.
 
 ~~~~ abnf
-json-path = root-identifier *(S (wild-appender            /
-                               descendant-wild-appender /
-                               child-appender               /
-                               descendant-child-appender))
+json-path = root-identifier *(S (child-appender               /
+                                 descendant-child-appender))
 ~~~~
 
 The syntax and semantics of each appender is defined below.
@@ -607,6 +604,45 @@ objects, only arrays, or both.
 
 The relationship between a selector and the child appender that contains it
 is further defined in the child appender section below.
+
+### Wildcard Selector {#wildcard}
+
+#### Syntax
+{: unnumbered}
+
+The wildcard selector has either the form `[*]` or the shorthand form `.*`.
+
+~~~~ abnf
+wildcard             = "*"
+~~~~
+
+#### Semantics
+{: unnumbered}
+
+A `wildcard` selects the nodes of all children of an object or array.
+
+Applying the `wildcard` to a primitive JSON value (that is,
+a number, a string, `true`, `false`, or `null`) selects no node.
+
+#### Examples
+{: unnumbered}
+
+JSON:
+
+    {
+      "o": {"j": 1, "k": 2},
+      "a": [5, 3]
+    }
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$[*]`   | `{"j": 1, "k": 2}` <br> `[5, 3]` | `$['o']` <br> `$['a']` | Object values      |
+| `$.o[*]` | `1` <br> `2` | `$['o']['j']` <br> `$['o']['k']` | Object values      |
+| `$.o[*]` | `2` <br> `1` | `$['o']['k']` <br> `$['o']['j']` | Alternative result |
+| `$.a[*]` | `5` <br> `3` | `$['a'][0]` <br> `$['a'][1]`     | Array members      |
+{: title="Index wildcard appender examples"}
 
 ### Name Selector {#name-selector}
 
@@ -992,7 +1028,7 @@ Paths in filter expressions are Singular Paths, each of which selects at most on
 singular-path     = rel-singular-path / abs-singular-path
 rel-singular-path = "@" *(S (name-appender / index-appender))
 abs-singular-path = root-identifier *(S (name-appender / index-appender))
-name-appender     = "[" name-selector "]" / dotted-member-name
+name-appender     = "[" name-selector "]" / name-selector-shorthand
 index-appender    = "[" index-selector "]"
 ~~~~
 
@@ -1200,61 +1236,14 @@ Queries:
 A JSONPath query consists of root identifier followed by a sequence of appenders.
 Valid appenders are
 
-  * Wildcard appender `[*]`
   * Child appender `[<selectors>]`, where `<selectors>` is one or more of
     several selector types, which match the nodes to select,
     separated by commas
-
-The wildcard and child appenders can be made to recursively select values within
-nested objects and arrays be prefixing them with `..` turning them into
-
-  * Descendant wildcard appender `..[*]`
   * Descendant child appender `..[<selectors>]`
 
-### Wildcard Appender {#wildcard}
+The descendant child appender is a child appender that has been made to
+recursively select values within nested objects and arrays by prepending it with `..`.
 
-#### Syntax
-{: unnumbered}
-
-The wildcard appender has either the form `[*]` or the shorthand form `.*`.
-
-~~~~ abnf
-wild-appender        = (index-wild-appender /
-                        dot-wild-appender)
-index-wild-appender  = "[" wildcard "]"       ;  asterisk enclosed by brackets
-dot-wild-appender    = "." wildcard           ;  dot followed by asterisk
-wildcard             = "*"
-~~~~
-
-#### Semantics
-{: unnumbered}
-
-A `wild-appender` selects the nodes of all children of an object or array.
-
-Applying the `wild-appender` to a primitive JSON value (that is,
-a number, a string, `true`, `false`, or `null`) selects no node.
-
-The two formats, `index-wild-appender` and `dot-wild-appender`,
-are functionally identical and may be used interchangeably.
-
-#### Examples
-{: unnumbered}
-
-JSON:
-
-    {
-      "o": {"j": 1, "k": 2},
-      "a": [5, 3]
-    }
-
-Queries:
-
-| Query | Result | Result Paths | Comment |
-| :---: | ------ | :----------: | ------- |
-| `$.o[*]` | `1` <br> `2` | `$['o']['j']` <br> `$['o']['k']` | Object values      |
-| `$.o[*]` | `2` <br> `1` | `$['o']['k']` <br> `$['o']['j']` | Alternative result |
-| `$.a[*]` | `5` <br> `3` | `$['a'][0]` <br> `$['a'][1]`     | Array members      |
-{: title="Index wildcard appender examples"}
 
 ### Child Appender
 
@@ -1275,15 +1264,20 @@ selector       =  ( name-selector /
                   )
 ~~~~
 
-A shorthand for a child appender with a single element that is a `name-selector`
-exists as `dotted-member-name`.
-This shorthand entirely replaces the bracketed syntax.
-For example, `['child']` and `.child` are equivalent as appenders.
+Shorthand notations exist for child appenders with either:
 
-A `dotted-member-name` starts with a dot `.` followed by an object member's name.
+* a single element that is a `wildcard`, as `wild-selector-shorthand`
+* a single element that is a `name-selector`, as `name-selector-shorthand`.
+
+This shorthand entirely replaces the bracketed syntax.
+For example, `['child']` and `.child` are equivalent as appenders,
+as are `[*]` and `.*`.
+
+A `name-selector-shorthand` starts with a dot `.` followed by an object member's name.
 
 ~~~~ abnf
-dotted-member-name    = "." dot-member-name
+wild-selector-shorthand     = "." wildcard
+name-selector-shorthand    = "." dot-member-name
 dot-member-name       = name-first *name-char
 name-first            =
                            ALPHA /
@@ -1296,12 +1290,12 @@ ALPHA                 =  %x41-5A / %x61-7A    ; A-Z / a-z
 ~~~~
 
 Member names containing characters other than allowed by
-`dotted-member-name` — such as space (U+0020), minus (U+002D), dot (U+002E)
+`name-selector-shorthand` — such as space (U+0020), minus (U+002D), dot (U+002E)
 or escaped characters which appear in the [name selector semantics section](#name-semantics) —
-MUST NOT be used with the `dotted-member-name`.
+MUST NOT be used with the `name-selector-shorthand`.
 (Such member names can be addressed by the `name-selector` syntax instead.)
 
-A `dotted-member-name` string is converted to a member name by removing
+A `name-selector-shorthand` string is converted to a member name by removing
 the initial dot.
 
 #### Semantics
@@ -1322,37 +1316,34 @@ appear in the list.
 Note that any node matched by more than one selector is kept
 as many times in the nodelist.
 
-### Descendant appenders
+### Descendant appender
 
 #### Syntax
 {: unnumbered}
 
-The descendant appenders start with a double dot `..`
-followed by either a wildcard appender (`descendant-wild-appender`)
-or a child appender (`descendant-child-appender`).
+The descendant appender starts with a double dot `..`
+followed by either a child appender (`descendant-child-appender`).
 
 ~~~~ abnf
-descendant-wild-appender    = (descendant-wild /
-                               descendant-wild-shorthand)
-descendant-wild             = ".." index-wild-appender
-descendant-wild-shorthand   = ".." wildcard
-
 descendant-child-appender   = (descendant-child /
                                descendant-name-shorthand)
 descendant-child            = ".." child-appender
+
 descendant-name-shorthand   = ".." dot-member-name
+descendant-wild-shorthand   = ".." wildcard
 ~~~~
 
-`descendant-wild` and `descendant-wild-shorthand` may be used interchangeably.
+The shorthand notations exist for the occasion when a
+descendant child appender is used with either
 
-`descendant-name-shorthand` is a shorthand notation for the occasion when a
-descendant child appender is used with a single name selector where the name
-can be used in its shorthand notation.
+* a single name selector where the name can be used in its shorthand notation
+* a single wildcard selector
+
 The shorthand is not valid for child appenders containing more than one selector
 other selector types, or name selectors that cannot themselves be represented
 in shorthand.
 
-Note that `..` on its own is not a valid appender.
+Note that `..` on its own is not valid.
 
 #### Semantics
 {: unnumbered}
