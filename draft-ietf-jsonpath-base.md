@@ -311,7 +311,7 @@ Mixing these syntaxes within a single path is also useful.
 
 JSONPath allows the wildcard symbol `*` to select any member of an
 object or any element of an array ({{wildcard}}).
-The descendant appender (which starts with `..`) recursively selects some or all of the descendants ({{descendant-appenders}}) of a node.
+The descendant appender (which starts with `..`) recursively selects some or all of the descendants ({{descendant-appender}}) of a node.
 The array slice
 syntax `[start:end:step]` allows selecting a regular selection of an
 element from an array, giving a start position, an end position, and
@@ -330,7 +330,7 @@ $.store.book[?(@.price < 10)].title
 |---------------------|-------------------------------------------------------------------------------------------------------------------------|
 | `$`                 | [root node identifier](#root-identifier)                                                                                |
 | `[<selectors>]`     | [child appender](#child-appender) selects zero or more children of JSON objects and arrays; contains one or more selectors, separated by commas        |
-| `..[<selectors>]`   | [descendant child appender](#descendant-appenders): recursive version of the child appender                             |
+| `..[<selectors>]`   | [descendant child appender](#descendant-appender): recursive version of the child appender                             |
 | `*`                 | [wildcard selector](#name-selector): selects all children of an array or object                                         |
 | `'name'`            | [name selector](#name-selector): selects a named child of an object                                                     |
 | `3`                 | [index selector](#index-selector): selects an indexed child of an array (from 0)                                        |
@@ -458,7 +458,7 @@ by events and causes no issues with the present specification.)
 
 Specifically, the "Semantics" subsections of Sections
 {{<wildcard}}, {{<name-selector}},
-{{<filter-selector}}, and {{<descendant-appenders}} describe behavior that
+{{<filter-selector}}, and {{<descendant-appender}} describe behavior that
 turns unpredictable when the JSON value for one of the objects
 under consideration was constructed out of JSON text that exhibits
 multiple members for a single object that share the same member name
