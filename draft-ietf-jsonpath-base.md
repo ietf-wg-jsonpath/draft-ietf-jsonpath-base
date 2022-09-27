@@ -328,7 +328,7 @@ $.store.book[?(@.price < 10)].title
 
 | JSONPath          | Description                                                                                                               |
 |-------------------|---------------------------------------------------------------------------------------------------------------------------|
-| `$`                 | [root node selector](#root-selector)                                                                                    |
+| `$`                 | [root node selector](#root-identifier)                                                                                    |
 | `[*]`               | [wildcard selector](#wildcard): selects all immediate descendants of objects and arrays                                 |
 | `..[*]`             | [descendant wildcard selector](#descendant-selectors): recursive version of the wildcard selector                       |
 | `[<__PICKERS__>]`   | [child selector](#child-selector) selects zero or more children of JSON objects and arrays; contains one or more __PICKERS__, separated by commas        |
@@ -471,12 +471,12 @@ if they aren't ({{Section 8.2 of -json}}).
 
 ## Syntax
 
-Syntactically, a JSONPath query consists of a root selector (`$`), which
+Syntactically, a JSONPath query consists of a root starter (`$`), which
 stands for a nodelist that contains the root node of the argument,
 followed by a possibly empty sequence of *selectors*.
 
 ~~~~ abnf
-json-path = root-selector *(S (wild-selector            /
+json-path = root-identifier *(S (wild-selector            /
                                descendant-wild-selector /
                                child-selector               /
                                descendant-child-selector))
@@ -558,6 +558,37 @@ then the whole query selects no nodes.
 
 In what follows, the semantics of each selector are defined for each type
 of node.
+
+## Root Identifier
+
+### Syntax
+{: unnumbered}
+
+Every valid JSONPath query MUST begin with the root identifier `$`.
+
+~~~~ abnf
+root-identifier  = "$"
+~~~~
+
+### Semantics
+{: unnumbered}
+
+The root identifier `$` represents the root node of the argument
+and produces a nodelist consisting of that root node.
+
+### Examples
+{: unnumbered}
+
+JSON:
+
+    {"k": "v"}
+
+Queries:
+
+| Query | Result | Result Path | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$` | `{"k": "v"}` | `$` | Root node |
+{: title="Root selector examples"}
 
 ## __PICKERS__
 
@@ -940,7 +971,6 @@ During the iteration process each array element or object member is visited and 
 
 The current item is selected if and only if the boolean expression yields true.
 
-
 ~~~~ abnf
 boolean-expr     = logical-or-expr
 logical-or-expr  = logical-and-expr *(S "||" S logical-and-expr)
@@ -960,7 +990,7 @@ Paths in filter expressions are Singular Paths, each of which selects at most on
 ~~~~ abnf
 singular-path     = rel-singular-path / abs-singular-path
 rel-singular-path = "@" *(S (name-selector / index-selector))
-abs-singular-path = root-selector *(S (name-selector / index-selector))
+abs-singular-path = root-identifier *(S (name-selector / index-selector))
 name-selector     = "[" name-picker "]" / dotted-member-name
 index-selector    = "[" index-picker "]"
 ~~~~
@@ -1180,37 +1210,6 @@ nested objects and arrays be prefixing them with `..` turning them into
 
   * Descendant wildcard selector `..[*]`
   * Descendant child selector `..[<__PICKERS__>]`
-
-### Root Selector
-
-#### Syntax
-{: unnumbered}
-
-Every valid JSONPath query MUST begin with the root selector `$`.
-
-~~~~ abnf
-root-selector  = "$"
-~~~~
-
-#### Semantics
-{: unnumbered}
-
-The root selector `$` selects the root node of the argument
-and produces a nodelist consisting of that root node.
-
-#### Examples
-{: unnumbered}
-
-JSON:
-
-    {"k": "v"}
-
-Queries:
-
-| Query | Result | Result Path | Comment |
-| :---: | ------ | :----------: | ------- |
-| `$` | `{"k": "v"}` | `$` | Root node |
-{: title="Root selector examples"}
 
 ### Wildcard Selector {#wildcard}
 
@@ -1450,7 +1449,7 @@ Normalized Paths are Singular Paths. Not all Singular Paths are Normalized Paths
 Path, but not a Normalized Path.
 
 ~~~~ abnf
-normalized-path           = root-selector *(normal-index-selector)
+normalized-path           = root-identifier *(normal-index-selector)
 normal-index-selector     = "[" (normal-name-picker / normal-index-picker) "]"
 normal-name-picker = %x27 *normal-single-quoted %x27 ; 'string'
 normal-single-quoted      = normal-unescaped /
