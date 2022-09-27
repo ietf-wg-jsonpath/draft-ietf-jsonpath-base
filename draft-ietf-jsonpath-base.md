@@ -248,7 +248,7 @@ Unicode Scalar Value:
 Singular Path:
 : A JSONPath expression built from appenders which each select at most one node.
 
-__PICKER__:
+Selector:
 : A single item within a bracketed (`[]`) child appender that matches the values which
   are to be selected.
 
@@ -331,13 +331,13 @@ $.store.book[?(@.price < 10)].title
 | `$`                 | [root node identifier](#root-identifier)                                                                                    |
 | `[*]`               | [wildcard appender](#wildcard): selects all immediate descendants of objects and arrays                                 |
 | `..[*]`             | [descendant wildcard appender](#descendant-appenders): recursive version of the wildcard appender                       |
-| `[<__PICKERS__>]`   | [child appender](#child-appender) selects zero or more children of JSON objects and arrays; contains one or more __PICKERS__, separated by commas        |
-| `..[<__PICKERS__>]` | [descendant child appender](#descendant-appenders): recursive version of the child appender                             |
-| `'name'`            | [name __PICKER__](#name-__PICKER__): selects a named child of an object                                                    |
-| `3`                 | [index __PICKER__](#index-__PICKER__): selects an indexed child of an array (from 0)                                          |
-| `0:100:5`           | [array slice __PICKER__](#slice): start:end:step for arrays                                                             |
-| `?<expr>`           | [filter __PICKER__](#filter-__PICKER__): selects particular children using a boolean expression  |
-| `@`                 | [current node appender](#filter-__PICKER__) (valid only within filter __PICKERS__)                                          |
+| `[<selectors>]`   | [child appender](#child-appender) selects zero or more children of JSON objects and arrays; contains one or more selectors, separated by commas        |
+| `..[<selectors>]` | [descendant child appender](#descendant-appenders): recursive version of the child appender                             |
+| `'name'`            | [name selector](#name-selector): selects a named child of an object                                                    |
+| `3`                 | [index selector](#index-selector): selects an indexed child of an array (from 0)                                          |
+| `0:100:5`           | [array slice selector](#slice): start:end:step for arrays                                                             |
+| `?<expr>`           | [filter selector](#filter-selector): selects particular children using a boolean expression  |
+| `@`                 | [current node appender](#filter-selector) (valid only within filter selectors)                                          |
 | `.name`             | shorthand for `['name']`                                                                                                |
 | `.*`                | shorthand for `[*]`                                                                                                     |
 | `..name`            | shorthand for `..['name']`                                                                                              |
@@ -458,14 +458,14 @@ behavior for JSONPath queries in these situations.
 by events and causes no issues with the present specification.)
 
 Specifically, the "Semantics" subsections of Sections
-{{<wildcard}}, {{<name-__PICKER__}},
-{{<filter-__PICKER__}}, and {{<descendant-appenders}} describe behavior that
+{{<wildcard}}, {{<name-selector}},
+{{<filter-selector}}, and {{<descendant-appenders}} describe behavior that
 turns unpredictable when the JSON value for one of the objects
 under consideration was constructed out of JSON text that exhibits
 multiple members for a single object that share the same member name
 ("duplicate names", see {{Section 4 of -json}}).
 Also, matching ({{appenders}}) and comparing
-({{comparisons}} in Section {{<filter-__PICKER__}}) of strings assumes these
+({{comparisons}} in Section {{<filter-selector}}) of strings assumes these
 strings are sequences of Unicode scalar values, turning unpredictable
 if they aren't ({{Section 8.2 of -json}}).
 
@@ -555,7 +555,7 @@ This is the concatenation of three lists, two of length one containing
 
 <!--
 Greg: this could be reworded since appenders don't select.  Maybe they do
-vicariously through __PICKERS__.
+vicariously through selectors.
 -->
 As a consequence of this approach, if any of the appenders selects no nodes,
 then the whole query selects no nodes.
@@ -594,34 +594,34 @@ Queries:
 | `$` | `{"k": "v"}` | `$` | Root node |
 {: title="Root identifier examples"}
 
-## __PICKERS__
+## Selectors
 
-__PICKERS__ are defined solely within the context of the [child appender](#child-appender).
-A __PICKER__ outside of a child appender is invalid.
+Selectors are defined solely within the context of the [child appender](#child-appender).
+A selector outside of a child appender is invalid.
 
-A __PICKER__ identifies, or matches, child elements to be selected for the
+A selector identifies, or matches, child elements to be selected for the
 resulting nodelist.
 
-Each type of __PICKER__ functions differently and may be defined to operate on only
+Each type of selector functions differently and may be defined to operate on only
 objects, only arrays, or both.
 
-The relationship between a __PICKER__ and the child appender that contains it
+The relationship between a selector and the child appender that contains it
 is further defined in the child appender section below.
 
-### Name __PICKER__ {#name-__PICKER__}
+### Name Selector {#name-selector}
 
 #### Syntax {#syntax-name}
 {: unnumbered}
 
-A name __PICKER__ `'<name>'` matches at most one object member value.
+A name selector `'<name>'` selects at most one object member value.
 
-Applying the `name-picker` to an object value in its input nodelist,
+Applying the `name-selector` to an object value in its input nodelist,
 its string is required to match the corresponding member value.
 In contrast to JSON,
 the JSONPath syntax allows strings to be enclosed in _single_ or _double_ quotes.
 
 ~~~~ abnf
-name-picker         = string-literal
+name-selector       = string-literal
 
 string-literal      = %x22 *double-quoted %x22 /       ; "string"
                       %x27 *single-quoted %x27         ; 'string'
@@ -671,7 +671,7 @@ Note: `double-quoted` strings follow the JSON string syntax ({{Section 7 of RFC8
 #### Semantics {#name-semantics}
 {: unnumbered}
 
-A `name-picker` string MUST be converted to a
+A `name-selector` string MUST be converted to a
 member name by removing the surrounding quotes and
 replacing each escape sequence with its equivalent Unicode character, as
 in the table below:
@@ -690,14 +690,11 @@ in the table below:
 | \\uXXXX            | U+XXXX              | unicode character           |
 {: title="Escape Sequence Replacements" cols="c c"}
 
-A `dotted-member-name` string is converted to a member name by removing
-the initial dot.
-
-The name __PICKER__ applied to an object
+The name selector applied to an object
 matches the node of the corresponding member value from it, if and only if that object has a member with that name.
 Nothing is selected from a value that is not a object.
 
-Note that processing the name __PICKER__ potentially requires matching strings against
+Note that processing the name selector potentially requires matching strings against
 strings, with those strings coming from the JSONPath and from member
 names and string values in the JSON to which it is being applied.
 Two strings MUST be considered equal if and only if they are identical
@@ -727,38 +724,38 @@ Queries:
 | `$["'"]["@"]` | `2` | `$['\'']['@']` | Unusual member names
 | `$.j`   | `{"k": 3}` | `$['j']`      | Named value of an object      |
 | `$.j.k` | `3`        | `$['j']['k']` | Named value in nested object  |
-{: title="Name __PICKER__ examples"}
+{: title="Name selector examples"}
 
-### Index __PICKER__ {#index-__PICKER__}
+### Index selector {#index-selector}
 
 #### Syntax {#syntax-index}
 {: unnumbered}
 
-An index __PICKER__ `<index>` matches at most one array element value.
+An index selector `<index>` matches at most one array element value.
 
 ~~~~ abnf
-index-picker   = int                             ; decimal integer
+index-selector  = int                             ; decimal integer
 
 int             = ["-"] ( "0" / (DIGIT1 *DIGIT) ) ; -  optional
 DIGIT1          = %x31-39                         ; 1-9 non-zero digit
 ~~~~
 
-Applying the numerical `index-picker` is required to select the corresponding
+Applying the numerical `index-selector` is required to select the corresponding
 element. JSONPath allows it to be negative (see {{index-semantics}}).
 
 Notes:
-1. An `index-picker` is an integer (in base 10, as in JSON numbers).
+1. An `index-selector` is an integer (in base 10, as in JSON numbers).
 2. As in JSON numbers, the syntax does not allow octal-like integers with leading zeros such as `01` or `-01`.
 
 #### Semantics {#index-semantics}
 {: unnumbered}
 
-The `index-picker` applied to an array selects an array element using a zero-based index.
-For example, __PICKER__ `0` selects the first and __PICKER__ `4` the fifth element of a sufficiently long array.
+The `index-selector` applied to an array selects an array element using a zero-based index.
+For example, the selector `0` selects the first and the selector `4` the fifth element of a sufficiently long array.
 Nothing is selected, and it is not an error, if the index lies outside the range of the array. Nothing is selected from a value that is not an array.
 
-A negative `index-picker` counts from the array end.
-For example, __PICKER__ `-1` selects the last and __PICKER__ `-2` selects the penultimate element of an array with at least two elements.
+A negative `index-selector` counts from the array end.
+For example, the selector `-1` selects the last and the selector `-2` selects the penultimate element of an array with at least two elements.
 As with non-negative indexes, it is not an error if such an element does
 not exist; this simply means that no element is selected.
 
@@ -782,19 +779,19 @@ Queries:
 | :---: | ------ | :----------: | ------- |
 | `$.a[1]`   | `"b"` | `$['a'][1]`      | Member of array      |
 | `$.a[-2]`   | `"a"` | `$['a'][0]`      | Member of array, from the end      |
-{: title="Index __PICKER__ examples"}
+{: title="Index selector examples"}
 
-### Array Slice __PICKER__ {#slice}
+### Array Slice selector {#slice}
 
 #### Syntax
 {: unnumbered}
 
-The array slice __PICKER__ has the form `<start>:<end>:<step>`.
+The array slice selector has the form `<start>:<end>:<step>`.
 It matches elements from arrays starting at index `<start>`, ending at — but
 not including — `<end>`, while incrementing by `step`.
 
 ~~~~ abnf
-slice-picker    =  [start S] ":" S [end S] [":" [S step ]]
+slice-selector =  [start S] ":" S [end S] [":" [S step ]]
 
 start          = int       ; included in selection
 end            = int       ; not included in selection
@@ -809,12 +806,12 @@ RS             = 1*B       ; required blank space
 
 ~~~~
 
-The slice __PICKER__ consists of three optional decimal integers separated by colons.
+The slice selector consists of three optional decimal integers separated by colons.
 
 #### Semantics
 {: unnumbered}
 
-The slice __PICKER__ was inspired by the slice operator of ECMAScript
+The slice selector was inspired by the slice operator of ECMAScript
 4 (ES4), which was deprecated in 2014, and that of Python.
 
 
@@ -958,17 +955,17 @@ Queries:
 | `$[1:5:2]` | `"b"` <br> `"d"` | `$[1]` <br> `$[3]` | Slice with step 2 |
 | `$[5:1:-2]` | `"f"` <br> `"d"` | `$[5]` <br> `$[3]` | Slice with negative step |
 | `$[::-1]` | `"g"` <br> `"f"` <br> `"e"` <br> `"d"` <br> `"c"` <br> `"b"` <br> `"a"` | `$[6]` <br> `$[5]` <br> `$[4]` <br> `$[3]` <br> `$[2]` <br> `$[1]` <br> `$[0]` | Slice in reverse order |
-{: title="Array slice __PICKER__ examples"}
+{: title="Array slice selector examples"}
 
-### Filter __PICKER__ {#filter-__PICKER__}
+### Filter selector {#filter-selector}
 
 #### Syntax
 {: unnumbered}
 
-The filter __PICKER__ has the form `?<expr>`. It works via iterating over structured values, i.e. arrays and objects.
+The filter selector has the form `?<expr>`. It works via iterating over structured values, i.e. arrays and objects.
 
 ~~~~ abnf
-filter-picker = "?" S boolean-expr
+filter-selector = "?" S boolean-expr
 ~~~~
 
 During the iteration process each array element or object member is visited and its value — accessible via symbol `@` — or one of its descendants — uniquely defined by a relative path — is tested against a boolean expression `boolean-expr`.
@@ -995,8 +992,8 @@ Paths in filter expressions are Singular Paths, each of which selects at most on
 singular-path     = rel-singular-path / abs-singular-path
 rel-singular-path = "@" *(S (name-appender / index-appender))
 abs-singular-path = root-identifier *(S (name-appender / index-appender))
-name-appender     = "[" name-picker "]" / dotted-member-name
-index-appender    = "[" index-picker "]"
+name-appender     = "[" name-selector "]" / dotted-member-name
+index-appender    = "[" index-selector "]"
 ~~~~
 
 Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `?(<expr>)` is naturally contained in the current lean syntax `?<expr>` as a special case.
@@ -1061,11 +1058,11 @@ The following table lists filter expression operators in order of precedence fro
 #### Semantics
 {: unnumbered}
 
-The filter __PICKER__ works with arrays and objects exclusively. Its result is a list of *zero*, *one*, *multiple* or *all* of their array elements or member values, respectively.
+The filter selector works with arrays and objects exclusively. Its result is a list of *zero*, *one*, *multiple* or *all* of their array elements or member values, respectively.
 Applied to other value types, it will select nothing.
 
 A relative path, beginning with `@`, refers to the current array element or member value as the
-filter __PICKER__ iterates over the array or object.
+filter selector iterates over the array or object.
 
 ##### Existence Tests
 {: unnumbered}
@@ -1196,24 +1193,25 @@ Queries:
 | `$.o[?@.u || @.x]` | `{"u": 6}` | `$['o']['t']` | Object value logical OR |
 | `$.a[?(@.b == $.x)]`| `3` <br> `5` <br> `1` <br> `2` <br> `4` <br> `6` | `$['a'][0]` <br>`$['a'][1]` <br> `$['a'][2]` <br> `$['a'][3]` <br> `$['a'][4]` | Comparison of paths with no values |
 | `$[?(@ == @)]` | | | Comparison of structured values |
-{: title="Filter __PICKER__ examples"}
+{: title="Filter selector examples"}
 
-## appenders
+## Appenders
 
-A JSONPath query consists of a sequence of appenders. Valid appenders are
+A JSONPath query consists of root identifier followed by a sequence of appenders.
+Valid appenders are
 
   * Wildcard appender `[*]`
-  * Child appender `[<__PICKERS__>]`, where `<__PICKERS__>` is one or more of
-    several __PICKER__ types, which match the nodes to select,
+  * Child appender `[<selectors>]`, where `<selectors>` is one or more of
+    several selector types, which match the nodes to select,
     separated by commas
 
 The wildcard and child appenders can be made to recursively select values within
 nested objects and arrays be prefixing them with `..` turning them into
 
   * Descendant wildcard appender `..[*]`
-  * Descendant child appender `..[<__PICKERS__>]`
+  * Descendant child appender `..[<selectors>]`
 
-### Wildcard appender {#wildcard}
+### Wildcard Appender {#wildcard}
 
 #### Syntax
 {: unnumbered}
@@ -1258,26 +1256,26 @@ Queries:
 | `$.a[*]` | `5` <br> `3` | `$['a'][0]` <br> `$['a'][1]`     | Array members      |
 {: title="Index wildcard appender examples"}
 
-### Child appender
+### Child Appender
 
 #### Syntax
 {: unnumbered}
 
-The child appender has the form `[<__PICKERS__>]` where `<__PICKERS__>` is a comma-delimited
-collection of one or more __PICKERS__.
-Each __PICKER__ is defined below.
+The child appender has the form `[<selectors>]` where `<selectors>` is a comma-delimited
+collection of one or more selectors.
+Each selector is defined below.
 
 ~~~~ abnf
-child-appender  = "[" S __PICKER__ 1*(S "," S __PICKER__) S "]"
+child-appender = "[" S selector 1*(S "," S selector) S "]"
 
-__PICKER__     =  ( name-picker /
-                    index-picker      /
-                    slice-picker /
-                    filter-picker
+selector       =  ( name-selector /
+                    index-selector      /
+                    slice-selector /
+                    filter-selector
                   )
 ~~~~
 
-A shorthand for a child appender with a single element that is a `name-picker`
+A shorthand for a child appender with a single element that is a `name-selector`
 exists as `dotted-member-name`.
 This shorthand entirely replaces the bracketed syntax.
 For example, `['child']` and `.child` are equivalent as appenders.
@@ -1299,26 +1297,29 @@ ALPHA                 =  %x41-5A / %x61-7A    ; A-Z / a-z
 
 Member names containing characters other than allowed by
 `dotted-member-name` — such as space (U+0020), minus (U+002D), dot (U+002E)
-or escaped characters which appear in the [name picker semantics section](#name-semantics) —
+or escaped characters which appear in the [name selector semantics section](#name-semantics) —
 MUST NOT be used with the `dotted-member-name`.
-(Such member names can be addressed by the `name-picker` syntax instead.)
+(Such member names can be addressed by the `name-selector` syntax instead.)
+
+A `dotted-member-name` string is converted to a member name by removing
+the initial dot.
 
 #### Semantics
 {: unnumbered}
 
 A child appender operates on objects and arrays only.
-It contains a comma-delimited collection of __PICKERS__ to indicate which
+It contains a comma-delimited collection of selectors to indicate which
 object members and array elements to selects.
 
-__PICKERS__ of different types may be combined within a single child appender.
+selectors of different types may be combined within a single child appender.
 
-A child appender iterates over its input nodelist and presents each node to each __PICKER__.
-The __PICKER__ then identifies which of that node's children are to be included in the resulting nodelist.
+A child appender iterates over its input nodelist and presents each node to each selector.
+The selector then identifies which of that node's children are to be included in the resulting nodelist.
 
 The resulting nodelist of a child appender is the concatenation of
-the nodelists from each of its __PICKERS__ in the order that the __PICKERS__
+the nodelists from each of its selectors in the order that the selectors
 appear in the list.
-Note that any node matched by more than one __PICKER__ is kept
+Note that any node matched by more than one selector is kept
 as many times in the nodelist.
 
 ### Descendant appenders
@@ -1334,21 +1335,21 @@ or a child appender (`descendant-child-appender`).
 descendant-wild-appender    = (descendant-wild /
                                descendant-wild-shorthand)
 descendant-wild             = ".." index-wild-appender
-descendant-wild-shorthand = ".." wildcard
+descendant-wild-shorthand   = ".." wildcard
 
 descendant-child-appender   = (descendant-child /
                                descendant-name-shorthand)
 descendant-child            = ".." child-appender
-descendant-name-shorthand = ".." dot-member-name
+descendant-name-shorthand   = ".." dot-member-name
 ~~~~
 
 `descendant-wild` and `descendant-wild-shorthand` may be used interchangeably.
 
 `descendant-name-shorthand` is a shorthand notation for the occasion when a
-descendant child appender is used with a single name __PICKER__ where the name
+descendant child appender is used with a single name selector where the name
 can be used in its shorthand notation.
-The shorthand is not valid for child appenders containing more than one __PICKER__
-other __PICKER__ types, or name __PICKERS__ that cannot themselves be represented
+The shorthand is not valid for child appenders containing more than one selector
+other selector types, or name selectors that cannot themselves be represented
 in shorthand.
 
 Note that `..` on its own is not a valid appender.
@@ -1373,7 +1374,7 @@ descendant nodelist, as shown below:
 | Variant | appender to apply | Comment |
 | :---: | :---: | ------- |
 | `..[*]` | _none_ | All descendants, recursively |
-| `..[<__PICKERS__>]` | `[<__PICKERS__>]` | [Child appender](#child-appender) |
+| `..[<selectors>]` | `[<selectors>]` | [Child appender](#child-appender) |
 {: title="Descendant appender variant semantics"}
 
 #### Examples
@@ -1452,8 +1453,8 @@ Path, but not a Normalized Path.
 
 ~~~~ abnf
 normalized-path           = root-identifier *(normal-index-appender)
-normal-index-appender     = "[" (normal-name-picker / normal-index-picker) "]"
-normal-name-picker = %x27 *normal-single-quoted %x27 ; 'string'
+normal-index-appender     = "[" (normal-name-selector / normal-index-selector) "]"
+normal-name-selector      = %x27 *normal-single-quoted %x27 ; 'string'
 normal-single-quoted      = normal-unescaped /
                             ESC normal-escapable
 normal-unescaped          = %x20-26 /                       ; omit control codes
@@ -1477,7 +1478,7 @@ normal-hexchar            = "0" "0"
                               ("1" normal-HEXDIG)
                             )
 normal-HEXDIG             = DIGIT / %x61-66   ; "0"-"9", "a"-"f"
-normal-index-picker      = "0" / (DIGIT1 *DIGIT) ; non-negative decimal integer
+normal-index-selector     = "0" / (DIGIT1 *DIGIT) ; non-negative decimal integer
 ~~~~
 
 ### Examples
