@@ -457,7 +457,7 @@ behavior for JSONPath queries in these situations.
 by events and causes no issues with the present specification.)
 
 Specifically, the "Semantics" subsections of Sections
-{{<wildcard}}, {{<name-selector}},
+{{<name-selector}}, {{<wildcard}},
 {{<filter-selector}}, and {{<descendant-appender}} describe behavior that
 turns unpredictable when the JSON value for one of the objects
 under consideration was constructed out of JSON text that exhibits
@@ -605,45 +605,6 @@ objects, only arrays, or both.
 The relationship between a selector and the child appender that contains it
 is further defined in the child appender section below.
 
-### Wildcard Selector {#wildcard}
-
-#### Syntax
-{: unnumbered}
-
-The wildcard selector has either the form `[*]` or the shorthand form `.*`.
-
-~~~~ abnf
-wildcard             = "*"
-~~~~
-
-#### Semantics
-{: unnumbered}
-
-A `wildcard` selects the nodes of all children of an object or array.
-
-Applying the `wildcard` to a primitive JSON value (that is,
-a number, a string, `true`, `false`, or `null`) selects no node.
-
-#### Examples
-{: unnumbered}
-
-JSON:
-
-    {
-      "o": {"j": 1, "k": 2},
-      "a": [5, 3]
-    }
-
-Queries:
-
-| Query | Result | Result Paths | Comment |
-| :---: | ------ | :----------: | ------- |
-| `$[*]`   | `{"j": 1, "k": 2}` <br> `[5, 3]` | `$['o']` <br> `$['a']` | Object values      |
-| `$.o[*]` | `1` <br> `2` | `$['o']['j']` <br> `$['o']['k']` | Object values      |
-| `$.o[*]` | `2` <br> `1` | `$['o']['k']` <br> `$['o']['j']` | Alternative result |
-| `$.a[*]` | `5` <br> `3` | `$['a'][0]` <br> `$['a'][1]`     | Array members      |
-{: title="Index wildcard appender examples"}
-
 ### Name Selector {#name-selector}
 
 #### Syntax {#syntax-name}
@@ -761,6 +722,45 @@ Queries:
 | `$.j`   | `{"k": 3}` | `$['j']`      | Named value of an object      |
 | `$.j.k` | `3`        | `$['j']['k']` | Named value in nested object  |
 {: title="Name selector examples"}
+
+### Wildcard Selector {#wildcard}
+
+#### Syntax
+{: unnumbered}
+
+The wildcard selector has either the form `[*]` or the shorthand form `.*`.
+
+~~~~ abnf
+wildcard             = "*"
+~~~~
+
+#### Semantics
+{: unnumbered}
+
+A `wildcard` selects the nodes of all children of an object or array.
+
+Applying the `wildcard` to a primitive JSON value (that is,
+a number, a string, `true`, `false`, or `null`) selects no node.
+
+#### Examples
+{: unnumbered}
+
+JSON:
+
+    {
+      "o": {"j": 1, "k": 2},
+      "a": [5, 3]
+    }
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$[*]`   | `{"j": 1, "k": 2}` <br> `[5, 3]` | `$['o']` <br> `$['a']` | Object values      |
+| `$.o[*]` | `1` <br> `2` | `$['o']['j']` <br> `$['o']['k']` | Object values      |
+| `$.o[*]` | `2` <br> `1` | `$['o']['k']` <br> `$['o']['j']` | Alternative result |
+| `$.a[*]` | `5` <br> `3` | `$['a'][0]` <br> `$['a'][1]`     | Array members      |
+{: title="Index wildcard appender examples"}
 
 ### Index selector {#index-selector}
 
