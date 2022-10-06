@@ -484,7 +484,7 @@ json-path = root-identifier *(S (child-APPENDER               /
                                  descendant-child-APPENDER))
 ~~~~
 
-The syntax and semantics of each __APPENDER__ is defined below.
+The syntax and semantics of each __APPENDER__ are defined below.
 
 ## Semantics
 
