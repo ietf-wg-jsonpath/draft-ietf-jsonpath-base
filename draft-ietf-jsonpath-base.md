@@ -179,6 +179,11 @@ generic meaning, such as they would in a general programming context.
 
 Additional terms used in this specification are defined below.
 
+__APPENDER__:
+: This is a placeholder term for constructs which select children (`[]`)
+  or descendants (`..[]`) of an input value. It will be replaced by a concrete
+  term before the current branch is merged.
+
 Value:
 : As per {{-json}}, a structure complying to the generic data model of JSON, i.e.,
   composed of components such as structured values, namely JSON objects and arrays, and
@@ -246,10 +251,10 @@ Unicode Scalar Value:
   E000 to 10FFFF. JSON values of type string are sequences of Unicode scalar values.
 
 Singular Path:
-: A JSONPath expression built from appenders which each select at most one node.
+: A JSONPath expression built from __APPENDERS__ which each select at most one node.
 
 Selector:
-: A single item within a bracketed (`[]`) child appender that matches the values which
+: A single item within a bracketed (`[]`) child __APPENDER__ that matches the values which
   are to be selected.
 
 For the purposes of this specification, a value as defined by
@@ -311,7 +316,7 @@ Mixing these syntaxes within a single path is also useful.
 
 JSONPath allows the wildcard symbol `*` to select any member of an
 object or any element of an array ({{wildcard}}).
-The descendant appender (which starts with `..`) recursively selects some or all of the descendants ({{descendant-appender}}) of a node.
+The descendant __APPENDER__ (which starts with `..`) recursively selects some or all of the descendants ({{descendant-appender}}) of a node.
 The array slice
 syntax `[start:end:step]` allows selecting a regular selection of an
 element from an array, giving a start position, an end position, and
@@ -329,14 +334,14 @@ $.store.book[?(@.price < 10)].title
 | JSONPath            | Description                                                                                                             |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------|
 | `$`                 | [root node identifier](#root-identifier)                                                                                |
-| `[<selectors>]`     | [child appender](#child-appender) selects zero or more children of JSON objects and arrays; contains one or more selectors, separated by commas        |
-| `..[<selectors>]`   | [descendant child appender](#descendant-appender): recursive version of the child appender                             |
+| `[<selectors>]`     | [child __APPENDER__](#child-appender) selects zero or more children of JSON objects and arrays; contains one or more selectors, separated by commas        |
+| `..[<selectors>]`   | [descendant child __APPENDER__](#descendant-appender): recursive version of the child __APPENDER__                             |
 | `*`                 | [wildcard selector](#name-selector): selects all children of an array or object                                         |
 | `'name'`            | [name selector](#name-selector): selects a named child of an object                                                     |
 | `3`                 | [index selector](#index-selector): selects an indexed child of an array (from 0)                                        |
 | `0:100:5`           | [array slice selector](#slice): start:end:step for arrays                                                               |
 | `?<expr>`           | [filter selector](#filter-selector): selects particular children using a boolean expression                             |
-| `@`                 | [current node appender](#filter-selector) (valid only within filter selectors)                                          |
+| `@`                 | [current node identifier](#filter-selector) (valid only within filter selectors)                                          |
 | `.name`             | shorthand for `['name']`                                                                                                |
 | `.*`                | shorthand for `[*]`                                                                                                     |
 | `..name`            | shorthand for `..['name']`                                                                                              |
@@ -472,14 +477,14 @@ if they aren't ({{Section 8.2 of -json}}).
 
 Syntactically, a JSONPath query consists of a root starter (`$`), which
 stands for a nodelist that contains the root node of the argument,
-followed by a possibly empty sequence of *appenders*.
+followed by a possibly empty sequence of *__APPENDERS__*.
 
 ~~~~ abnf
-json-path = root-identifier *(S (child-appender               /
-                                 descendant-child-appender))
+json-path = root-identifier *(S (child-APPENDER               /
+                                 descendant-child-APPENDER))
 ~~~~
 
-The syntax and semantics of each appender is defined below.
+The syntax and semantics of each __APPENDER__ is defined below.
 
 ## Semantics
 
@@ -490,15 +495,15 @@ implementation.
 The semantics are that a valid query is executed against a value,
 the *argument*, and produces a list of zero or more nodes of the value.
 
-The query is a sequence of zero or more *appenders*, each of
-which is applied to the result of the previous appender and provides
-input to the next appender.
+The query is a sequence of zero or more *__APPENDERS__*, each of
+which is applied to the result of the previous __APPENDER__ and provides
+input to the next __APPENDER__.
 These results and inputs take the form of a *nodelist*, i.e., a
 sequence of zero or more nodes.
 
-The nodelist presented to the first appender contains a single node,
+The nodelist presented to the first __APPENDER__ contains a single node,
 the argument.
-The nodelist resulting from the last appender is presented as the
+The nodelist resulting from the last __APPENDER__ is presented as the
 result of the query; depending on the specific API, it might be
 presented as an array of the JSON values at the nodes, an array of
 Normalized Paths referencing the nodes, or both — or some other
@@ -506,19 +511,19 @@ representation as desired by the implementation.
 Note that the API must be capable of presenting an empty nodelist as
 the result of the query.
 
-A appender performs its function on each of the nodes in its input
+A __APPENDER__ performs its function on each of the nodes in its input
 nodelist, during such a function execution, such a node is referred to
 as the "current node".  Each of these function executions produces a
 nodelist, which are then concatenated to produce
-the result of the appender. A node may be selected more than once and
+the result of the __APPENDER__. A node may be selected more than once and
 appear that number of times in the nodelist. Duplicate nodes are not removed.
 
-The processing within a appender may execute nested queries,
+The processing within a __APPENDER__ may execute nested queries,
 which conform to the semantics defined here.
 Typically, the argument to that query will be the current node of the
-appender or a set of nodes subordinate to that current node.
+__APPENDER__ or a set of nodes subordinate to that current node.
 
-A syntactically valid appender MUST NOT produce errors.
+A syntactically valid __APPENDER__ MUST NOT produce errors.
 This means that some
 operations that might be considered erroneous, such as indexing beyond the
 end of an array,
@@ -528,7 +533,7 @@ Consider this example. With the argument `{"a":[{"b":0},{"b":1},{"c":2}]}`, the
 query `$.a[*].b` selects the following list of nodes: `0`, `1`
 (denoted here by their value).
 
-The query consists of `$` followed by three appenders: `.a`, `[*]`, and `.b`.
+The query consists of `$` followed by three __APPENDERS__: `.a`, `[*]`, and `.b`.
 
 Firstly, `$` selects the root node which is the argument.
 So the result is a list consisting of just the root node.
@@ -554,10 +559,10 @@ This is the concatenation of three lists, two of length one containing
 Greg: this could be reworded since appenders don't select.  Maybe they do
 vicariously through selectors.
 -->
-As a consequence of this approach, if any of the appenders selects no nodes,
+As a consequence of this approach, if any of the __APPENDERS__ selects no nodes,
 then the whole query selects no nodes.
 
-In what follows, the semantics of each appender are defined for each type
+In what follows, the semantics of each __APPENDER__ are defined for each type
 of node.
 
 ## Root Identifier
@@ -593,8 +598,8 @@ Queries:
 
 ## Selectors
 
-Selectors are defined solely within the context of the [child appender](#child-appender).
-A selector outside of a child appender is invalid.
+Selectors are defined solely within the context of the [child __APPENDER__](#child-appender).
+A selector outside of a child __APPENDER__ is invalid.
 
 A selector identifies, or matches, child elements to be selected for the
 resulting nodelist.
@@ -602,8 +607,8 @@ resulting nodelist.
 Each type of selector functions differently and may be defined to operate on only
 objects, only arrays, or both.
 
-The relationship between a selector and the child appender that contains it
-is further defined in the child appender section below.
+The relationship between a selector and the child __APPENDER__ that contains it
+is further defined in the child __APPENDER__ section below.
 
 ### Name Selector {#name-selector}
 
@@ -760,7 +765,7 @@ Queries:
 | `$.o[*]` | `1` <br> `2` | `$['o']['j']` <br> `$['o']['k']` | Object values      |
 | `$.o[*]` | `2` <br> `1` | `$['o']['k']` <br> `$['o']['j']` | Alternative result |
 | `$.a[*]` | `5` <br> `3` | `$['a'][0]` <br> `$['a'][1]`     | Array members      |
-{: title="Index wildcard appender examples"}
+{: title="Index wildcard __APPENDER__ examples"}
 
 ### Index selector {#index-selector}
 
@@ -1026,10 +1031,10 @@ Paths in filter expressions are Singular Paths, each of which selects at most on
 
 ~~~~ abnf
 singular-path     = rel-singular-path / abs-singular-path
-rel-singular-path = "@" *(S (name-appender / index-appender))
-abs-singular-path = root-identifier *(S (name-appender / index-appender))
-name-appender     = "[" name-selector "]" / name-selector-shorthand
-index-appender    = "[" index-selector "]"
+rel-singular-path = "@" *(S (name-APPENDER / index-APPENDER))
+abs-singular-path = root-identifier *(S (name-APPENDER / index-APPENDER))
+name-APPENDER     = "[" name-selector "]" / name-selector-shorthand
+index-APPENDER    = "[" index-selector "]"
 ~~~~
 
 Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `?(<expr>)` is naturally contained in the current lean syntax `?<expr>` as a special case.
@@ -1231,31 +1236,31 @@ Queries:
 | `$[?(@ == @)]` | | | Comparison of structured values |
 {: title="Filter selector examples"}
 
-## Appenders
+## __APPENDERS__
 
-A JSONPath query consists of root identifier followed by a sequence of appenders.
-Valid appenders are
+A JSONPath query consists of root identifier followed by a sequence of __APPENDERS__.
+Valid __APPENDERS__ are
 
-  * Child appender `[<selectors>]`, where `<selectors>` is one or more of
+  * Child __APPENDER__ `[<selectors>]`, where `<selectors>` is one or more of
     several selector types, which match the nodes to select,
     separated by commas
-  * Descendant child appender `..[<selectors>]`
+  * Descendant child __APPENDER__ `..[<selectors>]`
 
-The descendant child appender is a child appender that has been made to
+The descendant child __APPENDER__ is a child __APPENDER__ that has been made to
 recursively select values within nested objects and arrays by prepending it with `..`.
 
 
-### Child Appender
+### Child __APPENDER__
 
 #### Syntax
 {: unnumbered}
 
-The child appender has the form `[<selectors>]` where `<selectors>` is a comma-delimited
+The child __APPENDER__ has the form `[<selectors>]` where `<selectors>` is a comma-delimited
 collection of one or more selectors.
 Each selector is defined below.
 
 ~~~~ abnf
-child-appender = "[" S selector 1*(S "," S selector) S "]"
+child-APPENDER = "[" S selector 1*(S "," S selector) S "]"
 
 selector       =  ( name-selector /
                     index-selector      /
@@ -1264,13 +1269,13 @@ selector       =  ( name-selector /
                   )
 ~~~~
 
-Shorthand notations exist for child appenders with either:
+Shorthand notations exist for child __APPENDERS__ with either:
 
 * a single element that is a `wildcard`, as `wild-selector-shorthand`
 * a single element that is a `name-selector`, as `name-selector-shorthand`.
 
 This shorthand entirely replaces the bracketed syntax.
-For example, `['child']` and `.child` are equivalent as appenders,
+For example, `['child']` and `.child` are equivalent as __APPENDERS__,
 as are `[*]` and `.*`.
 
 A `name-selector-shorthand` starts with a dot `.` followed by an object member's name.
@@ -1301,45 +1306,45 @@ the initial dot.
 #### Semantics
 {: unnumbered}
 
-A child appender operates on objects and arrays only.
+A child __APPENDER__ operates on objects and arrays only.
 It contains a comma-delimited collection of selectors to indicate which
 object members and array elements to selects.
 
-selectors of different types may be combined within a single child appender.
+selectors of different types may be combined within a single child __APPENDER__.
 
-A child appender iterates over its input nodelist and presents each node to each selector.
+A child __APPENDER__ iterates over its input nodelist and presents each node to each selector.
 The selector then identifies which of that node's children are to be included in the resulting nodelist.
 
-The resulting nodelist of a child appender is the concatenation of
+The resulting nodelist of a child __APPENDER__ is the concatenation of
 the nodelists from each of its selectors in the order that the selectors
 appear in the list.
 Note that any node matched by more than one selector is kept
 as many times in the nodelist.
 
-### Descendant appender
+### Descendant __APPENDER__
 
 #### Syntax
 {: unnumbered}
 
-The descendant appender starts with a double dot `..`
-followed by either a child appender (`descendant-child-appender`).
+The descendant __APPENDER__ starts with a double dot `..`
+followed by either a child __APPENDER__ (`descendant-child-APPENDER`).
 
 ~~~~ abnf
-descendant-child-appender   = (descendant-child /
+descendant-child-APPENDER   = (descendant-child /
                                descendant-name-shorthand)
-descendant-child            = ".." child-appender
+descendant-child            = ".." child-APPENDER
 
 descendant-name-shorthand   = ".." dot-member-name
 descendant-wild-shorthand   = ".." wildcard
 ~~~~
 
 The shorthand notations exist for the occasion when a
-descendant child appender is used with either
+descendant child __APPENDER__ is used with either
 
 * a single name selector where the name can be used in its shorthand notation
 * a single wildcard selector
 
-The shorthand is not valid for child appenders containing more than one selector
+The shorthand is not valid for child __APPENDERS__ containing more than one selector
 other selector types, or name selectors that cannot themselves be represented
 in shorthand.
 
@@ -1348,7 +1353,7 @@ Note that `..` on its own is not valid.
 #### Semantics
 {: unnumbered}
 
-A descendant appender selects zero or more descendants of a node.
+A descendant __APPENDER__ selects zero or more descendants of a node.
 
 A nodelist enumerating the descendants is known as a _descendant nodelist_ when:
 
@@ -1358,15 +1363,15 @@ A nodelist enumerating the descendants is known as a _descendant nodelist_ when:
 This definition does not stipulate the order in which the children of an object appear, since
 JSON objects are unordered.
 
-The resultant nodelist of a descendant appender is the result of applying a appender
-(or no appender), depending on the variant of the descendant appender, to a
+The resultant nodelist of a descendant __APPENDER__ is the result of applying an __APPENDER__
+(or no __APPENDER__), depending on the variant of the descendant __APPENDER__, to a
 descendant nodelist, as shown below:
 
-| Variant | appender to apply | Comment |
+| Variant | __APPENDER__ to apply | Comment |
 | :---: | :---: | ------- |
 | `..[*]` | _none_ | All descendants, recursively |
-| `..[<selectors>]` | `[<selectors>]` | [Child appender](#child-appender) |
-{: title="Descendant appender variant semantics"}
+| `..[<selectors>]` | `[<selectors>]` | [Child __APPENDER__](#child-appender) |
+{: title="Descendant __APPENDER__ variant semantics"}
 
 #### Examples
 {: unnumbered}
@@ -1387,7 +1392,7 @@ Queries:
 | `$..[0]` | `5` <br> `{"j": 4}` | `$['a'][0]` <br> `$['a'][2][0]` | Array values       |
 | `$..[0]` | `{"j": 4}` <br> `5` | `$['a'][2][0]` <br> `$['a'][0]` | Alternative result |
 | `$..[*]` <br> `$..*` | `{"j": 1, "k" : 2}` <br> `[5, 3, [{"j": 4}]]` <br> `1` <br> `2` <br> `5` <br> `3` <br> `[{"j": 4}]` <br> `{"j": 4}` <br> `4` | `$['o']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][0]['j']` | All values    |
-{: title="Descendant appender examples"}
+{: title="Descendant __APPENDER__ examples"}
 
 Note: The ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that:
 
@@ -1443,8 +1448,8 @@ Normalized Paths are Singular Paths. Not all Singular Paths are Normalized Paths
 Path, but not a Normalized Path.
 
 ~~~~ abnf
-normalized-path           = root-identifier *(normal-index-appender)
-normal-index-appender     = "[" (normal-name-selector / normal-index-selector) "]"
+normalized-path           = root-identifier *(normal-index-APPENDER)
+normal-index-APPENDER     = "[" (normal-name-selector / normal-index-selector) "]"
 normal-name-selector      = %x27 *normal-single-quoted %x27 ; 'string'
 normal-single-quoted      = normal-unescaped /
                             ESC normal-escapable
@@ -1587,7 +1592,7 @@ expression implementations.)
 Implementers need to be aware that good average performance is not
 sufficient as long as an attacker can choose to submit specially
 crafted JSONPath queries or arguments that trigger surprisingly high, possibly
-exponential, CPU usage or, for example via a naive recursive implementation of the descendant appender,
+exponential, CPU usage or, for example via a naive recursive implementation of the descendant __APPENDER__,
 stack overflow. Implementations need to have appropriate resource management
 to mitigate these attacks.
 
