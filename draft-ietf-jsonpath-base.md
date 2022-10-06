@@ -251,11 +251,11 @@ Unicode Scalar Value:
   E000 to 10FFFF. JSON values of type string are sequences of Unicode scalar values.
 
 Singular Path:
-: A JSONPath expression built from __APPENDERS__ which each select at most one node.
+: A JSONPath expression built from __APPENDERS__ which each produce at most one node.
 
 Selector:
-: A single item within a bracketed (`[]`) child __APPENDER__ that matches the values which
-  are to be selected.
+: A single item within an __APPENDER__ that takes the input value and produces a nodelist
+  consisting of child nodes of the input value.
 
 For the purposes of this specification, a value as defined by
 {{-json}} is also viewed as a tree of nodes.
@@ -298,35 +298,33 @@ JSONPath expressions are applied to a JSON value, the *argument*.
 Within the JSONPath expression, the abstract name `$` is used to refer
 to the *root node* of the argument, i.e., to the argument as a whole.
 
-JSONPath expressions primarily use the *bracket notation*
+JSONPath expressions use the *bracket notation*, for example:
 
 ~~~~
 $['store']['book'][0]['title']
 ~~~~
 
-but may also use the shorthand *dot notation*
+or the more compact *dot notation*, for example:
 
 ~~~~
 $.store.book[0].title
 ~~~~
 
 to build paths that are input to a JSONPath implementation.
-Generally, the dot notation is preferred for most applications.
-Mixing these syntaxes within a single path is also useful.
+A single path may use a combination of bracket and dot notations.
 
-JSONPath allows the wildcard symbol `*` to select any member of an
-object or any element of an array ({{wildcard}}).
-The descendant __APPENDER__ (which starts with `..`) recursively selects some or all of the descendants ({{descendant-appender}}) of a node.
-The array slice
-syntax `[start:end:step]` allows selecting a regular selection of an
-element from an array, giving a start position, an end position, and
+A wildcard `*` ({{wildcard}}) may be used to select all children of an
+object or an array.
+
+An array slice `start:end:step` ({{slice}}) selects a series of
+elements from an array, giving a start position, an end position, and
 possibly a step value that moves the position from the start to the
-end ({{slice}}).
+end.
 
-Filter expressions are supported via the syntax `?(<boolean expr>)` as in
+Filter expressions `?<boolean expr>` select certain children of an object or array as in
 
 ~~~~
-$.store.book[?(@.price < 10)].title
+$.store.book[?@.price < 10].title
 ~~~~
 
 {{tbl-overview}} provides a quick overview of the JSONPath syntax elements.
@@ -335,13 +333,13 @@ $.store.book[?(@.price < 10)].title
 |---------------------|-------------------------------------------------------------------------------------------------------------------------|
 | `$`                 | [root node identifier](#root-identifier)                                                                                |
 | `[<selectors>]`     | [child __APPENDER__](#child-appender) selects zero or more children of JSON objects and arrays; contains one or more selectors, separated by commas        |
-| `..[<selectors>]`   | [descendant __APPENDER__](#descendant-appender): selects zero or more descendants of JSON objects and arrays; contains one or more selectors, separated by commas |
-| `*`                 | [wildcard selector](#name-selector): selects all children of an array or object                                         |
 | `'name'`            | [name selector](#name-selector): selects a named child of an object                                                     |
+| `*`                 | [wildcard selector](#name-selector): selects all children of an array or object                                         |
 | `3`                 | [index selector](#index-selector): selects an indexed child of an array (from 0)                                        |
 | `0:100:5`           | [array slice selector](#slice): start:end:step for arrays                                                               |
 | `?<expr>`           | [filter selector](#filter-selector): selects particular children using a boolean expression                             |
 | `@`                 | [current node identifier](#filter-selector) (valid only within filter selectors)                                          |
+| `..[<selectors>]`   | [descendant __APPENDER__](#descendant-appender): selects zero or more descendants of JSON objects and arrays; contains one or more selectors, separated by commas |
 | `.name`             | shorthand for `['name']`                                                                                                |
 | `.*`                | shorthand for `[*]`                                                                                                     |
 | `..name`            | shorthand for `..['name']`                                                                                              |
