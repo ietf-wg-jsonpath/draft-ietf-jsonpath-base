@@ -335,7 +335,7 @@ $.store.book[?(@.price < 10)].title
 |---------------------|-------------------------------------------------------------------------------------------------------------------------|
 | `$`                 | [root node identifier](#root-identifier)                                                                                |
 | `[<selectors>]`     | [child __APPENDER__](#child-appender) selects zero or more children of JSON objects and arrays; contains one or more selectors, separated by commas        |
-| `..[<selectors>]`   | [descendant child __APPENDER__](#descendant-appender): recursive version of the child __APPENDER__                             |
+| `..[<selectors>]`   | [descendant __APPENDER__](#descendant-appender): selects zero or more descendants of JSON objects and arrays; contains one or more selectors, separated by commas |
 | `*`                 | [wildcard selector](#name-selector): selects all children of an array or object                                         |
 | `'name'`            | [name selector](#name-selector): selects a named child of an object                                                     |
 | `3`                 | [index selector](#index-selector): selects an indexed child of an array (from 0)                                        |
@@ -1244,9 +1244,9 @@ Valid __APPENDERS__ are
   * Child __APPENDER__ `[<selectors>]`, where `<selectors>` is one or more of
     several selector types, which match the nodes to select,
     separated by commas
-  * Descendant child __APPENDER__ `..[<selectors>]`
+  * Descendant __APPENDER__ `..[<selectors>]`
 
-The descendant child __APPENDER__ is a child __APPENDER__ that has been made to
+The descendant __APPENDER__ is a child __APPENDER__ that has been made to
 recursively select values within nested objects and arrays by prepending it with `..`.
 
 
@@ -1339,7 +1339,7 @@ descendant-wild-shorthand   = ".." wildcard
 ~~~~
 
 The shorthand notations exist for the occasion when a
-descendant child __APPENDER__ is used with either
+descendant __APPENDER__ is used with either
 
 * a single name selector where the name can be used in its shorthand notation
 * a single wildcard selector
