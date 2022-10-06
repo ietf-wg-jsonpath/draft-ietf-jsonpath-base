@@ -610,6 +610,18 @@ objects, only arrays, or both.
 The relationship between a selector and the child __APPENDER__ that contains it
 is further defined in the child __APPENDER__ section below.
 
+There are various types of selector:
+
+~~~~ abnf
+selector =  ( name-selector  /
+              index-selector /
+              slice-selector /
+              filter-selector
+            )
+~~~~
+
+The syntax and semantics of each of these types of selector are defined below.
+
 ### Name Selector {#name-selector}
 
 #### Syntax {#syntax-name}
@@ -1247,18 +1259,11 @@ The syntax and semantics of each __APPENDER__ are defined below.
 #### Syntax
 {: unnumbered}
 
-The child __APPENDER__ has the form `[<selectors>]` where `<selectors>` is a comma-delimited
-collection of one or more selectors.
-Each selector is defined below.
+The child __APPENDER__ consists of a non-empty, comma-delimited
+sequence of selectors enclosed in square brackets.
 
 ~~~~ abnf
 child-APPENDER = "[" S selector 1*(S "," S selector) S "]"
-
-selector       =  ( name-selector /
-                    index-selector      /
-                    slice-selector /
-                    filter-selector
-                  )
 ~~~~
 
 Shorthand notations exist for child __APPENDERS__ with either:
