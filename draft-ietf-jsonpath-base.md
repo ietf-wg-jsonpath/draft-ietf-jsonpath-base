@@ -1238,17 +1238,9 @@ Queries:
 
 ## __APPENDERS__
 
-A JSONPath query consists of root identifier followed by a sequence of __APPENDERS__.
-Valid __APPENDERS__ are
+__APPENDERS__ apply one or more selectors to an input value and gather the results into a single nodelist.
 
-  * Child __APPENDER__ `[<selectors>]`, where `<selectors>` is one or more of
-    several selector types, which match the nodes to select,
-    separated by commas
-  * Descendant __APPENDER__ `..[<selectors>]`
-
-The descendant __APPENDER__ is a child __APPENDER__ that has been made to
-recursively select values within nested objects and arrays by prepending it with `..`.
-
+The syntax and semantics of each __APPENDER__ are defined below.
 
 ### Child __APPENDER__
 
