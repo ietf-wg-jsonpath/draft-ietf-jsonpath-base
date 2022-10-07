@@ -493,13 +493,13 @@ implementation.
 The semantics are that a valid query is executed against a value,
 the *argument*, and produces a list of zero or more nodes of the value.
 
-The query is a sequence of zero or more *__APPENDERS__*, each of
-which is applied to the result of the previous __APPENDER__ and provides
+The query is a root identifier followed by a sequence of zero or more *__APPENDERS__*, each of
+which is applied to the result of the previous root identifier or __APPENDER__ and provides
 input to the next __APPENDER__.
 These results and inputs take the form of a *nodelist*, i.e., a
 sequence of zero or more nodes.
 
-The nodelist presented to the first __APPENDER__ contains a single node,
+The nodelist resulting from the root identifier contains a single node,
 the argument.
 The nodelist resulting from the last __APPENDER__ is presented as the
 result of the query; depending on the specific API, it might be
@@ -509,17 +509,12 @@ representation as desired by the implementation.
 Note that the API must be capable of presenting an empty nodelist as
 the result of the query.
 
-A __APPENDER__ performs its function on each of the nodes in its input
+An __APPENDER__ performs its function on each of the nodes in its input
 nodelist, during such a function execution, such a node is referred to
 as the "current node".  Each of these function executions produces a
 nodelist, which are then concatenated to produce
 the result of the __APPENDER__. A node may be selected more than once and
-appear that number of times in the nodelist. Duplicate nodes are not removed.
-
-The processing within a __APPENDER__ may execute nested queries,
-which conform to the semantics defined here.
-Typically, the argument to that query will be the current node of the
-__APPENDER__ or a set of nodes subordinate to that current node.
+appears that number of times in the nodelist. Duplicate nodes are not removed.
 
 A syntactically valid __APPENDER__ MUST NOT produce errors.
 This means that some
@@ -533,8 +528,7 @@ query `$.a[*].b` selects the following list of nodes: `0`, `1`
 
 The query consists of `$` followed by three __APPENDERS__: `.a`, `[*]`, and `.b`.
 
-Firstly, `$` selects the root node which is the argument.
-So the result is a list consisting of just the root node.
+Firstly, `$` produces a nodelist consisting of just the argument.
 
 Next, `.a` selects from any input node of type object and selects the
 node of any
@@ -553,12 +547,8 @@ The result is a list containing `0`, `1`.
 This is the concatenation of three lists, two of length one containing
 `0`, `1`, respectively, and one of length zero.
 
-<!--
-Greg: this could be reworded since appenders don't select.  Maybe they do
-vicariously through selectors.
--->
-As a consequence of this approach, if any of the __APPENDERS__ selects no nodes,
-then the whole query selects no nodes.
+As a consequence of this approach, if any of the __APPENDERS__ produces an empty nodelist,
+then the whole query produces an empty nodelist.
 
 In what follows, the semantics of each __APPENDER__ are defined for each type
 of node.
