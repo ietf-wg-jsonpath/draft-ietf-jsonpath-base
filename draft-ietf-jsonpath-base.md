@@ -687,7 +687,7 @@ in the table below:
 {: title="Escape Sequence Replacements" cols="c c"}
 
 The name selector applied to an object
-matches the node of the corresponding member value from it, if and only if that object has a member with that name.
+selects the node of the corresponding member value from it, if and only if that object has a member with that name.
 Nothing is selected from a value that is not a object.
 
 Note that processing the name selector potentially requires matching strings against
@@ -727,19 +727,19 @@ Queries:
 #### Syntax
 {: unnumbered}
 
-The wildcard selector has either the form `[*]` or the shorthand form `.*`.
+The wildcard selector consists of an asterisk.
 
 ~~~~ abnf
-wildcard             = "*"
+wildcard = "*"
 ~~~~
 
 #### Semantics
 {: unnumbered}
 
-A `wildcard` selects the nodes of all children of an object or array.
+A `wildcard` selector selects the nodes of all children of an object or array.
 
-Applying the `wildcard` to a primitive JSON value (that is,
-a number, a string, `true`, `false`, or `null`) selects no node.
+The `wildcard` selector selects nothing from a primitive JSON value (that is,
+a number, a string, `true`, `false`, or `null`).
 
 #### Examples
 {: unnumbered}
@@ -753,13 +753,15 @@ JSON:
 
 Queries:
 
+The following examples show the `wildcard` selector in use by a child __APPENDER__.
+
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
 | `$[*]`   | `{"j": 1, "k": 2}` <br> `[5, 3]` | `$['o']` <br> `$['a']` | Object values      |
 | `$.o[*]` | `1` <br> `2` | `$['o']['j']` <br> `$['o']['k']` | Object values      |
 | `$.o[*]` | `2` <br> `1` | `$['o']['k']` <br> `$['o']['j']` | Alternative result |
 | `$.a[*]` | `5` <br> `3` | `$['a'][0]` <br> `$['a'][1]`     | Array members      |
-{: title="Index wildcard __APPENDER__ examples"}
+{: title="Wildcard selector examples"}
 
 ### Index selector {#index-selector}
 
