@@ -1027,7 +1027,7 @@ Paths in filter expressions are Singular Paths, each of which selects at most on
 singular-path     = rel-singular-path / abs-singular-path
 rel-singular-path = "@" *(S (name-APPENDER / index-APPENDER))
 abs-singular-path = root-identifier *(S (name-APPENDER / index-APPENDER))
-name-APPENDER     = "[" name-selector "]" / name-selector-shorthand
+name-APPENDER     = "[" name-selector "]" / dot-member-name-shorthand
 index-APPENDER    = "[" index-selector "]"
 ~~~~
 
@@ -1232,7 +1232,7 @@ Queries:
 
 ## __APPENDERS__
 
-__APPENDERS__ apply one or more selectors to an input value and gather the results into a single nodelist.
+__APPENDERS__ apply one or more selectors to an input value and concatenate the results into a single nodelist.
 
 The syntax and semantics of each __APPENDER__ are defined below.
 
@@ -1244,55 +1244,46 @@ The syntax and semantics of each __APPENDER__ are defined below.
 The child __APPENDER__ consists of a non-empty, comma-delimited
 sequence of selectors enclosed in square brackets.
 
-~~~~ abnf
-child-APPENDER = "[" S selector 1*(S "," S selector) S "]"
-~~~~
-
-Shorthand notations exist for child __APPENDERS__ with either:
-
-* a single element that is a `wildcard`, as `wild-selector-shorthand`
-* a single element that is a `name-selector`, as `name-selector-shorthand`.
-
-This shorthand entirely replaces the bracketed syntax.
-For example, `['child']` and `.child` are equivalent as __APPENDERS__,
-as are `[*]` and `.*`.
-
-A `name-selector-shorthand` starts with a dot `.` followed by an object member's name.
+Shorthand notations are also provided for when there is a single
+wildcard or name selector.
 
 ~~~~ abnf
-wild-selector-shorthand     = "." wildcard
-name-selector-shorthand    = "." dot-member-name
-dot-member-name       = name-first *name-char
-name-first            =
-                           ALPHA /
-                           "_"   /            ; _
-                           %x80-10FFFF        ; any non-ASCII Unicode character
-name-char = DIGIT / name-first
+child-APPENDER            = (child-longhand /
+                             dot-wildcard-shorthand /
+                             dot-member-name-shorthand)
 
-DIGIT                 =  %x30-39              ; 0-9
-ALPHA                 =  %x41-5A / %x61-7A    ; A-Z / a-z
+child-longhand            = "[" S selector 1*(S "," S selector) S "]"
+
+dot-wildcard-shorthand    = "." wildcard
+
+dot-member-name-shorthand = "." dot-member-name
+dot-member-name           = name-first *name-char
+name-first                = ALPHA /
+                            "_"   /            ; _
+                            %x80-10FFFF        ; any non-ASCII Unicode character
+name-char                 = DIGIT / name-first
+
+DIGIT                     =  %x30-39              ; 0-9
+ALPHA                     =  %x41-5A / %x61-7A    ; A-Z / a-z
 ~~~~
+
+The `dot-wildcard-shorthand` is shorthand for `[*]`.
+
+A `dot-member-name-shorthand` of the form `.<member-name>` is shorthand for `['<member-name>']`.
 
 Member names containing characters other than allowed by
-`name-selector-shorthand` — such as space (U+0020), minus (U+002D), dot (U+002E)
+`dot-member-name-shorthand` — such as space (U+0020), minus (U+002D), dot (U+002E)
 or escaped characters which appear in the [name selector semantics section](#name-semantics) —
-MUST NOT be used with the `name-selector-shorthand`.
-(Such member names can be addressed by the `name-selector` syntax instead.)
-
-A `name-selector-shorthand` string is converted to a member name by removing
-the initial dot.
+MUST NOT be used with the `dot-member-name-shorthand`.
+(In such cases, the `name-selector` syntax MUST be used instead.)
 
 #### Semantics
 {: unnumbered}
 
-A child __APPENDER__ operates on objects and arrays only.
-It contains a comma-delimited collection of selectors to indicate which
-object members and array elements to selects.
+A child __APPENDER__ contains a comma-delimited sequence of selectors, each of which
+selects zero or more children of the input value.
 
-selectors of different types may be combined within a single child __APPENDER__.
-
-A child __APPENDER__ iterates over its input nodelist and presents each node to each selector.
-The selector then identifies which of that node's children are to be included in the resulting nodelist.
+Selectors of different kinds may be combined within a single child __APPENDER__.
 
 The resulting nodelist of a child __APPENDER__ is the concatenation of
 the nodelists from each of its selectors in the order that the selectors
