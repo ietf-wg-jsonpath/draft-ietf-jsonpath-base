@@ -1302,21 +1302,27 @@ followed by a child __APPENDER__ (`descendant-APPENDER`).
 Shortand notations are also provided that correspond to the shorthand forms of the child __APPENDER__.
 
 ~~~~ abnf
-descendant-APPENDER       = (descendant-child /
-                             descendant-name-shorthand /
-                             descendant-wild-shorthand)
-descendant-child          = ".." child-APPENDER
+descendant-APPENDER              = (descendant-child /
+                                    descendant-wildcard-shorthand /
+                                    descendant-member-name-shorthand)
+descendant-child                 = ".." child-APPENDER
 
-descendant-name-shorthand = ".." dot-member-name
-descendant-wild-shorthand = ".." wildcard
+descendant-wildcard-shorthand    = ".." wildcard
+descendant-member-name-shorthand = ".." dot-member-name
 ~~~~
+
+The `descendant-wildcard-shorthand` is shorthand for `..[*]`.
+
+A `descendant-member-name-shorthand` of the form `..<member-name>` is shorthand for `..['<member-name>']`.
 
 Note that `..` on its own is not a valid __APPENDER__.
 
 #### Semantics
 {: unnumbered}
 
-A descendant __APPENDER__ selects zero or more descendants of a node.
+<!-- The following does not address https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/252 -->
+
+A descendant __APPENDER__ selects zero or more descendants of the input value.
 
 A nodelist enumerating the descendants is known as a _descendant nodelist_ when:
 
@@ -1326,15 +1332,8 @@ A nodelist enumerating the descendants is known as a _descendant nodelist_ when:
 This definition does not stipulate the order in which the children of an object appear, since
 JSON objects are unordered.
 
-The resultant nodelist of a descendant __APPENDER__ is the result of applying an __APPENDER__
-(or no __APPENDER__), depending on the variant of the descendant __APPENDER__, to a
-descendant nodelist, as shown below:
-
-| Variant | __APPENDER__ to apply | Comment |
-| :---: | :---: | ------- |
-| `..[*]` | _none_ | All descendants, recursively |
-| `..[<selectors>]` | `[<selectors>]` | [Child __APPENDER__](#child-appender) |
-{: title="Descendant __APPENDER__ variant semantics"}
+The resultant nodelist of a descendant __APPENDER__ of the form `..[<selectors>]` is the result of applying
+the child __APPENDER__ `[<selectors>]` to a descendant nodelist.
 
 #### Examples
 {: unnumbered}
