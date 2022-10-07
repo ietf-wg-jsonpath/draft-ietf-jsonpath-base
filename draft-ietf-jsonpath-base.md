@@ -473,13 +473,13 @@ if they aren't ({{Section 8.2 of -json}}).
 
 ## Syntax
 
-Syntactically, a JSONPath query consists of a root starter (`$`), which
+Syntactically, a JSONPath query consists of a root identifier (`$`), which
 stands for a nodelist that contains the root node of the argument,
 followed by a possibly empty sequence of *__APPENDERS__*.
 
 ~~~~ abnf
 json-path = root-identifier *(S (child-APPENDER               /
-                                 descendant-child-APPENDER))
+                                 descendant-APPENDER))
 ~~~~
 
 The syntax and semantics of each __APPENDER__ are defined below.
@@ -1321,29 +1321,22 @@ as many times in the nodelist.
 #### Syntax
 {: unnumbered}
 
-The descendant __APPENDER__ starts with a double dot `..`
-followed by either a child __APPENDER__ (`descendant-child-APPENDER`).
+The descendant __APPENDER__ consists of a double dot `..`
+followed by a child __APPENDER__ (`descendant-APPENDER`).
+
+Shortand notations are also provided that correspond to the shorthand forms of the child __APPENDER__.
 
 ~~~~ abnf
-descendant-child-APPENDER   = (descendant-child /
-                               descendant-name-shorthand)
-descendant-child            = ".." child-APPENDER
+descendant-APPENDER       = (descendant-child /
+                             descendant-name-shorthand /
+                             descendant-wild-shorthand)
+descendant-child          = ".." child-APPENDER
 
-descendant-name-shorthand   = ".." dot-member-name
-descendant-wild-shorthand   = ".." wildcard
+descendant-name-shorthand = ".." dot-member-name
+descendant-wild-shorthand = ".." wildcard
 ~~~~
 
-The shorthand notations exist for the occasion when a
-descendant __APPENDER__ is used with either
-
-* a single name selector where the name can be used in its shorthand notation
-* a single wildcard selector
-
-The shorthand is not valid for child __APPENDERS__ containing more than one selector
-other selector types, or name selectors that cannot themselves be represented
-in shorthand.
-
-Note that `..` on its own is not valid.
+Note that `..` on its own is not a valid __APPENDER__.
 
 #### Semantics
 {: unnumbered}
