@@ -586,19 +586,13 @@ Queries:
 
 ## Selectors
 
-Selectors are defined solely within the context of the [child __APPENDER__](#child-appender).
-A selector outside of a child __APPENDER__ is invalid.
+Selectors appear only inside [child __APPENDERS__](#child-appender) and
+[descendant __APPENDERS__](#descendant-appender).
 
-A selector identifies, or matches, child elements to be selected for the
-resulting nodelist.
+A selector produces a nodelist consisting of zero or more children of the input value.
 
-Each type of selector functions differently and may be defined to operate on only
-objects, only arrays, or both.
-
-The relationship between a selector and the child __APPENDER__ that contains it
-is further defined in the child __APPENDER__ section below.
-
-There are various types of selector:
+There are various kinds of selectors which produce children of objects, children or arrays,
+or children of either objects or arrays.
 
 ~~~~ abnf
 selector =  ( name-selector  /
@@ -608,7 +602,7 @@ selector =  ( name-selector  /
             )
 ~~~~
 
-The syntax and semantics of each of these types of selector are defined below.
+The syntax and semantics of each kind of selector are defined below.
 
 ### Name Selector {#name-selector}
 
