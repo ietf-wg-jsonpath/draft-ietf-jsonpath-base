@@ -804,18 +804,16 @@ not exist; this simply means that no element is selected.
 
 JSON:
 
-    {
-      "o": {"j j": {"k.k": 3}},
-      "a": ["a","b"],
-      "'": {"@": 2}
-    }
+    ["a","b"]
 
 Queries:
 
+The following examples show the index selector in use by a child __APPENDER__.
+
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
-| `$.a[1]`   | `"b"` | `$['a'][1]`      | Member of array      |
-| `$.a[-2]`   | `"a"` | `$['a'][0]`      | Member of array, from the end      |
+| `$[1]`   | `"b"` | `$[1]`      | Member of array      |
+| `$[-2]`  | `"a"` | `$[0]`      | Member of array, from the end      |
 {: title="Index selector examples"}
 
 ### Array Slice selector {#slice}
