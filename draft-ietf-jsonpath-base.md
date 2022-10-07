@@ -466,8 +466,8 @@ turns unpredictable when the JSON value for one of the objects
 under consideration was constructed out of JSON text that exhibits
 multiple members for a single object that share the same member name
 ("duplicate names", see {{Section 4 of -json}}).
-Also, matching ({{appenders}}) and comparing
-({{comparisons}} in Section {{<filter-selector}}) of strings assumes these
+Also, selecting a child by name ({{<name-selector}}) and comparing strings
+({{comparisons}} in Section {{<filter-selector}}) assume these
 strings are sequences of Unicode scalar values, turning unpredictable
 if they aren't ({{Section 8.2 of -json}}).
 
