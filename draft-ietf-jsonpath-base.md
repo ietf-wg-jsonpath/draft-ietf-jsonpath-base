@@ -565,6 +565,9 @@ consisting of nodes at depth in the input value of N or greater.
 * A query with N segments, where N >= 0, all of which are [child segments](#child-segment),
 produces a nodelist consisting of nodes precisely at depth N in the input value.
 
+If a query may produce a nodelist with more than one possible ordering, a particular implementation
+may also produce distinct orderings in distinct runs of the query.
+
 ## Root Identifier
 
 ### Syntax
