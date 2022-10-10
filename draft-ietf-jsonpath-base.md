@@ -1348,6 +1348,9 @@ in the order in which the nodes were visited.
 This definition does not stipulate the order in which the children of an object are visited, since
 JSON objects are unordered.
 
+Where a selector can produce a nodelist in more than one possible order, the selector may produce nodelists in distinct
+orders each time it appears in the descendant segment.
+
 #### Examples
 {: unnumbered}
 
@@ -1368,6 +1371,7 @@ Queries:
 | `$..[0]` | `{"j": 4}` <br> `5` | `$['a'][2][0]` <br> `$['a'][0]` | Alternative result |
 | `$..[*]` <br> `$..*` | `{"j": 1, "k" : 2}` <br> `[5, 3, [{"j": 4}]]` <br> `1` <br> `2` <br> `5` <br> `3` <br> `[{"j": 4}]` <br> `{"j": 4}` <br> `4` | `$['o']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][0]['j']` | All values    |
 | `$..o`   | `{"j": 1, "k": 2}` | `$['o']` | Input value is visited |
+| `$.o..[*, *]` | `1` <br> `2` <br> `2` <br> `1` | `$['o']['j']` <br> `$['o']['k']` <br> `$['o']['k']` <br> `$['o']['j']` | Non-deterministic ordering |
 {: title="Descendant segment examples"}
 
 Note: The ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that:
@@ -1378,6 +1382,9 @@ Note: The ordering of the results for the `$..[*]` and `$..*` examples above is 
 * `5` and `3` must appear before `{"j": 4}` and `4`,
 * `[{"j": 4}]` must appear before `{"j": 4}`, and
 * `{"j": 4}` must appear before `4`.
+
+The example above with the query `$.o..[*, *]` shows that a selector may produce nodelists in distinct orders
+each time it appears in the descendant segment.
 
 ## Semantics of `null` {#null-semantics}
 
