@@ -1325,7 +1325,7 @@ A descendant selector of the form `..[<selectors>]` visits each node of the inpu
 its descendants in such an order that:
 
 * nodes of any array are visited in array order, and
-* nodes are visited immediately before all their descendants,
+* nodes are visited before all their descendants,
 
 applies the child segment `[<selectors>]` to each node, and concatenates the resultant nodelists together
 in the order in which the nodes were visited.
