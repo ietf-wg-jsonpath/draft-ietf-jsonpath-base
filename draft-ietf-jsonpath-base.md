@@ -747,6 +747,9 @@ wildcard = "*"
 {: unnumbered}
 
 A `wildcard` selector selects the nodes of all children of an object or array.
+The order in which the children of an object appear in the resultant nodelist is not stipulated,
+since JSON objects are unordered.
+Children of an array appear in array order in the resultant nodelist.
 
 The `wildcard` selector selects nothing from a primitive JSON value (that is,
 a number, a string, `true`, `false`, or `null`).
@@ -770,8 +773,12 @@ The following examples show the `wildcard` selector in use by a child segment.
 | `$[*]`   | `{"j": 1, "k": 2}` <br> `[5, 3]` | `$['o']` <br> `$['a']` | Object values      |
 | `$.o[*]` | `1` <br> `2` | `$['o']['j']` <br> `$['o']['k']` | Object values      |
 | `$.o[*]` | `2` <br> `1` | `$['o']['k']` <br> `$['o']['j']` | Alternative result |
+| `$.o[*, *]` | `1` <br> `2` <br> `2` <br> `1` | `$['o']['j']` <br> `$['o']['k']` <br> `$['o']['k']` <br> `$['o']['j']` | Non-deterministic ordering |
 | `$.a[*]` | `5` <br> `3` | `$['a'][0]` <br> `$['a'][1]`     | Array members      |
 {: title="Wildcard selector examples"}
+
+The example above with the query `$.o[*, *]` shows that the wildcard selector may produce nodelists in distinct
+orders each time it appears in the child segment.
 
 ### Index selector {#index-selector}
 
@@ -1099,6 +1106,10 @@ The following table lists filter expression operators in order of precedence fro
 The filter selector works with arrays and objects exclusively. Its result is a list of *zero*, *one*, *multiple* or *all* of their array elements or member values, respectively.
 Applied to other value types, it will select nothing.
 
+The order in which the children of an object appear in the resultant nodelist is not stipulated,
+since JSON objects are unordered.
+Children of an array appear in array order in the resultant nodelist.
+
 A relative path, beginning with `@`, refers to the current array element or member value as the
 filter selector iterates over the array or object.
 
@@ -1225,6 +1236,7 @@ Queries:
 | :---: | ------ | :----------: | ------- |
 | `$.a[?@>3.5]` | `5` <br> `4` <br> `6` | `$['a'][1]` <br> `$['a'][4]` <br> `$['a'][5]` | Array value comparison |
 | `$.a[?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` | `$['a'][6]` <br> `$['a'][7]` | Array value existence |
+| `$.a[?@.b, ?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": "k"}` <br> `{"b": "j"}` | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][7]` <br> `$['a'][6]` | Non-deterministic ordering |
 | `$.a[?@<2 || @.b == "k"]` | `1` <br> `{"b": "k"}` | `$['a'][2]` <br> `$['a'][7]` | Array value logical OR |
 | `$.a[?@.b =~ "i.*"]` | `{"b": "j"}` <br> `{"b": "k"}` | `$['a'][6]` <br> `$['a'][7]` | Array value regular expression |
 | `$.o[?@>1 && @<4]` | `2` <br> `3` | `$['o']['q']` <br> `$['o']['r']` | Object value logical AND |
@@ -1233,6 +1245,9 @@ Queries:
 | `$.a[?(@.b == $.x)]`| `3` <br> `5` <br> `1` <br> `2` <br> `4` <br> `6` | `$['a'][0]` <br>`$['a'][1]` <br> `$['a'][2]` <br> `$['a'][3]` <br> `$['a'][4]` | Comparison of paths with no values |
 | `$[?(@ == @)]` | | | Comparison of structured values |
 {: title="Filter selector examples"}
+
+The example above with the query `$.a[?@.b, ?@.b]` shows that the filter selector may produce nodelists in distinct
+orders each time it appears in the child segment.
 
 ## Segments
 
