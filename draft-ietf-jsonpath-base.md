@@ -515,7 +515,7 @@ nodelist, which are then concatenated to produce
 the result of the segment. A node may be selected more than once and
 appears that number of times in the nodelist. Duplicate nodes are not removed.
 
-A syntactically valid segment MUST NOT produce errors.
+A syntactically valid segment MUST NOT produce errors when executing the query.
 This means that some
 operations that might be considered erroneous, such as indexing beyond the
 end of an array,
