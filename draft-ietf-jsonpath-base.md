@@ -559,7 +559,7 @@ of node.
 ### Syntax
 {: unnumbered}
 
-Every valid JSONPath query MUST begin with the root identifier `$`.
+Every JSONPath query MUST begin with the root identifier `$`.
 
 ~~~~ abnf
 root-identifier  = "$"
