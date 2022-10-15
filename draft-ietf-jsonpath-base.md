@@ -312,6 +312,8 @@ $.store.book[0].title
 to build paths that are input to a JSONPath implementation.
 A single path may use a combination of bracket and dot notations.
 
+Dot notation is merely a shorthand way of writing certain bracket notations.
+
 A wildcard `*` ({{wildcard}}) in the expression `[*]` selects all children of an
 object or an array and in the expression `..[*]` selects all descendants of an object or an array.
 
