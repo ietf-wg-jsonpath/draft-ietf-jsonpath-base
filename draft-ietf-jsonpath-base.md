@@ -856,13 +856,6 @@ The slice selector was inspired by the slice operator of ECMAScript
 
 This section is non-normative.
 
-Array indexing is a way of selecting a particular element of an array using
-a 0-based index.
-For example, the expression `0` selects the first element of a non-empty array.
-
-Negative indices index from the end of an array.
-For example, the expression `-2` selects the last but one element of an array with at least two elements.
-
 Array slicing is inspired by the behavior of the `Array.prototype.slice` method
 of the JavaScript language as defined by the ECMA-262 standard {{ECMA-262}},
 with the addition of the `step` parameter, which is inspired by the Python slice expression.
