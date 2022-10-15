@@ -776,7 +776,7 @@ int             = ["-"] ( "0" / (DIGIT1 *DIGIT) ) ; -  optional
 DIGIT1          = %x31-39                         ; 1-9 non-zero digit
 ~~~~
 
-Applying the numerical `index-selector` is required to select the corresponding
+Applying the numerical `index-selector` selects the corresponding
 element. JSONPath allows it to be negative (see {{index-semantics}}).
 
 Notes:
