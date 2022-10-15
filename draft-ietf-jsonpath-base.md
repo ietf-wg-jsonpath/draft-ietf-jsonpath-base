@@ -179,11 +179,6 @@ generic meaning, such as they would in a general programming context.
 
 Additional terms used in this specification are defined below.
 
-__APPENDER__:
-: This is a placeholder term for constructs which select children (`[]`)
-  or descendants (`..[]`) of an input value. It will be replaced by a concrete
-  term before the current branch is merged.
-
 Value:
 : As per {{-json}}, a structure complying to the generic data model of JSON, i.e.,
   composed of components such as structured values, namely JSON objects and arrays, and
@@ -234,6 +229,10 @@ Descendants (of a node):
   recursively. More formally, the descendants relation between nodes is the transitive
   closure of the children relation.
 
+Segment:
+: One of the constructs which select children (`[]`)
+  or descendants (`..[]`) of an input value.
+
 Nodelist:
 : A list of nodes.  <!-- ordered list?  Maybe TBD by issues #27 and #60 -->
   The output of applying a query to an argument is manifested as a list of nodes.
@@ -251,10 +250,10 @@ Unicode Scalar Value:
   E000 to 10FFFF. JSON values of type string are sequences of Unicode scalar values.
 
 Singular Path:
-: A JSONPath expression built from __APPENDERS__ which each produce at most one node.
+: A JSONPath expression built from segments which each produce at most one node.
 
 Selector:
-: A single item within an __APPENDER__ that takes the input value and produces a nodelist
+: A single item within a segment that takes the input value and produces a nodelist
   consisting of child nodes of the input value.
 
 For the purposes of this specification, a value as defined by
@@ -332,14 +331,14 @@ $.store.book[?@.price < 10].title
 | JSONPath            | Description                                                                                                             |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------|
 | `$`                 | [root node identifier](#root-identifier)                                                                                |
-| `[<selectors>]`     | [child __APPENDER__](#child-appender) selects zero or more children of JSON objects and arrays; contains one or more selectors, separated by commas        |
+| `[<selectors>]`     | [child segment](#child-segment) selects zero or more children of JSON objects and arrays; contains one or more selectors, separated by commas        |
 | `'name'`            | [name selector](#name-selector): selects a named child of an object                                                     |
 | `*`                 | [wildcard selector](#name-selector): selects all children of an array or object                                         |
 | `3`                 | [index selector](#index-selector): selects an indexed child of an array (from 0)                                        |
 | `0:100:5`           | [array slice selector](#slice): start:end:step for arrays                                                               |
 | `?<expr>`           | [filter selector](#filter-selector): selects particular children using a boolean expression                             |
 | `@`                 | [current node identifier](#filter-selector) (valid only within filter selectors)                                          |
-| `..[<selectors>]`   | [descendant __APPENDER__](#descendant-appender): selects zero or more descendants of JSON objects and arrays; contains one or more selectors, separated by commas |
+| `..[<selectors>]`   | [descendant segment](#descendant-segment): selects zero or more descendants of JSON objects and arrays; contains one or more selectors, separated by commas |
 | `.name`             | shorthand for `['name']`                                                                                                |
 | `.*`                | shorthand for `[*]`                                                                                                     |
 | `..name`            | shorthand for `..['name']`                                                                                              |
@@ -461,7 +460,7 @@ by events and causes no issues with the present specification.)
 
 Specifically, the "Semantics" subsections of Sections
 {{<name-selector}}, {{<wildcard}},
-{{<filter-selector}}, and {{<descendant-appender}} describe behavior that
+{{<filter-selector}}, and {{<descendant-segment}} describe behavior that
 turns unpredictable when the JSON value for one of the objects
 under consideration was constructed out of JSON text that exhibits
 multiple members for a single object that share the same member name
@@ -475,14 +474,14 @@ if they aren't ({{Section 8.2 of -json}}).
 
 Syntactically, a JSONPath query consists of a root identifier (`$`), which
 stands for a nodelist that contains the root node of the argument,
-followed by a possibly empty sequence of *__APPENDERS__*.
+followed by a possibly empty sequence of *segments*.
 
 ~~~~ abnf
-json-path = root-identifier *(S (child-APPENDER               /
-                                 descendant-APPENDER))
+json-path = root-identifier *(S (child-segment               /
+                                 descendant-segment))
 ~~~~
 
-The syntax and semantics of each __APPENDER__ are defined below.
+The syntax and semantics of each segment are defined below.
 
 ## Semantics
 
@@ -493,15 +492,15 @@ implementation.
 The semantics are that a valid query is executed against a value,
 the *argument*, and produces a list of zero or more nodes of the value.
 
-The query is a root identifier followed by a sequence of zero or more *__APPENDERS__*, each of
-which is applied to the result of the previous root identifier or __APPENDER__ and provides
-input to the next __APPENDER__.
+The query is a root identifier followed by a sequence of zero or more *segments*, each of
+which is applied to the result of the previous root identifier or segment and provides
+input to the next segment.
 These results and inputs take the form of a *nodelist*, i.e., a
 sequence of zero or more nodes.
 
 The nodelist resulting from the root identifier contains a single node,
 the argument.
-The nodelist resulting from the last __APPENDER__ is presented as the
+The nodelist resulting from the last segment is presented as the
 result of the query; depending on the specific API, it might be
 presented as an array of the JSON values at the nodes, an array of
 Normalized Paths referencing the nodes, or both — or some other
@@ -509,14 +508,14 @@ representation as desired by the implementation.
 Note that the API must be capable of presenting an empty nodelist as
 the result of the query.
 
-An __APPENDER__ performs its function on each of the nodes in its input
+A segment performs its function on each of the nodes in its input
 nodelist, during such a function execution, such a node is referred to
 as the "current node".  Each of these function executions produces a
 nodelist, which are then concatenated to produce
-the result of the __APPENDER__. A node may be selected more than once and
+the result of the segment. A node may be selected more than once and
 appears that number of times in the nodelist. Duplicate nodes are not removed.
 
-A syntactically valid __APPENDER__ MUST NOT produce errors.
+A syntactically valid segment MUST NOT produce errors.
 This means that some
 operations that might be considered erroneous, such as indexing beyond the
 end of an array,
@@ -526,7 +525,7 @@ Consider this example. With the argument `{"a":[{"b":0},{"b":1},{"c":2}]}`, the
 query `$.a[*].b` selects the following list of nodes: `0`, `1`
 (denoted here by their value).
 
-The query consists of `$` followed by three __APPENDERS__: `.a`, `[*]`, and `.b`.
+The query consists of `$` followed by three segments: `.a`, `[*]`, and `.b`.
 
 Firstly, `$` produces a nodelist consisting of just the argument.
 
@@ -547,10 +546,10 @@ The result is a list containing `0`, `1`.
 This is the concatenation of three lists, two of length one containing
 `0`, `1`, respectively, and one of length zero.
 
-As a consequence of this approach, if any of the __APPENDERS__ produces an empty nodelist,
+As a consequence of this approach, if any of the segments produces an empty nodelist,
 then the whole query produces an empty nodelist.
 
-In what follows, the semantics of each __APPENDER__ are defined for each type
+In what follows, the semantics of each segment are defined for each type
 of node.
 
 ## Root Identifier
@@ -586,8 +585,8 @@ Queries:
 
 ## Selectors
 
-Selectors appear only inside [child __APPENDERS__](#child-appender) and
-[descendant __APPENDERS__](#descendant-appender).
+Selectors appear only inside [child segments](#child-segment) and
+[descendant segments](#descendant-segment).
 
 A selector produces a nodelist consisting of zero or more children of the input value.
 
@@ -753,7 +752,7 @@ JSON:
 
 Queries:
 
-The following examples show the `wildcard` selector in use by a child __APPENDER__.
+The following examples show the `wildcard` selector in use by a child segment.
 
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
@@ -808,7 +807,7 @@ JSON:
 
 Queries:
 
-The following examples show the index selector in use by a child __APPENDER__.
+The following examples show the index selector in use by a child segment.
 
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
@@ -1025,10 +1024,10 @@ Paths in filter expressions are Singular Paths, each of which selects at most on
 
 ~~~~ abnf
 singular-path     = rel-singular-path / abs-singular-path
-rel-singular-path = "@" *(S (name-APPENDER / index-APPENDER))
-abs-singular-path = root-identifier *(S (name-APPENDER / index-APPENDER))
-name-APPENDER     = "[" name-selector "]" / dot-member-name-shorthand
-index-APPENDER    = "[" index-selector "]"
+rel-singular-path = "@" *(S (name-segment / index-segment))
+abs-singular-path = root-identifier *(S (name-segment / index-segment))
+name-segment      = "[" name-selector "]" / dot-member-name-shorthand
+index-segment     = "[" index-selector "]"
 ~~~~
 
 Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `?(<expr>)` is naturally contained in the current lean syntax `?<expr>` as a special case.
@@ -1230,25 +1229,25 @@ Queries:
 | `$[?(@ == @)]` | | | Comparison of structured values |
 {: title="Filter selector examples"}
 
-## __APPENDERS__
+## Segments
 
-__APPENDERS__ apply one or more selectors to an input value and concatenate the results into a single nodelist.
+Segments apply one or more selectors to an input value and concatenate the results into a single nodelist.
 
-The syntax and semantics of each __APPENDER__ are defined below.
+The syntax and semantics of each segment are defined below.
 
-### Child __APPENDER__
+### Child Segment
 
 #### Syntax
 {: unnumbered}
 
-The child __APPENDER__ consists of a non-empty, comma-delimited
+The child segment consists of a non-empty, comma-delimited
 sequence of selectors enclosed in square brackets.
 
 Shorthand notations are also provided for when there is a single
 wildcard or name selector.
 
 ~~~~ abnf
-child-APPENDER            = (child-longhand /
+child-segment             = (child-longhand /
                              dot-wildcard-shorthand /
                              dot-member-name-shorthand)
 
@@ -1280,32 +1279,32 @@ MUST NOT be used with the `dot-member-name-shorthand`.
 #### Semantics
 {: unnumbered}
 
-A child __APPENDER__ contains a comma-delimited sequence of selectors, each of which
+A child segment contains a comma-delimited sequence of selectors, each of which
 selects zero or more children of the input value.
 
-Selectors of different kinds may be combined within a single child __APPENDER__.
+Selectors of different kinds may be combined within a single child segment.
 
-The resulting nodelist of a child __APPENDER__ is the concatenation of
+The resulting nodelist of a child segment is the concatenation of
 the nodelists from each of its selectors in the order that the selectors
 appear in the list.
 Note that any node matched by more than one selector is kept
 as many times in the nodelist.
 
-### Descendant __APPENDER__
+### Descendant Segment
 
 #### Syntax
 {: unnumbered}
 
-The descendant __APPENDER__ consists of a double dot `..`
-followed by a child __APPENDER__ (`descendant-APPENDER`).
+The descendant segment consists of a double dot `..`
+followed by a child segment (`descendant-segment`).
 
-Shortand notations are also provided that correspond to the shorthand forms of the child __APPENDER__.
+Shortand notations are also provided that correspond to the shorthand forms of the child segment.
 
 ~~~~ abnf
-descendant-APPENDER              = (descendant-child /
+descendant-segment               = (descendant-child /
                                     descendant-wildcard-shorthand /
                                     descendant-member-name-shorthand)
-descendant-child                 = ".." child-APPENDER
+descendant-child                 = ".." child-segment
 
 descendant-wildcard-shorthand    = ".." wildcard
 descendant-member-name-shorthand = ".." dot-member-name
@@ -1315,14 +1314,14 @@ The `descendant-wildcard-shorthand` is shorthand for `..[*]`.
 
 A `descendant-member-name-shorthand` of the form `..<member-name>` is shorthand for `..['<member-name>']`.
 
-Note that `..` on its own is not a valid __APPENDER__.
+Note that `..` on its own is not a valid segment.
 
 #### Semantics
 {: unnumbered}
 
 <!-- The following does not address https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/252 -->
 
-A descendant __APPENDER__ selects zero or more descendants of the input value.
+A descendant segment selects zero or more descendants of the input value.
 
 A nodelist enumerating the descendants is known as a _descendant nodelist_ when:
 
@@ -1332,8 +1331,8 @@ A nodelist enumerating the descendants is known as a _descendant nodelist_ when:
 This definition does not stipulate the order in which the children of an object appear, since
 JSON objects are unordered.
 
-The resultant nodelist of a descendant __APPENDER__ of the form `..[<selectors>]` is the result of applying
-the child __APPENDER__ `[<selectors>]` to a descendant nodelist.
+The resultant nodelist of a descendant segment of the form `..[<selectors>]` is the result of applying
+the child segment `[<selectors>]` to a descendant nodelist.
 
 #### Examples
 {: unnumbered}
@@ -1354,7 +1353,7 @@ Queries:
 | `$..[0]` | `5` <br> `{"j": 4}` | `$['a'][0]` <br> `$['a'][2][0]` | Array values       |
 | `$..[0]` | `{"j": 4}` <br> `5` | `$['a'][2][0]` <br> `$['a'][0]` | Alternative result |
 | `$..[*]` <br> `$..*` | `{"j": 1, "k" : 2}` <br> `[5, 3, [{"j": 4}]]` <br> `1` <br> `2` <br> `5` <br> `3` <br> `[{"j": 4}]` <br> `{"j": 4}` <br> `4` | `$['o']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][0]['j']` | All values    |
-{: title="Descendant __APPENDER__ examples"}
+{: title="Descendant segment examples"}
 
 Note: The ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that:
 
@@ -1410,8 +1409,8 @@ Normalized Paths are Singular Paths. Not all Singular Paths are Normalized Paths
 Path, but not a Normalized Path.
 
 ~~~~ abnf
-normalized-path           = root-identifier *(normal-index-APPENDER)
-normal-index-APPENDER     = "[" (normal-name-selector / normal-index-selector) "]"
+normalized-path           = root-identifier *(normal-index-segment)
+normal-index-segment      = "[" (normal-name-selector / normal-index-selector) "]"
 normal-name-selector      = %x27 *normal-single-quoted %x27 ; 'string'
 normal-single-quoted      = normal-unescaped /
                             ESC normal-escapable
@@ -1554,7 +1553,7 @@ expression implementations.)
 Implementers need to be aware that good average performance is not
 sufficient as long as an attacker can choose to submit specially
 crafted JSONPath queries or arguments that trigger surprisingly high, possibly
-exponential, CPU usage or, for example via a naive recursive implementation of the descendant __APPENDER__,
+exponential, CPU usage or, for example via a naive recursive implementation of the descendant segment,
 stack overflow. Implementations need to have appropriate resource management
 to mitigate these attacks.
 
