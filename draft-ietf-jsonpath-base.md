@@ -312,8 +312,8 @@ $.store.book[0].title
 to build paths that are input to a JSONPath implementation.
 A single path may use a combination of bracket and dot notations.
 
-A wildcard `*` ({{wildcard}}) may be used to select all children of an
-object or an array.
+A wildcard `*` ({{wildcard}}) in the expression `[*]` selects all children of an
+object or an array and in the expression `..[*]` selects all descendants of an object or an array.
 
 An array slice `start:end:step` ({{slice}}) selects a series of
 elements from an array, giving a start position, an end position, and
