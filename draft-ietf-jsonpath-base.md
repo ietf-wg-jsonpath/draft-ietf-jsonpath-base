@@ -333,14 +333,14 @@ $.store.book[?@.price < 10].title
 | JSONPath            | Description                                                                                                             |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------|
 | `$`                 | [root node identifier](#root-identifier)                                                                                |
+| `@`                 | [current node identifier](#filter-selector) (valid only within filter selectors)                                          |
 | `[<selectors>]`     | [child segment](#child-segment) selects zero or more children of JSON objects and arrays; contains one or more selectors, separated by commas        |
+| `..[<selectors>]`   | [descendant segment](#descendant-segment): selects zero or more descendants of JSON objects and arrays; contains one or more selectors, separated by commas |
 | `'name'`            | [name selector](#name-selector): selects a named child of an object                                                     |
 | `*`                 | [wildcard selector](#name-selector): selects all children of an array or object                                         |
 | `3`                 | [index selector](#index-selector): selects an indexed child of an array (from 0)                                        |
 | `0:100:5`           | [array slice selector](#slice): start:end:step for arrays                                                               |
 | `?<expr>`           | [filter selector](#filter-selector): selects particular children using a boolean expression                             |
-| `@`                 | [current node identifier](#filter-selector) (valid only within filter selectors)                                          |
-| `..[<selectors>]`   | [descendant segment](#descendant-segment): selects zero or more descendants of JSON objects and arrays; contains one or more selectors, separated by commas |
 | `.name`             | shorthand for `['name']`                                                                                                |
 | `.*`                | shorthand for `[*]`                                                                                                     |
 | `..name`            | shorthand for `..['name']`                                                                                              |
