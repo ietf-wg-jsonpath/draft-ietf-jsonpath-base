@@ -1311,7 +1311,7 @@ Note that `..` on its own is not a valid segment.
 
 <!-- The following does not address https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/252 -->
 
-A descendant segment selects zero or more descendants of the input value.
+A descendant segment produces zero or more descendants of the input value.
 
 A nodelist enumerating the descendants is known as a _descendant nodelist_ when:
 
