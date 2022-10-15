@@ -1263,13 +1263,8 @@ ALPHA                     =  %x41-5A / %x61-7A    ; A-Z / a-z
 
 The `dot-wildcard-shorthand` is shorthand for `[*]`.
 
-A `dot-member-name-shorthand` of the form `.<member-name>` is shorthand for `['<member-name>']`.
-
-Member names containing characters other than allowed by
-`dot-member-name-shorthand` — such as space (U+0020), minus (U+002D), dot (U+002E)
-or escaped characters which appear in the [name selector semantics section](#name-semantics) —
-MUST NOT be used with the `dot-member-name-shorthand`.
-(In such cases, the `name-selector` syntax MUST be used instead.)
+A `dot-member-name-shorthand` of the form `.<member-name>` is shorthand for `['<member-name>']`, but
+can only be used with members names containing certain characters.
 
 #### Semantics
 {: unnumbered}
