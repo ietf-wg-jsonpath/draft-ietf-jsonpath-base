@@ -229,6 +229,10 @@ Descendants (of a node):
   recursively. More formally, the descendants relation between nodes is the transitive
   closure of the children relation.
 
+Depth (of a descendant node within a value):
+: The number of ancestors of the node within the value. The root node of the value has depth zero,
+the children of the root node have depth one, their children have depth two, and so forth.
+
 Segment:
 : One of the constructs which select children (`[]`)
   or descendants (`..[]`) of an input value.
@@ -552,7 +556,14 @@ As a consequence of this approach, if any of the segments produces an empty node
 then the whole query produces an empty nodelist.
 
 In what follows, the semantics of each segment are defined for each type
-of node.
+of node. It will turn out that the more segments there are in a query, the greater the depth of the
+nodes of the resultant nodelist in the input value:
+
+* A query with N segments, where N >= 0, produces a nodelist
+consisting of nodes at depth in the input value of N or greater.
+
+* A query with N segments, where N >= 0, all of which are [child segments](#child-segment),
+produces a nodelist consisting of nodes precisely at depth N in the input value.
 
 ## Root Identifier
 
