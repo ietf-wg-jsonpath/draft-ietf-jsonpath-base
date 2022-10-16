@@ -1275,7 +1275,7 @@ ALPHA                     =  %x41-5A / %x61-7A    ; A-Z / a-z
 The `dot-wildcard-shorthand` is shorthand for `[*]`.
 
 A `dot-member-name-shorthand` of the form `.<member-name>` is shorthand for `['<member-name>']`, but
-can only be used with members names containing certain characters.
+can only be used with member names that are composed of certain characters.
 
 #### Semantics
 {: unnumbered}
