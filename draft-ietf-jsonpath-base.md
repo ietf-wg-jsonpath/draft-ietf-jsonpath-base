@@ -57,23 +57,19 @@ contributor:
 -
   name: Marko Mikulicic
   org: InfluxData, Inc.
-  street: ''
   city: Pisa
-  region: ''
-  code: ''
   country: IT
-  phone: ''
   email: mmikulicic@gmail.com
 -
   name: Edward Surov
   org: TheSoul Publishing Ltd.
-  street: ''
   city: Limassol
-  region: ''
-  code: ''
   country: Cyprus
-  phone: ''
   email: esurov.tsp@gmail.com
+-
+  name: Greg Dennis
+  email: gregsdennis@yahoo.com
+  uri: https://github.com/gregsdennis
 
 informative:
 #  RFC3552: seccons
