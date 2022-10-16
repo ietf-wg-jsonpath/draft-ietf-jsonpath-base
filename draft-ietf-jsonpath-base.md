@@ -1321,20 +1321,16 @@ Note that `..` on its own is not a valid segment.
 #### Semantics
 {: unnumbered}
 
-<!-- The following does not address https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/252 -->
-
 A descendant segment produces zero or more descendants of the input value.
 
-A nodelist enumerating the descendants is known as a _descendant nodelist_ when:
+The resultant nodelist of a descendant selector of the form `..[<selectors>]` is the result of applying the
+the child segment `[<selectors>]` to a nodelist enumerating the node and its descendants such that:
 
 * nodes of any array appear in array order,
 * nodes appear immediately before all their descendants.
 
 This definition does not stipulate the order in which the children of an object appear, since
 JSON objects are unordered.
-
-The resultant nodelist of a descendant segment of the form `..[<selectors>]` is the result of applying
-the child segment `[<selectors>]` to a descendant nodelist.
 
 #### Examples
 {: unnumbered}
@@ -1355,6 +1351,7 @@ Queries:
 | `$..[0]` | `5` <br> `{"j": 4}` | `$['a'][0]` <br> `$['a'][2][0]` | Array values       |
 | `$..[0]` | `{"j": 4}` <br> `5` | `$['a'][2][0]` <br> `$['a'][0]` | Alternative result |
 | `$..[*]` <br> `$..*` | `{"j": 1, "k" : 2}` <br> `[5, 3, [{"j": 4}]]` <br> `1` <br> `2` <br> `5` <br> `3` <br> `[{"j": 4}]` <br> `{"j": 4}` <br> `4` | `$['o']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][0]['j']` | All values    |
+| `$..o`   | `{"j": 1, "k": 2}` | `$['o']` | Input value is included in the enumeration |
 {: title="Descendant segment examples"}
 
 Note: The ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that:
