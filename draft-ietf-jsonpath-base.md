@@ -68,6 +68,8 @@ contributor:
   email: esurov.tsp@gmail.com
 -
   name: Greg Dennis
+  city: Auckland
+  country: New Zealand
   email: gregsdennis@yahoo.com
   uri: https://github.com/gregsdennis
 
