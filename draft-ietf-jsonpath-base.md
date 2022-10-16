@@ -229,6 +229,14 @@ Descendants (of a node):
   recursively. More formally, the descendants relation between nodes is the transitive
   closure of the children relation.
 
+Depth (of a descendant node within a value):
+: The number of ancestors of the node within the value. The root node of the value has depth zero,
+the children of the root node have depth one, their children have depth two, and so forth.
+
+Segment:
+: One of the constructs which select children (`[]`)
+  or descendants (`..[]`) of an input value.
+
 Nodelist:
 : A list of nodes.  <!-- ordered list?  Maybe TBD by issues #27 and #60 -->
   The output of applying a query to an argument is manifested as a list of nodes.
@@ -246,7 +254,11 @@ Unicode Scalar Value:
   E000 to 10FFFF. JSON values of type string are sequences of Unicode scalar values.
 
 Singular Path:
-: A JSONPath expression built from selectors which each select at most one node.
+: A JSONPath expression built from segments which each produce at most one node.
+
+Selector:
+: A single item within a segment that takes the input value and produces a nodelist
+  consisting of child nodes of the input value.
 
 For the purposes of this specification, a value as defined by
 {{-json}} is also viewed as a tree of nodes.
@@ -289,50 +301,54 @@ JSONPath expressions are applied to a JSON value, the *argument*.
 Within the JSONPath expression, the abstract name `$` is used to refer
 to the *root node* of the argument, i.e., to the argument as a whole.
 
-JSONPath expressions can use the *dot notation*
-
-~~~~
-$.store.book[0].title
-~~~~
-
-or the more general *bracket notation*
+JSONPath expressions use the *bracket notation*, for example:
 
 ~~~~
 $['store']['book'][0]['title']
 ~~~~
 
-to build paths that are input to a JSONPath implementation.
-
-JSONPath allows the wildcard symbol `*` to select any member of an
-object or any element of an array ({{wildcard}}).
-The descendant operators (which start with `..`) select some or all of the descendants ({{descendant-selectors}}) of a node.
-The array slice
-syntax `[start:end:step]` allows selecting a regular selection of an
-element from an array, giving a start position, an end position, and
-possibly a step value that moves the position from the start to the
-end ({{slice}}).
-
-Filter expressions are supported via the syntax `?(<boolean expr>)` as in
+or the more compact *dot notation*, for example:
 
 ~~~~
-$.store.book[?(@.price < 10)].title
+$.store.book[0].title
+~~~~
+
+to build paths that are input to a JSONPath implementation.
+A single path may use a combination of bracket and dot notations.
+
+Dot notation is merely a shorthand way of writing certain bracket notations.
+
+A wildcard `*` ({{wildcard}}) in the expression `[*]` selects all children of an
+object or an array and in the expression `..[*]` selects all descendants of an object or an array.
+
+An array slice `start:end:step` ({{slice}}) selects a series of
+elements from an array, giving a start position, an end position, and
+possibly a step value that moves the position from the start to the
+end.
+
+Filter expressions `?<boolean expr>` select certain children of an object or array as in
+
+~~~~
+$.store.book[?@.price < 10].title
 ~~~~
 
 {{tbl-overview}} provides a quick overview of the JSONPath syntax elements.
 
-| JSONPath    | Description                                                                                                                         |
-|-------------|-------------------------------------------------------------------------------------------------------------------------------------|
-| `$`         | [the root node](#root-selector)                                                                                                     |
-| `@`         | the current node: within [filter selectors](#filter-selector)                                                                     |
-| `.name`     | child selectors for JSON objects: [dot selector](#dot-selector)                                                                     |
-| `['name']`  | child selectors for JSON objects: [index selector](#index-selector)                                                                 |
-| `..name` <br> `..[3]` | descendants: [descendant selector](#descendant-selectors)                                                                     |
-| `.*` <br> `[*]` | all child member values and array elements: [dot wildcard selector](#wildcard), [index wildcard selector](#index-wildcard-selector) |
-| `[3]`       | [index (subscript) selector](#index-selector): index current node as an array (from 0)                                              |
-| `[..,..]`   | [list selector](#list-selector): allow combining selector styles                                                                    |
-| `[0:100:5]` | [array slice selector](#slice): start:end:step                                                                                      |
-| `?...`      | [filter selector](#filter-selector)                                                                                                 |
-| `()`        | expression: within [filter selectors](#filter-selector)                                                                            |
+| JSONPath            | Description                                                                                                             |
+|---------------------|-------------------------------------------------------------------------------------------------------------------------|
+| `$`                 | [root node identifier](#root-identifier)                                                                                |
+| `@`                 | [current node identifier](#filter-selector) (valid only within filter selectors)                                          |
+| `[<selectors>]`     | [child segment](#child-segment) selects zero or more children of JSON objects and arrays; contains one or more selectors, separated by commas        |
+| `..[<selectors>]`   | [descendant segment](#descendant-segment): selects zero or more descendants of JSON objects and arrays; contains one or more selectors, separated by commas |
+| `'name'`            | [name selector](#name-selector): selects a named child of an object                                                     |
+| `*`                 | [wildcard selector](#name-selector): selects all children of an array or object                                         |
+| `3`                 | [index selector](#index-selector): selects an indexed child of an array (from 0)                                        |
+| `0:100:5`           | [array slice selector](#slice): start:end:step for arrays                                                               |
+| `?<expr>`           | [filter selector](#filter-selector): selects particular children using a boolean expression                             |
+| `.name`             | shorthand for `['name']`                                                                                                |
+| `.*`                | shorthand for `[*]`                                                                                                     |
+| `..name`            | shorthand for `..['name']`                                                                                              |
+| `..*`               | shorthand for `..[*]`                                                                                                   |
 {: #tbl-overview title="Overview of JSONPath"}
 
 # JSONPath Examples
@@ -448,37 +464,30 @@ behavior for JSONPath queries in these situations.
 -json}}, at the time of writing is generally considered to be overtaken
 by events and causes no issues with the present specification.)
 
-Specifically, the "Semantics" subsections of Sections {{<dot-selector}},
-{{<wildcard}}, {{<index-selector}}, {{<index-wildcard-selector}},
-{{<filter-selector}}, and {{<descendant-selectors}} describe behavior that
+Specifically, the "Semantics" subsections of Sections
+{{<name-selector}}, {{<wildcard}},
+{{<filter-selector}}, and {{<descendant-segment}} describe behavior that
 turns unpredictable when the JSON value for one of the objects
 under consideration was constructed out of JSON text that exhibits
 multiple members for a single object that share the same member name
 ("duplicate names", see {{Section 4 of -json}}).
-Also, matching ({{selectors}}) and comparing
-({{comparisons}} in Section {{<filter-selector}}) of strings assumes these
+Also, selecting a child by name ({{<name-selector}}) and comparing strings
+({{comparisons}} in Section {{<filter-selector}}) assume these
 strings are sequences of Unicode scalar values, turning unpredictable
 if they aren't ({{Section 8.2 of -json}}).
 
 ## Syntax
 
-Syntactically, a JSONPath query consists of a root selector (`$`), which
+Syntactically, a JSONPath query consists of a root identifier (`$`), which
 stands for a nodelist that contains the root node of the argument,
-followed by a possibly empty sequence of *selectors*.
+followed by a possibly empty sequence of *segments*.
 
 ~~~~ abnf
-json-path = root-selector *(S (dot-selector        /
-                               dot-wild-selector   /
-                               index-selector      /
-                               index-wild-selector /
-                               slice-selector      /
-                               filter-selector     /
-                               list-selector       /
-                               descendant-selector))
+json-path = root-identifier *(S (child-segment               /
+                                 descendant-segment))
 ~~~~
 
-The syntax and semantics of each selector is defined below.
-
+The syntax and semantics of each segment are defined below.
 
 ## Semantics
 
@@ -489,15 +498,15 @@ implementation.
 The semantics are that a valid query is executed against a value,
 the *argument*, and produces a list of zero or more nodes of the value.
 
-The query is a sequence of zero or more *selectors*, each of
-which is applied to the result of the previous selector and provides
-input to the next selector.
+The query is a root identifier followed by a sequence of zero or more *segments*, each of
+which is applied to the result of the previous root identifier or segment and provides
+input to the next segment.
 These results and inputs take the form of a *nodelist*, i.e., a
 sequence of zero or more nodes.
 
-The nodelist presented to the first selector contains a single node,
+The nodelist resulting from the root identifier contains a single node,
 the argument.
-The nodelist resulting from the last selector is presented as the
+The nodelist resulting from the last segment is presented as the
 result of the query; depending on the specific API, it might be
 presented as an array of the JSON values at the nodes, an array of
 Normalized Paths referencing the nodes, or both — or some other
@@ -505,19 +514,14 @@ representation as desired by the implementation.
 Note that the API must be capable of presenting an empty nodelist as
 the result of the query.
 
-A selector performs its function on each of the nodes in its input
+A segment performs its function on each of the nodes in its input
 nodelist, during such a function execution, such a node is referred to
 as the "current node".  Each of these function executions produces a
 nodelist, which are then concatenated to produce
-the result of the selector. A node may be selected more than once and
-appear that number of times in the nodelist. Duplicate nodes are not removed.
+the result of the segment. A node may be selected more than once and
+appears that number of times in the nodelist. Duplicate nodes are not removed.
 
-The processing within a selector may execute nested queries,
-which conform to the semantics defined here.
-Typically, the argument to that query will be the current node of the
-selector or a set of nodes subordinate to that current node.
-
-A syntactically valid selector MUST NOT produce errors.
+A syntactically valid segment MUST NOT produce errors when executing the query.
 This means that some
 operations that might be considered erroneous, such as indexing beyond the
 end of an array,
@@ -527,10 +531,9 @@ Consider this example. With the argument `{"a":[{"b":0},{"b":1},{"c":2}]}`, the
 query `$.a[*].b` selects the following list of nodes: `0`, `1`
 (denoted here by their value).
 
-The query consists of `$` followed by three selectors: `.a`, `[*]`, and `.b`.
+The query consists of `$` followed by three segments: `.a`, `[*]`, and `.b`.
 
-Firstly, `$` selects the root node which is the argument.
-So the result is a list consisting of just the root node.
+Firstly, `$` produces a nodelist consisting of just the argument.
 
 Next, `.a` selects from any input node of type object and selects the
 node of any
@@ -549,58 +552,37 @@ The result is a list containing `0`, `1`.
 This is the concatenation of three lists, two of length one containing
 `0`, `1`, respectively, and one of length zero.
 
-As a consequence of this approach, if any of the selectors selects no nodes,
-then the whole query selects no nodes.
+As a consequence of this approach, if any of the segments produces an empty nodelist,
+then the whole query produces an empty nodelist.
 
-In what follows, the semantics of each selector are defined for each type
-of node.
+In what follows, the semantics of each segment are defined for each type
+of node. It will turn out that the more segments there are in a query, the greater the depth of the
+nodes of the resultant nodelist in the input value:
 
+* A query with N segments, where N >= 0, produces a nodelist
+consisting of nodes at depth in the input value of N or greater.
 
-## Selectors
+* A query with N segments, where N >= 0, all of which are [child segments](#child-segment),
+produces a nodelist consisting of nodes precisely at depth N in the input value.
 
-A JSONPath query consists of a sequence of selectors. Valid selectors are
+## Root Identifier
 
-  * Root selector `$` (used at the start of a query and in expressions)
-  * Dot selector `.<name>`, used with object member names exclusively
-  * Dot wildcard selector `.*`
-  * Index selector `[<index>]`, where `<index>` is either a (possibly
-    negative, see {{index-semantics}}) array index or an object member name
-  * Index wildcard selector `[*]`
-  * Array slice selector `[<start>:<end>:<step>]`, where the optional
-    values `<start>`, `<end>`, and `<step>` are integer literals
-  * List selector `[<sel1>,<sel2>,...,<selN>]`, holding a comma
-    separated list of index and slice selectors
-  * Filter selector `[?(<expr>)]`
-  * Current item selector `@` (used in expressions)
-  * Descendants selectors starting with a double dot `..`
-
-Note that processing the dot selector, string-valued index selector,
-and filter selector all potentially require matching strings against
-strings, with those strings coming from the JSONPath and from member
-names and string values in the JSON to which it is being applied.
-Two strings MUST be considered equal if and only if they are identical
-sequences of Unicode scalar values. In other words, normalization operations
-MUST NOT be applied to either the string from the JSONPath or from the JSON
-prior to comparison.
-
-### Root Selector
-
-#### Syntax
+### Syntax
 {: unnumbered}
 
-Every valid JSONPath query MUST begin with the root selector `$`.
+Every JSONPath query MUST begin with the root identifier `$`.
 
 ~~~~ abnf
-root-selector  = "$"
+root-identifier  = "$"
 ~~~~
 
-#### Semantics
+### Semantics
 {: unnumbered}
 
-The root selector `$` selects the root node of the argument
+The root identifier `$` represents the root node of the argument
 and produces a nodelist consisting of that root node.
 
-#### Examples
+### Examples
 {: unnumbered}
 
 JSON:
@@ -612,118 +594,42 @@ Queries:
 | Query | Result | Result Path | Comment |
 | :---: | ------ | :----------: | ------- |
 | `$` | `{"k": "v"}` | `$` | Root node |
-{: title="Root selector examples"}
+{: title="Root identifier examples"}
 
-### Dot Selector
+## Selectors
 
-#### Syntax
-{: unnumbered}
+Selectors appear only inside [child segments](#child-segment) and
+[descendant segments](#descendant-segment).
 
-A dot selector starts with a dot `.` followed by an object's member name.
+A selector produces a nodelist consisting of zero or more children of the input value.
 
-~~~~ abnf
-dot-selector    = "." dot-member-name
-dot-member-name = name-first *name-char
-name-first      =
-                      ALPHA /
-                      "_"   /           ; _
-                      %x80-10FFFF       ; any non-ASCII Unicode character
-name-char = DIGIT / name-first
-
-DIGIT           =  %x30-39              ; 0-9
-ALPHA           =  %x41-5A / %x61-7A    ; A-Z / a-z
-~~~~
-
-Member names containing characters other than allowed by
-`dot-selector` — such as space (U+0020), minus (U+002D), or dot (U+002E)
-characters — MUST NOT be used with the `dot-selector`.
-(Such member names can be addressed by the
-`index-selector` instead.)
-
-#### Semantics
-{: unnumbered}
-
-The `dot-selector` selects the node of the member value corresponding
-to the member name from any JSON object in its input nodelist.
-
-It selects no nodes from any other JSON value.
-
-#### Examples
-{: unnumbered}
-
-JSON:
-
-    {"j": {"k": 3}}
-
-Queries:
-
-| Query | Result | Result Paths | Comment |
-| :---: | ------ | :----------: | ------- |
-| `$.j`   | `{"k": 3}` | `$['j']`      | Named value of an object      |
-| `$.j.k` | `3`        | `$['j']['k']` | Named value in nested object  |
-{: title="Dot selector examples"}
-
-### Dot Wildcard Selector {#wildcard}
-
-#### Syntax
-{: unnumbered}
-
-The dot wildcard selector has the form `.*` as defined in the
-following syntax:
+There are various kinds of selectors which produce children of objects, children or arrays,
+or children of either objects or arrays.
 
 ~~~~ abnf
-dot-wild-selector    = "." wildcard       ;  dot followed by asterisk
-wildcard             = "*"
+selector =  ( name-selector  /
+              index-selector /
+              slice-selector /
+              filter-selector
+            )
 ~~~~
 
-#### Semantics
+The syntax and semantics of each kind of selector are defined below.
+
+### Name Selector {#name-selector}
+
+#### Syntax {#syntax-name}
 {: unnumbered}
 
-A `dot-wild-selector` acts as a wildcard by selecting the nodes of
-all member values of an object in its input nodelist as well as all
-element nodes of an array in its input nodelist.
+A name selector `'<name>'` selects at most one object member value.
 
-Applying the `dot-wild-selector` to a primitive JSON value (a number,
-a string, `true`, `false`, or `null`) selects no node.
-
-#### Examples
-{: unnumbered}
-
-JSON:
-
-    {
-      "o": {"j": 1, "k": 2},
-      "a": [5, 3]
-    }
-
-Queries:
-
-| Query | Result | Result Paths | Comment |
-| :---: | ------ | :----------: | ------- |
-| `$.o.*` | `1` <br> `2` | `$['o']['j']` <br> `$['o']['k']` | Object values      |
-| `$.o.*` | `2` <br> `1` | `$['o']['k']` <br> `$['o']['j']` | Alternative result |
-| `$.a.*` | `5` <br> `3` | `$['a'][0]` <br> `$['a'][1]`     | Array members      |
-{: title="Dot wildcard selector examples"}
-
-### Index Selector
-
-#### Syntax {#syntax-index}
-{: unnumbered}
-
-An index selector `[<index>]` addresses at most one object member value or at most one array element value.
-
-~~~~ abnf
-index-selector      = "[" S (quoted-member-name / element-index) S "]"
-~~~~
-
-Applying the `index-selector` to an object value in its input nodelist, a
-`quoted-member-name` string is required to select the corresponding
-member value.
+Applying the `name-selector` to an object value in its input nodelist,
+its string is required to match the corresponding member value.
 In contrast to JSON,
 the JSONPath syntax allows strings to be enclosed in _single_ or _double_ quotes.
 
 ~~~~ abnf
-quoted-member-name  = string-literal
+name-selector       = string-literal
 
 string-literal      = %x22 *double-quoted %x22 /       ; "string"
                       %x27 *single-quoted %x27         ; 'string'
@@ -767,27 +673,13 @@ HEXDIG = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
 ; Task from 2021-06-15 interim: update ABNF later
 ~~~~
 
-Applying the `index-selector` to an array, a numerical `element-index`
-is required to select the corresponding
-element. JSONPath allows it to be negative (see {{index-semantics}}).
+Note: `double-quoted` strings follow the JSON string syntax ({{Section 7 of RFC8259}});
+`single-quoted` strings follow an analogous pattern ({{syntax-index}}).
 
-~~~~ abnf
-element-index   = int                             ; decimal integer
-
-int             = ["-"] ( "0" / (DIGIT1 *DIGIT) ) ; -  optional
-DIGIT1          = %x31-39                         ; 1-9 non-zero digit
-~~~~
-
-Notes:
-1. `double-quoted` strings follow the JSON string syntax ({{Section 7 of RFC8259}});
-   `single-quoted` strings follow an analogous pattern ({{syntax-index}}).
-2. An `element-index` is an integer (in base 10, as in JSON numbers).
-3. As in JSON numbers, the syntax does not allow octal-like integers with leading zeros such as `01` or `-01`.
-
-#### Semantics {#index-semantics}
+#### Semantics
 {: unnumbered}
 
-A `quoted-member-name` string MUST be converted to a
+A `name-selector` string MUST be converted to a
 member name by removing the surrounding quotes and
 replacing each escape sequence with its equivalent Unicode character, as
 in the table below:
@@ -806,18 +698,17 @@ in the table below:
 | \\uXXXX            | U+XXXX              | unicode character           |
 {: title="Escape Sequence Replacements" cols="c c"}
 
-The `index-selector` applied with a `quoted-member-name` to an object
+The name selector applied to an object
 selects the node of the corresponding member value from it, if and only if that object has a member with that name.
 Nothing is selected from a value that is not a object.
 
-The `index-selector` applied with an `element-index` to an array selects an array element using a zero-based index.
-For example, selector `[0]` selects the first and selector `[4]` the fifth element of a sufficiently long array.
-Nothing is selected, and it is not an error, if the index lies outside the range of the array. Nothing is selected from a value that is not an array.
-
-A negative `element-index` counts from the array end.
-For example, selector `[-1]` selects the last and selector `[-2]` selects the penultimate element of an array with at least two elements.
-As with non-negative indexes, it is not an error if such an element does
-not exist; this simply means that no element is selected.
+Note that processing the name selector potentially requires matching strings against
+strings, with those strings coming from the JSONPath and from member
+names and string values in the JSON to which it is being applied.
+Two strings MUST be considered equal if and only if they are identical
+sequences of Unicode scalar values. In other words, normalization operations
+MUST NOT be applied to either the string from the JSONPath or from the JSON
+prior to comparison.
 
 #### Examples
 {: unnumbered}
@@ -829,7 +720,6 @@ JSON:
 
     {
       "o": {"j j": {"k.k": 3}},
-      "a": ["a","b"],
       "'": {"@": 2}
     }
 
@@ -839,33 +729,29 @@ Queries:
 | :---: | ------ | :----------: | ------- |
 | `$.o['j j']['k.k']`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
 | `$.o["j j"]["k.k"]`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
-| `$.a[1]`   | `"b"` | `$['a'][1]`      | Member of array      |
-| `$.a[-2]`   | `"a"` | `$['a'][0]`      | Member of array, from the end      |
 | `$["'"]["@"]` | `2` | `$['\'']['@']` | Unusual member names
-{: title="Index selector examples"}
+| `$.j`   | `{"k": 3}` | `$['j']`      | Named value of an object      |
+| `$.j.k` | `3`        | `$['j']['k']` | Named value in nested object  |
+{: title="Name selector examples"}
 
-### Index Wildcard Selector
+### Wildcard Selector {#wildcard}
 
 #### Syntax
 {: unnumbered}
 
-The index wildcard selector has the form `[*]`.
+The wildcard selector consists of an asterisk.
 
 ~~~~ abnf
-index-wild-selector    = "[" wildcard "]"  ;  asterisk enclosed by brackets
+wildcard = "*"
 ~~~~
 
 #### Semantics
 {: unnumbered}
 
-An `index-wild-selector`
-selects the nodes of all member values of an object as well as of all elements of an
-array.
+A `wildcard` selector selects the nodes of all children of an object or array.
 
-Applying the `index-wild-selector` to a primitive JSON value (that is,
-a number, a string, `true`, `false`, or `null`) selects no node.
-
-The `index-wild-selector` behaves identically to the `dot-wild-selector`.
+The `wildcard` selector selects nothing from a primitive JSON value (that is,
+a number, a string, `true`, `false`, or `null`).
 
 #### Examples
 {: unnumbered}
@@ -879,26 +765,80 @@ JSON:
 
 Queries:
 
+The following examples show the `wildcard` selector in use by a child segment.
+
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
+| `$[*]`   | `{"j": 1, "k": 2}` <br> `[5, 3]` | `$['o']` <br> `$['a']` | Object values      |
 | `$.o[*]` | `1` <br> `2` | `$['o']['j']` <br> `$['o']['k']` | Object values      |
 | `$.o[*]` | `2` <br> `1` | `$['o']['k']` <br> `$['o']['j']` | Alternative result |
 | `$.a[*]` | `5` <br> `3` | `$['a'][0]` <br> `$['a'][1]`     | Array members      |
-{: title="Index wildcard selector examples"}
+{: title="Wildcard selector examples"}
 
-### Array Slice Selector {#slice}
+### Index selector {#index-selector}
+
+#### Syntax {#syntax-index}
+{: unnumbered}
+
+An index selector `<index>` matches at most one array element value.
+
+~~~~ abnf
+index-selector  = int                             ; decimal integer
+
+int             = ["-"] ( "0" / (DIGIT1 *DIGIT) ) ; -  optional
+DIGIT1          = %x31-39                         ; 1-9 non-zero digit
+~~~~
+
+Applying the numerical `index-selector` selects the corresponding
+element. JSONPath allows it to be negative (see {{index-semantics}}).
+
+Notes:
+1. An `index-selector` is an integer (in base 10, as in JSON numbers).
+2. As in JSON numbers, the syntax does not allow octal-like integers with leading zeros such as `01` or `-01`.
+
+#### Semantics {#index-semantics}
+{: unnumbered}
+
+The `index-selector` applied to an array selects an array element using a zero-based index.
+For example, the selector `0` selects the first and the selector `4` the fifth element of a sufficiently long array.
+Nothing is selected, and it is not an error, if the index lies outside the range of the array. Nothing is selected from a value that is not an array.
+
+A negative `index-selector` counts from the array end.
+For example, the selector `-1` selects the last and the selector `-2` selects the penultimate element of an array with at least two elements.
+As with non-negative indexes, it is not an error if such an element does
+not exist; this simply means that no element is selected.
+
+#### Examples
+{: unnumbered}
+
+<!-- EDITING NOTE: There are non-breaking spaces here between j and j -->
+<!-- i.e., j j and not j j -->
+
+JSON:
+
+    ["a","b"]
+
+Queries:
+
+The following examples show the index selector in use by a child segment.
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$[1]`   | `"b"` | `$[1]`      | Member of array      |
+| `$[-2]`  | `"a"` | `$[0]`      | Member of array, from the end      |
+{: title="Index selector examples"}
+
+### Array Slice selector {#slice}
 
 #### Syntax
 {: unnumbered}
 
-The array slice selector has the form `[<start>:<end>:<step>]`.
-It selects elements starting at index `<start>`, ending at — but
+The array slice selector has the form `<start>:<end>:<step>`.
+It matches elements from arrays starting at index `<start>`, ending at — but
 not including — `<end>`, while incrementing by `step`.
 
 ~~~~ abnf
-slice-selector = "[" S slice-index S "]"
-
-slice-index    =  [start S] ":" S [end S] [":" [S step ]]
+slice-selector =  [start S] ":" S [end S] [":" [S step ]]
 
 start          = int       ; included in selection
 end            = int       ; not included in selection
@@ -913,12 +853,12 @@ RS             = 1*B       ; required blank space
 
 ~~~~
 
-The `slice-selector` consists of three optional decimal integers separated by colons.
+The slice selector consists of three optional decimal integers separated by colons.
 
 #### Semantics
 {: unnumbered}
 
-The `slice-selector` was inspired by the slice operator of ECMAScript
+The slice selector was inspired by the slice operator of ECMAScript
 4 (ES4), which was deprecated in 2014, and that of Python.
 
 
@@ -927,26 +867,19 @@ The `slice-selector` was inspired by the slice operator of ECMAScript
 
 This section is non-normative.
 
-Array indexing is a way of selecting a particular element of an array using
-a 0-based index.
-For example, the expression `[0]` selects the first element of a non-empty array.
-
-Negative indices index from the end of an array.
-For example, the expression `[-2]` selects the last but one element of an array with at least two elements.
-
 Array slicing is inspired by the behavior of the `Array.prototype.slice` method
 of the JavaScript language as defined by the ECMA-262 standard {{ECMA-262}},
 with the addition of the `step` parameter, which is inspired by the Python slice expression.
 
-The array slice expression `[start:end:step]` selects elements at indices starting at `start`,
+The array slice expression `start:end:step` selects elements at indices starting at `start`,
 incrementing by `step`, and ending with `end` (which is itself excluded).
-So, for example, the expression `[1:3]` (where `step` defaults to `1`)
+So, for example, the expression `1:3` (where `step` defaults to `1`)
 selects elements with indices `1` and `2` (in that order) whereas
-`[1:5:2]` selects elements with indices `1` and `3`.
+`1:5:2` selects elements with indices `1` and `3`.
 
 When `step` is negative, elements are selected in reverse order. Thus,
-for example, `[5:1:-2]` selects elements with indices `5` and `3`, in
-that order and `[::-1]` selects all the elements of an array in
+for example, `5:1:-2` selects elements with indices `5` and `3`, in
+that order and `::-1` selects all the elements of an array in
 reverse order.
 
 When `step` is `0`, no elements are selected.
@@ -958,9 +891,6 @@ JavaScript or Python behavior.
 
 ##### Detailed Semantics
 {: unnumbered}
-
-An array selector is either an array slice or an array index, which is defined
-in terms of an array slice.
 
 A slice expression selects a subset of the elements of the input array, in
 the same order
@@ -995,9 +925,9 @@ FUNCTION Normalize(i, len):
   END IF
 ~~~~
 
-The result of the array indexing expression `[i]` applied to an array
+The result of the array indexing expression `i` applied to an array
 of length `len` is defined to be the result of the array
-slicing expression `[i:Normalize(i, len)+1:1]`.
+slicing expression `i:Normalize(i, len)+1:1`.
 
 Slice expression parameters `start` and `end` are used to derive slice bounds `lower` and `upper`.
 The direction of the iteration, defined
@@ -1067,22 +997,20 @@ Queries:
 | `$[::-1]` | `"g"` <br> `"f"` <br> `"e"` <br> `"d"` <br> `"c"` <br> `"b"` <br> `"a"` | `$[6]` <br> `$[5]` <br> `$[4]` <br> `$[3]` <br> `$[2]` <br> `$[1]` <br> `$[0]` | Slice in reverse order |
 {: title="Array slice selector examples"}
 
-### Filter Selector
+### Filter selector {#filter-selector}
 
 #### Syntax
 {: unnumbered}
 
-The filter selector has the form `[?<expr>]`. It works via iterating over structured values, i.e. arrays and objects.
+The filter selector has the form `?<expr>`. It works via iterating over structured values, i.e. arrays and objects.
 
 ~~~~ abnf
-filter-selector    = "[" S filter S "]"
-filter             = "?" S boolean-expr
+filter-selector = "?" S boolean-expr
 ~~~~
 
 During the iteration process each array element or object member is visited and its value — accessible via symbol `@` — or one of its descendants — uniquely defined by a relative path — is tested against a boolean expression `boolean-expr`.
 
 The current item is selected if and only if the boolean expression yields true.
-
 
 ~~~~ abnf
 boolean-expr     = logical-or-expr
@@ -1102,11 +1030,13 @@ Paths in filter expressions are Singular Paths, each of which selects at most on
 
 ~~~~ abnf
 singular-path     = rel-singular-path / abs-singular-path
-rel-singular-path = "@" *(S (dot-selector / index-selector))
-abs-singular-path = root-selector *(S (dot-selector / index-selector))
+rel-singular-path = "@" *(S (name-segment / index-segment))
+abs-singular-path = root-identifier *(S (name-segment / index-segment))
+name-segment      = "[" name-selector "]" / dot-member-name-shorthand
+index-segment     = "[" index-selector "]"
 ~~~~
 
-Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `[?(<expr>)]` is naturally contained in the current lean syntax `[?<expr>]` as a special case.
+Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `?(<expr>)` is naturally contained in the current lean syntax `?<expr>` as a special case.
 
 ~~~~ abnf
 paren-expr        = [logical-not-op S] "(" S boolean-expr S ")"
@@ -1168,7 +1098,7 @@ The following table lists filter expression operators in order of precedence fro
 #### Semantics
 {: unnumbered}
 
-The `filter-selector` works with arrays and objects exclusively. Its result is a list of *zero*, *one*, *multiple* or *all* of their array elements or member values, respectively.
+The filter selector works with arrays and objects exclusively. Its result is a list of *zero*, *one*, *multiple* or *all* of their array elements or member values, respectively.
 Applied to other value types, it will select nothing.
 
 A relative path, beginning with `@`, refers to the current array element or member value as the
@@ -1227,11 +1157,24 @@ compared is an object, array, boolean, or `null`.
 * The comparison `a <= b` yields true if and only if `a < b` yields true or `a == b` yields true.
 * The comparison `a >= b` yields true if and only if `a > b` yields true or `a == b` yields true.
 
-###### Examples
+##### Regular Expressions
+{: unnumbered}
+
+A regular-expression test yields true if and only if the value on the left-hand side of `=~` is a string value and it
+matches the regular expression on the right-hand side according to the semantics of {{-iregexp}}.
+
+The semantics of regular expressions are as defined in {{-iregexp}}.
+
+##### Boolean Operators
+{: unnumbered}
+
+The logical AND, OR, and NOT operators have the normal semantics of Boolean algebra and
+obey its laws (see, for example, {{BOOLEAN-LAWS}}).
+
+#### Examples
 {: unnumbered}
 
 JSON:
-
 
     {
       "obj": {"x": "y"},
@@ -1270,23 +1213,6 @@ JSON:
 | `true > true` | false | Booleans are not ordered |
 {: title="Comparison examples" }
 
-##### Regular Expressions
-{: unnumbered}
-
-A regular-expression test yields true if and only if the value on the left-hand side of `=~` is a string value and it
-matches the regular expression on the right-hand side according to the semantics of {{-iregexp}}.
-
-The semantics of regular expressions are as defined in {{-iregexp}}.
-
-##### Boolean Operators
-{: unnumbered}
-
-The logical AND, OR, and NOT operators have the normal semantics of Boolean algebra and
-obey its laws (see, for example, {{BOOLEAN-LAWS}}).
-
-#### Examples
-{: unnumbered}
-
 JSON:
 
     {
@@ -1309,96 +1235,94 @@ Queries:
 | `$[?(@ == @)]` | | | Comparison of structured values |
 {: title="Filter selector examples"}
 
-### List Selector
+## Segments
 
-The list selector allows combining member names, array indices,
-slices, and filters in a single selector.
+Segments apply one or more selectors to an input value and concatenate the results into a single nodelist.
 
-Note: The list selector was called "union selector" in
-{{JSONPath-orig}}, as it was intended to solve use cases addressed by
-the union selector in XPath.
-However, the term "union" has the connotation of a set operation that involves
-merging input sets while avoiding duplicates, so the concept was
-renamed into "list selector".
+The syntax and semantics of each segment are defined below.
+
+### Child Segment
 
 #### Syntax
 {: unnumbered}
 
-The list selector is syntactically related to the
-`dot-selector`, `index-selector`, `slice-selector`, and the `filter-selector`.
-It contains two or more entries, separated by commas.
+The child segment consists of a non-empty, comma-delimited
+sequence of selectors enclosed in square brackets.
+
+Shorthand notations are also provided for when there is a single
+wildcard or name selector.
 
 ~~~~ abnf
-list-selector  = "[" S list-entry 1*(S "," S list-entry) S "]"
+child-segment             = (child-longhand /
+                             dot-wildcard-shorthand /
+                             dot-member-name-shorthand)
 
-list-entry     =  ( quoted-member-name /
-                    element-index      /
-                    slice-index /
-                    filter
-                  )
+child-longhand            = "[" S selector 1*(S "," S selector) S "]"
+
+dot-wildcard-shorthand    = "." wildcard
+
+dot-member-name-shorthand = "." dot-member-name
+dot-member-name           = name-first *name-char
+name-first                = ALPHA /
+                            "_"   /            ; _
+                            %x80-10FFFF        ; any non-ASCII Unicode character
+name-char                 = DIGIT / name-first
+
+DIGIT                     =  %x30-39              ; 0-9
+ALPHA                     =  %x41-5A / %x61-7A    ; A-Z / a-z
 ~~~~
+
+The `dot-wildcard-shorthand` is shorthand for `[*]`.
+
+A `dot-member-name-shorthand` of the form `.<member-name>` is shorthand for `['<member-name>']`, but
+can only be used with member names that are composed of certain characters.
 
 #### Semantics
 {: unnumbered}
 
-A list selector selects the nodes that are selected by
-the selector entries in the list and yields the concatenation of the
-lists (in the order of the selector entries) of nodes selected by the
-selector entries.
-Note that any node selected in more than one of the selector entries is kept
+A child segment contains a comma-delimited sequence of selectors, each of which
+selects zero or more children of the input value.
+
+Selectors of different kinds may be combined within a single child segment.
+
+The resulting nodelist of a child segment is the concatenation of
+the nodelists from each of its selectors in the order that the selectors
+appear in the list.
+Note that any node matched by more than one selector is kept
 as many times in the nodelist.
 
-To be valid, integer values in the `element-index` and `slice-index`
-components MUST be in the I-JSON {{-i-json}} range of exact values, see
-{{synsem-overview}}.
-
-
-#### Examples
-{: unnumbered}
-
-JSON:
-
-    ["a", "b", "c", "d", "e", "f", "g", {"n": "v", "o": "w", "p": "x"}]
-
-Queries:
-
-| Query | Result | Result Paths | Comment |
-| :---: | ------ | :----------: | ------- |
-| `$[0, 3]` | `"a"` <br> `"d"` | `$[0]` <br> `$[3]` | Indices |
-| `$[0:2, 5]` | `"a"` <br> `"b"` <br> `"f"` | `$[0]` <br> `$[1]` <br> `$[5]` | Slice and index |
-| `$[0, 0]` | `"a"` <br> `"a"` | `$[0]` <br> `$[0]` | Duplicated entries |
-| `$[7]["n", "p"]` | `"v"` <br> `"x"` | `$[7]['n']` <br> `$[7]['p']` | Dot child |
-| `$[? @ <= "b" || @ >= "g", 2]` | `"a"` <br> `"b"` <br> `"g"` <br> `"c"` | `$[0]` <br> `$[1]` <br> `$[6]` <br> `$[2]` | Filter and index |
-{: title="List selector examples"}
-
-### Descendant Selectors
+### Descendant Segment
 
 #### Syntax
 {: unnumbered}
 
-The descendant selectors start with a double dot `..` and can be
-followed by an object member name (similar to the `dot-selector`),
-a wildcard (similar to the `dot-wild-selector`),
-an `index-selector`, `index-wild-selector`, `filter-selector`, or `list-selector` acting on objects or arrays,
-or a `slice-selector` acting on arrays.
+The descendant segment consists of a double dot `..`
+followed by a child segment (`descendant-segment`).
+
+Shortand notations are also provided that correspond to the shorthand forms of the child segment.
 
 ~~~~ abnf
-descendant-selector = ".." ( dot-member-name      /  ; ..<name>
-                             wildcard             /  ; ..*
-                             index-selector       /  ; ..[<index>]
-                             index-wild-selector  /  ; ..[*]
-                             slice-selector       /  ; ..[<slice-index>]
-                             filter-selector      /  ; ..[<filter>]
-                             list-selector           ; ..[<list-entry>,...]
-                           )
+descendant-segment               = (descendant-child /
+                                    descendant-wildcard-shorthand /
+                                    descendant-member-name-shorthand)
+descendant-child                 = ".." child-segment
+
+descendant-wildcard-shorthand    = ".." wildcard
+descendant-member-name-shorthand = ".." dot-member-name
 ~~~~
 
-Note that `..` on its own is not a valid selector.
+The `descendant-wildcard-shorthand` is shorthand for `..[*]`.
+
+A `descendant-member-name-shorthand` of the form `..<member-name>` is shorthand for `..['<member-name>']`.
+
+Note that `..` on its own is not a valid segment.
 
 #### Semantics
 {: unnumbered}
 
-A descendant selector selects zero or more descendants of a node.
+<!-- The following does not address https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/252 -->
+
+A descendant segment produces zero or more descendants of the input value.
 
 A nodelist enumerating the descendants is known as a _descendant nodelist_ when:
 
@@ -1408,21 +1332,8 @@ A nodelist enumerating the descendants is known as a _descendant nodelist_ when:
 This definition does not stipulate the order in which the children of an object appear, since
 JSON objects are unordered.
 
-
-The resultant nodelist of a descendant selector is the result of applying a selector
-(or no selector), depending on the variant of the descendant selector, to a
-descendant nodelist, as shown below:
-
-| Variant | Selector to apply | Comment |
-| :---: | :---: | ------- |
-| `..<name>` | `.<name>`| [Dot selector](#dot-selector)  |
-| `..*` | _none_ | All descendants |
-| `..[<name>]` | `[<name>]`| [Index selector](#index-selector) |
-| `..[*]` | _none_ | All descendants |
-| `..[<slice-index>]` | `[<slice-index>]` | [Array slice selector](#slice) |
-| `..[<filter>]` | `[<filter>]` | [Filter selector](#filter-selector) |
-| `..[<list-entry>,...]` | `[<list-entry>,...]` | [List selector](#list-selector) |
-{: title="Descendant selector variant semantics"}
+The resultant nodelist of a descendant segment of the form `..[<selectors>]` is the result of applying
+the child segment `[<selectors>]` to a descendant nodelist.
 
 #### Examples
 {: unnumbered}
@@ -1443,7 +1354,7 @@ Queries:
 | `$..[0]` | `5` <br> `{"j": 4}` | `$['a'][0]` <br> `$['a'][2][0]` | Array values       |
 | `$..[0]` | `{"j": 4}` <br> `5` | `$['a'][2][0]` <br> `$['a'][0]` | Alternative result |
 | `$..[*]` <br> `$..*` | `{"j": 1, "k" : 2}` <br> `[5, 3, [{"j": 4}]]` <br> `1` <br> `2` <br> `5` <br> `3` <br> `[{"j": 4}]` <br> `{"j": 4}` <br> `4` | `$['o']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][0]['j']` | All values    |
-{: title="Descendant selector examples"}
+{: title="Descendant segment examples"}
 
 Note: The ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that:
 
@@ -1499,9 +1410,9 @@ Normalized Paths are Singular Paths. Not all Singular Paths are Normalized Paths
 Path, but not a Normalized Path.
 
 ~~~~ abnf
-normalized-path           = root-selector *(normal-index-selector)
-normal-index-selector     = "[" (normal-quoted-member-name / normal-element-index) "]"
-normal-quoted-member-name = %x27 *normal-single-quoted %x27 ; 'string'
+normalized-path           = root-identifier *(normal-index-segment)
+normal-index-segment      = "[" (normal-name-selector / normal-index-selector) "]"
+normal-name-selector      = %x27 *normal-single-quoted %x27 ; 'string'
 normal-single-quoted      = normal-unescaped /
                             ESC normal-escapable
 normal-unescaped          = %x20-26 /                       ; omit control codes
@@ -1525,7 +1436,7 @@ normal-hexchar            = "0" "0"
                               ("1" normal-HEXDIG)
                             )
 normal-HEXDIG             = DIGIT / %x61-66   ; "0"-"9", "a"-"f"
-normal-element-index      = "0" / (DIGIT1 *DIGIT) ; non-negative decimal integer
+normal-index-selector     = "0" / (DIGIT1 *DIGIT) ; non-negative decimal integer
 ~~~~
 
 ### Examples
@@ -1643,7 +1554,7 @@ expression implementations.)
 Implementers need to be aware that good average performance is not
 sufficient as long as an attacker can choose to submit specially
 crafted JSONPath queries or arguments that trigger surprisingly high, possibly
-exponential, CPU usage or, for example via a naive recursive implementation of the descendant selector,
+exponential, CPU usage or, for example via a naive recursive implementation of the descendant segment,
 stack overflow. Implementations need to have appropriate resource management
 to mitigate these attacks.
 
