@@ -665,7 +665,7 @@ HEXDIG = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
 Note: `double-quoted` strings follow the JSON string syntax ({{Section 7 of RFC8259}});
 `single-quoted` strings follow an analogous pattern ({{syntax-index}}).
 
-#### Semantics {#name-semantics}
+#### Semantics
 {: unnumbered}
 
 A `name-selector` string MUST be converted to a
