@@ -730,8 +730,6 @@ Queries:
 | `$.o['j j']['k.k']`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
 | `$.o["j j"]["k.k"]`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
 | `$["'"]["@"]` | `2` | `$['\'']['@']` | Unusual member names
-| `$.j`   | `{"k": 3}` | `$['j']`      | Named value of an object      |
-| `$.j.k` | `3`        | `$['j']['k']` | Named value in nested object  |
 {: title="Name selector examples"}
 
 ### Wildcard Selector {#wildcard}
