@@ -297,10 +297,22 @@ stable JSON query language.
 ## Overview of JSONPath Expressions {#overview}
 
 JSONPath expressions are applied to a JSON value, the *argument*.
-Within the JSONPath expression, the abstract name `$` is used to refer
-to the *root node* of the argument, i.e., to the argument as a whole.
 
-JSONPath expressions use the *bracket notation*, for example:
+A JSONPath expression consists of an identifier followed by a series
+of zero or more segments each of which contains one or more selectors.
+
+### Identifiers
+
+The _root node identifier_ `$` refers to the *root node* of the argument,
+i.e., to the argument as a whole.
+Every JSONPath expression begins with the root node identifier.
+
+The _current node identifier_ `@` refers to the *current node* in the context
+of a filter expression (described later).
+
+### Segments
+
+Segments can use the *bracket notation*, for example:
 
 ~~~~
 $['store']['book'][0]['title']
@@ -312,10 +324,14 @@ or the more compact *dot notation*, for example:
 $.store.book[0].title
 ~~~~
 
-to build paths that are input to a JSONPath implementation.
-A single path may use a combination of bracket and dot notations.
+A JSONPath expression may use a combination of bracket and dot notations.
 
 Dot notation is a shorthand way of writing certain bracket notations.
+
+This document treats the bracket notations as canonical and defines various shorthands in terms
+of bracket notation.
+
+### Selectors
 
 A wildcard `*` ({{wildcard}}) in the expression `[*]` selects all children of an
 object or an array and in the expression `..[*]` selects all descendants of an object or an array.
@@ -331,27 +347,26 @@ Filter expressions `?<boolean expr>` select certain children of an object or arr
 $.store.book[?@.price < 10].title
 ~~~~
 
+### Summary
+
 {{tbl-overview}} provides a quick overview of the JSONPath syntax elements.
 
-| JSONPath            | Description                                                                                                             |
+| Syntax Element      | Description                                                                                                             |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------|
 | `$`                 | [root node identifier](#root-identifier)                                                                                |
 | `@`                 | [current node identifier](#filter-selector) (valid only within filter selectors)                                          |
 | `[<selectors>]`     | [child segment](#child-segment) selects zero or more children of JSON objects and arrays; contains one or more selectors, separated by commas        |
+| `.name`             | shorthand for `['name']`                                                                                                |
+| `.*`                | shorthand for `[*]`                                                                                                     |
 | `..[<selectors>]`   | [descendant segment](#descendant-segment): selects zero or more descendants of JSON objects and arrays; contains one or more selectors, separated by commas |
+| `..name`            | shorthand for `..['name']`                                                                                              |
+| `..*`               | shorthand for `..[*]`                                                                                                   |
 | `'name'`            | [name selector](#name-selector): selects a named child of an object                                                     |
 | `*`                 | [wildcard selector](#name-selector): selects all children of an array or object                                         |
 | `3`                 | [index selector](#index-selector): selects an indexed child of an array (from 0)                                        |
 | `0:100:5`           | [array slice selector](#slice): start:end:step for arrays                                                               |
 | `?<expr>`           | [filter selector](#filter-selector): selects particular children using a boolean expression                             |
-| `.name`             | shorthand for `['name']`                                                                                                |
-| `.*`                | shorthand for `[*]`                                                                                                     |
-| `..name`            | shorthand for `..['name']`                                                                                              |
-| `..*`               | shorthand for `..[*]`                                                                                                   |
 {: #tbl-overview title="Overview of JSONPath"}
-
-This document treats the bracket notations as canonical and defines the above shorthands in terms
-of the canonical bracket notation.
 
 # JSONPath Examples
 
