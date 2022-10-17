@@ -504,6 +504,8 @@ input to the next segment.
 These results and inputs take the form of a *nodelist*, i.e., a
 sequence of zero or more nodes.
 
+Segments can be added to a query to drill further into the structure of the input value.
+
 The nodelist resulting from the root identifier contains a single node,
 the argument.
 The nodelist resulting from the last segment is presented as the
@@ -555,18 +557,11 @@ This is the concatenation of three lists, two of length one containing
 As a consequence of this approach, if any of the segments produces an empty nodelist,
 then the whole query produces an empty nodelist.
 
-In what follows, the semantics of each segment are defined for each type
-of node. It will turn out that the more segments there are in a query, the greater the depth of the
-nodes of the resultant nodelist in the input value:
-
-* A query with N segments, where N >= 0, produces a nodelist
-consisting of nodes at depth in the input value of N or greater.
-
-* A query with N segments, where N >= 0, all of which are [child segments](#child-segment),
-produces a nodelist consisting of nodes precisely at depth N in the input value.
-
 If a query may produce a nodelist with more than one possible ordering, a particular implementation
 may also produce distinct orderings in distinct runs of the query.
+
+In what follows, the semantics of each segment are defined for each type
+of node.
 
 ## Root Identifier
 
@@ -1256,6 +1251,15 @@ orders each time it appears in the child segment.
 
 Segments apply one or more selectors to an input value and concatenate the results into a single nodelist.
 
+It turns out that the more segments there are in a query, the greater the depth in the input value of the
+nodes of the resultant nodelist:
+
+* A query with N segments, where N >= 0, produces a nodelist
+consisting of nodes at depth in the input value of N or greater.
+
+* A query with N segments, where N >= 0, all of which are [child segments](#child-segment),
+produces a nodelist consisting of nodes precisely at depth N in the input value.
+
 The syntax and semantics of each segment are defined below.
 
 ### Child Segment
@@ -1308,6 +1312,8 @@ appear in the list.
 Note that any node matched by more than one selector is kept
 as many times in the nodelist.
 
+So a child segment drills down one more level into the structure of the input value.
+
 ### Descendant Segment
 
 #### Syntax
@@ -1353,6 +1359,8 @@ JSON objects are unordered.
 
 Where a selector can produce a nodelist in more than one possible order, the selector may produce nodelists in distinct
 orders each time it appears in the descendant segment.
+
+So a descendant segment drills down one or more levels into the structure of the input value.
 
 #### Examples
 {: unnumbered}
