@@ -351,6 +351,9 @@ $.store.book[?@.price < 10].title
 | `..*`               | shorthand for `..[*]`                                                                                                   |
 {: #tbl-overview title="Overview of JSONPath"}
 
+This document treats the bracket notations as canonical and defines the above shorthands in terms
+of the canonical bracket notation.
+
 # JSONPath Examples
 
 This section provides some more examples for JSONPath expressions.
