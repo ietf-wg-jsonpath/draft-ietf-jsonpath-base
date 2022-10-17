@@ -1323,13 +1323,16 @@ Note that `..` on its own is not a valid segment.
 
 A descendant segment produces zero or more descendants of the input value.
 
-The resultant nodelist of a descendant selector of the form `..[<selectors>]` is the result of applying the
-the child segment `[<selectors>]` to a nodelist enumerating the node and its descendants such that:
+A descendant selector of the form `..[<selectors>]` visits each node of the input value and
+its descendants in such an order that:
 
-* nodes of any array appear in array order,
-* nodes appear immediately before all their descendants.
+* nodes of any array are visited in array order, and
+* nodes are visited immediately before all their descendants,
 
-This definition does not stipulate the order in which the children of an object appear, since
+applies the child segment `[<selectors>]` to each node, and concatenates the resultant nodelists together
+in the order in which the nodes were visited.
+
+This definition does not stipulate the order in which the children of an object are visited, since
 JSON objects are unordered.
 
 #### Examples
@@ -1351,7 +1354,7 @@ Queries:
 | `$..[0]` | `5` <br> `{"j": 4}` | `$['a'][0]` <br> `$['a'][2][0]` | Array values       |
 | `$..[0]` | `{"j": 4}` <br> `5` | `$['a'][2][0]` <br> `$['a'][0]` | Alternative result |
 | `$..[*]` <br> `$..*` | `{"j": 1, "k" : 2}` <br> `[5, 3, [{"j": 4}]]` <br> `1` <br> `2` <br> `5` <br> `3` <br> `[{"j": 4}]` <br> `{"j": 4}` <br> `4` | `$['o']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][0]['j']` | All values    |
-| `$..o`   | `{"j": 1, "k": 2}` | `$['o']` | Input value is included in the enumeration |
+| `$..o`   | `{"j": 1, "k": 2}` | `$['o']` | Input value is visited |
 {: title="Descendant segment examples"}
 
 Note: The ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that:
