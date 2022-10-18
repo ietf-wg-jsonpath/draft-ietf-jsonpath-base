@@ -349,6 +349,9 @@ $.store.book[?@.price < 10].title
 | `..*`               | shorthand for `..[*]`                                                                                                   |
 {: #tbl-overview title="Overview of JSONPath"}
 
+This document treats the bracket notations as canonical and defines the above shorthands in terms
+of the canonical bracket notation.
+
 # JSONPath Examples
 
 This section provides some more examples for JSONPath expressions.
@@ -502,6 +505,8 @@ input to the next segment.
 These results and inputs take the form of a *nodelist*, i.e., a
 sequence of zero or more nodes.
 
+Segments can be added to a query to drill further into the structure of the input value.
+
 The nodelist resulting from the root identifier contains a single node,
 the argument.
 The nodelist resulting from the last segment is presented as the
@@ -553,15 +558,11 @@ This is the concatenation of three lists, two of length one containing
 As a consequence of this approach, if any of the segments produces an empty nodelist,
 then the whole query produces an empty nodelist.
 
+If a query may produce a nodelist with more than one possible ordering, a particular implementation
+may also produce distinct orderings in distinct runs of the query.
+
 In what follows, the semantics of each segment are defined for each type
-of node. It will turn out that the more segments there are in a query, the greater the depth of the
-nodes of the resultant nodelist in the input value:
-
-* A query with N segments, where N >= 0, produces a nodelist
-consisting of nodes at depth in the input value of N or greater.
-
-* A query with N segments, where N >= 0, all of which are [child segments](#child-segment),
-produces a nodelist consisting of nodes precisely at depth N in the input value.
+of node.
 
 ## Root Identifier
 
@@ -728,8 +729,6 @@ Queries:
 | `$.o['j j']['k.k']`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
 | `$.o["j j"]["k.k"]`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
 | `$["'"]["@"]` | `2` | `$['\'']['@']` | Unusual member names
-| `$.j`   | `{"k": 3}` | `$['j']`      | Named value of an object      |
-| `$.j.k` | `3`        | `$['j']['k']` | Named value in nested object  |
 {: title="Name selector examples"}
 
 ### Wildcard Selector {#wildcard}
@@ -747,6 +746,9 @@ wildcard = "*"
 {: unnumbered}
 
 A `wildcard` selector selects the nodes of all children of an object or array.
+The order in which the children of an object appear in the resultant nodelist is not stipulated,
+since JSON objects are unordered.
+Children of an array appear in array order in the resultant nodelist.
 
 The `wildcard` selector selects nothing from a primitive JSON value (that is,
 a number, a string, `true`, `false`, or `null`).
@@ -770,8 +772,12 @@ The following examples show the `wildcard` selector in use by a child segment.
 | `$[*]`   | `{"j": 1, "k": 2}` <br> `[5, 3]` | `$['o']` <br> `$['a']` | Object values      |
 | `$.o[*]` | `1` <br> `2` | `$['o']['j']` <br> `$['o']['k']` | Object values      |
 | `$.o[*]` | `2` <br> `1` | `$['o']['k']` <br> `$['o']['j']` | Alternative result |
+| `$.o[*, *]` | `1` <br> `2` <br> `2` <br> `1` | `$['o']['j']` <br> `$['o']['k']` <br> `$['o']['k']` <br> `$['o']['j']` | Non-deterministic ordering |
 | `$.a[*]` | `5` <br> `3` | `$['a'][0]` <br> `$['a'][1]`     | Array members      |
 {: title="Wildcard selector examples"}
+
+The example above with the query `$.o[*, *]` shows that the wildcard selector may produce nodelists in distinct
+orders each time it appears in the child segment.
 
 ### Index selector {#index-selector}
 
@@ -1099,6 +1105,10 @@ The following table lists filter expression operators in order of precedence fro
 The filter selector works with arrays and objects exclusively. Its result is a list of *zero*, *one*, *multiple* or *all* of their array elements or member values, respectively.
 Applied to other value types, it will select nothing.
 
+The order in which the children of an object appear in the resultant nodelist is not stipulated,
+since JSON objects are unordered.
+Children of an array appear in array order in the resultant nodelist.
+
 A relative path, beginning with `@`, refers to the current array element or member value as the
 filter selector iterates over the array or object.
 
@@ -1225,6 +1235,7 @@ Queries:
 | :---: | ------ | :----------: | ------- |
 | `$.a[?@>3.5]` | `5` <br> `4` <br> `6` | `$['a'][1]` <br> `$['a'][4]` <br> `$['a'][5]` | Array value comparison |
 | `$.a[?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` | `$['a'][6]` <br> `$['a'][7]` | Array value existence |
+| `$.a[?@.b, ?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": "k"}` <br> `{"b": "j"}` | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][7]` <br> `$['a'][6]` | Non-deterministic ordering |
 | `$.a[?@<2 || @.b == "k"]` | `1` <br> `{"b": "k"}` | `$['a'][2]` <br> `$['a'][7]` | Array value logical OR |
 | `$.a[?@.b =~ "i.*"]` | `{"b": "j"}` <br> `{"b": "k"}` | `$['a'][6]` <br> `$['a'][7]` | Array value regular expression |
 | `$.o[?@>1 && @<4]` | `2` <br> `3` | `$['o']['q']` <br> `$['o']['r']` | Object value logical AND |
@@ -1234,9 +1245,21 @@ Queries:
 | `$[?(@ == @)]` | | | Comparison of structured values |
 {: title="Filter selector examples"}
 
+The example above with the query `$.a[?@.b, ?@.b]` shows that the filter selector may produce nodelists in distinct
+orders each time it appears in the child segment.
+
 ## Segments
 
 Segments apply one or more selectors to an input value and concatenate the results into a single nodelist.
+
+It turns out that the more segments there are in a query, the greater the depth in the input value of the
+nodes of the resultant nodelist:
+
+* A query with N segments, where N >= 0, produces a nodelist
+consisting of nodes at depth in the input value of N or greater.
+
+* A query with N segments, where N >= 0, all of which are [child segments](#child-segment),
+produces a nodelist consisting of nodes precisely at depth N in the input value.
 
 The syntax and semantics of each segment are defined below.
 
@@ -1290,6 +1313,8 @@ appear in the list.
 Note that any node matched by more than one selector is kept
 as many times in the nodelist.
 
+So a child segment drills down one more level into the structure of the input value.
+
 ### Descendant Segment
 
 #### Syntax
@@ -1319,20 +1344,24 @@ Note that `..` on its own is not a valid segment.
 #### Semantics
 {: unnumbered}
 
-<!-- The following does not address https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/252 -->
-
 A descendant segment produces zero or more descendants of the input value.
 
-A nodelist enumerating the descendants is known as a _descendant nodelist_ when:
+A descendant selector of the form `..[<selectors>]` visits each node of the input value and
+its descendants in such an order that:
 
-* nodes of any array appear in array order,
-* nodes appear immediately before all their descendants.
+* nodes of any array are visited in array order, and
+* nodes are visited before all their descendants.
 
-This definition does not stipulate the order in which the children of an object appear, since
+It applies the child segment `[<selectors>]` to each node and concatenates the resultant nodelists together
+in the order in which the nodes were visited.
+
+This definition does not stipulate the order in which the children of an object are visited, since
 JSON objects are unordered.
 
-The resultant nodelist of a descendant segment of the form `..[<selectors>]` is the result of applying
-the child segment `[<selectors>]` to a descendant nodelist.
+Where a selector can produce a nodelist in more than one possible order, the selector may produce nodelists in distinct
+orders each time it appears in the descendant segment.
+
+So a descendant segment drills down one or more levels into the structure of the input value.
 
 #### Examples
 {: unnumbered}
@@ -1353,6 +1382,8 @@ Queries:
 | `$..[0]` | `5` <br> `{"j": 4}` | `$['a'][0]` <br> `$['a'][2][0]` | Array values       |
 | `$..[0]` | `{"j": 4}` <br> `5` | `$['a'][2][0]` <br> `$['a'][0]` | Alternative result |
 | `$..[*]` <br> `$..*` | `{"j": 1, "k" : 2}` <br> `[5, 3, [{"j": 4}]]` <br> `1` <br> `2` <br> `5` <br> `3` <br> `[{"j": 4}]` <br> `{"j": 4}` <br> `4` | `$['o']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][0]['j']` | All values    |
+| `$..o`   | `{"j": 1, "k": 2}` | `$['o']` | Input value is visited |
+| `$.o..[*, *]` | `1` <br> `2` <br> `2` <br> `1` | `$['o']['j']` <br> `$['o']['k']` <br> `$['o']['k']` <br> `$['o']['j']` | Non-deterministic ordering |
 {: title="Descendant segment examples"}
 
 Note: The ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that:
@@ -1363,6 +1394,9 @@ Note: The ordering of the results for the `$..[*]` and `$..*` examples above is 
 * `5` and `3` must appear before `{"j": 4}` and `4`,
 * `[{"j": 4}]` must appear before `{"j": 4}`, and
 * `{"j": 4}` must appear before `4`.
+
+The example above with the query `$.o..[*, *]` shows that a selector may produce nodelists in distinct orders
+each time it appears in the descendant segment.
 
 ## Semantics of `null` {#null-semantics}
 
