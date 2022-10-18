@@ -1386,7 +1386,7 @@ JSON:
 
     {
       "o": {"j": 1, "k": 2},
-      "a": [5, 3, [{"j": 4}]]
+      "a": [5, 3, [{"j": 4}, {"k": 6}]]
     }
 
 Queries:
@@ -1397,22 +1397,28 @@ Queries:
 | `$..j`   | `4` <br> `1` | `$['a'][2][0]['j']` <br> `$['o']['j']` | Alternative result |
 | `$..[0]` | `5` <br> `{"j": 4}` | `$['a'][0]` <br> `$['a'][2][0]` | Array values       |
 | `$..[0]` | `{"j": 4}` <br> `5` | `$['a'][2][0]` <br> `$['a'][0]` | Alternative result |
-| `$..[*]` <br> `$..*` | `{"j": 1, "k" : 2}` <br> `[5, 3, [{"j": 4}]]` <br> `1` <br> `2` <br> `5` <br> `3` <br> `[{"j": 4}]` <br> `{"j": 4}` <br> `4` | `$['o']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][0]['j']` | All values    |
+| `$..[*]` <br> `$..*` | `{"j": 1, "k" : 2}` <br> `[5, 3, [{"j": 4}, {"k": 6}]]` <br> `1` <br> `2` <br> `5` <br> `3` <br> `[{"j": 4}, {"k": 6}]` <br> `{"j": 4}` <br> `4` <br> `{"k": 6}` <br> `6` | `$['o']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][0]['j']` <br> `$['a'][2][1]` <br> `$['a'][2][1]['k']` | All values    |
 | `$..o`   | `{"j": 1, "k": 2}` | `$['o']` | Input value is visited |
 | `$.o..[*, *]` | `1` <br> `2` <br> `2` <br> `1` | `$['o']['j']` <br> `$['o']['k']` <br> `$['o']['k']` <br> `$['o']['j']` | Non-deterministic ordering |
+| `$.a..[0, 1]`| `5` <br> `3` <br> `{"j": 4}` <br> `{"k": 6}` | `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][0][2][0]` <br> `$['a'][0][2][1]` | Multiple segments |
 {: title="Descendant segment examples"}
 
 Note: The ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that:
 
 * `{"j": 1, "k": 2}` must appear before `1` and `2`,
-* `[5, 3, [{"j": 4}]]` must appear before `5`, `3`, and `[{"j": 4}]`,
-* `5` must appear before `3` which must appear before `[{"j": 4}]`,
-* `5` and `3` must appear before `{"j": 4}` and `4`,
-* `[{"j": 4}]` must appear before `{"j": 4}`, and
-* `{"j": 4}` must appear before `4`.
+* `[5, 3, [{"j": 4}, {"k": 6}]]` must appear before `5`, `3`, and `[{"j": 4}, {"k": 6}]`,
+* `5` must appear before `3` which must appear before `[{"j": 4}, {"k": 6}]`,
+* `5` and `3` must appear before `{"j": 4}`, `4`, `, {"k": 6}`, and `6`,
+* `[{"j": 4}, {"k": 6}]` must appear before `{"j": 4}` and `{"k": 6}`,
+* `{"j": 4}` must appear before `4`, and
+* `{"k": 6}` must appear before `6`.
 
 The example above with the query `$.o..[*, *]` shows that a selector may produce nodelists in distinct orders
 each time it appears in the descendant segment.
+
+The example above with the query `$.a..[0, 1]` shows that the child segment `[0, 1]` is applied to each node
+in turn (rather than the nodes being visited once per selector, which is the case for some JSONPath implementations
+that do not conform to this specification).
 
 ## Semantics of `null` {#null-semantics}
 
