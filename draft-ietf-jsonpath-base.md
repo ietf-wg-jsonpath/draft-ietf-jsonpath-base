@@ -1313,6 +1313,9 @@ appear in the list.
 Note that any node matched by more than one selector is kept
 as many times in the nodelist.
 
+Where a selector can produce a nodelist in more than one possible order, the
+selector may produce a nodelist in a distinct order each time it appears in the child segment.
+
 So a child segment drills down one more level into the structure of the input value.
 
 #### Examples
@@ -1362,20 +1365,24 @@ Note that `..` on its own is not a valid segment.
 
 A descendant segment produces zero or more descendants of the input value.
 
-A descendant selector of the form `..[<selectors>]` visits each node of the input value and
-its descendants in such an order that:
+A descendant selector visits the input value and each of
+its descendants such that:
 
 * nodes of any array are visited in array order, and
-* nodes are visited before all their descendants.
+* nodes are visited before their descendants.
 
-It applies the child segment `[<selectors>]` to each node and concatenates the resultant nodelists together
-in the order in which the nodes were visited.
-
-This definition does not stipulate the order in which the children of an object are visited, since
+The order in which the children of an object are visited is not stipulated, since
 JSON objects are unordered.
 
-Where a selector can produce a nodelist in more than one possible order, the selector may produce nodelists in distinct
-orders each time it appears in the descendant segment.
+Suppose the nodes, in the order visited, are `D1`, ..., `Dn` (where `n >= 1`).
+Note that `D1` is the input value.
+
+For each `i` such that `1 <= i <= n`, the nodelist `Ri` is defined to be a result of applying
+the child segment `[<selectors>]` (with all its selectors) to the node `Di`.
+Note that `Ri` is the concatenation of the nodelists from each of the selectors.
+
+The result of the descendant selector is the concatenation of `R1`, ..., `Rn` (in that order).
+Note that only a single traversal of the input value and its descendants is required.
 
 So a descendant segment drills down one or more levels into the structure of the input value.
 
