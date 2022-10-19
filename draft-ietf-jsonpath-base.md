@@ -1315,6 +1315,22 @@ as many times in the nodelist.
 
 So a child segment drills down one more level into the structure of the input value.
 
+#### Examples
+{: unnumbered}
+
+JSON:
+
+    ["a", "b", "c", "d", "e", "f", "g"]
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$[0, 3]` | `"a"` <br> `"d"` | `$[0]` <br> `$[3]` | Indices |
+| `$[0:2, 5]` | `"a"` <br> `"b"` <br> `"f"` | `$[0]` <br> `$[1]` <br> `$[5]` | Slice and index |
+| `$[0, 0]` | `"a"` <br> `"a"` | `$[0]` <br> `$[0]` | Duplicated entries |
+{: title="Child segment examples"}
+
 ### Descendant Segment
 
 #### Syntax
