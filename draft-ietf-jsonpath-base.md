@@ -1380,7 +1380,6 @@ the child segment `[<selectors>]` (with all its selectors) to the node `Di`.
 Note that `Ri` is the concatenation of the nodelists from each of the selectors.
 
 The result of the descendant selector is the concatenation of `R1`, ..., `Rn` (in that order).
-Note that only a single traversal of the input value and its descendants is required.
 
 So a descendant segment drills down one or more levels into the structure of the input value.
 
