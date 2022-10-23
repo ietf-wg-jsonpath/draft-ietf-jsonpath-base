@@ -355,7 +355,7 @@ of the canonical bracket notation.
 
 # JSONPath Examples
 
-This section provides some more examples for JSONPath expressions.
+This section provides examples of JSONPath expressions.
 The examples are based on the simple JSON value shown in
 {{fig-example-value}}, representing a bookstore (that also has a bicycle).
 
