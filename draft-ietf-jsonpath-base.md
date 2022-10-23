@@ -559,7 +559,7 @@ If a query may produce a nodelist with more than one possible ordering, a partic
 may also produce distinct orderings in successive runs of the query.
 
 In what follows, the semantics of each segment are defined for each type
-of node.
+of input node.
 
 ## Root Identifier
 
