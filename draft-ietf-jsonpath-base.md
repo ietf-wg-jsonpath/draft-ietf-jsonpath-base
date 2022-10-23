@@ -459,12 +459,9 @@ The parsing of a JSON text into a JSON value and what happens if a JSON
 text does not represent valid JSON are not defined by this specification.
 {{Sections 4 and 8 of -json}} identify specific situations that may
 conform to the grammar for JSON texts but are not interoperable uses
-of JSON, for instance as they may cause unpredictable behavior.
+of JSON, as they may cause unpredictable behavior.
 The present specification does not attempt to define predictable
 behavior for JSONPath queries in these situations.
-(Note that another warning about interoperability, in {{Section 2 of
--json}}, at the time of writing is generally considered to be overtaken
-by events and causes no issues with the present specification.)
 
 Specifically, the "Semantics" subsections of Sections
 {{<name-selector}}, {{<wildcard}},
