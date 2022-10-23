@@ -508,7 +508,7 @@ Segments can be added to a query to drill further into the structure of the inpu
 The nodelist resulting from the root identifier contains a single node,
 the argument.
 The nodelist resulting from the last segment is presented as the
-result of the query; depending on the specific API, it might be
+result of the query. Depending on the specific API, it might be
 presented as an array of the JSON values at the nodes, an array of
 Normalized Paths referencing the nodes, or both — or some other
 representation as desired by the implementation.
