@@ -512,8 +512,7 @@ result of the query. Depending on the specific API, it might be
 presented as an array of the JSON values at the nodes, an array of
 Normalized Paths referencing the nodes, or both — or some other
 representation as desired by the implementation.
-Note that the API must be capable of presenting an empty nodelist as
-the result of the query.
+Note that an empty nodelist is a valid query result.
 
 A segment performs its function on each of the nodes in its input
 nodelist, during such a function execution, such a node is referred to
