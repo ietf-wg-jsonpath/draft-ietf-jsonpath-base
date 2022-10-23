@@ -169,7 +169,8 @@ in ABNF as `%x2318`.
 
 The terminology of {{-json}} applies except where clarified below.
 The terms "Primitive" and "Structured" are used to group
-the types as in {{Section 1 of -json}}.
+the types as in {{Section 1 of -json}}; JSON Objects and Arrays are
+structured, all other types are primitive.
 Definitions for "Object", "Array", "Number", and "String" remain
 unchanged.
 Importantly "object" and "array" in particular do not take on a
