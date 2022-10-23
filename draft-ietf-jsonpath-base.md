@@ -357,7 +357,7 @@ of the canonical bracket notation.
 
 This section provides some more examples for JSONPath expressions.
 The examples are based on the simple JSON value shown in
-{{fig-example-value}}, representing a bookstore (that also has bicycles).
+{{fig-example-value}}, representing a bookstore (that also has a bicycle).
 
 ~~~~json
 { "store": {
@@ -387,7 +387,7 @@ The examples are based on the simple JSON value shown in
     ],
     "bicycle": {
       "color": "red",
-      "price": 19.95
+      "price": 399
     }
   }
 }
