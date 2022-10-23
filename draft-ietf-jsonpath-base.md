@@ -556,7 +556,7 @@ As a consequence of this approach, if any of the segments produces an empty node
 then the whole query produces an empty nodelist.
 
 If a query may produce a nodelist with more than one possible ordering, a particular implementation
-may also produce distinct orderings in distinct runs of the query.
+may also produce distinct orderings in successive runs of the query.
 
 In what follows, the semantics of each segment are defined for each type
 of node.
