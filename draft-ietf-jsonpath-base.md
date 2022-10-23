@@ -239,8 +239,8 @@ Segment:
 Nodelist:
 : A list of nodes.  <!-- ordered list?  Maybe TBD by issues #27 and #60 -->
   The output of applying a query to an argument is manifested as a list of nodes.
-  While this list can be represented in JSON, e.g. as an array, the
-  nodelist is an abstract concept unrelated to JSON values.
+  While this list can be represented in JSON, e.g. as an array, this specification
+  does not require or assume any particular representation.
 
 Normalized Path:
 : A simple form of JSONPath expression that identifies a node by
