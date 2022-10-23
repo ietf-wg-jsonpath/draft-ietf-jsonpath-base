@@ -198,7 +198,7 @@ Name:
   It is included here for completeness.
 
 Element:
-: A value in an array. (Not to be confused with XML element.)
+: A value in a JSON array.
 
 Index:
 : A non-negative integer that identifies a specific element in an array.
