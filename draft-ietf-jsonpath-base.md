@@ -1298,6 +1298,7 @@ The `dot-wildcard-shorthand` is shorthand for `[*]`.
 
 A `dot-member-name-shorthand` of the form `.<member-name>` is shorthand for `['<member-name>']`, but
 can only be used with member names that are composed of certain characters.
+Thus, for example, `$.foo.bar` is shorthand for `$['foo']['bar']` (and not for `$['foo.bar']`).
 
 #### Semantics
 {: unnumbered}
