@@ -515,7 +515,7 @@ representation as desired by the implementation.
 Note that an empty nodelist is a valid query result.
 
 A segment performs its function on each of the nodes in its input
-nodelist, during such a function execution, such a node is referred to
+nodelist. During such a function execution, each such node is referred to
 as the "current node".  Each of these function executions produces a
 nodelist, which are then concatenated to produce
 the result of the segment. A node may be selected more than once and
