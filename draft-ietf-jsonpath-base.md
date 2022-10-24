@@ -1310,8 +1310,9 @@ appear in the list.
 Note that any node matched by more than one selector is kept
 as many times in the nodelist.
 
-Where a selector can produce a nodelist in more than one possible order, the
-selector may produce a nodelist in a distinct order each time it appears in the child segment.
+Where a selector can produce a nodelist in more than one possible order,
+each occurrence of the selector in the child segment
+may evaluate to produce a nodelist in a distinct order.
 
 So a child segment drills down one more level into the structure of the input value.
 
