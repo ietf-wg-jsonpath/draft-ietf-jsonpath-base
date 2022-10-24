@@ -674,7 +674,7 @@ Note: `double-quoted` strings follow the JSON string syntax ({{Section 7 of RFC8
 {: unnumbered}
 
 A `name-selector` string MUST be converted to a
-member name by removing the surrounding quotes and
+member name M by removing the surrounding quotes and
 replacing each escape sequence with its equivalent Unicode character, as
 in the table below:
 
@@ -693,15 +693,15 @@ in the table below:
 {: title="Escape Sequence Replacements" cols="c c"}
 
 Applying the `name-selector` to an object node
-selects a member value whose name equals the converted member name,
+selects a member value whose name equals the member name M,
 or selects nothing if there is no such member value.
 Nothing is selected from a value that is not a object.
 
-Note that processing the name selector requires comparing the converted member name string
+Note that processing the name selector requires comparing the member name string M
 with member name strings in the JSON to which the selector is being applied.
 Two strings MUST be considered equal if and only if they are identical
 sequences of Unicode scalar values. In other words, normalization operations
-MUST NOT be applied to either the converted member name string from the JSONPath or to
+MUST NOT be applied to either the member name string M from the JSONPath or to
 the member name strings in the JSON prior to comparison.
 
 #### Examples
