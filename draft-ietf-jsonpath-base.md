@@ -1036,7 +1036,7 @@ name-segment      = "[" name-selector "]" / dot-member-name-shorthand
 index-segment     = "[" index-selector "]"
 ~~~~
 
-Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `?(<expr>)` is naturally contained in the current lean syntax `?<expr>` as a special case.
+Parentheses MAY be used within `boolean-expr` for grouping.
 
 ~~~~ abnf
 paren-expr        = [logical-not-op S] "(" S boolean-expr S ")"
