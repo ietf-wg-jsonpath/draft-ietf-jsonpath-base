@@ -1593,7 +1593,7 @@ Security considerations for JSONPath can stem from
 
 Historically, JSONPath has often been implemented by feeding parts of
 the query to an underlying programming language engine, e.g.,
-JavaScript.
+JavaScript's `eval()` function.
 This approach is well known to lead to injection attacks and would
 require perfect input validation to prevent these attacks (see
 {{Section 12 of -json}} for similar considerations for JSON itself).
