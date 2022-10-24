@@ -619,8 +619,6 @@ The syntax and semantics of each kind of selector are defined below.
 
 A name selector `'<name>'` selects at most one object member value.
 
-Applying the `name-selector` to an object value in its input nodelist,
-its string is required to match the corresponding member value.
 In contrast to JSON,
 the JSONPath syntax allows strings to be enclosed in _single_ or _double_ quotes.
 
@@ -694,17 +692,17 @@ in the table below:
 | \\uXXXX            | U+XXXX              | unicode character           |
 {: title="Escape Sequence Replacements" cols="c c"}
 
-The name selector applied to an object
-selects the node of the corresponding member value from it, if and only if that object has a member with that name.
+Applying the `name-selector` to an object node
+selects a member value whose name equals the converted member name,
+or selects nothing if there is no such member value.
 Nothing is selected from a value that is not a object.
 
-Note that processing the name selector potentially requires matching strings against
-strings, with those strings coming from the JSONPath and from member
-names and string values in the JSON to which it is being applied.
+Note that processing the name selector requires comparing the converted member name string
+with member name strings in the JSON to which the selector is being applied.
 Two strings MUST be considered equal if and only if they are identical
 sequences of Unicode scalar values. In other words, normalization operations
-MUST NOT be applied to either the string from the JSONPath or from the JSON
-prior to comparison.
+MUST NOT be applied to either the converted member name string from the JSONPath or to
+the member name strings in the JSON prior to comparison.
 
 #### Examples
 {: unnumbered}
