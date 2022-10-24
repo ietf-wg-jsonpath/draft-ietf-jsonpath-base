@@ -1377,7 +1377,6 @@ Note that `D1` is the input value.
 
 For each `i` such that `1 <= i <= n`, the nodelist `Ri` is defined to be a result of applying
 the child segment `[<selectors>]` to the node `Di`.
-Note that `Ri` is the concatenation of the nodelists from each of the selectors.
 
 The result of the descendant selector is the concatenation of `R1`, ..., `Rn` (in that order).
 
