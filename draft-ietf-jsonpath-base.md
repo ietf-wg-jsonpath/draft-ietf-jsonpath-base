@@ -1443,6 +1443,7 @@ A Normalized Path is a JSONPath with restricted syntax that identifies a node by
 the JSONPath expression `$.book[?(@.price<10)]` could select two values with Normalized Paths
 `$['book'][3]` and `$['book'][5]`. For a given JSON value, there is a one to one correspondence between the value's
 nodes and the Normalized Paths that identify these nodes.
+Note that there is at precisely one Normalized Path that identifies each node.
 
 A JSONPath implementation may output Normalized Paths instead of, or in addition to, the values identified by these paths.
 
@@ -1454,6 +1455,8 @@ Certain characters are escaped, in one and only one way; all other characters ar
 
 Normalized Paths are Singular Paths. Not all Singular Paths are Normalized Paths: `$[-3]`, for example, is a Singular
 Path, but not a Normalized Path.
+The Normalized Path equivalent to `$[-3]` would have an index equal to the array length minus `3`.
+(The array length must be at least `3` if `$[-3]` identifies a node.)
 
 ~~~~ abnf
 normalized-path           = root-identifier *(normal-index-segment)
@@ -1492,6 +1495,7 @@ normal-index-selector     = "0" / (DIGIT1 *DIGIT) ; non-negative decimal integer
 | :---: | :---: | ------- |
 | `$.a` | `$['a']` | Object value |
 | `$[1]` | `$[1]`  | Array index |
+| `$[-3]` | `$[2]`  | Negative array index for an array of length 5 |
 | `$.a.b[1:2]` | `$['a']['b'][1]` | Nested structure |
 | `$["\u000B"]`| `$['\u000b']` | Unicode escape |
 | `$["\u0061"]`| `$['a']` | Unicode character |
