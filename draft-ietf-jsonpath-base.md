@@ -772,7 +772,8 @@ The following examples show the `wildcard` selector in use by a child segment.
 {: title="Wildcard selector examples"}
 
 The example above with the query `$.o[*, *]` shows that the wildcard selector may produce nodelists in distinct
-orders each time it appears in the child segment.
+orders each time it appears in the child segment, when it is applied to an object node with two or more
+members (but not when it is applied to object nodes with less than two members or to array nodes).
 
 ### Index selector {#index-selector}
 
