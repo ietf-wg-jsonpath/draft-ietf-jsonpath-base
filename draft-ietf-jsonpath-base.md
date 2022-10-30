@@ -1258,7 +1258,7 @@ function-name-char      = DIGIT / function-name-first / "_"
 LCALPHA                 = %x61-7A  ; "a".."z"
 
 
-function-expression     = function-name "(" [*(function-argument "," S) function-argument] ")"
+function-expression     = function-name "(" [function-argument *("," S function-argument)] ")"
 singular-path           =/ function-expression
 function-argument       = comparable
 ~~~
