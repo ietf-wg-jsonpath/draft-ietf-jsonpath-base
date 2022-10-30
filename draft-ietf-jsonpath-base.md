@@ -1730,7 +1730,7 @@ This specification defines a new "Function Extensions sub-registry" in
 a new "JSONPath Parameters registry", with the policy "expert review"
 ({{Section 4.5 of -ianacons}}).
 
-The expert is instructed to be frugal in the allocation of very short
+The experts are instructed to be frugal in the allocation of very short
 function extension names, keeping them in reserve for applications that
 are likely to enjoy wide use and can make good use of their shortness.
 The expert is also instructed to direct the registrant to provide a
