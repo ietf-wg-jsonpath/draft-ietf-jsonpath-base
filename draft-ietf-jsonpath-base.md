@@ -75,7 +75,6 @@ contributor:
 
 informative:
 #  RFC3552: seccons
-#  RFC8126: ianacons
   RFC6901: pointer
   RFC6901: pointer
   JSONPath-orig:
@@ -109,6 +108,12 @@ informative:
     title: Boolean algebra laws
 
 normative:
+  STD90:
+    -: ascii
+    =: RFC20
+  BCP26:
+    -: ianacons
+    =: RFC8126
   RFC3629: utf8
   RFC5234: abnf
   RFC8259: json
@@ -1221,6 +1226,72 @@ The semantics of regular expressions are as defined in {{-iregexp}}.
 The logical AND, OR, and NOT operators have the normal semantics of Boolean algebra and
 obey its laws (see, for example, {{BOOLEAN-LAWS}}).
 
+##### Function Extensions {#fnex}
+{: unnumbered}
+
+[^unnumbered-bad]
+
+[^unnumbered-bad]: This should not be an unnumbered section, which it is
+    forced to be by the parent section being unnumbered too.
+    The overall structure where the parts of this subsection go to
+    needs to be decided; one part already is in the IANA
+    Considerations in {{iana-fnex}}
+{:source=" -- cabo"}
+
+Beyond the filter expression functionality defined in the preceding
+subsections, JSONPath defines an extension point that can be used to
+add filter expression functionality: "Function Extensions".
+
+A function extension defines a registered name (see {{iana-fnex}}) that
+can be applied to a sequence of zero or more arguments, resulting in a result.
+A function-expression stands for ("returns") a nodelist or a value.
+The arguments are filter expressions that are to be interpreted as
+nodelists or values.
+For each argument and for the result, the function extension defines
+the "kind" of the item, i.e., whether the item is a value or a
+nodelist ("nodes").
+
+~~~ abnf
+function-name           = function-name-first *function-name-char
+function-name-first     = LCALPHA
+function-name-char      = DIGIT / name-first / "_"
+LCALPHA                 = %x61-7A  ; "a".."z"
+
+
+function-expression     = function-name "(" [*(function-argument "," S) function-argument] ")"
+singular-path           =/ function-expression
+function-argument       = comparable
+~~~
+
+Syntactically, a function-expression can occur anywhere where a
+singular-path can occur (exist-expr, comparable, regex-expr).
+A function-expression that employs a function extension that returns a
+nodelist MUST return a singular node to be used in a comparable or a
+regex-expr.
+
+###### Function Extensions: length {#length}
+{: unnumbered}
+
+When defining an extension point in a protocol, it is generally a good
+idea to provide at least one extension that makes use of the extension
+point, to serve as an example and to provide motivation to implement
+the extension point.
+
+The "length" function extension provides a way to compute the length
+of an array and make that available for further processing in the
+filter expression:
+
+~~~ JSONPath
+$[?length(@.authors) >= 5]
+~~~
+
+Its only argument is a value (possibly taken from a singular path as
+in the example above).  The result also is a value; if the argument
+value is an array, the result is the number of elements in the array.
+[length-mismatch]
+
+[length-mismatch]: Define the case where the argument is not an array as well.
+
 #### Examples
 {: unnumbered}
 
@@ -1653,6 +1724,54 @@ Change controller:
 Provisional registration? (standards tree only):
 : no
 
+## Function Extensions {#iana-fnex}
+
+This specification defines a new "Function Extensions sub-registry" in
+a new "JSONPath Parameters registry", with the policy "expert review"
+({{Section 4.5 of -ianacons}}).
+
+The expert is instructed to be frugal in the allocation of very short
+function extension names, keeping them in reverse for applications that
+are likely to enjoy wide use and can make good use of their shortness.
+The expert is also instructed to direct the registrant to provide a
+specification ({{Section 4.6 of -ianacons}}), but can make exceptions,
+for instance when a specification is not available at the time of
+registration but is likely forthcoming.
+If the expert becomes aware of function extensions that are deployed and
+in use, they may also initiate a registration on their own if
+they deem such a registration can avert potential future collisions.
+{: #de-instructions}
+
+Each entry in the registry must include:
+
+{:vspace}
+Function Name:
+: a lower case ASCII {{-ascii}} string that starts with a letter and can
+  contain letters, digits and underscore characters afterwards
+  (`[a-z][_a-z0-9]*`).
+
+Brief description:
+: a brief description
+
+Input:
+: A comma-separated list of zero or more kinds (value or nodes) of the
+  arguments expected for this function extension
+
+Output:
+: The kind (value or nodes) of the result for this function extension
+
+Change Controller:
+: (see {{Section 2.3 of -ianacons}})
+
+Reference:
+: a reference document that provides a description of the function
+  extension
+
+Initial entries in this sub-registry are as listed in {{pre-reg}}:
+
+| Function Name | Brief description | Input | Output | Change Controller | Reference |   |   |
+| length        | length of array   | value | value  | IESG              | {{fnex}} of RFCthis |   |   |
+{: #pre-reg title="Initial Entries in the Function Extensions Subregistry"}
 
 
 # Security Considerations {#Security}
