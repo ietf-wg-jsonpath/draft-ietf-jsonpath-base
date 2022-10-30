@@ -169,7 +169,8 @@ in ABNF as `%x2318`.
 
 The terminology of {{-json}} applies except where clarified below.
 The terms "Primitive" and "Structured" are used to group
-the types as in {{Section 1 of -json}}.
+the types as in {{Section 1 of -json}}; JSON Objects and Arrays are
+structured, all other types are primitive.
 Definitions for "Object", "Array", "Number", and "String" remain
 unchanged.
 Importantly "object" and "array" in particular do not take on a
@@ -197,7 +198,7 @@ Name:
   It is included here for completeness.
 
 Element:
-: A value in an array. (Not to be confused with XML element.)
+: A value in a JSON array.
 
 Index:
 : A non-negative integer that identifies a specific element in an array.
@@ -238,8 +239,8 @@ Segment:
 Nodelist:
 : A list of nodes.  <!-- ordered list?  Maybe TBD by issues #27 and #60 -->
   The output of applying a query to an argument is manifested as a list of nodes.
-  While this list can be represented in JSON, e.g. as an array, the
-  nodelist is an abstract concept unrelated to JSON values.
+  While this list can be represented in JSON, e.g. as an array, this specification
+  does not require or assume any particular representation.
 
 Normalized Path:
 : A simple form of JSONPath expression that identifies a node by
@@ -314,7 +315,7 @@ $.store.book[0].title
 to build paths that are input to a JSONPath implementation.
 A single path may use a combination of bracket and dot notations.
 
-Dot notation is merely a shorthand way of writing certain bracket notations.
+Dot notation is a shorthand way of writing certain bracket notations.
 
 A wildcard `*` ({{wildcard}}) in the expression `[*]` selects all children of an
 object or an array and in the expression `..[*]` selects all descendants of an object or an array.
@@ -354,9 +355,9 @@ of the canonical bracket notation.
 
 # JSONPath Examples
 
-This section provides some more examples for JSONPath expressions.
+This section provides examples of JSONPath expressions.
 The examples are based on the simple JSON value shown in
-{{fig-example-value}}, representing a bookstore (that also has bicycles).
+{{fig-example-value}}, representing a bookstore (that also has a bicycle).
 
 ~~~~json
 { "store": {
@@ -386,7 +387,7 @@ The examples are based on the simple JSON value shown in
     ],
     "bicycle": {
       "color": "red",
-      "price": 19.95
+      "price": 399
     }
   }
 }
@@ -404,8 +405,8 @@ The examples are based on the simple JSON value shown in
 | `$..book[2]`                              | the third book                                               |
 | `$..book[-1]`                             | the last book in order                                       |
 | `$..book[0,1]`<br>`$..book[:2]`           | the first two books                                          |
-| `$..book[?(@.isbn)]`                      | filter all books with ISBN number                            |
-| `$..book[?(@.price<10)]`                  | filter all books cheaper than 10                             |
+| `$..book[?(@.isbn)]`                      | all books with an ISBN number                                |
+| `$..book[?(@.price<10)]`                  | all books cheaper than 10                                    |
 | `$..*`                                    | all member values and array elements contained in input value |
 {: #tbl-example title="Example JSONPath expressions and their intended results when applied to the example JSON value"}
 
@@ -458,23 +459,20 @@ The parsing of a JSON text into a JSON value and what happens if a JSON
 text does not represent valid JSON are not defined by this specification.
 {{Sections 4 and 8 of -json}} identify specific situations that may
 conform to the grammar for JSON texts but are not interoperable uses
-of JSON, for instance as they may cause unpredictable behavior.
+of JSON, as they may cause unpredictable behavior.
 The present specification does not attempt to define predictable
 behavior for JSONPath queries in these situations.
-(Note that another warning about interoperability, in {{Section 2 of
--json}}, at the time of writing is generally considered to be overtaken
-by events and causes no issues with the present specification.)
 
 Specifically, the "Semantics" subsections of Sections
 {{<name-selector}}, {{<wildcard}},
 {{<filter-selector}}, and {{<descendant-segment}} describe behavior that
-turns unpredictable when the JSON value for one of the objects
+becomes unpredictable when the JSON value for one of the objects
 under consideration was constructed out of JSON text that exhibits
 multiple members for a single object that share the same member name
 ("duplicate names", see {{Section 4 of -json}}).
 Also, selecting a child by name ({{<name-selector}}) and comparing strings
 ({{comparisons}} in Section {{<filter-selector}}) assume these
-strings are sequences of Unicode scalar values, turning unpredictable
+strings are sequences of Unicode scalar values, becoming unpredictable
 if they aren't ({{Section 8.2 of -json}}).
 
 ## Syntax
@@ -510,15 +508,14 @@ Segments can be added to a query to drill further into the structure of the inpu
 The nodelist resulting from the root identifier contains a single node,
 the argument.
 The nodelist resulting from the last segment is presented as the
-result of the query; depending on the specific API, it might be
+result of the query. Depending on the specific API, it might be
 presented as an array of the JSON values at the nodes, an array of
 Normalized Paths referencing the nodes, or both — or some other
 representation as desired by the implementation.
-Note that the API must be capable of presenting an empty nodelist as
-the result of the query.
+Note that an empty nodelist is a valid query result.
 
 A segment performs its function on each of the nodes in its input
-nodelist, during such a function execution, such a node is referred to
+nodelist. During such a function execution, each such node is referred to
 as the "current node".  Each of these function executions produces a
 nodelist, which are then concatenated to produce
 the result of the segment. A node may be selected more than once and
@@ -559,10 +556,10 @@ As a consequence of this approach, if any of the segments produces an empty node
 then the whole query produces an empty nodelist.
 
 If a query may produce a nodelist with more than one possible ordering, a particular implementation
-may also produce distinct orderings in distinct runs of the query.
+may also produce distinct orderings in successive runs of the query.
 
 In what follows, the semantics of each segment are defined for each type
-of node.
+of input node.
 
 ## Root Identifier
 
@@ -622,8 +619,6 @@ The syntax and semantics of each kind of selector are defined below.
 
 A name selector `'<name>'` selects at most one object member value.
 
-Applying the `name-selector` to an object value in its input nodelist,
-its string is required to match the corresponding member value.
 In contrast to JSON,
 the JSONPath syntax allows strings to be enclosed in _single_ or _double_ quotes.
 
@@ -679,7 +674,7 @@ Note: `double-quoted` strings follow the JSON string syntax ({{Section 7 of RFC8
 {: unnumbered}
 
 A `name-selector` string MUST be converted to a
-member name by removing the surrounding quotes and
+member name M by removing the surrounding quotes and
 replacing each escape sequence with its equivalent Unicode character, as
 in the table below:
 
@@ -697,17 +692,17 @@ in the table below:
 | \\uXXXX            | U+XXXX              | unicode character           |
 {: title="Escape Sequence Replacements" cols="c c"}
 
-The name selector applied to an object
-selects the node of the corresponding member value from it, if and only if that object has a member with that name.
+Applying the `name-selector` to an object node
+selects a member value whose name equals the member name M,
+or selects nothing if there is no such member value.
 Nothing is selected from a value that is not a object.
 
-Note that processing the name selector potentially requires matching strings against
-strings, with those strings coming from the JSONPath and from member
-names and string values in the JSON to which it is being applied.
+Note that processing the name selector requires comparing the member name string M
+with member name strings in the JSON to which the selector is being applied.
 Two strings MUST be considered equal if and only if they are identical
 sequences of Unicode scalar values. In other words, normalization operations
-MUST NOT be applied to either the string from the JSONPath or from the JSON
-prior to comparison.
+MUST NOT be applied to either the member name string M from the JSONPath or to
+the member name strings in the JSON prior to comparison.
 
 #### Examples
 {: unnumbered}
@@ -777,7 +772,8 @@ The following examples show the `wildcard` selector in use by a child segment.
 {: title="Wildcard selector examples"}
 
 The example above with the query `$.o[*, *]` shows that the wildcard selector may produce nodelists in distinct
-orders each time it appears in the child segment.
+orders each time it appears in the child segment, when it is applied to an object node with two or more
+members (but not when it is applied to object nodes with less than two members or to array nodes).
 
 ### Index selector {#index-selector}
 
@@ -1040,7 +1036,7 @@ name-segment      = "[" name-selector "]" / dot-member-name-shorthand
 index-segment     = "[" index-selector "]"
 ~~~~
 
-Parentheses can be used with `boolean-expr` for grouping. So filter selection syntax in the original proposal `?(<expr>)` is naturally contained in the current lean syntax `?<expr>` as a special case.
+Parentheses MAY be used within `boolean-expr` for grouping.
 
 ~~~~ abnf
 paren-expr        = [logical-not-op S] "(" S boolean-expr S ")"
@@ -1298,6 +1294,7 @@ The `dot-wildcard-shorthand` is shorthand for `[*]`.
 
 A `dot-member-name-shorthand` of the form `.<member-name>` is shorthand for `['<member-name>']`, but
 can only be used with member names that are composed of certain characters.
+Thus, for example, `$.foo.bar` is shorthand for `$['foo']['bar']` (and not for `$['foo.bar']`).
 
 #### Semantics
 {: unnumbered}
@@ -1312,6 +1309,10 @@ the nodelists from each of its selectors in the order that the selectors
 appear in the list.
 Note that any node matched by more than one selector is kept
 as many times in the nodelist.
+
+Where a selector can produce a nodelist in more than one possible order,
+each occurrence of the selector in the child segment
+may evaluate to produce a nodelist in a distinct order.
 
 So a child segment drills down one more level into the structure of the input value.
 
@@ -1446,6 +1447,7 @@ A Normalized Path is a JSONPath with restricted syntax that identifies a node by
 the JSONPath expression `$.book[?(@.price<10)]` could select two values with Normalized Paths
 `$['book'][3]` and `$['book'][5]`. For a given JSON value, there is a one to one correspondence between the value's
 nodes and the Normalized Paths that identify these nodes.
+Note that there is precisely one Normalized Path that identifies each node.
 
 A JSONPath implementation may output Normalized Paths instead of, or in addition to, the values identified by these paths.
 
@@ -1457,6 +1459,8 @@ Certain characters are escaped, in one and only one way; all other characters ar
 
 Normalized Paths are Singular Paths. Not all Singular Paths are Normalized Paths: `$[-3]`, for example, is a Singular
 Path, but not a Normalized Path.
+The Normalized Path equivalent to `$[-3]` would have an index equal to the array length minus `3`.
+(The array length must be at least `3` if `$[-3]` is to identify a node.)
 
 ~~~~ abnf
 normalized-path           = root-identifier *(normal-index-segment)
@@ -1488,6 +1492,12 @@ normal-HEXDIG             = DIGIT / %x61-66   ; "0"-"9", "a"-"f"
 normal-index-selector     = "0" / (DIGIT1 *DIGIT) ; non-negative decimal integer
 ~~~~
 
+Since there can only be one Normalized Path identifying a given node, the syntax
+stipulates which characters are escaped and which are not.
+So the definition of `normal-hexchar` is designed for hex escaping of characters
+which are not straightforwardly-printable, for example U+000B LINE TABULATION, but
+for which no standard JSON escape such as `\n` is available.
+
 ### Examples
 {: unnumbered}
 
@@ -1495,6 +1505,7 @@ normal-index-selector     = "0" / (DIGIT1 *DIGIT) ; non-negative decimal integer
 | :---: | :---: | ------- |
 | `$.a` | `$['a']` | Object value |
 | `$[1]` | `$[1]`  | Array index |
+| `$[-3]` | `$[2]`  | Negative array index for an array of length 5 |
 | `$.a.b[1:2]` | `$['a']['b'][1]` | Nested structure |
 | `$["\u000B"]`| `$['\u000b']` | Unicode escape |
 | `$["\u0061"]`| `$['a']` | Unicode character |
@@ -1586,7 +1597,7 @@ Security considerations for JSONPath can stem from
 
 Historically, JSONPath has often been implemented by feeding parts of
 the query to an underlying programming language engine, e.g.,
-JavaScript.
+JavaScript's `eval()` function.
 This approach is well known to lead to injection attacks and would
 require perfect input validation to prevent these attacks (see
 {{Section 12 of -json}} for similar considerations for JSON itself).
