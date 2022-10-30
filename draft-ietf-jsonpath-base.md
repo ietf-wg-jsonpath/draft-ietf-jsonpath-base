@@ -1254,7 +1254,7 @@ nodelist ("nodes").
 ~~~ abnf
 function-name           = function-name-first *function-name-char
 function-name-first     = LCALPHA
-function-name-char      = DIGIT / name-first / "_"
+function-name-char      = DIGIT / function-name-first / "_"
 LCALPHA                 = %x61-7A  ; "a".."z"
 
 
