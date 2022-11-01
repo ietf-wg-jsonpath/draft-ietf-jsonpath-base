@@ -272,8 +272,8 @@ A query is applied to an argument, and the output is a nodelist.
 ## History
 
 This document picks up {{{Stefan Gössner}}}'s popular JSONPath proposal
-dated 2007-02-21 {{JSONPath-orig}} and provides a normative definition
-for it.
+dated 2007-02-21 {{JSONPath-orig}}, builds on the experience from the widespread
+deployment of its implementations, and provides a normative definition for it.
 
 {{inspired-by-xpath}} describes how JSONPath was inspired by XML's XPath
 [XPath].
@@ -927,7 +927,7 @@ FUNCTION Normalize(i, len):
 
 The result of the array indexing expression `i` applied to an array
 of length `len` is defined to be the result of the array
-slicing expression `i:Normalize(i, len)+1:1`.
+slicing expression `Normalize(i, len):Normalize(i, len)+1:1`.
 
 Slice expression parameters `start` and `end` are used to derive slice bounds `lower` and `upper`.
 The direction of the iteration, defined
@@ -1233,7 +1233,7 @@ Queries:
 | `$.a[?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` | `$['a'][6]` <br> `$['a'][7]` | Array value existence |
 | `$.a[?@.b, ?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": "k"}` <br> `{"b": "j"}` | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][7]` <br> `$['a'][6]` | Non-deterministic ordering |
 | `$.a[?@<2 || @.b == "k"]` | `1` <br> `{"b": "k"}` | `$['a'][2]` <br> `$['a'][7]` | Array value logical OR |
-| `$.a[?@.b =~ "i.*"]` | `{"b": "j"}` <br> `{"b": "k"}` | `$['a'][6]` <br> `$['a'][7]` | Array value regular expression |
+| `$.a[?@.b =~ "[jk]"]` | `{"b": "j"}` <br> `{"b": "k"}` | `$['a'][6]` <br> `$['a'][7]` | Array value regular expression |
 | `$.o[?@>1 && @<4]` | `2` <br> `3` | `$['o']['q']` <br> `$['o']['r']` | Object value logical AND |
 | `$.o[?@>1 && @<4]` | `3` <br> `2` | `$['o']['r']` <br> `$['o']['q']` | Alternative result |
 | `$.o[?@.u || @.x]` | `{"u": 6}` | `$['o']['t']` | Object value logical OR |
