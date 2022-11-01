@@ -272,8 +272,8 @@ A query is applied to an argument, and the output is a nodelist.
 ## History
 
 This document picks up {{{Stefan Gössner}}}'s popular JSONPath proposal
-dated 2007-02-21 {{JSONPath-orig}}, addresses some of its shortfalls, and
-provides a normative definition for it.
+dated 2007-02-21 {{JSONPath-orig}}, builds on the experience from the widespread
+deployment of its implementations, and provides a normative definition for it.
 
 {{inspired-by-xpath}} describes how JSONPath was inspired by XML's XPath
 [XPath].
