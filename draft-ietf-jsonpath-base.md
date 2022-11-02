@@ -744,7 +744,7 @@ since JSON objects are unordered.
 Children of an array appear in array order in the resultant nodelist.
 
 The `wildcard` selector selects nothing from a primitive JSON value (that is,
-a number, a string, a boolean, or `null`).
+a number, a string, `true`, `false`, or `null`).
 
 #### Examples
 {: unnumbered}
@@ -1045,7 +1045,7 @@ relation-expr = comp-expr /                           ; comparison test
                 regex-expr                            ; regular expression test
 ~~~~
 
-Comparisons are restricted to Singular Path values and primitive values (that is, numbers, strings, booleans,
+Comparisons are restricted to Singular Path values and primitive values (that is, numbers, strings, `true`, `false`,
 and `null`).
 
 ~~~~ abnf
