@@ -134,8 +134,8 @@ venue:
 ...
 --- abstract
 
-JSONPath defines a string syntax for selecting and extracting values
-within a JSON (RFC 8259) value.
+JSONPath defines a string syntax for selecting and extracting JSON (RFC 8259) values
+from a JSON value.
 
 --- middle
 
@@ -150,8 +150,8 @@ within a JSON (RFC 8259) value.
 
 JSON {{-json}} is a popular representation
 format for structured data values.
-JSONPath defines a string syntax for identifying values
-within a JSON value.
+JSONPath defines a string syntax for selecting and extracting JSON values
+from a JSON value.
 
 JSONPath is not intended as a replacement for, but as a more powerful
 companion to, JSON Pointer {{RFC6901}}. See {{json-pointer}}.
