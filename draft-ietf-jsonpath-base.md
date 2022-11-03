@@ -308,7 +308,7 @@ i.e., to the argument as a whole.
 Every JSONPath expression begins with the root node identifier.
 
 The _current node identifier_ `@` refers to the *current node* in the context
-of a filter expression (described later).
+of the evaluation of a filter expression (described later).
 
 ### Segments
 
@@ -329,7 +329,7 @@ A JSONPath expression may use a combination of bracket and dot notations.
 Dot notation is a shorthand way of writing certain bracket notations.
 
 This document treats the bracket notations as canonical and defines various shorthands in terms
-of bracket notation.
+of bracket notation. Examples and descriptions use shorthands where convenient.
 
 ### Selectors
 
