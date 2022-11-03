@@ -1028,9 +1028,10 @@ The current node is accessible via the current node identifier `@`.
 
 ~~~~ abnf
 singular-path           = rel-singular-path / abs-singular-path
-rel-singular-path       = current-node-identifier *(S (name-segment / index-segment))
+rel-singular-path       = current-node-identifier singular-path-segments
 current-node-identifier = "@"
-abs-singular-path       = root-identifier *(S (name-segment / index-segment))
+abs-singular-path       = root-identifier singular-path-segments
+singular-path-segments  = *(S (name-segment / index-segment)) 
 name-segment            = "[" name-selector "]" / dot-member-name-shorthand
 index-segment           = "[" index-selector "]"
 ~~~~
