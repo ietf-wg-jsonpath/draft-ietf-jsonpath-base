@@ -1031,7 +1031,7 @@ singular-path           = rel-singular-path / abs-singular-path
 rel-singular-path       = current-node-identifier singular-path-segments
 current-node-identifier = "@"
 abs-singular-path       = root-identifier singular-path-segments
-singular-path-segments  = *(S (name-segment / index-segment)) 
+singular-path-segments  = *(S (name-segment / index-segment))
 name-segment            = "[" name-selector "]" / dot-member-name-shorthand
 index-segment           = "[" index-selector "]"
 ~~~~
