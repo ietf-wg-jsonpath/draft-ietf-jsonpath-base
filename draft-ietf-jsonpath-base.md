@@ -1487,8 +1487,8 @@ Normalized Paths are used in this document to clarify the contents of nodelists 
 Since output nodelists may be input to subsequent processing (e.g., removal of duplicate nodes), it is essential to provide a standard
 string representation of their nodes.
 
-For a given JSON value, there is a one to one correspondence between the value's
-nodes and the Normalized Paths that identify these nodes.
+For a given JSON value, there is a one-to-one correspondence between the value's
+node and its descendant nodes and the Normalized Paths that identify these nodes.
 Note that there is precisely one Normalized Path that identifies each node.
 Consequently, Normalized Paths may be used to provide more predictable behavior and simplify testing.
 
