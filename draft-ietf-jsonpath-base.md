@@ -998,15 +998,15 @@ Queries:
 #### Syntax
 {: unnumbered}
 
-The filter selector has the form `?<expr>`. It works via iterating over structured values, i.e. arrays and objects.
+The filter selector has the form `?<expr>`. It iterates over structured values, i.e., arrays and objects.
 
 ~~~~ abnf
 filter-selector = "?" S boolean-expr
 ~~~~
 
-During the iteration process each array element or object member is visited and its value — accessible via symbol `@` — or one of its descendants — uniquely defined by a relative path — is tested against a boolean expression `boolean-expr`.
-
-The current item is selected if and only if the boolean expression yields true.
+During the iteration process the node of each array element or object member visited is known as the current node.
+A boolean expression, usually involving the current node, is evaluated and
+the current node is selected if and only if the expression yields true.
 
 ~~~~ abnf
 boolean-expr     = logical-or-expr
@@ -1024,12 +1024,15 @@ exist-expr        = [logical-not-op S] singular-path  ; path existence or non-ex
 
 Paths in filter expressions are Singular Paths, each of which selects at most one node.
 
+The current node is accessible via the current node identifier `@`.
+
 ~~~~ abnf
-singular-path     = rel-singular-path / abs-singular-path
-rel-singular-path = "@" *(S (name-segment / index-segment))
-abs-singular-path = root-identifier *(S (name-segment / index-segment))
-name-segment      = "[" name-selector "]" / dot-member-name-shorthand
-index-segment     = "[" index-selector "]"
+singular-path           = rel-singular-path / abs-singular-path
+rel-singular-path       = current-node-identifier *(S (name-segment / index-segment))
+current-node-identifier = "@"
+abs-singular-path       = root-identifier *(S (name-segment / index-segment))
+name-segment            = "[" name-selector "]" / dot-member-name-shorthand
+index-segment           = "[" index-selector "]"
 ~~~~
 
 Parentheses MAY be used within `boolean-expr` for grouping.
@@ -1100,9 +1103,6 @@ Applied to other value types, it will select nothing.
 The order in which the children of an object appear in the resultant nodelist is not stipulated,
 since JSON objects are unordered.
 Children of an array appear in array order in the resultant nodelist.
-
-A relative path, beginning with `@`, refers to the current array element or member value as the
-filter selector iterates over the array or object.
 
 ##### Existence Tests
 {: unnumbered}
