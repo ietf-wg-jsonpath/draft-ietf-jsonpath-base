@@ -639,35 +639,36 @@ the JSONPath syntax allows strings to be enclosed in _single_ or _double_ quotes
 ~~~~ abnf
 name-selector       = string-literal
 
-string-literal      = %x22 *double-quoted %x22 /       ; "string"
-                      %x27 *single-quoted %x27         ; 'string'
+string-literal      = %x22 *double-quoted %x22 /     ; "string"
+                      %x27 *single-quoted %x27       ; 'string'
 
 double-quoted       = unescaped /
-                      %x27      /                       ; '
-                      ESC %x22  /                       ; \"
+                      %x27      /                    ; '
+                      ESC %x22  /                    ; \"
                       ESC escapable
 
 single-quoted       = unescaped /
-                      %x22      /                       ; "
-                      ESC %x27  /                       ; \'
+                      %x22      /                    ; "
+                      ESC %x27  /                    ; \'
                       ESC escapable
 
-ESC                 = %x5C                              ; \  backslash
+ESC                 = %x5C                           ; \  backslash
 
-unescaped           = %x20-21 /                         ; s. RFC 8259
-                      %x23-26 /                         ; omit "
-                      %x28-5B /                         ; omit '
-                      %x5D-10FFFF                       ; omit \
+unescaped           = %x20-21 /                      ; s. RFC 8259
+                      %x23-26 /                      ; omit "
+                      %x28-5B /                      ; omit '
+                      %x5D-10FFFF                    ; omit \
 
-escapable           = ( %x62 / %x66 / %x6E / %x72 / %x74 / ; \b \f \n \r \t
-                          ; b /         ;  BS backspace U+0008
-                          ; t /         ;  HT horizontal tab U+0009
-                          ; n /         ;  LF line feed U+000A
-                          ; f /         ;  FF form feed U+000C
-                          ; r /         ;  CR carriage return U+000D
-                          "/" /          ;  /  slash (solidus) U+002F
-                          "\" /          ;  \  backslash (reverse solidus) U+005C
-                          (%x75 hexchar) ;  uXXXX      U+XXXX
+escapable           = ( %x62 / %x66 / %x6E / %x72 / %x74 /
+                         ; \b \f \n \r \t
+                         ; b / ;  BS backspace U+0008
+                         ; t / ;  HT horizontal tab U+0009
+                         ; n / ;  LF line feed U+000A
+                         ; f / ;  FF form feed U+000C
+                         ; r / ;  CR carriage return U+000D
+                         "/" / ;  /  slash (solidus) U+002F
+                         "\" / ; \ backslash (reverse solidus) U+005C
+                         (%x75 hexchar) ;  uXXXX      U+XXXX
                       )
 
 hexchar = non-surrogate / (high-surrogate "\" %x75 low-surrogate)
@@ -795,10 +796,10 @@ members (but not when it is applied to object nodes with less than two members o
 An index selector `<index>` matches at most one array element value.
 
 ~~~~ abnf
-index-selector  = int                             ; decimal integer
+index-selector = int                             ; decimal integer
 
-int             = ["-"] ( "0" / (DIGIT1 *DIGIT) ) ; -  optional
-DIGIT1          = %x31-39                         ; 1-9 non-zero digit
+int            = ["-"] ( "0" / (DIGIT1 *DIGIT) ) ; -  optional
+DIGIT1         = %x31-39                         ; 1-9 non-zero digit
 ~~~~
 
 Applying the numerical `index-selector` selects the corresponding
@@ -1029,18 +1030,20 @@ Paths in filter expressions are Singular Paths, each of which selects at most on
 The current node is accessible via the current node identifier `@`.
 
 ~~~~ abnf
-boolean-expr           = logical-or-expr
-logical-or-expr        = logical-and-expr *(S "||" S logical-and-expr)
-                                                            ; disjunction
-                                                            ; binds less tightly than conjunction
-logical-and-expr       = basic-expr *(S "&&" S basic-expr)  ; conjunction
-                                                            ; binds more tightly than disjunction
+boolean-expr      = logical-or-expr
+logical-or-expr   = logical-and-expr *(S "||" S logical-and-expr)
+                      ; disjunction
+                      ; binds less tightly than conjunction
+logical-and-expr  = basic-expr *(S "&&" S basic-expr)
+                      ; conjunction
+                      ; binds more tightly than disjunction
 
-basic-expr              = exist-expr /
-                          paren-expr /
-                          relation-expr
-exist-expr              = [logical-not-op S] (rel-path / json-path)  ; path existence or non-existence
-rel-path                = current-node-identifier segments
+basic-expr        = exist-expr /
+                    paren-expr /
+                    relation-expr
+exist-expr        = [logical-not-op S] (rel-path / json-path)
+                       ; path existence or non-existence
+rel-path          = current-node-identifier segments
 current-node-identifier = "@"
 ~~~~
 
@@ -1048,11 +1051,11 @@ Parentheses MAY be used within `boolean-expr` for grouping.
 
 ~~~~ abnf
 paren-expr        = [logical-not-op S] "(" S boolean-expr S ")"
-                                                      ; parenthesized expression
-logical-not-op    = "!"                               ; logical NOT operator
+                                      ; parenthesized expression
+logical-not-op    = "!"               ; logical NOT operator
 
-relation-expr = comp-expr /                           ; comparison test
-                regex-expr                            ; regular expression test
+relation-expr = comp-expr /           ; comparison test
+                regex-expr            ; regular expression test
 ~~~~
 
 Comparisons are restricted to Singular Path values, each of which selects at most one node, and primitive values (that is, numbers, strings, `true`, `false`,
@@ -1060,19 +1063,19 @@ and `null`).
 
 ~~~~ abnf
 comp-expr    = comparable S comp-op S comparable
-comparable   = number / string-literal /              ; primitive ...
-               true / false / null /                  ; values only
-               singular-path                          ; Singular Path value
-comp-op      = "==" / "!=" /                          ; comparison ...
-               "<"  / ">"  /                          ; operators
+comparable   = number / string-literal /        ; primitive ...
+               true / false / null /            ; values only
+               singular-path                    ; Singular Path value
+comp-op      = "==" / "!=" /                    ; comparison ...
+               "<"  / ">"  /                    ; operators
                "<=" / ">="
 
-singular-path           = rel-singular-path / abs-singular-path
-rel-singular-path       = current-node-identifier singular-path-segments
-abs-singular-path       = root-identifier singular-path-segments
-singular-path-segments  = *(S (name-segment / index-segment))
-name-segment            = "[" name-selector "]" / dot-member-name-shorthand
-index-segment           = "[" index-selector "]"
+singular-path     = rel-singular-path / abs-singular-path
+rel-singular-path = current-node-identifier singular-path-segments
+abs-singular-path = root-identifier singular-path-segments
+singular-path-segments = *(S (name-segment / index-segment))
+name-segment      = "[" name-selector "]" / dot-member-name-shorthand
+index-segment     = "[" index-selector "]"
 ~~~~
 
 Alphabetic characters in ABNF are case-insensitive, so "e" can be either "e" or "E".
@@ -1080,12 +1083,12 @@ Alphabetic characters in ABNF are case-insensitive, so "e" can be either "e" or 
 `true`, `false`, and `null` are lower-case only (case-sensitive).
 
 ~~~~ abnf
-number       = int [ frac ] [ exp ]                   ; decimal number
-frac         = "." 1*DIGIT                            ; decimal fraction
-exp          = "e" [ "-" / "+" ] 1*DIGIT              ; decimal exponent
-true         = %x74.72.75.65                          ; true
-false        = %x66.61.6c.73.65                       ; false
-null         = %x6e.75.6c.6c                          ; null
+number       = int [ frac ] [ exp ]                ; decimal number
+frac         = "." 1*DIGIT                         ; decimal fraction
+exp          = "e" [ "-" / "+" ] 1*DIGIT           ; decimal exponent
+true         = %x74.72.75.65                       ; true
+false        = %x66.61.6c.73.65                    ; false
+null         = %x6e.75.6c.6c                       ; null
 ~~~~
 
 The syntax of regular expressions in the string-literals on the right-hand
@@ -1093,8 +1096,8 @@ side of `=~` is as defined in {{-iregexp}}.
 
 ~~~~ abnf
 regex-expr   = (singular-path / string-literal) S regex-op S regex
-regex-op     = "=~"                                   ; regular expression match
-regex        = string-literal                         ; I-Regexp
+regex-op     = "=~"                        ; regular expression match
+regex        = string-literal              ; I-Regexp
 ~~~~
 
 The following table lists filter expression operators in order of precedence from highest (binds most tightly) to lowest (binds least tightly).
@@ -1302,7 +1305,8 @@ dot-member-name-shorthand = "." dot-member-name
 dot-member-name           = name-first *name-char
 name-first                = ALPHA /
                             "_"   /            ; _
-                            %x80-10FFFF        ; any non-ASCII Unicode character
+                            %x80-10FFFF
+                              ; any non-ASCII Unicode character
 name-char                 = DIGIT / name-first
 
 DIGIT                     =  %x30-39              ; 0-9
@@ -1490,33 +1494,38 @@ The Normalized Path equivalent to `$[-3]` would have an index equal to the array
 (The array length must be at least `3` if `$[-3]` is to identify a node.)
 
 ~~~~ abnf
-normalized-path           = root-identifier *(normal-index-segment)
-normal-index-segment      = "[" (normal-name-selector / normal-index-selector) "]"
-normal-name-selector      = %x27 *normal-single-quoted %x27 ; 'string'
-normal-single-quoted      = normal-unescaped /
-                            ESC normal-escapable
-normal-unescaped          = %x20-26 /                       ; omit control codes
-                            %x28-5B /                       ; omit '
-                            %x5D-10FFFF                     ; omit \
-normal-escapable          = ( %x62 / %x66 / %x6E / %x72 / %x74 / ; \b \f \n \r \t
-                                ; b /         ;  BS backspace U+0008
-                                ; t /         ;  HT horizontal tab U+0009
-                                ; n /         ;  LF line feed U+000A
-                                ; f /         ;  FF form feed U+000C
-                                ; r /         ;  CR carriage return U+000D
-                                "'" /         ;  ' apostrophe U+0027
-                                "\" /         ;  \ backslash (reverse solidus) U+005C
-                                (%x75 normal-hexchar) ;  certain values u00xx U+00XX
-                            )
-normal-hexchar            = "0" "0"
-                            (
-                              ("0" %x30-37) / ; "00"-"07"
-                              ("0" %x62) /    ; "0b"      ; omit U+0008-U+000A
-                              ("0" %x65-66) /  ; "0e"-"0f" ; omit U+000C-U+000D
-                              ("1" normal-HEXDIG)
-                            )
-normal-HEXDIG             = DIGIT / %x61-66   ; "0"-"9", "a"-"f"
-normal-index-selector     = "0" / (DIGIT1 *DIGIT) ; non-negative decimal integer
+normalized-path      = root-identifier *(normal-index-segment)
+normal-index-segment = "[" normal-selector "]"
+normal-selector      = normal-name-selector / normal-index-selector
+normal-name-selector = %x27 *normal-single-quoted %x27 ; 'string'
+normal-single-quoted = normal-unescaped /
+                       ESC normal-escapable
+normal-unescaped     = %x20-26 /                 ; omit control codes
+                       %x28-5B /                 ; omit '
+                       %x5D-10FFFF               ; omit \
+normal-escapable     = ( %x62 / %x66 / %x6E / %x72 / %x74 /
+                           ; \b \f \n \r \t
+                           ; b /         ;  BS backspace U+0008
+                           ; t /         ;  HT horizontal tab U+0009
+                           ; n /         ;  LF line feed U+000A
+                           ; f /         ;  FF form feed U+000C
+                           ; r /         ;  CR carriage return U+000D
+                         "'" /           ;  ' apostrophe U+0027
+                         "\" / ; \ backslash (reverse solidus) U+005C
+                         (%x75 normal-hexchar)
+                                        ; certain values u00xx U+00XX
+                        )
+normal-hexchar       = "0" "0"
+                       (
+                          ("0" %x30-37) / ; "00"-"07"
+                          ("0" %x62) / ; "0b" ; omit U+0008-U+000A
+                          ("0" %x65-66) /
+                            ; "0e"-"0f" ; omit U+000C-U+000D
+                          ("1" normal-HEXDIG)
+                        )
+normal-HEXDIG        = DIGIT / %x61-66   ; "0"-"9", "a"-"f"
+normal-index-selector = "0" / (DIGIT1 *DIGIT)
+                          ; non-negative decimal integer
 ~~~~
 
 Since there can only be one Normalized Path identifying a given node, the syntax
