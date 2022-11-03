@@ -482,8 +482,9 @@ stands for a nodelist that contains the root node of the argument,
 followed by a possibly empty sequence of *segments*.
 
 ~~~~ abnf
-json-path = root-identifier *(S (child-segment               /
-                                 descendant-segment))
+json-path = root-identifier segments
+segments  =  *(S (child-segment /
+                  descendant-segment))
 ~~~~
 
 The syntax and semantics of each segment are defined below.
@@ -1008,32 +1009,24 @@ During the iteration process the node of each array element or object member bei
 A boolean expression, usually involving the current node, is evaluated and
 the current node is selected if and only if the expression yields true.
 
-~~~~ abnf
-boolean-expr     = logical-or-expr
-logical-or-expr  = logical-and-expr *(S "||" S logical-and-expr)
-                                                      ; disjunction
-                                                      ; binds less tightly than conjunction
-logical-and-expr = basic-expr *(S "&&" S basic-expr)  ; conjunction
-                                                      ; binds more tightly than disjunction
-
-basic-expr        = exist-expr /
-                    paren-expr /
-                    relation-expr
-exist-expr        = [logical-not-op S] singular-path  ; path existence or non-existence
-~~~~
-
 Paths in filter expressions are Singular Paths, each of which selects at most one node.
 
 The current node is accessible via the current node identifier `@`.
 
 ~~~~ abnf
-singular-path           = rel-singular-path / abs-singular-path
-rel-singular-path       = current-node-identifier singular-path-segments
+boolean-expr           = logical-or-expr
+logical-or-expr        = logical-and-expr *(S "||" S logical-and-expr)
+                                                            ; disjunction
+                                                            ; binds less tightly than conjunction
+logical-and-expr       = basic-expr *(S "&&" S basic-expr)  ; conjunction
+                                                            ; binds more tightly than disjunction
+
+basic-expr              = exist-expr /
+                          paren-expr /
+                          relation-expr
+exist-expr              = [logical-not-op S] (rel-path / json-path)  ; path existence or non-existence
+rel-path                = current-node-identifier segments
 current-node-identifier = "@"
-abs-singular-path       = root-identifier singular-path-segments
-singular-path-segments  = *(S (name-segment / index-segment))
-name-segment            = "[" name-selector "]" / dot-member-name-shorthand
-index-segment           = "[" index-selector "]"
 ~~~~
 
 Parentheses MAY be used within `boolean-expr` for grouping.
@@ -1047,7 +1040,7 @@ relation-expr = comp-expr /                           ; comparison test
                 regex-expr                            ; regular expression test
 ~~~~
 
-Comparisons are restricted to Singular Path values and primitive values (that is, numbers, strings, `true`, `false`,
+Comparisons are restricted to Singular Path values, each of which selects at most one node, and primitive values (that is, numbers, strings, `true`, `false`,
 and `null`).
 
 ~~~~ abnf
@@ -1058,6 +1051,13 @@ comparable   = number / string-literal /              ; primitive ...
 comp-op      = "==" / "!=" /                          ; comparison ...
                "<"  / ">"  /                          ; operators
                "<=" / ">="
+
+singular-path           = rel-singular-path / abs-singular-path
+rel-singular-path       = current-node-identifier singular-path-segments
+abs-singular-path       = root-identifier singular-path-segments
+singular-path-segments  = *(S (name-segment / index-segment))
+name-segment            = "[" name-selector "]" / dot-member-name-shorthand
+index-segment           = "[" index-selector "]"
 ~~~~
 
 Alphabetic characters in ABNF are case-insensitive, so "e" can be either "e" or "E".
@@ -1108,8 +1108,12 @@ Children of an array appear in array order in the resultant nodelist.
 ##### Existence Tests
 {: unnumbered}
 
-A singular path by itself in a Boolean context is an existence test which yields true if the path selects a node and yields false if the path does not select a node.
-This existence test — as an exception to the general rule — also works with nodes with structured values.
+A path by itself in a Boolean context is an existence test which yields true if the path selects at least one node and yields false if the path does not select a node.
+
+Existence tests are different to comparisons in that:
+
+* they work with arbitrary relative or absolute paths (not just Singular Paths).
+* they work with paths that select structured values.
 
 To test the value of a node selected by a path, an explicit comparison is necessary.
 For example, to test whether the node selected by the path `@.foo` has the value `null`, use `@.foo == null` (see {{null-semantics}})
@@ -1218,8 +1222,9 @@ JSON:
 JSON:
 
     {
-      "a": [3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}],
-      "o": {"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}}
+      "a": [3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}, {"b": {}}],
+      "o": {"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}},
+      "e": "f"
     }
 
 Queries:
@@ -1227,7 +1232,9 @@ Queries:
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
 | `$.a[?@>3.5]` | `5` <br> `4` <br> `6` | `$['a'][1]` <br> `$['a'][4]` <br> `$['a'][5]` | Array value comparison |
-| `$.a[?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` | `$['a'][6]` <br> `$['a'][7]` | Array value existence |
+| `$.a[?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": {}}` | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][8]` | Array value existence |
+| `$[?@.*]` | `[3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}, {"b": {}}]` <br> `{"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}}` | `$['a']` <br> `$['o']` | Existence of non-singular paths |
+| `$[?@[?@.b]]` | `[3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}, {"b": {}}]` | `$['a']` | Nested filters |
 | `$.a[?@.b, ?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": "k"}` <br> `{"b": "j"}` | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][7]` <br> `$['a'][6]` | Non-deterministic ordering |
 | `$.a[?@<2 || @.b == "k"]` | `1` <br> `{"b": "k"}` | `$['a'][2]` <br> `$['a'][7]` | Array value logical OR |
 | `$.a[?@.b =~ "[jk]"]` | `{"b": "j"}` <br> `{"b": "k"}` | `$['a'][6]` <br> `$['a'][7]` | Array value regular expression |
