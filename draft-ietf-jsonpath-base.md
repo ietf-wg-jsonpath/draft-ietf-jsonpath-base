@@ -1484,8 +1484,8 @@ For example, the JSONPath expression `$.book[?(@.price<10)]` could select two va
 
 Normalized Paths are used in this document to clarify the contents of nodelists in examples.
 
-Since output nodelists may be input to subsequent processing (e.g., removal of duplicate nodes), it is essential to provide a standard
-string representation of their nodes.
+Since output nodelists may be input to subsequent processing (e.g., removal of duplicate nodes), a standard
+string representation of their nodes is useful.
 
 For a given JSON value, there is a one-to-one correspondence between the value's
 node and its descendant nodes and the Normalized Paths that identify these nodes.
