@@ -1474,13 +1474,23 @@ Queries:
 
 ## Normalized Paths
 
-A Normalized Path is a JSONPath with restricted syntax that identifies a node by providing a query that results in exactly that node. For example,
-the JSONPath expression `$.book[?(@.price<10)]` could select two values with Normalized Paths
-`$['book'][3]` and `$['book'][5]`. For a given JSON value, there is a one to one correspondence between the value's
+A Normalized Path is a JSONPath with restricted syntax that identifies a node by providing a query that results in exactly that node,
+for example, `$['book'][3]`
+
+A Normalized Path provide a concrete string representation of a node in a nodelist.
+Consequently, a JSONPath implementation may output Normalized Paths instead of, or in addition to, the values identified by these paths.
+For example, the JSONPath expression `$.book[?(@.price<10)]` could select two values with Normalized Paths
+`$['book'][3]` and `$['book'][5]`.
+
+Normalized Paths are used in this document to clarify the contents of nodelists in examples.
+
+Since output nodelists may be input to subsequent processing (e.g., removal of duplicate nodes), it is essential to provide a standard
+string representation of their nodes.
+
+For a given JSON value, there is a one to one correspondence between the value's
 nodes and the Normalized Paths that identify these nodes.
 Note that there is precisely one Normalized Path that identifies each node.
-
-A JSONPath implementation may output Normalized Paths instead of, or in addition to, the values identified by these paths.
+Consequently, Normalized Paths may be used to provide more predictable behavior and simplify testing.
 
 Since bracket notation is more general than dot notation, it is used to construct Normalized Paths.
 Single quotes are used to delimit string member names. This reduces the number of characters that
