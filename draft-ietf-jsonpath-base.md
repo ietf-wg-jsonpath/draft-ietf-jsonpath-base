@@ -599,7 +599,7 @@ Selectors appear only inside [child segments](#child-segment) and
 
 A selector produces a nodelist consisting of zero or more children of the input value.
 
-There are various kinds of selectors which produce children of objects, children or arrays,
+There are various kinds of selectors which produce children of objects, children of arrays,
 or children of either objects or arrays.
 
 ~~~~ abnf
@@ -663,8 +663,6 @@ high-surrogate = "D" ("8"/"9"/"A"/"B") 2HEXDIG
 low-surrogate = "D" ("C"/"D"/"E"/"F") 2HEXDIG
 
 HEXDIG = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
-
-; Task from 2021-06-15 interim: update ABNF later
 ~~~~
 
 Note: `double-quoted` strings follow the JSON string syntax ({{Section 7 of RFC8259}});
@@ -695,7 +693,7 @@ in the table below:
 Applying the `name-selector` to an object node
 selects a member value whose name equals the member name M,
 or selects nothing if there is no such member value.
-Nothing is selected from a value that is not a object.
+Nothing is selected from a value that is not an object.
 
 Note that processing the name selector requires comparing the member name string M
 with member name strings in the JSON to which the selector is being applied.
@@ -800,7 +798,7 @@ Notes:
 {: unnumbered}
 
 The `index-selector` applied to an array selects an array element using a zero-based index.
-For example, the selector `0` selects the first and the selector `4` the fifth element of a sufficiently long array.
+For example, the selector `0` selects the first and the selector `4` selects the fifth element of a sufficiently long array.
 Nothing is selected, and it is not an error, if the index lies outside the range of the array. Nothing is selected from a value that is not an array.
 
 A negative `index-selector` counts from the array end.
@@ -835,7 +833,7 @@ The following examples show the index selector in use by a child segment.
 
 The array slice selector has the form `<start>:<end>:<step>`.
 It matches elements from arrays starting at index `<start>`, ending at — but
-not including — `<end>`, while incrementing by `step`.
+not including — `<end>`, while incrementing by `step` with a default of `1`.
 
 ~~~~ abnf
 slice-selector =  [start S] ":" S [end S] [":" [S step ]]
