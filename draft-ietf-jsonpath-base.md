@@ -1108,9 +1108,9 @@ Children of an array appear in array order in the resultant nodelist.
 ##### Existence Tests
 {: unnumbered}
 
-A path by itself in a Boolean context is an existence test which yields true if the path selects at least one node and yields false if the path does not select a node.
+A path by itself in a Boolean context is an existence test which yields true if the path selects at least one node and yields false if the path does not select any nodes.
 
-Existence tests are different to comparisons in that:
+Existence tests differ from comparisons in that:
 
 * they work with arbitrary relative or absolute paths (not just Singular Paths).
 * they work with paths that select structured values.
