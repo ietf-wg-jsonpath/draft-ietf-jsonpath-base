@@ -514,7 +514,7 @@ Normalized Paths referencing the nodes, or both — or some other
 representation as desired by the implementation.
 Note that an empty nodelist is a valid query result.
 
-A segment operates on each of the nodes in its input nodelist in turn
+A segment operates on each of the nodes in its input nodelist in turn,
 and the resultant nodelists are concatenated to produce
 the result of the segment. A node may be selected more than once and
 appears that number of times in the nodelist. Duplicate nodes are not removed.
