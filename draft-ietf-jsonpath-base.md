@@ -1004,7 +1004,7 @@ The filter selector has the form `?<expr>`. It iterates over structured values, 
 filter-selector = "?" S boolean-expr
 ~~~~
 
-During the iteration process the node of each array element or object member visited is known as the current node.
+During the iteration process the node of each array element or object member being visited is known as the current node.
 A boolean expression, usually involving the current node, is evaluated and
 the current node is selected if and only if the expression yields true.
 
