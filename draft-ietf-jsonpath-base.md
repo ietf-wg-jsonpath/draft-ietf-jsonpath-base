@@ -1515,13 +1515,7 @@ for which no standard JSON escape such as `\n` is available.
 | `$.a.b[1:2]` | `$['a']['b'][1]` | Nested structure |
 | `$["\u000B"]`| `$['\u000b']` | Unicode escape |
 | `$["\u0061"]`| `$['a']` | Unicode character |
-| `$["\u00b1"]` | <u format='char-num'>$['±']</u> | Unicode character |
 {: title="Normalized Path examples"}
-
-`$["\u00b1"]` is normalized into {{{$['±']}}} (noise in the
-table and lack of typewriter font is due to RFCXMLv3 limitations).
-<!-- Note that this cannot be put into typewriter font or into the -->
-<!-- above table due to an RFCXMLv3 limitation. -->
 
 # IANA Considerations {#IANA}
 
