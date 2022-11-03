@@ -1490,7 +1490,7 @@ string representation of their nodes.
 For a given JSON value, there is a one-to-one correspondence between the value's
 node and its descendant nodes and the Normalized Paths that identify these nodes.
 Note that there is precisely one Normalized Path that identifies each node.
-Consequently, Normalized Paths may be used to provide more predictable behavior and simplify testing.
+Consequently, Normalized Paths may be used to provide predictable behavior and simplify testing.
 
 Since bracket notation is more general than dot notation, it is used to construct Normalized Paths.
 Single quotes are used to delimit string member names. This reduces the number of characters that
