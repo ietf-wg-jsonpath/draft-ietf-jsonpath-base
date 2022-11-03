@@ -1482,7 +1482,7 @@ Consequently, a JSONPath implementation may output Normalized Paths instead of, 
 For example, the JSONPath expression `$.book[?(@.price<10)]` could select two values with Normalized Paths
 `$['book'][3]` and `$['book'][5]`.
 
-Normalized Paths are used in this document to clarify the contents of nodelists in examples.
+Normalized Paths are used in this document to show the resulting nodelists in examples.
 
 Since output nodelists may be input to subsequent processing (e.g., removal of duplicate nodes), a standard
 string representation of their nodes is useful.
