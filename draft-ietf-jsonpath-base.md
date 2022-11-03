@@ -301,7 +301,7 @@ JSONPath expressions are applied to a JSON value, the *argument*.
 A JSONPath expression consists of an identifier followed by a series
 of zero or more segments each of which contains one or more selectors.
 
-### Identifiers
+### Identifiers {#ids}
 
 The _root node identifier_ `$` refers to the *root node* of the argument,
 i.e., to the argument as a whole.
