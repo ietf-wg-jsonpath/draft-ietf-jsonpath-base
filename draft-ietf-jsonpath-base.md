@@ -1474,33 +1474,28 @@ Queries:
 
 ## Normalized Paths
 
-A Normalized Path is a JSONPath with restricted syntax that identifies a node by providing a query that results in exactly that node,
-for example, `$['book'][3]`.
+A Normalized Path is a conventional representation of the identity of a node in a value.
+Specifically, a Normalized Path is a JSONPath query with restricted syntax (defined below),
+e.g., `$['book'][3]`, which results in a nodelist consisting of just the node identified
+by the Normalized Path.
 
-A Normalized Path provides a concrete string representation of a node in a nodelist.
-Consequently, a JSONPath implementation may output Normalized Paths instead of, or in addition to, the values identified by these paths.
-For example, the JSONPath expression `$.book[?(@.price<10)]` could select two values with Normalized Paths
-`$['book'][3]` and `$['book'][5]`.
+Normalized Paths provide a predictable format that simplifies testing and post-processing
+of nodelists, e.g., to remove duplicate nodes, when a JSONPath implementation outputs
+Normalized Paths instead of, or in addition to, the values identified by these paths.
+For example, the JSONPath expression `$.book[?(@.price<10)]` could select two values with
+Normalized Paths `$['book'][3]` and `$['book'][5]`. Normalized Paths are used in this document
+to show the resulting nodelists in examples.
 
-Normalized Paths are used in this document to show the resulting nodelists in examples.
+Normalized Paths use the canonical bracket notation, rather than dot notation.
 
-Since output nodelists may be input to subsequent processing (e.g., removal of duplicate nodes), a standard
-string representation of their nodes is useful.
-
-For a given JSON value, there is a one-to-one correspondence between the value's
-node and its descendant nodes and the Normalized Paths that identify these nodes.
-Note that there is precisely one Normalized Path that identifies each node.
-Consequently, Normalized Paths may be used to provide predictable behavior and simplify testing.
-
-Since bracket notation is more general than dot notation, it is used to construct Normalized Paths.
 Single quotes are used to delimit string member names. This reduces the number of characters that
 need escaping when Normalized Paths appear as strings (which are delimited with double quotes) in JSON texts.
 
 Certain characters are escaped, in one and only one way; all other characters are unescaped.
 
-Normalized Paths are Singular Paths. Not all Singular Paths are Normalized Paths: `$[-3]`, for example, is a Singular
-Path, but not a Normalized Path.
-The Normalized Path equivalent to `$[-3]` would have an index equal to the array length minus `3`.
+Normalized Paths are Singular Paths, but not all Singular Paths are Normalized Paths.
+For example, `$[-3]` is a Singular Path, but is not a Normalized Path.
+The Normalized Path equivalent of `$[-3]` would have an index equal to the array length minus `3`.
 (The array length must be at least `3` if `$[-3]` is to identify a node.)
 
 ~~~~ abnf
