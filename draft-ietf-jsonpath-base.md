@@ -1485,10 +1485,7 @@ A canonical representation of a nodelist is as a JSON arrays of strings, where t
 Normalized Paths.
 
 Normalized Paths provide a predictable format that simplifies testing and post-processing
-of nodelists, e.g., to remove duplicate nodes. A JSONPath implementation may output
-Normalized Paths instead of, or in addition to, the values identified by these paths.
-For example, the JSONPath expression `$.book[?(@.price<10)]` could select two values and
-an implementation could output the Normalized Paths `$['book'][3]` and `$['book'][5]`.
+of nodelists, e.g., to remove duplicate nodes.
 Normalized Paths are used in this document as result paths in examples.
 
 Normalized Paths use the canonical bracket notation, rather than dot notation.
