@@ -1480,6 +1480,9 @@ e.g., `$['book'][3]`, which when applied to the value results in a nodelist cons
 of just the node identified by the Normalized Path.
 Note that a Normalized Path represents the identity of a node _in a specific value_.
 
+Nodelists are canonically represented as JSON arrays of strings, where the strings are
+Normalized Paths.
+
 Normalized Paths provide a predictable format that simplifies testing and post-processing
 of nodelists, e.g., to remove duplicate nodes. A JSONPath implementation may output
 Normalized Paths instead of, or in addition to, the values identified by these paths.
