@@ -1474,21 +1474,21 @@ Queries:
 
 ## Normalized Paths
 
-A Normalized Path is a conventional representation of the identity of a node in a value.
+A Normalized Path is a canonical representation of the identity of a node in a value.
 Specifically, a Normalized Path is a JSONPath query with restricted syntax (defined below),
 e.g., `$['book'][3]`, which when applied to the value results in a nodelist consisting
 of just the node identified by the Normalized Path.
 Note that a Normalized Path represents the identity of a node _in a specific value_.
-There is precisely one Normalized Path identifying a particular node in a value.
+There is precisely one Normalized Path identifying any particular node in a value.
 
-Nodelists are canonically represented as JSON arrays of strings, where the strings are
+A canonical representation of a nodelist is as a JSON arrays of strings, where the strings are
 Normalized Paths.
 
 Normalized Paths provide a predictable format that simplifies testing and post-processing
 of nodelists, e.g., to remove duplicate nodes. A JSONPath implementation may output
 Normalized Paths instead of, or in addition to, the values identified by these paths.
 For example, the JSONPath expression `$.book[?(@.price<10)]` could select two values and
-output the Normalized Paths `$['book'][3]` and `$['book'][5]`.
+an implementation could output the Normalized Paths `$['book'][3]` and `$['book'][5]`.
 Normalized Paths are used in this document as result paths in examples.
 
 Normalized Paths use the canonical bracket notation, rather than dot notation.
@@ -1542,7 +1542,7 @@ Since there can only be one Normalized Path identifying a given node, the syntax
 stipulates which characters are escaped and which are not.
 So the definition of `normal-hexchar` is designed for hex escaping of characters
 which are not straightforwardly-printable, for example U+000B LINE TABULATION, but
-for which no standard JSON escape such as `\n` is available.
+for which no standard JSON escape, such as `\n`, is available.
 
 ### Examples
 {: unnumbered}
