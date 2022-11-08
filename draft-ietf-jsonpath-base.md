@@ -1487,8 +1487,8 @@ Normalized Paths provide a predictable format that simplifies testing and post-p
 of nodelists, e.g., to remove duplicate nodes. A JSONPath implementation may output
 Normalized Paths instead of, or in addition to, the values identified by these paths.
 For example, the JSONPath expression `$.book[?(@.price<10)]` could select two values and
-produce the Normalized Paths `$['book'][3]` and `$['book'][5]` as output.
-Normalized Paths are used in this document to show the resulting nodelists in examples.
+output the Normalized Paths `$['book'][3]` and `$['book'][5]`.
+Normalized Paths are used in this document as result paths in examples.
 
 Normalized Paths use the canonical bracket notation, rather than dot notation.
 
