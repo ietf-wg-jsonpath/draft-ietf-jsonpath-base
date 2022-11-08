@@ -1479,6 +1479,7 @@ Specifically, a Normalized Path is a JSONPath query with restricted syntax (defi
 e.g., `$['book'][3]`, which when applied to the value results in a nodelist consisting
 of just the node identified by the Normalized Path.
 Note that a Normalized Path represents the identity of a node _in a specific value_.
+There is precisely one Normalized Path identifying a particular node in a value.
 
 Nodelists are canonically represented as JSON arrays of strings, where the strings are
 Normalized Paths.
@@ -1497,9 +1498,9 @@ need escaping when Normalized Paths appear in double quote delimited strings, e.
 
 Certain characters are escaped, in one and only one way; all other characters are unescaped.
 
-Normalized Paths are Singular Paths, but not all Singular Paths are Normalized Paths.
+Note: Normalized Paths are Singular Paths, but not all Singular Paths are Normalized Paths.
 For example, `$[-3]` is a Singular Path, but is not a Normalized Path.
-The Normalized Path equivalent of `$[-3]` would have an index equal to the array length minus `3`.
+The Normalized Path equivalent to `$[-3]` would have an index equal to the array length minus `3`.
 (The array length must be at least `3` if `$[-3]` is to identify a node.)
 
 ~~~~ abnf
