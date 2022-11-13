@@ -179,7 +179,7 @@ generic meaning, such as they would in a general programming context.
 Additional terms used in this specification are defined below.
 
 Value:
-: As per {{-json}}, a structure complying to the generic data model of JSON, i.e.,
+: As per {{-json}}, a structure conforming to the generic data model of JSON, i.e.,
   composed of components such as structured values, namely JSON objects and arrays, and
   primitive data, namely numbers and text strings as well as the special
   values null, true, and false.
@@ -214,6 +214,8 @@ Argument:
 
 Node:
 : The pair of a value along with its location within the argument.
+  The type of the value held by a node may also be referred to as the
+  type of the node.
 
 Root Node:
 : The unique node whose value is the entire argument.
@@ -237,9 +239,8 @@ Segment:
   or descendants (`..[]`) of an input value.
 
 Nodelist:
-: A list of nodes.  <!-- ordered list?  Maybe TBD by issues #27 and #60 -->
-  The output of applying a query to an argument is manifested as a list of nodes.
-  While this list can be represented in JSON, e.g. as an array, this specification
+: A list of nodes.
+  While a nodelist can be represented in JSON, e.g. as an array, this specification
   does not require or assume any particular representation.
 
 Normalized Path:
@@ -253,7 +254,8 @@ Unicode Scalar Value:
   E000 to 10FFFF. JSON values of type string are sequences of Unicode scalar values.
 
 Singular Path:
-: A JSONPath expression built from segments which each produce at most one node.
+: A JSONPath expression built from segments which each, regardless of the input value,
+  produces at most one node.
 
 Selector:
 : A single item within a segment that takes the input value and produces a nodelist
@@ -261,11 +263,6 @@ Selector:
 
 For the purposes of this specification, a value as defined by
 {{-json}} is also viewed as a tree of nodes.
-Each node, in turn, holds a value.
-Further nodes within each value are the elements of arrays and the
-member values of objects and are themselves values.
-(The type of the value held by a node
-may also be referred to as the type of the node.)
 
 A query is applied to an argument, and the output is a nodelist.
 
