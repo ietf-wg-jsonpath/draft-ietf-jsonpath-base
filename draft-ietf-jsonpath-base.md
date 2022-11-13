@@ -254,15 +254,12 @@ Unicode Scalar Value:
   E000 to 10FFFF. JSON values of type string are sequences of Unicode scalar values.
 
 Singular Path:
-: A JSONPath expression built from segments which each, regardless of the input value,
+: A JSONPath expression built from segments each of which, regardless of the input value,
   produces at most one node.
 
 Selector:
 : A single item within a segment that takes the input value and produces a nodelist
   consisting of child nodes of the input value.
-
-For the purposes of this specification, a value as defined by
-{{-json}} is also viewed as a tree of nodes.
 
 A query is applied to an argument, and the output is a nodelist.
 
