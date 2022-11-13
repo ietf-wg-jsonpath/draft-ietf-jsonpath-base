@@ -1474,22 +1474,29 @@ Queries:
 
 ## Normalized Paths
 
-A Normalized Path is a JSONPath with restricted syntax that identifies a node by providing a query that results in exactly that node. For example,
-the JSONPath expression `$.book[?(@.price<10)]` could select two values with Normalized Paths
-`$['book'][3]` and `$['book'][5]`. For a given JSON value, there is a one to one correspondence between the value's
-nodes and the Normalized Paths that identify these nodes.
-Note that there is precisely one Normalized Path that identifies each node.
+A Normalized Path is a canonical representation of the identity of a node in a value.
+Specifically, a Normalized Path is a JSONPath query with restricted syntax (defined below),
+e.g., `$['book'][3]`, which when applied to the value results in a nodelist consisting
+of just the node identified by the Normalized Path.
+Note that a Normalized Path represents the identity of a node _in a specific value_.
+There is precisely one Normalized Path identifying any particular node in a value.
 
-A JSONPath implementation may output Normalized Paths instead of, or in addition to, the values identified by these paths.
+A canonical representation of a nodelist is as a JSON arrays of strings, where the strings are
+Normalized Paths.
 
-Since bracket notation is more general than dot notation, it is used to construct Normalized Paths.
+Normalized Paths provide a predictable format that simplifies testing and post-processing
+of nodelists, e.g., to remove duplicate nodes.
+Normalized Paths are used in this document as result paths in examples.
+
+Normalized Paths use the canonical bracket notation, rather than dot notation.
+
 Single quotes are used to delimit string member names. This reduces the number of characters that
-need escaping when Normalized Paths appear as strings (which are delimited with double quotes) in JSON texts.
+need escaping when Normalized Paths appear in double quote delimited strings, e.g., in JSON texts.
 
 Certain characters are escaped, in one and only one way; all other characters are unescaped.
 
-Normalized Paths are Singular Paths. Not all Singular Paths are Normalized Paths: `$[-3]`, for example, is a Singular
-Path, but not a Normalized Path.
+Note: Normalized Paths are Singular Paths, but not all Singular Paths are Normalized Paths.
+For example, `$[-3]` is a Singular Path, but is not a Normalized Path.
 The Normalized Path equivalent to `$[-3]` would have an index equal to the array length minus `3`.
 (The array length must be at least `3` if `$[-3]` is to identify a node.)
 
@@ -1532,7 +1539,7 @@ Since there can only be one Normalized Path identifying a given node, the syntax
 stipulates which characters are escaped and which are not.
 So the definition of `normal-hexchar` is designed for hex escaping of characters
 which are not straightforwardly-printable, for example U+000B LINE TABULATION, but
-for which no standard JSON escape such as `\n` is available.
+for which no standard JSON escape, such as `\n`, is available.
 
 ### Examples
 {: unnumbered}
