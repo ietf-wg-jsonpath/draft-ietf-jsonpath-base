@@ -223,9 +223,10 @@ Root Node:
 
 Children (of a node):
 : If the node is an array, the nodes of its elements.
-  If the node is an object, the nodes of its member values (but not its
-  member names).
+  If the node is an object, the nodes of its member values.
   If the node is neither an array nor an object, it has no children.
+  Note that the member names of an object are not values and do not
+  have nodes.
 
 Descendants (of a node):
 : The children of the node, together with the children of its children, and so forth
