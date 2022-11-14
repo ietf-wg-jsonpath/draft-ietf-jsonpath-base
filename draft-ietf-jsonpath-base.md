@@ -188,12 +188,11 @@ Member:
 : A name/value pair in an object.  (A member is not itself a value.)
 
 Name:
-: The name in a name/value pair constituting a member.   (A name is not itself a value.)
-  (Also known as <!-- should we make it clear that names are (Unicode) strings? -->
-  "key", "tag", or "label".)
+: The name in a name/value pair constituting a member.   (A name is not itself a value.) <!-- should we make it clear that names are (Unicode) strings? -->
   This is also used in {{-json}}, but that specification does not
   formally define it.
   It is included here for completeness.
+  (Also known as "key", "tag", or "label".)
 
 Element:
 : A value in a JSON array.
