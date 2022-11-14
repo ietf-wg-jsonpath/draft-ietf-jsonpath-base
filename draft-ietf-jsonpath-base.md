@@ -208,14 +208,14 @@ Index:
   member values in an object using their member name.
 
 Query:
-: Short name for JSONPath expression.
+: Short name for a JSONPath expression.
 
 Argument:
 : Short name for the value a JSONPath expression is applied to.
 
 Node:
 : The pair of a value along with its location within the argument.
-  The type of the value held by a node may also be referred to as the
+  The type a node's value may also be referred to as the
   type of the node.
 
 Root Node:
@@ -261,7 +261,7 @@ Singular Path:
 
 Selector:
 : A single item within a segment that takes the input value and produces a nodelist
-  consisting of descendants of the input value.
+  consisting of child nodes of the input value.
 
 ## History
 
