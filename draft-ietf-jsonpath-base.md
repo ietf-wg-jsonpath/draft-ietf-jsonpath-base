@@ -169,8 +169,8 @@ in ABNF as `%x2318`.
 
 The terminology of {{-json}} applies except where clarified below.
 The terms "Primitive" and "Structured" are used to group
-the types as in {{Section 1 of -json}}; JSON Objects and Arrays are
-structured, all other types are primitive.
+different kinds of values as in {{Section 1 of -json}}; JSON Objects and Arrays are
+structured, all other values are primitive.
 Definitions for "Object", "Array", "Number", and "String" remain
 unchanged.
 Importantly "object" and "array" in particular do not take on a
@@ -183,9 +183,6 @@ Value:
   composed of components such as structured values, namely JSON objects and arrays, and
   primitive data, namely numbers and text strings as well as the special
   values null, true, and false.
-
-Type:
-: As per {{-json}}, one of the six JSON types (strings, numbers, booleans, null, objects, arrays).
 
 Member:
 : A name/value pair in an object.  (A member is not itself a value.)
@@ -215,8 +212,6 @@ Argument:
 
 Node:
 : The pair of a value along with its location within the argument.
-  The type a node's value may also be referred to as the
-  type of the node.
 
 Root Node:
 : The unique node whose value is the entire argument.
@@ -253,7 +248,7 @@ Normalized Path:
 Unicode Scalar Value:
 : Any Unicode {{UNICODE}} code point except high-surrogate and low-surrogate code points.
   In other words, integers in either of the inclusive base 16 ranges 0 to D7FF and
-  E000 to 10FFFF. JSON values of type string are sequences of Unicode scalar values.
+  E000 to 10FFFF. JSON string values are sequences of Unicode scalar values.
 
 Singular Path:
 : A JSONPath expression built from segments each of which, regardless of the input value,
@@ -546,18 +541,18 @@ The query consists of `$` followed by three segments: `.a`, `[*]`, and `.b`.
 
 Firstly, `$` produces a nodelist consisting of just the argument.
 
-Next, `.a` selects from any input node of type object and selects the
+Next, `.a` selects from any object input node and selects the
 node of any
 member value of the input
 node corresponding to the member name `"a"`.
 The result is again a list of one node: `[{"b":0},{"b":1},{"c":2}]`.
 
-Next, `[*]` selects from an input node of type array all its elements
-(if the input node were of type object, it would select all its member
+Next, `[*]` selects from any array input node all its elements
+(for an object input node, it would select all its member
 values, but not the member names).
 The result is a list of three nodes: `{"b":0}`, `{"b":1}`, and `{"c":2}`.
 
-Finally, `.b` selects from any input node of type object with a member name
+Finally, `.b` selects from any object input node with a member name
 `b` and selects the node of the member value of the input node corresponding to that name.
 The result is a list containing `0`, `1`.
 This is the concatenation of three lists, two of length one containing
@@ -569,7 +564,7 @@ then the whole query produces an empty nodelist.
 If a query may produce a nodelist with more than one possible ordering, a particular implementation
 may also produce distinct orderings in successive runs of the query.
 
-In what follows, the semantics of each segment are defined for each type
+In what follows, the semantics of each segment are defined for each kind
 of input node.
 
 ## Root Identifier
@@ -1114,7 +1109,7 @@ The following table lists filter expression operators in order of precedence fro
 {: unnumbered}
 
 The filter selector works with arrays and objects exclusively. Its result is a list of *zero*, *one*, *multiple* or *all* of their array elements or member values, respectively.
-Applied to other value types, it will select nothing.
+Applied to primitive values, it will select nothing.
 
 The order in which the children of an object appear in the resultant nodelist is not stipulated,
 since JSON objects are unordered.
@@ -1151,7 +1146,7 @@ replaced by the value of its node and then:
 
 * a comparison using the operator `==` yields true if and only if the comparison
 is between:
-    * values of the same primitive type (numbers, strings, booleans, and `null`) which are equal,
+    * equal primitive values,
     * equal arrays, that is arrays of the same length where each element of the first array is equal to the corresponding
       element of the second array, or
     * equal objects with no duplicate names, that is where:
@@ -1159,7 +1154,7 @@ is between:
         * for each of those names, the values associated with the name by the objects are equal.
 
 * a comparison using the operator `<` yields true if and only if
-the comparison is between values of the same type which are both numbers or both strings and which satisfy the comparison:
+the comparison is between values which are both numbers or both strings and which satisfy the comparison:
 
     * numbers expected to interoperate as per {{Section 2.2 of -i-json (I-JSON)}} MUST compare using the normal mathematical ordering;
       numbers not expected to interoperate as per I-JSON MAY compare using an implementation specific ordering
