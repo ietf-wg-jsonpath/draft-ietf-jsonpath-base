@@ -290,8 +290,8 @@ stable JSON query language.
 
 ## Overview of JSONPath Expressions {#overview}
 
-A JSONPath expression is applied to a JSON value, the *argument*, and
-the output is a nodelist.
+A JSONPath expression is applied to a JSON value, the *argument*.
+The output is a nodelist.
 
 A JSONPath expression consists of an identifier followed by a series
 of zero or more segments each of which contains one or more selectors.
