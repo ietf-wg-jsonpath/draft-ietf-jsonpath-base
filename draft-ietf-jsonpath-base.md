@@ -179,7 +179,7 @@ generic meaning, such as they would in a general programming context.
 Additional terms used in this specification are defined below.
 
 Value:
-: As per {{-json}}, a structure complying to the generic data model of JSON, i.e.,
+: As per {{-json}}, a structure conforming to the generic data model of JSON, i.e.,
   composed of components such as structured values, namely JSON objects and arrays, and
   primitive data, namely numbers and text strings as well as the special
   values null, true, and false.
@@ -188,10 +188,11 @@ Type:
 : As per {{-json}}, one of the six JSON types (strings, numbers, booleans, null, objects, arrays).
 
 Member:
-: A name/value pair in an object.  (Not itself a value.)
+: A name/value pair in an object.  (A member is not itself a value.)
 
 Name:
-: The name in a name/value pair constituting a member.  (Also known as <!-- should we make it clear that names are (Unicode) strings? -->
+: The name in a name/value pair constituting a member.   (A name is not itself a value.)
+  (Also known as <!-- should we make it clear that names are (Unicode) strings? -->
   "key", "tag", or "label".)
   This is also used in {{-json}}, but that specification does not
   formally define it.
@@ -207,21 +208,24 @@ Index:
   member values in an object using their member name.
 
 Query:
-: Short name for JSONPath expression.
+: Short name for a JSONPath expression.
 
 Argument:
 : Short name for the value a JSONPath expression is applied to.
 
 Node:
 : The pair of a value along with its location within the argument.
+  The type a node's value may also be referred to as the
+  type of the node.
 
 Root Node:
 : The unique node whose value is the entire argument.
 
 Children (of a node):
-: If the node is an array, each of its elements,
-  or if the node is an object, each of its member values (but not its
-  member names). If the node is neither an array nor an object, it has no children.
+: If the node is an array, the nodes of its elements.
+  If the node is an object, the nodes of its member values (but not its
+  member names).
+  If the node is neither an array nor an object, it has no children.
 
 Descendants (of a node):
 : The children of the node, together with the children of its children, and so forth
@@ -237,13 +241,12 @@ Segment:
   or descendants (`..[]`) of an input value.
 
 Nodelist:
-: A list of nodes.  <!-- ordered list?  Maybe TBD by issues #27 and #60 -->
-  The output of applying a query to an argument is manifested as a list of nodes.
-  While this list can be represented in JSON, e.g. as an array, this specification
+: A list of nodes.
+  While a nodelist can be represented in JSON, e.g. as an array, this specification
   does not require or assume any particular representation.
 
 Normalized Path:
-: A simple form of JSONPath expression that identifies a node by
+: A simple form of JSONPath expression that identifies a node in a value by
   providing a query that results in exactly that node.  Similar
   to, but syntactically different from, a JSON Pointer {{-pointer}}.
 
@@ -253,21 +256,12 @@ Unicode Scalar Value:
   E000 to 10FFFF. JSON values of type string are sequences of Unicode scalar values.
 
 Singular Path:
-: A JSONPath expression built from segments which each produce at most one node.
+: A JSONPath expression built from segments each of which, regardless of the input value,
+  produces at most one node.
 
 Selector:
 : A single item within a segment that takes the input value and produces a nodelist
   consisting of child nodes of the input value.
-
-For the purposes of this specification, a value as defined by
-{{-json}} is also viewed as a tree of nodes.
-Each node, in turn, holds a value.
-Further nodes within each value are the elements of arrays and the
-member values of objects and are themselves values.
-(The type of the value held by a node
-may also be referred to as the type of the node.)
-
-A query is applied to an argument, and the output is a nodelist.
 
 ## History
 
@@ -296,7 +290,8 @@ stable JSON query language.
 
 ## Overview of JSONPath Expressions {#overview}
 
-JSONPath expressions are applied to a JSON value, the *argument*.
+A JSONPath expression is applied to a JSON value, the *argument*, and
+the output is a nodelist.
 
 A JSONPath expression consists of an identifier followed by a series
 of zero or more segments each of which contains one or more selectors.
@@ -429,7 +424,9 @@ The examples are based on the simple JSON value shown in
 
 ## Overview {#synsem-overview}
 
-A JSONPath query is a string which selects zero or more nodes of a JSON value.
+A JSONPath expression is a string which, when applied to a JSON value,
+the *argument*, selects zero or more nodes of the argument and outputs
+these nodes as a nodelist.
 
 A query MUST be encoded using UTF-8.
 The grammar for queries given in this document assumes that its UTF-8 form is first decoded into
