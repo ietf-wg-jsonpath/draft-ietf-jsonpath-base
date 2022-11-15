@@ -185,10 +185,10 @@ Value:
   values null, true, and false.
 
 Member:
-: A name/value pair in an object.  (A member is not itself a value.)
+: A name/value pair in an object.  (A member is not itself a JSON value.)
 
 Name:
-: The name in a name/value pair constituting a member.   (A name is not itself a value.)
+: The string name in a name/value pair constituting a member.   (A name is not itself a JSON value.)
   This is also used in {{-json}}, but that specification does not
   formally define it.
   It is included here for completeness.
