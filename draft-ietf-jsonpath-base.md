@@ -192,7 +192,6 @@ Name:
   This is also used in {{-json}}, but that specification does not
   formally define it.
   It is included here for completeness.
-  (Also known as "key", "tag", or "label".)
 
 Element:
 : A value in a JSON array.
