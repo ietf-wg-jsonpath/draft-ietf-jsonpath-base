@@ -180,15 +180,15 @@ Additional terms used in this specification are defined below.
 
 Value:
 : As per {{-json}}, a structure conforming to the generic data model of JSON, i.e.,
-  composed of components such as structured values, namely JSON objects and arrays, and
-  primitive data, namely numbers and text strings as well as the special
+  composed of structured values, namely JSON objects and arrays, and
+  primitive values, namely numbers and text strings as well as the special
   values null, true, and false.
 
 Member:
 : A name/value pair in an object.  (A member is not itself a value.)
 
 Name:
-: The name in a name/value pair constituting a member.   (A name is not itself a value.) <!-- should we make it clear that names are (Unicode) strings? -->
+: The name in a name/value pair constituting a member.   (A name is not itself a value.)
   This is also used in {{-json}}, but that specification does not
   formally define it.
   It is included here for completeness.
@@ -281,6 +281,35 @@ not always be achieved; a design principle of this specification is to
 go with a "consensus" between implementations even if it is rough, as
 long as that does not jeopardize the objective of obtaining a usable,
 stable JSON query language.
+
+## JSON Values
+
+The JSON value a JSONPath query is applied to is, by definition, a
+valid JSON value, rather than a JSON text.
+
+For example, strings in a JSON value are Unicode strings, without enclosing
+quotes or escape sequences, rather than the JSON text representation of strings
+with enclosing quotes and optional escape sequences.
+
+The parsing of a JSON text into a JSON value and what happens if a JSON
+text does not represent valid JSON are not defined by this specification.
+{{Sections 4 and 8 of -json}} identify specific situations that may
+conform to the grammar for JSON texts but are not interoperable uses
+of JSON, as they may cause unpredictable behavior.
+The present specification does not attempt to define predictable
+behavior for JSONPath queries in these situations.
+
+Specifically, the "Semantics" subsections of Sections
+{{<name-selector}}, {{<wildcard}},
+{{<filter-selector}}, and {{<descendant-segment}} describe behavior that
+becomes unpredictable when the JSON value for one of the objects
+under consideration was constructed out of JSON text that exhibits
+multiple members for a single object that share the same member name
+("duplicate names", see {{Section 4 of -json}}).
+Also, selecting a child by name ({{<name-selector}}) and comparing strings
+({{comparisons}} in Section {{<filter-selector}}) assume these
+strings are sequences of Unicode scalar values, becoming unpredictable
+if they aren't ({{Section 8.2 of -json}}).
 
 ## Overview of JSONPath Expressions {#overview}
 
@@ -459,27 +488,6 @@ the query, the implementation MUST provide an indication of overflow.
 type errors when pondering well-formedness and validity, while
 resource depletion and related errors are comparable to 500 type
 errors.)
-
-The JSON value the JSONPath query is applied to is, by definition, a valid JSON value.
-The parsing of a JSON text into a JSON value and what happens if a JSON
-text does not represent valid JSON are not defined by this specification.
-{{Sections 4 and 8 of -json}} identify specific situations that may
-conform to the grammar for JSON texts but are not interoperable uses
-of JSON, as they may cause unpredictable behavior.
-The present specification does not attempt to define predictable
-behavior for JSONPath queries in these situations.
-
-Specifically, the "Semantics" subsections of Sections
-{{<name-selector}}, {{<wildcard}},
-{{<filter-selector}}, and {{<descendant-segment}} describe behavior that
-becomes unpredictable when the JSON value for one of the objects
-under consideration was constructed out of JSON text that exhibits
-multiple members for a single object that share the same member name
-("duplicate names", see {{Section 4 of -json}}).
-Also, selecting a child by name ({{<name-selector}}) and comparing strings
-({{comparisons}} in Section {{<filter-selector}}) assume these
-strings are sequences of Unicode scalar values, becoming unpredictable
-if they aren't ({{Section 8.2 of -json}}).
 
 ## Syntax
 
