@@ -282,6 +282,29 @@ go with a "consensus" between implementations even if it is rough, as
 long as that does not jeopardize the objective of obtaining a usable,
 stable JSON query language.
 
+## JSON Values
+
+The JSON value the JSONPath query is applied to is, by definition, a valid JSON value.
+The parsing of a JSON text into a JSON value and what happens if a JSON
+text does not represent valid JSON are not defined by this specification.
+{{Sections 4 and 8 of -json}} identify specific situations that may
+conform to the grammar for JSON texts but are not interoperable uses
+of JSON, as they may cause unpredictable behavior.
+The present specification does not attempt to define predictable
+behavior for JSONPath queries in these situations.
+
+Specifically, the "Semantics" subsections of Sections
+{{<name-selector}}, {{<wildcard}},
+{{<filter-selector}}, and {{<descendant-segment}} describe behavior that
+becomes unpredictable when the JSON value for one of the objects
+under consideration was constructed out of JSON text that exhibits
+multiple members for a single object that share the same member name
+("duplicate names", see {{Section 4 of -json}}).
+Also, selecting a child by name ({{<name-selector}}) and comparing strings
+({{comparisons}} in Section {{<filter-selector}}) assume these
+strings are sequences of Unicode scalar values, becoming unpredictable
+if they aren't ({{Section 8.2 of -json}}).
+
 ## Overview of JSONPath Expressions {#overview}
 
 A JSONPath expression is applied to a JSON value, the *argument*.
@@ -459,27 +482,6 @@ the query, the implementation MUST provide an indication of overflow.
 type errors when pondering well-formedness and validity, while
 resource depletion and related errors are comparable to 500 type
 errors.)
-
-The JSON value the JSONPath query is applied to is, by definition, a valid JSON value.
-The parsing of a JSON text into a JSON value and what happens if a JSON
-text does not represent valid JSON are not defined by this specification.
-{{Sections 4 and 8 of -json}} identify specific situations that may
-conform to the grammar for JSON texts but are not interoperable uses
-of JSON, as they may cause unpredictable behavior.
-The present specification does not attempt to define predictable
-behavior for JSONPath queries in these situations.
-
-Specifically, the "Semantics" subsections of Sections
-{{<name-selector}}, {{<wildcard}},
-{{<filter-selector}}, and {{<descendant-segment}} describe behavior that
-becomes unpredictable when the JSON value for one of the objects
-under consideration was constructed out of JSON text that exhibits
-multiple members for a single object that share the same member name
-("duplicate names", see {{Section 4 of -json}}).
-Also, selecting a child by name ({{<name-selector}}) and comparing strings
-({{comparisons}} in Section {{<filter-selector}}) assume these
-strings are sequences of Unicode scalar values, becoming unpredictable
-if they aren't ({{Section 8.2 of -json}}).
 
 ## Syntax
 
