@@ -183,6 +183,8 @@ Value:
   composed of components such as structured values, namely JSON objects and arrays, and
   primitive data, namely numbers and text strings as well as the special
   values null, true, and false.
+  {{-json}} focuses on the textual representation of JSON values and
+  doesn't define the value abstraction assumed here.
 
 Member:
 : A name/value pair in an object.  (A member is not itself a value.)
