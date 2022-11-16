@@ -211,10 +211,11 @@ Argument:
 : Short name for the value a JSONPath expression is applied to.
 
 Location:
-: the position of a value within the argument consisting of a possibly
-  empty sequence of names and indexes. The empty sequence is the
-  location of the argument itself. A location can be represented
-  as a Normalized Path (defined below).
+: the position of a value within the argument. This can be thought of
+  as a sequence of names and indexes navigating to the value through
+  the objects and arrays in the argument.
+  The empty sequence indicates the location of the argument itself.
+  A location can be represented as a Normalized Path (defined below).
 
 Node:
 : The pair of a value along with its location within the argument.
