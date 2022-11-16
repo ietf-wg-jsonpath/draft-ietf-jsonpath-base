@@ -259,6 +259,8 @@ Selector:
 
 ## History
 
+This section is informative.
+
 This document picks up {{{Stefan Gössner}}}'s popular JSONPath proposal
 dated 2007-02-21 {{JSONPath-orig}}, builds on the experience from the widespread
 deployment of its implementations, and provides a normative definition for it.
@@ -306,6 +308,8 @@ strings are sequences of Unicode scalar values, becoming unpredictable
 if they aren't ({{Section 8.2 of -json}}).
 
 ## Overview of JSONPath Expressions {#overview}
+
+This section is informative.
 
 A JSONPath expression is applied to a JSON value, the *argument*.
 The output is a nodelist.
@@ -380,9 +384,10 @@ $.store.book[?@.price < 10].title
 | `?<expr>`           | [filter selector](#filter-selector): selects particular children using a boolean expression                             |
 {: #tbl-overview title="Overview of JSONPath"}
 
-# JSONPath Examples
+## JSONPath Examples
 
-This section provides examples of JSONPath expressions.
+This section is informative. It provides examples of JSONPath expressions.
+
 The examples are based on the simple JSON value shown in
 {{fig-example-value}}, representing a bookstore (that also has a bicycle).
 
