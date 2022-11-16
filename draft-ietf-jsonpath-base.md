@@ -213,8 +213,8 @@ Argument:
 Location:
 : the position of a value within the argument. This can be thought of
   as a sequence of names and indexes navigating to the value through
-  the objects and arrays in the argument.
-  The empty sequence indicates the location of the argument itself.
+  the objects and arrays in the argument, with the empty sequence
+  indicating the argument itself.
   A location can be represented as a Normalized Path (defined below).
 
 Node:
