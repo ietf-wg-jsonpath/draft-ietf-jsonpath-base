@@ -1460,7 +1460,7 @@ Queries:
 | `$.b[?@]` | `null` | `$['b'][0]` | Existence |
 | `$.b[?@==null]` | `null` | `$['b'][0]` | Comparison |
 | `$.c[?(@.d==null)]` | | | Comparison with "missing" value |
-| `$.null` | `1` | `$['null']` | Not JSON null at all, just a string as object key |
+| `$.null` | `1` | `$['null']` | Not JSON null at all, just a member name string |
 {: title="Examples involving (or not involving) null"}
 
 ## Normalized Paths
