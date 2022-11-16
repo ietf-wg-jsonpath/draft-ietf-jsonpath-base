@@ -188,7 +188,7 @@ Member:
 : A name/value pair in an object.  (A member is not itself a value.)
 
 Name:
-: The name in a name/value pair constituting a member.   (A name is not itself a value.) <!-- should we make it clear that names are (Unicode) strings? -->
+: The name (a string) in a name/value pair constituting a member.
   This is also used in {{-json}}, but that specification does not
   formally define it.
   It is included here for completeness.
@@ -209,7 +209,9 @@ Argument:
 : Short name for the value a JSONPath expression is applied to.
 
 Node:
-: The pair of a value along with its location within the argument.
+: The pair of a value along with its location within the argument
+  except for member names which do not have nodes. (Members are not
+  values and so do not have nodes.)
 
 Root Node:
 : The unique node whose value is the entire argument.
@@ -286,7 +288,10 @@ stable JSON query language.
 
 ## JSON Values
 
-The JSON value the JSONPath query is applied to is, by definition, a valid JSON value.
+The JSON value a JSONPath query is applied to is, by definition, a
+valid JSON value. A JSON value is usually constructed by parsing
+a JSON text.
+
 The parsing of a JSON text into a JSON value and what happens if a JSON
 text does not represent valid JSON are not defined by this specification.
 {{Sections 4 and 8 of -json}} identify specific situations that may
