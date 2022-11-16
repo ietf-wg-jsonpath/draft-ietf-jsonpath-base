@@ -869,7 +869,7 @@ The slice selector was inspired by the slice operator of ECMAScript
 ##### Informal Introduction
 {: unnumbered}
 
-This section is non-normative.
+This section is informative.
 
 Array slicing is inspired by the behavior of the `Array.prototype.slice` method
 of the JavaScript language as defined by the ECMA-262 standard {{ECMA-262}},
