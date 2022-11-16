@@ -1277,7 +1277,7 @@ The syntax and semantics of each segment are defined below.
 #### Syntax
 {: unnumbered}
 
-The child segment consists of a non-empty, comma-delimited
+The child segment consists of a non-empty, comma-separated
 sequence of selectors enclosed in square brackets.
 
 Shorthand notations are also provided for when there is a single
@@ -1313,7 +1313,7 @@ Thus, for example, `$.foo.bar` is shorthand for `$['foo']['bar']` (and not for `
 #### Semantics
 {: unnumbered}
 
-A child segment contains a comma-delimited sequence of selectors, each of which
+A child segment contains a sequence of selectors, each of which
 selects zero or more children of the input value.
 
 Selectors of different kinds may be combined within a single child segment.
