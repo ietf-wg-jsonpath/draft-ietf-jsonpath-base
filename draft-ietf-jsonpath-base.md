@@ -210,10 +210,16 @@ Query:
 Argument:
 : Short name for the value a JSONPath expression is applied to.
 
+Location:
+: the position of a value within the argument consisting of a possibly
+  empty sequence of names and indexes. The empty sequence is the
+  location of the argument itself. A location can be represented
+  as a Normalized Path (defined below).
+
 Node:
-: The pair of a value along with its location within the argument
-  except for member names which do not have nodes. (Members are not
-  values and so do not have nodes.)
+: The pair of a value along with its location within the argument.
+  Member names do not have locations and so do not have nodes.
+  Members are not values and so do not have nodes.
 
 Root Node:
 : The unique node whose value is the entire argument.
