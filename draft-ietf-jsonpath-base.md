@@ -221,7 +221,7 @@ Node:
   Member names do not have locations and so do not have nodes.
   Members are not values and so do not have nodes.
   Note that a node is associated with either the argument or one of
-  its descendants (defined below). 
+  its descendants (defined below).
 
 Root Node:
 : The unique node whose value is the entire argument.
