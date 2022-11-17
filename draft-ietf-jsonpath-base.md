@@ -183,12 +183,14 @@ Value:
   composed of components such as structured values, namely JSON objects and arrays, and
   primitive data, namely numbers and text strings as well as the special
   values null, true, and false.
+  {{-json}} focuses on the textual representation of JSON values and
+  doesn't fully define the value abstraction assumed here.
 
 Member:
 : A name/value pair in an object.  (A member is not itself a value.)
 
 Name:
-: The name in a name/value pair constituting a member.   (A name is not itself a value.) <!-- should we make it clear that names are (Unicode) strings? -->
+: The name (a string) in a name/value pair constituting a member.
   This is also used in {{-json}}, but that specification does not
   formally define it.
   It is included here for completeness.
@@ -208,8 +210,19 @@ Query:
 Argument:
 : Short name for the value a JSONPath expression is applied to.
 
+Location:
+: the position of a value within the argument. This can be thought of
+  as a sequence of names and indexes navigating to the value through
+  the objects and arrays in the argument, with the empty sequence
+  indicating the argument itself.
+  A location can be represented as a Normalized Path (defined below).
+
 Node:
 : The pair of a value along with its location within the argument.
+  Member names do not have locations and so do not have nodes.
+  Members are not values and so do not have nodes.
+  Note that a node is either the root node (defined below) or one of
+  its descendants (also defined below).
 
 Root Node:
 : The unique node whose value is the entire argument.
@@ -286,7 +299,10 @@ stable JSON query language.
 
 ## JSON Values
 
-The JSON value the JSONPath query is applied to is, by definition, a valid JSON value.
+The JSON value a JSONPath query is applied to is, by definition, a
+valid JSON value. A JSON value is often constructed by parsing
+a JSON text.
+
 The parsing of a JSON text into a JSON value and what happens if a JSON
 text does not represent valid JSON are not defined by this specification.
 {{Sections 4 and 8 of -json}} identify specific situations that may
