@@ -300,7 +300,7 @@ stable JSON query language.
 ## JSON Values
 
 The JSON value a JSONPath query is applied to is, by definition, a
-valid JSON value. A JSON value is usually constructed by parsing
+valid JSON value. A JSON value is often constructed by parsing
 a JSON text.
 
 The parsing of a JSON text into a JSON value and what happens if a JSON
