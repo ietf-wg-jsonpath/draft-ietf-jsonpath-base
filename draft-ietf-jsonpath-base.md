@@ -219,10 +219,11 @@ Location:
 
 Node:
 : The pair of a value along with its location within the argument.
-  Member names do not have locations and so do not have nodes.
-  Members are not values and so do not have nodes.
   Note that a node is either the root node (defined below) or one of
   its descendants (also defined below).
+  Member names and members cannot be selected by a query, but a member
+  value can. So nodes are defined for member values, but not for
+  members or member names.
 
 Root Node:
 : The unique node whose value is the entire argument.
@@ -231,8 +232,7 @@ Children (of a node):
 : If the node is an array, the nodes of its elements.
   If the node is an object, the nodes of its member values.
   If the node is neither an array nor an object, it has no children.
-  Note that the members and member names of an object do not
-  have nodes.
+  Note that members and member names are not children of an object.
 
 Descendants (of a node):
 : The children of the node, together with the children of its children, and so forth
