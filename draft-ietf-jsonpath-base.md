@@ -231,7 +231,7 @@ Children (of a node):
 : If the node is an array, the nodes of its elements.
   If the node is an object, the nodes of its member values.
   If the node is neither an array nor an object, it has no children.
-  Note that the member names of an object are not values and do not
+  Note that the members and member names of an object do not
   have nodes.
 
 Descendants (of a node):
@@ -289,7 +289,7 @@ While the languages in which JSONPath is used do have significant
 commonalities, over time this caused non-portability of JSONPath
 expressions between the ensuing platform-specific dialects.
 
-The present specification intends to remove platform dependencies and
+The present specification aims to remove platform dependencies and
 serve as a common JSONPath specification that can be used across
 platforms.  Obviously, this means that backwards compatibility could
 not always be achieved; a design principle of this specification is to
