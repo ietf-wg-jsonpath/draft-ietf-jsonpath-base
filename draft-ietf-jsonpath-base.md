@@ -1272,11 +1272,6 @@ regex-expr.
 ###### Function Extensions: length {#length}
 {: unnumbered}
 
-When defining an extension point in a protocol, it is generally a good
-idea to provide at least one extension that makes use of the extension
-point, to serve as an example and to provide motivation to implement
-the extension point.
-
 The "length" function extension provides a way to compute the length
 of an array and make that available for further processing in the
 filter expression:
