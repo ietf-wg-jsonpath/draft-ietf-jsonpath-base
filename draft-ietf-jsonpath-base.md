@@ -1235,7 +1235,8 @@ obey its laws (see, for example, {{BOOLEAN-LAWS}}).
     forced to be by the parent section being unnumbered too.
     The overall structure where the parts of this subsection go to
     needs to be decided; one part already is in the IANA
-    Considerations in {{iana-fnex}}
+    Considerations in {{iana-fnex}}.
+    This PR will focus on content, a future PR will fix the structure.
 {:source=" -- cabo"}
 
 Beyond the filter expression functionality defined in the preceding
