@@ -150,7 +150,7 @@ from a JSON value.
 
 JSON {{-json}} is a popular representation
 format for structured data values.
-JSONPath defines a string syntax for selecting and extracting JSON values
+JSONPath defines string expressions for selecting and extracting JSON values
 from a JSON value.
 
 JSONPath is not intended as a replacement for, but as a more powerful
