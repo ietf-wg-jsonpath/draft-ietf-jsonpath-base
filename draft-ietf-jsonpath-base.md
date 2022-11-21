@@ -108,7 +108,7 @@ informative:
     title: Boolean algebra laws
 
 normative:
-  STD90:
+  STD80:
     -: ascii
     =: RFC20
   BCP26:
