@@ -862,8 +862,8 @@ The following examples show the index selector in use by a child segment.
 
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
-| `$[1]`   | `"b"` | `$[1]`      | Member of array      |
-| `$[-2]`  | `"a"` | `$[0]`      | Member of array, from the end      |
+| `$[1]`   | `"b"` | `$[1]`      | Element of array      |
+| `$[-2]`  | `"a"` | `$[0]`      | Element of array, from the end      |
 {: title="Index selector examples"}
 
 ### Array Slice selector {#slice}
@@ -1046,7 +1046,7 @@ The filter selector has the form `?<expr>`. It iterates over structured values, 
 filter-selector = "?" S boolean-expr
 ~~~~
 
-During the iteration process the node of each array element or object member being visited is known as the current node.
+During the iteration process the node of each array element or object member value being visited is known as the current node.
 A boolean expression, usually involving the current node, is evaluated and
 the current node is selected if and only if the expression yields true.
 
@@ -1499,7 +1499,8 @@ Queries:
 
 ## Normalized Paths
 
-A Normalized Path is a canonical representation of the identity of a node in a value.
+A Normalized Path is a canonical representation of the location of a node in a value and
+uniquely identifies the node in the value.
 Specifically, a Normalized Path is a JSONPath query with restricted syntax (defined below),
 e.g., `$['book'][3]`, which when applied to the value results in a nodelist consisting
 of just the node identified by the Normalized Path.
@@ -1844,7 +1845,7 @@ is known only in a general way.
 
 A Normalized JSONPath can be converted into a JSON Pointer by converting the syntax,
 without knowledge of any JSON value. The inverse is not generally true: a numeric
-path component in a JSON Pointer may identify a member of a JSON object or may index an array.
+path component in a JSON Pointer may identify a member value of a JSON object or may index an array.
 For conversion to a JSONPath query, knowledge of the structure of the JSON value is
 needed to distinguish these cases.
 
