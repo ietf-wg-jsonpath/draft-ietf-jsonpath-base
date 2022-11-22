@@ -293,16 +293,15 @@ deployment of its implementations, and provides a normative specification for it
 [XPath].
 
 JSONPath was intended as a light-weight companion to JSON
-implementations on platforms such as PHP and JavaScript, so instead of
-defining its own expression language like XPath did, JSONPath
-delegated this to the expression language of the platform.
-While the languages in which JSONPath is used do have significant
-commonalities, over time this caused non-portability of JSONPath
-expressions between the ensuing platform-specific dialects.
+implementations in languages such as PHP and JavaScript, so instead of
+defining its own expression language, like XPath did, JSONPath
+delegated to the implementation language.
+As JSONPath was implemented in more languages, JSONPath
+expressions became decreasingly portable.
 
-This document aims to remove platform dependencies and
+This document aims to remove language dependencies and
 serve as a common JSONPath specification that can be used across
-platforms.  Obviously, this means that backwards compatibility could
+languages.  Obviously, this means that backwards compatibility could
 not always be achieved; a design principle of this document is to
 go with a "consensus" between implementations even if it is rough, as
 long as that does not jeopardize the objective of obtaining a usable,
