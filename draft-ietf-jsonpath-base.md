@@ -287,7 +287,7 @@ This section is informative.
 
 This document picks up {{{Stefan Gössner}}}'s popular JSONPath proposal
 dated 2007-02-21 {{JSONPath-orig}}, builds on the experience from the widespread
-deployment of its implementations, and provides a normative definition for it.
+deployment of its implementations, and provides a normative specification for it.
 
 {{inspired-by-xpath}} describes how JSONPath was inspired by XML's XPath
 [XPath].
