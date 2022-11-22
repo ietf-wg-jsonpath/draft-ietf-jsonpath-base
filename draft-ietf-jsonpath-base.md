@@ -176,7 +176,7 @@ unchanged.
 Importantly "object" and "array" in particular do not take on a
 generic meaning, such as they would in a general programming context.
 
-Additional terms used in this specification are defined below.
+Additional terms used in this document are defined below.
 
 Value:
 : As per {{-json}}, a structure conforming to the generic data model of JSON, i.e.,
@@ -243,7 +243,7 @@ Segment:
 
 Nodelist:
 : A list of nodes.
-  While a nodelist can be represented in JSON, e.g. as an array, this specification
+  While a nodelist can be represented in JSON, e.g. as an array, this document
   does not require or assume any particular representation.
 
 Normalized Path:
@@ -266,11 +266,11 @@ Selector:
 
 ### JSON Values as Trees of Nodes
 
-This specification models the argument as a tree of JSON values, each
+This document models the argument as a tree of JSON values, each
 with its own node.
 A node is either the root node or one of its descendants.
 
-This specification models the result of applying a query to the
+This document models the result of applying a query to the
 argument as a nodelist (a list of nodes).
 
 So nodes are the selectable parts of the argument.
@@ -303,7 +303,7 @@ expressions between the ensuing platform-specific dialects.
 The present specification aims to remove platform dependencies and
 serve as a common JSONPath specification that can be used across
 platforms.  Obviously, this means that backwards compatibility could
-not always be achieved; a design principle of this specification is to
+not always be achieved; a design principle of this document is to
 go with a "consensus" between implementations even if it is rough, as
 long as that does not jeopardize the objective of obtaining a usable,
 stable JSON query language.
@@ -315,7 +315,7 @@ valid JSON value. A JSON value is often constructed by parsing
 a JSON text.
 
 The parsing of a JSON text into a JSON value and what happens if a JSON
-text does not represent valid JSON are not defined by this specification.
+text does not represent valid JSON are not defined by this document.
 {{Sections 4 and 8 of -json}} identify specific situations that may
 conform to the grammar for JSON texts but are not interoperable uses
 of JSON, as they may cause unpredictable behavior.
@@ -531,7 +531,7 @@ The syntax and semantics of each segment are defined below.
 
 ## Semantics
 
-In this specification, the semantics of a JSONPath query define the
+In this document, the semantics of a JSONPath query define the
 required results and do not prescribe the internal workings of an
 implementation.
 
@@ -1469,7 +1469,7 @@ each time it appears in the descendant segment.
 
 The example above with the query `$.a..[0, 1]` shows that the child segment `[0, 1]` is applied to each node
 in turn (rather than the nodes being visited once per selector, which is the case for some JSONPath implementations
-that do not conform to this specification).
+that do not conform to this document).
 
 ## Semantics of `null` {#null-semantics}
 
@@ -1852,7 +1852,7 @@ needed to distinguish these cases.
 # Acknowledgements
 {: numbered="no"}
 
-This specification is based on {{{Stefan Gössner}}}'s
+This document is based on {{{Stefan Gössner}}}'s
 original online article defining JSONPath {{JSONPath-orig}}.
 
 The books example was taken from
