@@ -300,7 +300,7 @@ While the languages in which JSONPath is used do have significant
 commonalities, over time this caused non-portability of JSONPath
 expressions between the ensuing platform-specific dialects.
 
-The present specification aims to remove platform dependencies and
+This document aims to remove platform dependencies and
 serve as a common JSONPath specification that can be used across
 platforms.  Obviously, this means that backwards compatibility could
 not always be achieved; a design principle of this document is to
@@ -319,7 +319,7 @@ text does not represent valid JSON are not defined by this document.
 {{Sections 4 and 8 of -json}} identify specific situations that may
 conform to the grammar for JSON texts but are not interoperable uses
 of JSON, as they may cause unpredictable behavior.
-The present specification does not attempt to define predictable
+This document does not attempt to define predictable
 behavior for JSONPath queries in these situations.
 
 Specifically, the "Semantics" subsections of Sections
@@ -504,7 +504,7 @@ raised during application of the query to a value.
 
 Obviously, an implementation can still fail when executing a JSONPath
 query, e.g., because of resource depletion, but this is not modeled in
-the present specification.  However, the implementation MUST NOT
+this document.  However, the implementation MUST NOT
 silently malfunction.  Specifically, if a valid JSONPath query is
 evaluated against a structured value whose size doesn't fit in the
 range of exact values, interfering with the correct interpretation of
