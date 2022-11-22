@@ -219,10 +219,6 @@ Location:
 
 Node:
 : The pair of a value along with its location within the argument.
-  Member names do not have locations and so do not have nodes.
-  Members are not values and so do not have nodes.
-  Note that a node is either the root node (defined below) or one of
-  its descendants (also defined below).
 
 Root Node:
 : The unique node whose value is the entire argument.
@@ -231,8 +227,6 @@ Children (of a node):
 : If the node is an array, the nodes of its elements.
   If the node is an object, the nodes of its member values.
   If the node is neither an array nor an object, it has no children.
-  Note that the members and member names of an object do not
-  have nodes.
 
 Descendants (of a node):
 : The children of the node, together with the children of its children, and so forth
@@ -269,6 +263,23 @@ Singular Path:
 Selector:
 : A single item within a segment that takes the input value and produces a nodelist
   consisting of child nodes of the input value.
+
+### JSON Values as Trees of Nodes
+
+This specification models the argument as a tree of JSON values, each
+with its own node.
+A node is either the root node or one of its descendants.
+
+This specification models the result of applying a query to the
+argument as a nodelist (a list of nodes).
+
+So nodes are the selectable parts of the argument.
+The only parts of an object that can be selected by a query are the
+member values. Member names and members (name/value pairs) cannot be
+selected.
+So member values have nodes, but members and member names do not.
+Similarly, member values are children of an object, but members and
+member names are not.
 
 ## History
 
