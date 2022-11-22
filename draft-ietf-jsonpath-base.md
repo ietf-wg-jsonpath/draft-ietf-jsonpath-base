@@ -204,10 +204,7 @@ Element:
 : A value in a JSON array.
 
 Index:
-: A non-negative integer that identifies a specific element in an array.
-  Note that the term _indexing_ is also used for accessing elements
-  using negative integers ({{index-semantics}}), and for accessing
-  member values in an object using their member name.
+: An integer that identifies a specific element in an array.
 
 Query:
 : Short name for a JSONPath expression.
@@ -564,8 +561,8 @@ appears that number of times in the nodelist. Duplicate nodes are not removed.
 
 A syntactically valid segment MUST NOT produce errors when executing the query.
 This means that some
-operations that might be considered erroneous, such as indexing beyond the
-end of an array,
+operations that might be considered erroneous, such as using an index
+lying outside the range of an array,
 simply result in fewer nodes being selected.
 
 Consider this example. With the argument `{"a":[{"b":0},{"b":1},{"c":2}]}`, the
@@ -965,7 +962,7 @@ FUNCTION Normalize(i, len):
   END IF
 ~~~~
 
-The result of the array indexing expression `i` applied to an array
+The result of the array index expression `i` applied to an array
 of length `len` is defined to be the result of the array
 slicing expression `Normalize(i, len):Normalize(i, len)+1:1`.
 
@@ -992,8 +989,8 @@ FUNCTION Bounds(start, end, step, len):
 
 The slice expression selects elements with indices between the lower and
 upper bounds.
-In the following pseudocode, the `a(i)` construct expresses the
-0-based indexing operation on the underlying array.
+In the following pseudocode, `a(i)` is the `i+1`th element of the array `a`
+(i.e., `a(0)` is the first element, `a(1)` the second, and so forth).
 
 ~~~~
 IF step > 0 THEN
@@ -2032,7 +2029,7 @@ is known only in a general way.
 
 A Normalized JSONPath can be converted into a JSON Pointer by converting the syntax,
 without knowledge of any JSON value. The inverse is not generally true: a numeric
-path component in a JSON Pointer may identify a member value of a JSON object or may index an array.
+path component in a JSON Pointer may identify a member value of an object or an element of an array.
 For conversion to a JSONPath query, knowledge of the structure of the JSON value is
 needed to distinguish these cases.
 
