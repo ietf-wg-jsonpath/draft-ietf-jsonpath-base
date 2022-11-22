@@ -1315,7 +1315,8 @@ Arguments:
 Result:
 : value (`true` or `false`)
 
-The "match" function extension provides a way to check whether a given
+The "match" function extension provides a way to check whether (the
+entirety of, see "search below") a given
 string matches a given regular expression, which is in {{-iregexp}} form.
 
 ~~~ JSONPath
@@ -1347,7 +1348,7 @@ $[?search(@.author, "[BR]ob")]
 ~~~
 
 Its first argument is a string that is searched for at least one
-substring that matches against the iregexp contained in the string
+substring that matches the iregexp contained in the string
 that is the second argument.
 The result is `true` if such a substring exists, `false` otherwise.
 
