@@ -1470,7 +1470,7 @@ each time it appears in the descendant segment.
 
 The example above with the query `$.a..[0, 1]` shows that the child segment `[0, 1]` is applied to each node
 in turn (rather than the nodes being visited once per selector, which is the case for some JSONPath implementations
-that do not conform to the specification in this document).
+that do not conform to this specification).
 
 ## Semantics of `null` {#null-semantics}
 
