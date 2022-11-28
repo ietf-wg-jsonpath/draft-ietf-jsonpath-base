@@ -536,13 +536,12 @@ required results and do not prescribe the internal workings of an
 implementation.
 
 The semantics are that a valid query is executed against a value,
-the *argument*, and produces a list of zero or more nodes of the value.
+the *argument*, and produces a nodelist (i.e., a list of zero or more nodes of the value).
 
 The query is a root identifier followed by a sequence of zero or more *segments*, each of
 which is applied to the result of the previous root identifier or segment and provides
 input to the next segment.
-These results and inputs take the form of a *nodelist*, i.e., a
-sequence of zero or more nodes.
+These results and inputs take the form of a nodelist.
 
 Segments can be added to a query to drill further into the structure of the input value.
 
