@@ -295,14 +295,16 @@ deployment of its implementations, and provides a normative specification for it
 JSONPath was intended as a light-weight companion to JSON
 implementations in programming languages such as PHP and JavaScript,
 so instead of defining its own expression language, like XPath did,
-JSONPath delegated parts of a query to the underlying programming
-language engine, e.g., JavaScript's `eval()` function.
-As JSONPath was implemented in more programming languages, JSONPath
+JSONPath delegated parts of a query to the underlying
+runtime, e.g., JavaScript's `eval()` function.
+As JSONPath was implemented in more environments, JSONPath
 expressions became decreasingly portable.
+For example, regular expression processing was often delegated to a
+convenient regular expression engine.
 
-This document aims to remove programming language dependencies and
+This document aims to remove such implementation-specific dependencies and
 serve as a common JSONPath specification that can be used across
-programming languages and platforms.
+programming languages and environments.
 This means that backwards compatibility is
 not always achieved; a design principle of this document is to
 go with a "consensus" between implementations even if it is rough, as
