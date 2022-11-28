@@ -487,15 +487,15 @@ A string to be used as a JSONPath query needs to be *well-formed* and
 *valid*.
 A string is a well-formed JSONPath query if it conforms to the ABNF syntax in this document.
 A well-formed JSONPath query is valid if it also fulfills all semantic
-requirements posed by this document.
+requirements posed by this document, which are:
 
-To be valid, integer numbers in the JSONPath query that are relevant
+1. Integer numbers in the JSONPath query that are relevant
 to the JSONPath processing (e.g., index values and steps) MUST be
 within the range of exact values defined in I-JSON {{-i-json}}, namely
-within the interval \[-(2<sup>53</sup>)+1, (2<sup>53</sup>)-1]).
+within the interval \[-(2<sup>53</sup>)+1, (2<sup>53</sup>)-1].
 
-To be valid, strings on the right-hand side of the `=~` regex matching
-operator need to conform to {{-iregexp}}.
+2. Strings on the right-hand side of the `=~` regex matching
+operator MUST conform to {{-iregexp}}.
 
 The well-formedness and the validity of JSONPath queries are independent of
 the JSON value the query is applied to; no further errors relating to the
