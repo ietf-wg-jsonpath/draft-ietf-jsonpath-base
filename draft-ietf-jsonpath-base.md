@@ -523,11 +523,10 @@ followed by a possibly empty sequence of *segments*.
 
 ~~~~ abnf
 json-path = root-identifier segments
-segments  =  *(S (child-segment /
-                  descendant-segment))
+segments  = *(S segment)
 ~~~~
 
-The syntax and semantics of each segment are defined below.
+The syntax and semantics of segments are defined in Section {{<segments-details}}.
 
 ## Semantics
 
@@ -1291,7 +1290,7 @@ Queries:
 The example above with the query `$.a[?@.b, ?@.b]` shows that the filter selector may produce nodelists in distinct
 orders each time it appears in the child segment.
 
-## Segments
+## Segments  {#segments-details}
 
 Segments apply one or more selectors to an input value and concatenate the results into a single nodelist.
 
@@ -1304,7 +1303,12 @@ consisting of nodes at depth in the input value of N or greater.
 * A query with N segments, where N >= 0, all of which are [child segments](#child-segment),
 produces a nodelist consisting of nodes precisely at depth N in the input value.
 
-The syntax and semantics of each segment are defined below.
+There are two kinds of segment: child segments and descendant segments.
+~~~~ abnf
+segment = child-segment / descendant-segment
+~~~~
+
+The syntax and semantics of each kind of segment are defined below.
 
 ### Child Segment
 
