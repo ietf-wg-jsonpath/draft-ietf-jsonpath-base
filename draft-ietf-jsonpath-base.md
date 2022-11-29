@@ -372,9 +372,7 @@ $.store.book[0].title
 
 A JSONPath expression may use a combination of bracket and dot notations.
 
-Dot notation is a shorthand way of writing certain bracket notations.
-
-This document treats the bracket notations as canonical and defines various shorthands in terms
+This document treats the bracket notations as canonical and defines the shorthand dot notation in terms
 of bracket notation. Examples and descriptions use shorthands where convenient.
 
 ### Selectors
