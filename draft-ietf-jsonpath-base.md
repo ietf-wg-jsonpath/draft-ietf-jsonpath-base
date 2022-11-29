@@ -1399,7 +1399,8 @@ JSON:
 JSON:
 
     {
-      "a": [3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}, {"b": {}}],
+      "a": [3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"},
+           {"b": {}}, {"b": "kilo"}],
       "o": {"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}},
       "e": "f"
     }
@@ -1409,12 +1410,13 @@ Queries:
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
 | `$.a[?@>3.5]` | `5` <br> `4` <br> `6` | `$['a'][1]` <br> `$['a'][4]` <br> `$['a'][5]` | Array value comparison |
-| `$.a[?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": {}}` | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][8]` | Array value existence |
-| `$[?@.*]` | `[3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}, {"b": {}}]` <br> `{"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}}` | `$['a']` <br> `$['o']` | Existence of non-singular paths |
-| `$[?@[?@.b]]` | `[3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}, {"b": {}}]` | `$['a']` | Nested filters |
-| `$.a[?@.b, ?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": "k"}` <br> `{"b": "j"}` | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][7]` <br> `$['a'][6]` | Non-deterministic ordering |
+| `$.a[?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": {}}` <br> `{"b": "kilo"}` | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][8]` <br> `$['a'][9]` | Array value existence |
+| `$[?@.*]` | `[3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}, {"b": {}}, {"b": "kilo"}]` <br> `{"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}}` | `$['a']` <br> `$['o']` | Existence of non-singular paths |
+| `$[?@[?@.b]]` | `[3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}, {"b": {}}, {"b": "kilo"}]` | `$['a']` | Nested filters |
+| `$.a[?@.b, ?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": "k"}` <br> `{"b": "j"}` <br> BROKEN? | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][7]` <br> `$['a'][6]` | Non-deterministic ordering |
 | `$.a[?@<2 || @.b == "k"]` | `1` <br> `{"b": "k"}` | `$['a'][2]` <br> `$['a'][7]` | Array value logical OR |
-| `$.a[?match(@.b, "[jk]")]` | `{"b": "j"}` <br> `{"b": "k"}` | `$['a'][6]` <br> `$['a'][7]` | Array value regular expression |
+| `$.a[?match(@.b, "[jk]")]` | `{"b": "j"}` <br> `{"b": "k"}` | `$['a'][6]` <br> `$['a'][7]` | Array value regular expression match |
+| `$.a[?search(@.b, "[jk]")]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": "kilo"}` | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][9]` | Array value regular expression search |
 | `$.o[?@>1 && @<4]` | `2` <br> `3` | `$['o']['q']` <br> `$['o']['r']` | Object value logical AND |
 | `$.o[?@>1 && @<4]` | `3` <br> `2` | `$['o']['r']` <br> `$['o']['q']` | Alternative result |
 | `$.o[?@.u || @.x]` | `{"u": 6}` | `$['o']['t']` | Object value logical OR |
