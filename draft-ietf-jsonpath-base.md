@@ -1066,11 +1066,12 @@ logical-and-expr  = basic-expr *(S "&&" S basic-expr)
                       ; conjunction
                       ; binds more tightly than disjunction
 
-basic-expr        = exist-expr /
-                    paren-expr /
+basic-expr        = paren-expr /
                     relation-expr
-exist-expr        = [logical-not-op S] (rel-path / json-path)
+                    exist-expr
+exist-expr        = [logical-not-op S] filter-path
                        ; path existence or non-existence
+filter-path       = rel-path / json-path
 rel-path          = current-node-identifier segments
 current-node-identifier = "@"
 ~~~~
@@ -1241,8 +1242,9 @@ LCALPHA                 = %x61-7A  ; "a".."z"
 
 function-expression     = function-name "(" S [function-argument
                              *(S "," S function-argument)] S ")"
-singular-path           =/ function-expression
-function-argument       = comparable
+singular-path           =/ function-expression ; if value
+filter-path             =/ function-expression ; if nodelist
+function-argument       = comparable / filter-path
 ~~~
 
 Syntactically, a function-expression can occur anywhere where a
@@ -1441,6 +1443,7 @@ consisting of nodes at depth in the input value of N or greater.
 produces a nodelist consisting of nodes precisely at depth N in the input value.
 
 There are two kinds of segment: child segments and descendant segments.
+
 ~~~~ abnf
 segment = child-segment / descendant-segment
 ~~~~
