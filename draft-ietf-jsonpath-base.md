@@ -176,7 +176,7 @@ unchanged.
 Importantly "object" and "array" in particular do not take on a
 generic meaning, such as they would in a general programming context.
 
-Additional terms used in this specification are defined below.
+Additional terms used in this document are defined below.
 
 Value:
 : As per {{-json}}, a structure conforming to the generic data model of JSON, i.e.,
@@ -243,7 +243,7 @@ Segment:
 
 Nodelist:
 : A list of nodes.
-  While a nodelist can be represented in JSON, e.g. as an array, this specification
+  While a nodelist can be represented in JSON, e.g. as an array, this document
   does not require or assume any particular representation.
 
 Normalized Path:
@@ -266,11 +266,11 @@ Selector:
 
 ### JSON Values as Trees of Nodes
 
-This specification models the argument as a tree of JSON values, each
+This document models the argument as a tree of JSON values, each
 with its own node.
 A node is either the root node or one of its descendants.
 
-This specification models the result of applying a query to the
+This document models the result of applying a query to the
 argument as a nodelist (a list of nodes).
 
 So nodes are the selectable parts of the argument.
@@ -287,23 +287,26 @@ This section is informative.
 
 This document picks up {{{Stefan Gössner}}}'s popular JSONPath proposal
 dated 2007-02-21 {{JSONPath-orig}}, builds on the experience from the widespread
-deployment of its implementations, and provides a normative definition for it.
+deployment of its implementations, and provides a normative specification for it.
 
 {{inspired-by-xpath}} describes how JSONPath was inspired by XML's XPath
 [XPath].
 
 JSONPath was intended as a light-weight companion to JSON
-implementations on platforms such as PHP and JavaScript, so instead of
-defining its own expression language like XPath did, JSONPath
-delegated this to the expression language of the platform.
-While the languages in which JSONPath is used do have significant
-commonalities, over time this caused non-portability of JSONPath
-expressions between the ensuing platform-specific dialects.
+implementations in programming languages such as PHP and JavaScript,
+so instead of defining its own expression language, like XPath did,
+JSONPath delegated parts of a query to the underlying
+runtime, e.g., JavaScript's `eval()` function.
+As JSONPath was implemented in more environments, JSONPath
+expressions became decreasingly portable.
+For example, regular expression processing was often delegated to a
+convenient regular expression engine.
 
-The present specification aims to remove platform dependencies and
+This document aims to remove such implementation-specific dependencies and
 serve as a common JSONPath specification that can be used across
-platforms.  Obviously, this means that backwards compatibility could
-not always be achieved; a design principle of this specification is to
+programming languages and environments.
+This means that backwards compatibility is
+not always achieved; a design principle of this document is to
 go with a "consensus" between implementations even if it is rough, as
 long as that does not jeopardize the objective of obtaining a usable,
 stable JSON query language.
@@ -315,11 +318,11 @@ valid JSON value. A JSON value is often constructed by parsing
 a JSON text.
 
 The parsing of a JSON text into a JSON value and what happens if a JSON
-text does not represent valid JSON are not defined by this specification.
+text does not represent valid JSON are not defined by this document.
 {{Sections 4 and 8 of -json}} identify specific situations that may
 conform to the grammar for JSON texts but are not interoperable uses
 of JSON, as they may cause unpredictable behavior.
-The present specification does not attempt to define predictable
+This document does not attempt to define predictable
 behavior for JSONPath queries in these situations.
 
 Specifically, the "Semantics" subsections of Sections
@@ -504,7 +507,7 @@ raised during application of the query to a value.
 
 Obviously, an implementation can still fail when executing a JSONPath
 query, e.g., because of resource depletion, but this is not modeled in
-the present specification.  However, the implementation MUST NOT
+this document.  However, the implementation MUST NOT
 silently malfunction.  Specifically, if a valid JSONPath query is
 evaluated against a structured value whose size doesn't fit in the
 range of exact values, interfering with the correct interpretation of
@@ -530,7 +533,7 @@ The syntax and semantics of segments are defined in Section {{<segments-details}
 
 ## Semantics
 
-In this specification, the semantics of a JSONPath query define the
+In this document, the semantics of a JSONPath query define the
 required results and do not prescribe the internal workings of an
 implementation.
 
@@ -1855,7 +1858,7 @@ needed to distinguish these cases.
 # Acknowledgements
 {: numbered="no"}
 
-This specification is based on {{{Stefan Gössner}}}'s
+This document is based on {{{Stefan Gössner}}}'s
 original online article defining JSONPath {{JSONPath-orig}}.
 
 The books example was taken from
