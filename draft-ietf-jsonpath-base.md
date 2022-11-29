@@ -1316,7 +1316,7 @@ Result:
 : value (`true` or `false`)
 
 The "match" function extension provides a way to check whether (the
-entirety of, see "search below") a given
+entirety of, see {{search}} below) a given
 string matches a given regular expression, which is in {{-iregexp}} form.
 
 ~~~ JSONPath
