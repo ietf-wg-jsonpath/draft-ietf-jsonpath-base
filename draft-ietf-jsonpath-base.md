@@ -500,6 +500,14 @@ to the JSONPath processing (e.g., index values and steps) MUST be
 within the range of exact values defined in I-JSON {{-i-json}}, namely
 within the interval \[-(2<sup>53</sup>)+1, (2<sup>53</sup>)-1].
 
+2. Any function extensions used by the query MUST be supported by the JSONPath
+implementation, MUST have the correct number of arguments of the correct kinds
+(i.e., each argument of kind nodelist MUST be a Singular Path), and
+return the correct kind of result for the context in which it is used
+(i.e., if the function extension is an argument to another function extension
+and the other function extensions requires the argument to be a nodelist,
+the function extension MUST return a nodelist).
+
 The well-formedness and the validity of JSONPath queries are independent of
 the JSON value the query is applied to; no further errors relating to the
 well-formedness and the validity of a JSONPath query can be
@@ -1244,9 +1252,20 @@ function-argument       = comparable / filter-path
 ~~~
 
 Syntactically, a function-expression can occur anywhere where a
-singular-path can occur (exist-expr, comparable).
-A function-expression that employs a function extension that returns a
-nodelist MUST return a singular node to be used in a comparable.
+singular-path can occur (comparable) and in existence tests.
+
+Any function extensions used by the query MUST be supported by the JSONPath
+implementation, MUST have the correct number of arguments of the correct kinds
+(i.e., each argument of kind nodelist MUST be a Singular Path), and
+return the correct kind of result for the context in which it is used
+(i.e., if the function extension is an argument to another function extension
+and the other function extensions requires the argument to be a nodelist,
+the function extension MUST return a nodelist).
+
+Semantically, a function-expression that employs a function extension that returns a
+nodelist and which is used as a comparable MUST return a singular node. <!-- and if it doesn't, then what? -->
+A function-expression that employs a function extension that returns
+a nodelist and which is used in an existence test may return any number of nodes.
 
 ###### Function Extensions: length {#length}
 {: unnumbered}
