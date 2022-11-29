@@ -184,7 +184,7 @@ Value:
   primitive data, namely numbers and text strings as well as the special
   values null, true, and false.
   {{-json}} focuses on the textual representation of JSON values and
-  doesn't fully define the value abstraction assumed here.
+  does not fully define the value abstraction assumed here.
 
 Member:
 : A name/value pair in an object.  (A member is not itself a value.)
@@ -335,7 +335,7 @@ multiple members for a single object that share the same member name
 Also, selecting a child by name ({{<name-selector}}) and comparing strings
 ({{comparisons}} in Section {{<filter-selector}}) assume these
 strings are sequences of Unicode scalar values, becoming unpredictable
-if they aren't ({{Section 8.2 of -json}}).
+if they are not ({{Section 8.2 of -json}}).
 
 ## Overview of JSONPath Expressions {#overview}
 
@@ -509,7 +509,7 @@ Obviously, an implementation can still fail when executing a JSONPath
 query, e.g., because of resource depletion, but this is not modeled in
 this document.  However, the implementation MUST NOT
 silently malfunction.  Specifically, if a valid JSONPath query is
-evaluated against a structured value whose size doesn't fit in the
+evaluated against a structured value whose size does not fit in the
 range of exact values, interfering with the correct interpretation of
 the query, the implementation MUST provide an indication of overflow.
 
