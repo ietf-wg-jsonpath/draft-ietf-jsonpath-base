@@ -1144,6 +1144,7 @@ Children of an array appear in array order in the resultant nodelist.
 {: unnumbered}
 
 A path by itself in a Boolean context is an existence test which yields true if the path selects at least one node and yields false if the path does not select any nodes.
+A function expression by itself in a Boolean context is also an existence test which yields true if the function returns a non-empty nodelist or a value and yields false if the function returns an empty nodelist.
 
 Existence tests differ from comparisons in that:
 
