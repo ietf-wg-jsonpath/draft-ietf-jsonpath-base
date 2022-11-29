@@ -502,9 +502,6 @@ to the JSONPath processing (e.g., index values and steps) MUST be
 within the range of exact values defined in I-JSON {{-i-json}}, namely
 within the interval \[-(2<sup>53</sup>)+1, (2<sup>53</sup>)-1].
 
-2. Strings on the right-hand side of the `=~` regex matching
-operator MUST conform to {{-iregexp}}.
-
 The well-formedness and the validity of JSONPath queries are independent of
 the JSON value the query is applied to; no further errors relating to the
 well-formedness and the validity of a JSONPath query can be
@@ -1085,8 +1082,7 @@ paren-expr        = [logical-not-op S] "(" S boolean-expr S ")"
                                       ; parenthesized expression
 logical-not-op    = "!"               ; logical NOT operator
 
-relation-expr = comp-expr /           ; comparison test
-                regex-expr            ; regular expression test
+relation-expr     = comp-expr         ; comparison test
 ~~~~
 
 Comparisons are restricted to Singular Path values, each of which selects at most one node, and primitive values (that is, numbers, strings, `true`, `false`,
@@ -1120,15 +1116,6 @@ exp          = "e" [ "-" / "+" ] 1*DIGIT           ; decimal exponent
 true         = %x74.72.75.65                       ; true
 false        = %x66.61.6c.73.65                    ; false
 null         = %x6e.75.6c.6c                       ; null
-~~~~
-
-The syntax of regular expressions in the string-literals on the right-hand
-side of `=~` is as defined in {{-iregexp}}.
-
-~~~~ abnf
-regex-expr   = (singular-path / string-literal) S regex-op S regex
-regex-op     = "=~"                        ; regular expression match
-regex        = string-literal              ; I-Regexp
 ~~~~
 
 The following table lists filter expression operators in order of precedence from highest (binds most tightly) to lowest (binds least tightly).
@@ -1212,14 +1199,6 @@ compared is an object, array, boolean, or `null`.
 * The comparison `a > b` yields true if and only if `b < a` yields true.
 * The comparison `a >= b` yields true if and only if `b < a` yields true or `a == b` yields true.
 
-##### Regular Expressions
-{: unnumbered}
-
-A regular-expression test yields true if and only if the value on the left-hand side of `=~` is a string value and it
-matches the regular expression on the right-hand side according to the semantics of {{-iregexp}}.
-
-The semantics of regular expressions are as defined in {{-iregexp}}.
-
 ##### Boolean Operators
 {: unnumbered}
 
@@ -1244,7 +1223,8 @@ subsections, JSONPath defines an extension point that can be used to
 add filter expression functionality: "Function Extensions".
 
 A function extension defines a registered name (see {{iana-fnex}}) that
-can be applied to a sequence of zero or more arguments, resulting in a result.
+can be applied to a sequence of zero or more arguments, resulting in a
+result.
 A function-expression stands for ("returns") a nodelist or a value.
 The arguments are filter expressions that are to be interpreted as
 nodelists or values.
@@ -1266,16 +1246,21 @@ function-argument       = comparable
 ~~~
 
 Syntactically, a function-expression can occur anywhere where a
-singular-path can occur (exist-expr, comparable, regex-expr).
+singular-path can occur (exist-expr, comparable).
 A function-expression that employs a function extension that returns a
-nodelist MUST return a singular node to be used in a comparable or a
-regex-expr.
+nodelist MUST return a singular node to be used in a comparable.
 
 ###### Function Extensions: length {#length}
 {: unnumbered}
 
+Arguments:
+: 1. value
+
+Result:
+: value (unsigned integer)
+
 The "length" function extension provides a way to compute the length
-of an array and make that available for further processing in the
+of a value and make that available for further processing in the
 filter expression:
 
 ~~~ JSONPath
@@ -1283,11 +1268,90 @@ $[?length(@.authors) >= 5]
 ~~~
 
 Its only argument is a value (possibly taken from a singular path as
-in the example above).  The result also is a value; if the argument
-value is an array, the result is the number of elements in the array.
-[length-mismatch]
+in the example above).  The result also is a value, an unsigned
+integer.
 
-[length-mismatch]: Define the case where the argument is not an array as well.
+* If the argument value is a string, the result is the number of
+  Unicode scalar values in the string.
+* If the argument value is an array, the result is the number of
+  elements in the array.
+* If the argument value is an object, the result is the number of
+  members in the object.
+* For any other argument value, the result is one.
+
+
+###### Function Extensions: count {#count}
+{: unnumbered}
+
+Arguments:
+: 1. nodelist
+
+Result:
+: value (unsigned integer)
+
+The "count" function extension provides a way to obtain the number of
+nodes in a nodelist and make that available for further processing in
+the filter expression:
+
+~~~ JSONPath
+$[?count(@.*.author) >= 5]
+~~~
+
+Its only argument is a nodelist.
+The result is a value, an unsigned integer, that gives the number of
+nodes in the nodelist.
+Note that there is no deduplication of the nodelist. [^dedup]
+
+[^dedup]: Well, that can be discussed.
+
+
+###### Function Extensions: match {#match}
+{: unnumbered}
+
+Arguments:
+: 1. value (string)
+  2. value (string conforming to {{-iregexp}})
+
+Result:
+: value (`true` or `false`)
+
+The "match" function extension provides a way to check whether a given
+string matches a given regular expression, which is in {{-iregexp}} form.
+
+~~~ JSONPath
+$[?match(@.date, "1974-05-..")]
+~~~
+
+Its first argument is a string that is matched against the iregexp
+contained in the string that is the second argument.
+The result is `true` if the string matches the iregexp and `false`
+otherwise.
+
+
+###### Function Extensions: search {#search}
+{: unnumbered}
+
+Arguments:
+: 1. value (string)
+  2. value (string conforming to {{-iregexp}})
+
+Result:
+: value (`true` or `false`)
+
+The "search" function extension provides a way to check whether a
+given string contains a substring that matches a given regular
+expression, which is in {{-iregexp}} form.
+
+~~~ JSONPath
+$[?search(@.author, "[BR]ob")]
+~~~
+
+Its first argument is a string that is searched for at least one
+substring that matches against the iregexp contained in the string
+that is the second argument.
+The result is `true` if such a substring exists, `false` otherwise.
+
+o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o
 
 #### Examples
 {: unnumbered}
@@ -1767,8 +1831,11 @@ Reference:
 
 Initial entries in this sub-registry are as listed in {{pre-reg}}:
 
-| Function Name | Brief description | Input | Output | Change Controller | Reference |   |   |
-| length        | length of array   | value | value  | IESG              | {{fnex}} of RFCthis |   |   |
+| Function Name | Brief description                  | Input        | Output | Change Controller | Reference         |
+| length        | length of array                    | value        | value  | IESG              | {{fnex}} of RFCthis |
+| count         | size of nodelist                   | nodelist     | value  | IESG              | {{fnex}} of RFCthis |
+| match         | regular expression full match      | value, value | value  | IESG              | {{fnex}} of RFCthis |
+| search        | regular expression substring match | value, value | value  | IESG              | {{fnex}} of RFCthis |
 {: #pre-reg title="Initial Entries in the Function Extensions Subregistry"}
 
 
