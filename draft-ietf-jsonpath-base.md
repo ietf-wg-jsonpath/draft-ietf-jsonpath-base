@@ -392,7 +392,7 @@ of bracket notation. Examples and descriptions use shorthands where convenient.
 ### Selectors
 
 A wildcard `*` ({{wildcard}}) in the expression `[*]` selects all children of a
-value and in the expression `..[*]` selects all descendants of a value.
+node and in the expression `..[*]` selects all descendants of a node.
 
 An array slice `start:end:step` ({{slice}}) selects a series of
 elements from an array, giving a start position, an end position, and
@@ -413,10 +413,10 @@ $.store.book[?@.price < 10].title
 |---------------------|-------------------------------------------------------------------------------------------------------------------------|
 | `$`                 | [root node identifier](#root-identifier)                                                                                |
 | `@`                 | [current node identifier](#filter-selector) (valid only within filter selectors)                                          |
-| `[<selectors>]`     | [child segment](#child-segment) selects zero or more children of a value; contains one or more selectors, separated by commas        |
+| `[<selectors>]`     | [child segment](#child-segment) selects zero or more children of a mode; contains one or more selectors, separated by commas        |
 | `.name`             | shorthand for `['name']`                                                                                                |
 | `.*`                | shorthand for `[*]`                                                                                                     |
-| `..[<selectors>]`   | [descendant segment](#descendant-segment): selects zero or more descendants of a value; contains one or more selectors, separated by commas |
+| `..[<selectors>]`   | [descendant segment](#descendant-segment): selects zero or more descendants of a node; contains one or more selectors, separated by commas |
 | `..name`            | shorthand for `..['name']`                                                                                              |
 | `..*`               | shorthand for `..[*]`                                                                                                   |
 | `'name'`            | [name selector](#name-selector): selects a named child of an object                                                     |
