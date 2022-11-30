@@ -228,6 +228,13 @@ Node:
 Root Node:
 : The unique node whose value is the entire argument.
 
+Root Node Identifier:
+: The expression `$` which refers to the root node of the argument.
+
+Current Node Identifier:
+: The expression `@` which refers to the current node in the context
+  of the evaluation of a filter expression (described later).
+
 Children (of a node):
 : If the node is an array, the nodes of its elements.
   If the node is an object, the nodes of its member values.
@@ -346,7 +353,7 @@ if they are not ({{Section 8.2 of -json}}).
 
 This section is informative.
 
-A JSONPath expression is applied to a JSON value, the *argument*.
+A JSONPath expression is applied to a JSON value, known as the argument.
 The output is a nodelist.
 
 A JSONPath expression consists of an identifier followed by a series
@@ -354,11 +361,11 @@ of zero or more segments each of which contains one or more selectors.
 
 ### Identifiers {#ids}
 
-The _root node identifier_ `$` refers to the *root node* of the argument,
+The root node identifier `$` refers to the root node of the argument,
 i.e., to the argument as a whole.
 Every JSONPath expression begins with the root node identifier.
 
-The _current node identifier_ `@` refers to the *current node* in the context
+The current node identifier `@` refers to the current node in the context
 of the evaluation of a filter expression (described later).
 
 ### Segments
@@ -481,7 +488,7 @@ The examples are based on the simple JSON value shown in
 ## Overview {#synsem-overview}
 
 A JSONPath expression is a string which, when applied to a JSON value,
-the *argument*, selects zero or more nodes of the argument and outputs
+the argument, selects zero or more nodes of the argument and outputs
 these nodes as a nodelist.
 
 A query MUST be encoded using UTF-8.
@@ -523,7 +530,7 @@ errors.)
 
 Syntactically, a JSONPath query consists of a root identifier (`$`), which
 stands for a nodelist that contains the root node of the argument,
-followed by a possibly empty sequence of *segments*.
+followed by a possibly empty sequence of segments.
 
 ~~~~ abnf
 json-path = root-identifier segments
@@ -541,7 +548,7 @@ implementation.
 The semantics are that a valid query is executed against a value,
 the *argument*, and produces a nodelist (i.e., a list of zero or more nodes of the value).
 
-The query is a root identifier followed by a sequence of zero or more *segments*, each of
+The query is a root identifier followed by a sequence of zero or more segments, each of
 which is applied to the result of the previous root identifier or segment and provides
 input to the next segment.
 These results and inputs take the form of a nodelist.
@@ -661,7 +668,7 @@ The syntax and semantics of each kind of selector are defined below.
 A name selector `'<name>'` selects at most one object member value.
 
 In contrast to JSON,
-the JSONPath syntax allows strings to be enclosed in _single_ or _double_ quotes.
+the JSONPath syntax allows strings to be enclosed in *single* or *double* quotes.
 
 ~~~~ abnf
 name-selector       = string-literal
