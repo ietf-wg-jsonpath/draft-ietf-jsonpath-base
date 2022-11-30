@@ -1069,7 +1069,7 @@ basic-expr        = paren-expr /
                     exist-expr
 exist-expr        = [logical-not-op S] filter-path
                        ; path existence or non-existence
-filter-path       = rel-path / json-path
+filter-path       = rel-path / json-path / function-expression
 rel-path          = current-node-identifier segments
 current-node-identifier = "@"
 ~~~~
@@ -1096,7 +1096,7 @@ comp-op      = "==" / "!=" /                    ; comparison ...
                "<"  / ">"  /                    ; operators
                "<=" / ">="
 
-singular-path     = rel-singular-path / abs-singular-path
+singular-path     = rel-singular-path / abs-singular-path / function-expression
 rel-singular-path = current-node-identifier singular-path-segments
 abs-singular-path = root-identifier singular-path-segments
 singular-path-segments = *(S (name-segment / index-segment))
@@ -1237,11 +1237,8 @@ function-name-first     = LCALPHA
 function-name-char      = DIGIT / function-name-first / "_"
 LCALPHA                 = %x61-7A  ; "a".."z"
 
-
 function-expression     = function-name "(" S [function-argument
                              *(S "," S function-argument)] S ")"
-singular-path           =/ function-expression ; if value
-filter-path             =/ function-expression ; if nodelist
 function-argument       = comparable / filter-path
 ~~~
 
