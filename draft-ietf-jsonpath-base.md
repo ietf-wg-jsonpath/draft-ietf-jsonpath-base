@@ -415,6 +415,7 @@ $.store.book[?@.price < 10].title
 | `3`                 | [index selector](#index-selector): selects an indexed child of an array (from 0)                                        |
 | `0:100:5`           | [array slice selector](#slice): start:end:step for arrays                                                               |
 | `?<expr>`           | [filter selector](#filter-selector): selects particular children using a boolean expression                             |
+| `length(@.foo)`     | [function extension](#fnex): invokes a function in a filter expression                                                  |
 {: #tbl-overview title="Overview of JSONPath"}
 
 ## JSONPath Examples
