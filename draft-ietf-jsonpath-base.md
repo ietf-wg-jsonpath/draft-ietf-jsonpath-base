@@ -75,7 +75,6 @@ contributor:
 
 informative:
 #  RFC3552: seccons
-#  RFC8126: ianacons
   RFC6901: pointer
   RFC6901: pointer
   JSONPath-orig:
@@ -109,6 +108,12 @@ informative:
     title: Boolean algebra laws
 
 normative:
+  STD80:
+    -: ascii
+    =: RFC20
+  BCP26:
+    -: ianacons
+    =: RFC8126
   RFC3629: utf8
   RFC5234: abnf
   RFC8259: json
@@ -494,9 +499,6 @@ requirements posed by this document, which are:
 to the JSONPath processing (e.g., index values and steps) MUST be
 within the range of exact values defined in I-JSON {{-i-json}}, namely
 within the interval \[-(2<sup>53</sup>)+1, (2<sup>53</sup>)-1].
-
-2. Strings on the right-hand side of the `=~` regex matching
-operator MUST conform to {{-iregexp}}.
 
 The well-formedness and the validity of JSONPath queries are independent of
 the JSON value the query is applied to; no further errors relating to the
@@ -1062,11 +1064,12 @@ logical-and-expr  = basic-expr *(S "&&" S basic-expr)
                       ; conjunction
                       ; binds more tightly than disjunction
 
-basic-expr        = exist-expr /
-                    paren-expr /
+basic-expr        = paren-expr /
                     relation-expr
-exist-expr        = [logical-not-op S] (rel-path / json-path)
+                    exist-expr
+exist-expr        = [logical-not-op S] filter-path
                        ; path existence or non-existence
+filter-path       = rel-path / json-path
 rel-path          = current-node-identifier segments
 current-node-identifier = "@"
 ~~~~
@@ -1078,8 +1081,7 @@ paren-expr        = [logical-not-op S] "(" S boolean-expr S ")"
                                       ; parenthesized expression
 logical-not-op    = "!"               ; logical NOT operator
 
-relation-expr = comp-expr /           ; comparison test
-                regex-expr            ; regular expression test
+relation-expr     = comp-expr         ; comparison test
 ~~~~
 
 Comparisons are restricted to Singular Path values, each of which selects at most one node, and primitive values (that is, numbers, strings, `true`, `false`,
@@ -1115,15 +1117,6 @@ false        = %x66.61.6c.73.65                    ; false
 null         = %x6e.75.6c.6c                       ; null
 ~~~~
 
-The syntax of regular expressions in the string-literals on the right-hand
-side of `=~` is as defined in {{-iregexp}}.
-
-~~~~ abnf
-regex-expr   = (singular-path / string-literal) S regex-op S regex
-regex-op     = "=~"                        ; regular expression match
-regex        = string-literal              ; I-Regexp
-~~~~
-
 The following table lists filter expression operators in order of precedence from highest (binds most tightly) to lowest (binds least tightly).
 
 <!-- FIXME: Should the syntax column be split between unary and binary operators? -->
@@ -1132,7 +1125,7 @@ The following table lists filter expression operators in order of precedence fro
 |:--:|:--:|:--:|
 |  5  | Grouping | `(...)` |
 |  4  | Logical NOT | `!` |
-|  3  | Relations | `==`&nbsp;`!=`<br>`<`&nbsp;`<=`&nbsp;`>`&nbsp;`>=`<br>`=~` |
+|  3  | Relations | `==`&nbsp;`!=`<br>`<`&nbsp;`<=`&nbsp;`>`&nbsp;`>=` |
 |  2  | Logical AND | `&&` |
 |  1  | Logical OR | `¦¦`   |
 {: title="Filter expression operator precedence" }
@@ -1205,19 +1198,161 @@ compared is an object, array, boolean, or `null`.
 * The comparison `a > b` yields true if and only if `b < a` yields true.
 * The comparison `a >= b` yields true if and only if `b < a` yields true or `a == b` yields true.
 
-##### Regular Expressions
-{: unnumbered}
-
-A regular-expression test yields true if and only if the value on the left-hand side of `=~` is a string value and it
-matches the regular expression on the right-hand side according to the semantics of {{-iregexp}}.
-
-The semantics of regular expressions are as defined in {{-iregexp}}.
-
 ##### Boolean Operators
 {: unnumbered}
 
 The logical AND, OR, and NOT operators have the normal semantics of Boolean algebra and
 obey its laws (see, for example, {{BOOLEAN-LAWS}}).
+
+##### Function Extensions {#fnex}
+{: unnumbered}
+
+[^unnumbered-bad]
+
+[^unnumbered-bad]: This should not be an unnumbered section, which it is
+    forced to be by the parent section being unnumbered too.
+    The overall structure where the parts of this subsection go to
+    needs to be decided; one part already is in the IANA
+    Considerations in {{iana-fnex}}.
+    This PR will focus on content, a future PR will fix the structure.
+{:source=" -- cabo"}
+
+Beyond the filter expression functionality defined in the preceding
+subsections, JSONPath defines an extension point that can be used to
+add filter expression functionality: "Function Extensions".
+
+A function extension defines a registered name (see {{iana-fnex}}) that
+can be applied to a sequence of zero or more arguments, resulting in a
+result.
+A function-expression stands for ("returns") a nodelist or a value.
+The arguments are filter expressions that are to be interpreted as
+nodelists or values.
+For each argument and for the result, the function extension defines
+the "kind" of the item, i.e., whether the item is a value or a
+nodelist ("nodes").
+
+~~~ abnf
+function-name           = function-name-first *function-name-char
+function-name-first     = LCALPHA
+function-name-char      = DIGIT / function-name-first / "_"
+LCALPHA                 = %x61-7A  ; "a".."z"
+
+
+function-expression     = function-name "(" S [function-argument
+                             *(S "," S function-argument)] S ")"
+singular-path           =/ function-expression ; if value
+filter-path             =/ function-expression ; if nodelist
+function-argument       = comparable / filter-path
+~~~
+
+Syntactically, a function-expression can occur anywhere where a
+singular-path can occur (exist-expr, comparable).
+A function-expression that employs a function extension that returns a
+nodelist MUST return a singular node to be used in a comparable.
+
+###### Function Extensions: length {#length}
+{: unnumbered}
+
+Arguments:
+: 1. value
+
+Result:
+: value (unsigned integer)
+
+The "length" function extension provides a way to compute the length
+of a value and make that available for further processing in the
+filter expression:
+
+~~~ JSONPath
+$[?length(@.authors) >= 5]
+~~~
+
+Its only argument is a value (possibly taken from a singular path as
+in the example above).  The result also is a value, an unsigned
+integer.
+
+* If the argument value is a string, the result is the number of
+  Unicode scalar values in the string.
+* If the argument value is an array, the result is the number of
+  elements in the array.
+* If the argument value is an object, the result is the number of
+  members in the object.
+* For any other argument value, the result is one.
+
+
+###### Function Extensions: count {#count}
+{: unnumbered}
+
+Arguments:
+: 1. nodelist
+
+Result:
+: value (unsigned integer)
+
+The "count" function extension provides a way to obtain the number of
+nodes in a nodelist and make that available for further processing in
+the filter expression:
+
+~~~ JSONPath
+$[?count(@.*.author) >= 5]
+~~~
+
+Its only argument is a nodelist.
+The result is a value, an unsigned integer, that gives the number of
+nodes in the nodelist.
+Note that there is no deduplication of the nodelist. [^dedup]
+
+[^dedup]: Well, that can be discussed.
+
+
+###### Function Extensions: match {#match}
+{: unnumbered}
+
+Arguments:
+: 1. value (string)
+  2. value (string conforming to {{-iregexp}})
+
+Result:
+: value (`true` or `false`)
+
+The "match" function extension provides a way to check whether (the
+entirety of, see {{search}} below) a given
+string matches a given regular expression, which is in {{-iregexp}} form.
+
+~~~ JSONPath
+$[?match(@.date, "1974-05-..")]
+~~~
+
+Its first argument is a string that is matched against the iregexp
+contained in the string that is the second argument.
+The result is `true` if the string matches the iregexp and `false`
+otherwise.
+
+
+###### Function Extensions: search {#search}
+{: unnumbered}
+
+Arguments:
+: 1. value (string)
+  2. value (string conforming to {{-iregexp}})
+
+Result:
+: value (`true` or `false`)
+
+The "search" function extension provides a way to check whether a
+given string contains a substring that matches a given regular
+expression, which is in {{-iregexp}} form.
+
+~~~ JSONPath
+$[?search(@.author, "[BR]ob")]
+~~~
+
+Its first argument is a string that is searched for at least one
+substring that matches the iregexp contained in the string
+that is the second argument.
+The result is `true` if such a substring exists, `false` otherwise.
+
+o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o
 
 #### Examples
 {: unnumbered}
@@ -1264,7 +1399,8 @@ JSON:
 JSON:
 
     {
-      "a": [3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}, {"b": {}}],
+      "a": [3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"},
+           {"b": {}}, {"b": "kilo"}],
       "o": {"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}},
       "e": "f"
     }
@@ -1274,12 +1410,13 @@ Queries:
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
 | `$.a[?@>3.5]` | `5` <br> `4` <br> `6` | `$['a'][1]` <br> `$['a'][4]` <br> `$['a'][5]` | Array value comparison |
-| `$.a[?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": {}}` | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][8]` | Array value existence |
-| `$[?@.*]` | `[3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}, {"b": {}}]` <br> `{"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}}` | `$['a']` <br> `$['o']` | Existence of non-singular paths |
-| `$[?@[?@.b]]` | `[3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}, {"b": {}}]` | `$['a']` | Nested filters |
-| `$.a[?@.b, ?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": "k"}` <br> `{"b": "j"}` | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][7]` <br> `$['a'][6]` | Non-deterministic ordering |
+| `$.a[?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": {}}` <br> `{"b": "kilo"}` | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][8]` <br> `$['a'][9]` | Array value existence |
+| `$[?@.*]` | `[3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}, {"b": {}}, {"b": "kilo"}]` <br> `{"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}}` | `$['a']` <br> `$['o']` | Existence of non-singular paths |
+| `$[?@[?@.b]]` | `[3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}, {"b": {}}, {"b": "kilo"}]` | `$['a']` | Nested filters |
+| `$.a[?@.b, ?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": "k"}` <br> `{"b": "j"}` <br> BROKEN? | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][7]` <br> `$['a'][6]` | Non-deterministic ordering |
 | `$.a[?@<2 || @.b == "k"]` | `1` <br> `{"b": "k"}` | `$['a'][2]` <br> `$['a'][7]` | Array value logical OR |
-| `$.a[?@.b =~ "[jk]"]` | `{"b": "j"}` <br> `{"b": "k"}` | `$['a'][6]` <br> `$['a'][7]` | Array value regular expression |
+| `$.a[?match(@.b, "[jk]")]` | `{"b": "j"}` <br> `{"b": "k"}` | `$['a'][6]` <br> `$['a'][7]` | Array value regular expression match |
+| `$.a[?search(@.b, "[jk]")]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": "kilo"}` | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][9]` | Array value regular expression search |
 | `$.o[?@>1 && @<4]` | `2` <br> `3` | `$['o']['q']` <br> `$['o']['r']` | Object value logical AND |
 | `$.o[?@>1 && @<4]` | `3` <br> `2` | `$['o']['r']` <br> `$['o']['q']` | Alternative result |
 | `$.o[?@.u || @.x]` | `{"u": 6}` | `$['o']['t']` | Object value logical OR |
@@ -1304,6 +1441,7 @@ consisting of nodes at depth in the input value of N or greater.
 produces a nodelist consisting of nodes precisely at depth N in the input value.
 
 There are two kinds of segment: child segments and descendant segments.
+
 ~~~~ abnf
 segment = child-segment / descendant-segment
 ~~~~
@@ -1651,6 +1789,58 @@ Change controller:
 Provisional registration? (standards tree only):
 : no
 
+## Function Extensions {#iana-fnex}
+
+This specification defines a new "Function Extensions sub-registry" in
+a new "JSONPath Parameters registry", with the policy "expert review"
+({{Section 4.5 of -ianacons}}).
+
+The experts are instructed to be frugal in the allocation of function
+extension names that are suggestive of generally applicable semantics,
+keeping them in reserve for functions that are likely to enjoy wide
+use and can make good use of their conciseness.
+The expert is also instructed to direct the registrant to provide a
+specification ({{Section 4.6 of -ianacons}}), but can make exceptions,
+for instance when a specification is not available at the time of
+registration but is likely forthcoming.
+If the expert becomes aware of function extensions that are deployed and
+in use, they may also initiate a registration on their own if
+they deem such a registration can avert potential future collisions.
+{: #de-instructions}
+
+Each entry in the registry must include:
+
+{:vspace}
+Function Name:
+: a lower case ASCII {{-ascii}} string that starts with a letter and can
+  contain letters, digits and underscore characters afterwards
+  (`[a-z][_a-z0-9]*`).
+
+Brief description:
+: a brief description
+
+Input:
+: A comma-separated list of zero or more kinds (value or nodes) of the
+  arguments expected for this function extension
+
+Output:
+: The kind (value or nodes) of the result for this function extension
+
+Change Controller:
+: (see {{Section 2.3 of -ianacons}})
+
+Reference:
+: a reference document that provides a description of the function
+  extension
+
+Initial entries in this sub-registry are as listed in {{pre-reg}}:
+
+| Function Name | Brief description                  | Input        | Output | Change Controller | Reference         |
+| length        | length of array                    | value        | value  | IESG              | {{fnex}} of RFCthis |
+| count         | size of nodelist                   | nodelist     | value  | IESG              | {{fnex}} of RFCthis |
+| match         | regular expression full match      | value, value | value  | IESG              | {{fnex}} of RFCthis |
+| search        | regular expression substring match | value, value | value  | IESG              | {{fnex}} of RFCthis |
+{: #pre-reg title="Initial Entries in the Function Extensions Subregistry"}
 
 
 # Security Considerations {#Security}
