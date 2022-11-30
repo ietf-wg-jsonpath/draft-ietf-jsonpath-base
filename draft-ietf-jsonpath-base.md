@@ -1213,6 +1213,9 @@ Filter selectors may use function extensions, which are covered in Section {{<fn
 #### Examples
 {: unnumbered}
 
+The first set of examples shows some comparison expressions and their
+result with a given JSON value as input.
+
 JSON:
 
     {
@@ -1252,6 +1255,12 @@ JSON:
 | `true > true` | false | Booleans are not ordered |
 {: title="Comparison examples" }
 
+The second set of examples shows some complete JSONPath queries that make use
+of filter selectors, and the results of evaluating these queries on a
+given JSON value as input.
+(Note that two of the queries employ function extensions; please see
+Sections {{<match}} and {{<search}} below for details about these.)
+
 JSON:
 
     {
@@ -1260,8 +1269,6 @@ JSON:
       "o": {"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}},
       "e": "f"
     }
-
-Queries:
 
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
