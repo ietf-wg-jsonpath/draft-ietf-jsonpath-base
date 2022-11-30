@@ -1204,6 +1204,11 @@ compared is an object, array, boolean, or `null`.
 The logical AND, OR, and NOT operators have the normal semantics of Boolean algebra and
 obey its laws (see, for example, {{BOOLEAN-LAWS}}).
 
+##### Function Extensions
+{: unnumbered}
+
+Filter selectors may use function extensions, which are covered in Section {{<fnex}}.
+
 #### Examples
 {: unnumbered}
 
@@ -1277,18 +1282,7 @@ Queries:
 The example above with the query `$.a[?@.b, ?@.b]` shows that the filter selector may produce nodelists in distinct
 orders each time it appears in the child segment.
 
-##### Function Extensions {#fnex}
-{: unnumbered}
-
-[^unnumbered-bad]
-
-[^unnumbered-bad]: This should not be an unnumbered section, which it is
-    forced to be by the parent section being unnumbered too.
-    The overall structure where the parts of this subsection go to
-    needs to be decided; one part already is in the IANA
-    Considerations in {{iana-fnex}}.
-    This PR will focus on content, a future PR will fix the structure.
-{:source=" -- cabo"}
+## Function Extensions {#fnex}
 
 Beyond the filter expression functionality defined in the preceding
 subsections, JSONPath defines an extension point that can be used to
@@ -1320,8 +1314,7 @@ singular-path can occur (exist-expr, comparable).
 A function-expression that employs a function extension that returns a
 nodelist MUST return a singular node to be used in a comparable.
 
-###### Function Extensions: length {#length}
-{: unnumbered}
+### `length` Function Extension {#length}
 
 Arguments:
 : 1. value
@@ -1350,8 +1343,7 @@ integer.
 * For any other argument value, the result is one.
 
 
-###### Function Extensions: count {#count}
-{: unnumbered}
+### `count` Function Extension {#count}
 
 Arguments:
 : 1. nodelist
@@ -1375,8 +1367,7 @@ Note that there is no deduplication of the nodelist. [^dedup]
 [^dedup]: Well, that can be discussed.
 
 
-###### Function Extensions: match {#match}
-{: unnumbered}
+### `match` Function Extension {#match}
 
 Arguments:
 : 1. value (string)
@@ -1399,8 +1390,7 @@ The result is `true` if the string matches the iregexp and `false`
 otherwise.
 
 
-###### Function Extensions: search {#search}
-{: unnumbered}
+### `search` Function Extension {#search}
 
 Arguments:
 : 1. value (string)
@@ -1421,8 +1411,6 @@ Its first argument is a string that is searched for at least one
 substring that matches the iregexp contained in the string
 that is the second argument.
 The result is `true` if such a substring exists, `false` otherwise.
-
-o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o
 
 ## Segments  {#segments-details}
 
