@@ -370,7 +370,9 @@ of the evaluation of a filter expression (described later).
 
 ### Segments
 
-Segments can use the *bracket notation*, for example:
+Segments select children (`[]`) or descendants (`..[]`) of an input value.
+
+Segments can use *bracket notation*, for example:
 
 ~~~~
 $['store']['book'][0]['title']
@@ -389,15 +391,15 @@ of bracket notation. Examples and descriptions use shorthands where convenient.
 
 ### Selectors
 
-A wildcard `*` ({{wildcard}}) in the expression `[*]` selects all children of an
-object or an array and in the expression `..[*]` selects all descendants of an object or an array.
+A wildcard `*` ({{wildcard}}) in the expression `[*]` selects all children of a
+value and in the expression `..[*]` selects all descendants of a value.
 
 An array slice `start:end:step` ({{slice}}) selects a series of
 elements from an array, giving a start position, an end position, and
-possibly a step value that moves the position from the start to the
+an optional step value that moves the position from the start to the
 end.
 
-Filter expressions `?<boolean expr>` select certain children of an object or array as in
+Filter expressions `?<boolean expr>` select certain children of a value, as in:
 
 ~~~~
 $.store.book[?@.price < 10].title
@@ -405,25 +407,25 @@ $.store.book[?@.price < 10].title
 
 ### Summary
 
-{{tbl-overview}} provides a quick overview of the JSONPath syntax elements.
+{{tbl-overview}} provides a brief overview of JSONPath syntax.
 
 | Syntax Element      | Description                                                                                                             |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------|
 | `$`                 | [root node identifier](#root-identifier)                                                                                |
 | `@`                 | [current node identifier](#filter-selector) (valid only within filter selectors)                                          |
-| `[<selectors>]`     | [child segment](#child-segment) selects zero or more children of JSON objects and arrays; contains one or more selectors, separated by commas        |
+| `[<selectors>]`     | [child segment](#child-segment) selects zero or more children of a value; contains one or more selectors, separated by commas        |
 | `.name`             | shorthand for `['name']`                                                                                                |
 | `.*`                | shorthand for `[*]`                                                                                                     |
-| `..[<selectors>]`   | [descendant segment](#descendant-segment): selects zero or more descendants of JSON objects and arrays; contains one or more selectors, separated by commas |
+| `..[<selectors>]`   | [descendant segment](#descendant-segment): selects zero or more descendants of a value; contains one or more selectors, separated by commas |
 | `..name`            | shorthand for `..['name']`                                                                                              |
 | `..*`               | shorthand for `..[*]`                                                                                                   |
 | `'name'`            | [name selector](#name-selector): selects a named child of an object                                                     |
-| `*`                 | [wildcard selector](#name-selector): selects all children of an array or object                                         |
+| `*`                 | [wildcard selector](#name-selector): selects all children of a value                                                    |
 | `3`                 | [index selector](#index-selector): selects an indexed child of an array (from 0)                                        |
 | `0:100:5`           | [array slice selector](#slice): start:end:step for arrays                                                               |
 | `?<expr>`           | [filter selector](#filter-selector): selects particular children using a boolean expression                             |
 | `length(@.foo)`     | [function extension](#fnex): invokes a function in a filter expression                                                  |
-{: #tbl-overview title="Overview of JSONPath"}
+{: #tbl-overview title="Overview of JSONPath syntax"}
 
 ## JSONPath Examples
 
