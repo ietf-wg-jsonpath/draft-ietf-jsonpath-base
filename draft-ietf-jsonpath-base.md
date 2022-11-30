@@ -1204,6 +1204,79 @@ compared is an object, array, boolean, or `null`.
 The logical AND, OR, and NOT operators have the normal semantics of Boolean algebra and
 obey its laws (see, for example, {{BOOLEAN-LAWS}}).
 
+#### Examples
+{: unnumbered}
+
+JSON:
+
+    {
+      "obj": {"x": "y"},
+      "arr": [2, 3]
+    }
+
+| Comparison | Result | Comment |
+|:--:|:--:|:--:|
+| `$.absent1 == $.absent2` | true | Empty nodelists |
+| `$.absent1 <= $.absent2` | true | `==` implies `<=` |
+| `$.absent == 'g'` | false | Empty nodelist |
+| `$.absent1 != $.absent2` | false | Empty nodelists |
+| `$.absent != 'g'` | true | Empty nodelist |
+| `1 <= 2` | true | Numeric comparison |
+| `1 > 2` | false | Strict, numeric comparison |
+| `13 == '13'` | false | Type mismatch |
+| `'a' <= 'b'` | true | String comparison |
+| `'a' > 'b'` | false | Strict, string comparison |
+| `$.obj == $.arr` | false | Type mismatch |
+| `$.obj != $.arr` | true | Type mismatch |
+| `$.obj == $.obj` | true | Object comparison |
+| `$.obj != $.obj` | false | Object comparison |
+| `$.arr == $.arr` | true | Array comparison |
+| `$.arr != $.arr` | false | Array comparison |
+| `$.obj == 17` | false | Type mismatch |
+| `$.obj != 17` | true | Type mismatch |
+| `$.obj <= $.arr` | false | Objects and arrays are not ordered |
+| `$.obj < $.arr` | false | Objects and arrays are not ordered |
+| `$.obj <= $.obj` | true | `==` implies `<=` |
+| `$.arr <= $.arr` | true | `==` implies `<=` |
+| `1 <= $.arr` | false | Arrays are not ordered |
+| `1 >= $.arr` | false | Arrays are not ordered |
+| `1 > $.arr` | false | Arrays are not ordered |
+| `1 < $.arr` | false | Arrays are not ordered |
+| `true <= true` | true | `==` implies `<=` |
+| `true > true` | false | Booleans are not ordered |
+{: title="Comparison examples" }
+
+JSON:
+
+    {
+      "a": [3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"},
+           {"b": {}}, {"b": "kilo"}],
+      "o": {"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}},
+      "e": "f"
+    }
+
+Queries:
+
+| Query | Result | Result Paths | Comment |
+| :---: | ------ | :----------: | ------- |
+| `$.a[?@>3.5]` | `5` <br> `4` <br> `6` | `$['a'][1]` <br> `$['a'][4]` <br> `$['a'][5]` | Array value comparison |
+| `$.a[?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": {}}` <br> `{"b": "kilo"}` | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][8]` <br> `$['a'][9]` | Array value existence |
+| `$[?@.*]` | `[3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}, {"b": {}}, {"b": "kilo"}]` <br> `{"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}}` | `$['a']` <br> `$['o']` | Existence of non-singular paths |
+| `$[?@[?@.b]]` | `[3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}, {"b": {}}, {"b": "kilo"}]` | `$['a']` | Nested filters |
+| `$.a[?@.b, ?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": "k"}` <br> `{"b": "j"}` <br> BROKEN? | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][7]` <br> `$['a'][6]` | Non-deterministic ordering |
+| `$.a[?@<2 || @.b == "k"]` | `1` <br> `{"b": "k"}` | `$['a'][2]` <br> `$['a'][7]` | Array value logical OR |
+| `$.a[?match(@.b, "[jk]")]` | `{"b": "j"}` <br> `{"b": "k"}` | `$['a'][6]` <br> `$['a'][7]` | Array value regular expression match |
+| `$.a[?search(@.b, "[jk]")]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": "kilo"}` | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][9]` | Array value regular expression search |
+| `$.o[?@>1 && @<4]` | `2` <br> `3` | `$['o']['q']` <br> `$['o']['r']` | Object value logical AND |
+| `$.o[?@>1 && @<4]` | `3` <br> `2` | `$['o']['r']` <br> `$['o']['q']` | Alternative result |
+| `$.o[?@.u || @.x]` | `{"u": 6}` | `$['o']['t']` | Object value logical OR |
+| `$.a[?(@.b == $.x)]`| `3` <br> `5` <br> `1` <br> `2` <br> `4` <br> `6` | `$['a'][0]` <br>`$['a'][1]` <br> `$['a'][2]` <br> `$['a'][3]` <br> `$['a'][4]` | Comparison of paths with no values |
+| `$[?(@ == @)]` | | | Comparison of structured values |
+{: title="Filter selector examples"}
+
+The example above with the query `$.a[?@.b, ?@.b]` shows that the filter selector may produce nodelists in distinct
+orders each time it appears in the child segment.
+
 ##### Function Extensions {#fnex}
 {: unnumbered}
 
@@ -1350,79 +1423,6 @@ that is the second argument.
 The result is `true` if such a substring exists, `false` otherwise.
 
 o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o
-
-#### Examples
-{: unnumbered}
-
-JSON:
-
-    {
-      "obj": {"x": "y"},
-      "arr": [2, 3]
-    }
-
-| Comparison | Result | Comment |
-|:--:|:--:|:--:|
-| `$.absent1 == $.absent2` | true | Empty nodelists |
-| `$.absent1 <= $.absent2` | true | `==` implies `<=` |
-| `$.absent == 'g'` | false | Empty nodelist |
-| `$.absent1 != $.absent2` | false | Empty nodelists |
-| `$.absent != 'g'` | true | Empty nodelist |
-| `1 <= 2` | true | Numeric comparison |
-| `1 > 2` | false | Strict, numeric comparison |
-| `13 == '13'` | false | Type mismatch |
-| `'a' <= 'b'` | true | String comparison |
-| `'a' > 'b'` | false | Strict, string comparison |
-| `$.obj == $.arr` | false | Type mismatch |
-| `$.obj != $.arr` | true | Type mismatch |
-| `$.obj == $.obj` | true | Object comparison |
-| `$.obj != $.obj` | false | Object comparison |
-| `$.arr == $.arr` | true | Array comparison |
-| `$.arr != $.arr` | false | Array comparison |
-| `$.obj == 17` | false | Type mismatch |
-| `$.obj != 17` | true | Type mismatch |
-| `$.obj <= $.arr` | false | Objects and arrays are not ordered |
-| `$.obj < $.arr` | false | Objects and arrays are not ordered |
-| `$.obj <= $.obj` | true | `==` implies `<=` |
-| `$.arr <= $.arr` | true | `==` implies `<=` |
-| `1 <= $.arr` | false | Arrays are not ordered |
-| `1 >= $.arr` | false | Arrays are not ordered |
-| `1 > $.arr` | false | Arrays are not ordered |
-| `1 < $.arr` | false | Arrays are not ordered |
-| `true <= true` | true | `==` implies `<=` |
-| `true > true` | false | Booleans are not ordered |
-{: title="Comparison examples" }
-
-JSON:
-
-    {
-      "a": [3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"},
-           {"b": {}}, {"b": "kilo"}],
-      "o": {"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}},
-      "e": "f"
-    }
-
-Queries:
-
-| Query | Result | Result Paths | Comment |
-| :---: | ------ | :----------: | ------- |
-| `$.a[?@>3.5]` | `5` <br> `4` <br> `6` | `$['a'][1]` <br> `$['a'][4]` <br> `$['a'][5]` | Array value comparison |
-| `$.a[?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": {}}` <br> `{"b": "kilo"}` | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][8]` <br> `$['a'][9]` | Array value existence |
-| `$[?@.*]` | `[3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}, {"b": {}}, {"b": "kilo"}]` <br> `{"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}}` | `$['a']` <br> `$['o']` | Existence of non-singular paths |
-| `$[?@[?@.b]]` | `[3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}, {"b": {}}, {"b": "kilo"}]` | `$['a']` | Nested filters |
-| `$.a[?@.b, ?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": "k"}` <br> `{"b": "j"}` <br> BROKEN? | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][7]` <br> `$['a'][6]` | Non-deterministic ordering |
-| `$.a[?@<2 || @.b == "k"]` | `1` <br> `{"b": "k"}` | `$['a'][2]` <br> `$['a'][7]` | Array value logical OR |
-| `$.a[?match(@.b, "[jk]")]` | `{"b": "j"}` <br> `{"b": "k"}` | `$['a'][6]` <br> `$['a'][7]` | Array value regular expression match |
-| `$.a[?search(@.b, "[jk]")]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": "kilo"}` | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][9]` | Array value regular expression search |
-| `$.o[?@>1 && @<4]` | `2` <br> `3` | `$['o']['q']` <br> `$['o']['r']` | Object value logical AND |
-| `$.o[?@>1 && @<4]` | `3` <br> `2` | `$['o']['r']` <br> `$['o']['q']` | Alternative result |
-| `$.o[?@.u || @.x]` | `{"u": 6}` | `$['o']['t']` | Object value logical OR |
-| `$.a[?(@.b == $.x)]`| `3` <br> `5` <br> `1` <br> `2` <br> `4` <br> `6` | `$['a'][0]` <br>`$['a'][1]` <br> `$['a'][2]` <br> `$['a'][3]` <br> `$['a'][4]` | Comparison of paths with no values |
-| `$[?(@ == @)]` | | | Comparison of structured values |
-{: title="Filter selector examples"}
-
-The example above with the query `$.a[?@.b, ?@.b]` shows that the filter selector may produce nodelists in distinct
-orders each time it appears in the child segment.
 
 ## Segments  {#segments-details}
 
