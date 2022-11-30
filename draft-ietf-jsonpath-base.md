@@ -261,9 +261,12 @@ Unicode Scalar Value:
   In other words, integers in either of the inclusive base 16 ranges 0 to D7FF and
   E000 to 10FFFF. JSON string values are sequences of Unicode scalar values.
 
+Singular Nodelist:
+: A nodelist containing at most one node.
+
 Singular Path:
 : A JSONPath expression built from segments each of which, regardless of the input value,
-  produces at most one node.
+  produces a Singular Nodelist.
 
 Selector:
 : A single item within a segment that takes the input value and produces a nodelist
@@ -500,14 +503,10 @@ to the JSONPath processing (e.g., index values and steps) MUST be
 within the range of exact values defined in I-JSON {{-i-json}}, namely
 within the interval \[-(2<sup>53</sup>)+1, (2<sup>53</sup>)-1].
 
-2. Any function extensions used by the query MUST be supported by the JSONPath
-implementation, MUST have the correct number of arguments of the correct kinds
-(i.e., each argument of kind nodelist MUST be a Singular Path), and
-return the correct kind of result for the context in which it is used
-(i.e., if the function extension is an argument to another function extension
-and the other function extensions requires the argument to be a nodelist,
-the function extension MUST return a nodelist).
+2. __Duplicate the text from the Function Extensions section__
 
+A JSONPath implementation MUST raise an error for any query which is not
+well-formed and valid.
 The well-formedness and the validity of JSONPath queries are independent of
 the JSON value the query is applied to; no further errors relating to the
 well-formedness and the validity of a JSONPath query can be
@@ -1237,8 +1236,8 @@ A function-expression stands for ("returns") a nodelist or a value.
 The arguments are filter expressions that are to be interpreted as
 nodelists or values.
 For each argument and for the result, the function extension defines
-the "kind" of the item, i.e., whether the item is a value or a
-nodelist ("nodes").
+the "kind" of the item, i.e., whether the item is a value, a Singular Nodelist, or a
+nodelist with any number of nodes.
 
 ~~~ abnf
 function-name           = function-name-first *function-name-char
@@ -1254,10 +1253,14 @@ function-argument       = comparable / filter-path
 Syntactically, a function-expression can occur anywhere where a
 singular-path can occur (comparable) and in existence tests.
 
-Any function extensions used by the query MUST be supported by the JSONPath
-implementation, MUST have the correct number of arguments of the correct kinds
-(i.e., each argument of kind nodelist MUST be a Singular Path), and
-return the correct kind of result for the context in which it is used
+__The following paragraph starts to introduce a type system for function arguments and return values. Types are values, nodelists, and (a subtype of nodelist) Singular Nodelists. This needs working out more carefully.__
+
+For a query to be syntactically valid (se {{<synsem-overview}}), any function extensions used by the query
+MUST be supported by the JSONPath implementation,
+MUST have the correct number of arguments of the correct kinds
+(i.e., each argument of kind nodelist MUST be a Singular Path
+or a function extension that returns a Singular Nodelist), and
+MUST return the correct kind of result for the context in which it is used
 (i.e., if the function extension is an argument to another function extension
 and the other function extensions requires the argument to be a nodelist,
 the function extension MUST return a nodelist).
