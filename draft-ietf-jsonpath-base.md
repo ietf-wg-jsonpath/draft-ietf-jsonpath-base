@@ -415,6 +415,7 @@ $.store.book[?@.price < 10].title
 | `3`                 | [index selector](#index-selector): selects an indexed child of an array (from 0)                                        |
 | `0:100:5`           | [array slice selector](#slice): start:end:step for arrays                                                               |
 | `?<expr>`           | [filter selector](#filter-selector): selects particular children using a boolean expression                             |
+| `length(@.foo)`     | [function extension](#fnex): invokes a function in a filter expression                                                  |
 {: #tbl-overview title="Overview of JSONPath"}
 
 ## JSONPath Examples
@@ -1204,155 +1205,16 @@ compared is an object, array, boolean, or `null`.
 The logical AND, OR, and NOT operators have the normal semantics of Boolean algebra and
 obey its laws (see, for example, {{BOOLEAN-LAWS}}).
 
-##### Function Extensions {#fnex}
+##### Function Extensions
 {: unnumbered}
 
-[^unnumbered-bad]
-
-[^unnumbered-bad]: This should not be an unnumbered section, which it is
-    forced to be by the parent section being unnumbered too.
-    The overall structure where the parts of this subsection go to
-    needs to be decided; one part already is in the IANA
-    Considerations in {{iana-fnex}}.
-    This PR will focus on content, a future PR will fix the structure.
-{:source=" -- cabo"}
-
-Beyond the filter expression functionality defined in the preceding
-subsections, JSONPath defines an extension point that can be used to
-add filter expression functionality: "Function Extensions".
-
-A function extension defines a registered name (see {{iana-fnex}}) that
-can be applied to a sequence of zero or more arguments, resulting in a
-result.
-A function-expression stands for ("returns") a nodelist or a value.
-The arguments are filter expressions that are to be interpreted as
-nodelists or values.
-For each argument and for the result, the function extension defines
-the "kind" of the item, i.e., whether the item is a value or a
-nodelist ("nodes").
-
-~~~ abnf
-function-name           = function-name-first *function-name-char
-function-name-first     = LCALPHA
-function-name-char      = DIGIT / function-name-first / "_"
-LCALPHA                 = %x61-7A  ; "a".."z"
-
-function-expression     = function-name "(" S [function-argument
-                             *(S "," S function-argument)] S ")"
-function-argument       = comparable / filter-path
-~~~
-
-Syntactically, a function-expression can occur anywhere where a
-singular-path can occur (exist-expr, comparable).
-A function-expression that employs a function extension that returns a
-nodelist MUST return a singular node to be used in a comparable.
-
-###### Function Extensions: length {#length}
-{: unnumbered}
-
-Arguments:
-: 1. value
-
-Result:
-: value (unsigned integer)
-
-The "length" function extension provides a way to compute the length
-of a value and make that available for further processing in the
-filter expression:
-
-~~~ JSONPath
-$[?length(@.authors) >= 5]
-~~~
-
-Its only argument is a value (possibly taken from a singular path as
-in the example above).  The result also is a value, an unsigned
-integer.
-
-* If the argument value is a string, the result is the number of
-  Unicode scalar values in the string.
-* If the argument value is an array, the result is the number of
-  elements in the array.
-* If the argument value is an object, the result is the number of
-  members in the object.
-* For any other argument value, the result is one.
-
-
-###### Function Extensions: count {#count}
-{: unnumbered}
-
-Arguments:
-: 1. nodelist
-
-Result:
-: value (unsigned integer)
-
-The "count" function extension provides a way to obtain the number of
-nodes in a nodelist and make that available for further processing in
-the filter expression:
-
-~~~ JSONPath
-$[?count(@.*.author) >= 5]
-~~~
-
-Its only argument is a nodelist.
-The result is a value, an unsigned integer, that gives the number of
-nodes in the nodelist.
-Note that there is no deduplication of the nodelist. [^dedup]
-
-[^dedup]: Well, that can be discussed.
-
-
-###### Function Extensions: match {#match}
-{: unnumbered}
-
-Arguments:
-: 1. value (string)
-  2. value (string conforming to {{-iregexp}})
-
-Result:
-: value (`true` or `false`)
-
-The "match" function extension provides a way to check whether (the
-entirety of, see {{search}} below) a given
-string matches a given regular expression, which is in {{-iregexp}} form.
-
-~~~ JSONPath
-$[?match(@.date, "1974-05-..")]
-~~~
-
-Its first argument is a string that is matched against the iregexp
-contained in the string that is the second argument.
-The result is `true` if the string matches the iregexp and `false`
-otherwise.
-
-
-###### Function Extensions: search {#search}
-{: unnumbered}
-
-Arguments:
-: 1. value (string)
-  2. value (string conforming to {{-iregexp}})
-
-Result:
-: value (`true` or `false`)
-
-The "search" function extension provides a way to check whether a
-given string contains a substring that matches a given regular
-expression, which is in {{-iregexp}} form.
-
-~~~ JSONPath
-$[?search(@.author, "[BR]ob")]
-~~~
-
-Its first argument is a string that is searched for at least one
-substring that matches the iregexp contained in the string
-that is the second argument.
-The result is `true` if such a substring exists, `false` otherwise.
-
-o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o
+Filter selectors may use function extensions, which are covered in Section {{<fnex}}.
 
 #### Examples
 {: unnumbered}
+
+The first set of examples shows some comparison expressions and their
+result with a given JSON value as input.
 
 JSON:
 
@@ -1393,6 +1255,12 @@ JSON:
 | `true > true` | false | Booleans are not ordered |
 {: title="Comparison examples" }
 
+The second set of examples shows some complete JSONPath queries that make use
+of filter selectors, and the results of evaluating these queries on a
+given JSON value as input.
+(Note that two of the queries employ function extensions; please see
+Sections {{<match}} and {{<search}} below for details about these.)
+
 JSON:
 
     {
@@ -1401,8 +1269,6 @@ JSON:
       "o": {"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}},
       "e": "f"
     }
-
-Queries:
 
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
@@ -1423,6 +1289,136 @@ Queries:
 
 The example above with the query `$.a[?@.b, ?@.b]` shows that the filter selector may produce nodelists in distinct
 orders each time it appears in the child segment.
+
+## Function Extensions {#fnex}
+
+Beyond the filter expression functionality defined in the preceding
+subsections, JSONPath defines an extension point that can be used to
+add filter expression functionality: "Function Extensions".
+
+A function extension defines a registered name (see {{iana-fnex}}) that
+can be applied to a sequence of zero or more arguments, resulting in a
+result.
+A function-expression stands for ("returns") a nodelist or a value.
+The arguments are filter expressions that are to be interpreted as
+nodelists or values.
+For each argument and for the result, the function extension defines
+the "kind" of the item, i.e., whether the item is a value or a
+nodelist ("nodes").
+
+~~~ abnf
+function-name           = function-name-first *function-name-char
+function-name-first     = LCALPHA
+function-name-char      = DIGIT / function-name-first / "_"
+LCALPHA                 = %x61-7A  ; "a".."z"
+
+function-expression     = function-name "(" S [function-argument
+                             *(S "," S function-argument)] S ")"
+function-argument       = comparable / filter-path
+~~~
+
+Syntactically, a function-expression can occur anywhere where a
+singular-path can occur (exist-expr, comparable).
+A function-expression that employs a function extension that returns a
+nodelist MUST return a singular node to be used in a comparable.
+
+### `length` Function Extension {#length}
+
+Arguments:
+: 1. value
+
+Result:
+: value (unsigned integer)
+
+The "length" function extension provides a way to compute the length
+of a value and make that available for further processing in the
+filter expression:
+
+~~~ JSONPath
+$[?length(@.authors) >= 5]
+~~~
+
+Its only argument is a value (possibly taken from a singular path as
+in the example above).  The result also is a value, an unsigned
+integer.
+
+* If the argument value is a string, the result is the number of
+  Unicode scalar values in the string.
+* If the argument value is an array, the result is the number of
+  elements in the array.
+* If the argument value is an object, the result is the number of
+  members in the object.
+* For any other argument value, the result is one.
+
+
+### `count` Function Extension {#count}
+
+Arguments:
+: 1. nodelist
+
+Result:
+: value (unsigned integer)
+
+The "count" function extension provides a way to obtain the number of
+nodes in a nodelist and make that available for further processing in
+the filter expression:
+
+~~~ JSONPath
+$[?count(@.*.author) >= 5]
+~~~
+
+Its only argument is a nodelist.
+The result is a value, an unsigned integer, that gives the number of
+nodes in the nodelist.
+Note that there is no deduplication of the nodelist. [^dedup]
+
+[^dedup]: Well, that can be discussed.
+
+
+### `match` Function Extension {#match}
+
+Arguments:
+: 1. value (string)
+  2. value (string conforming to {{-iregexp}})
+
+Result:
+: value (`true` or `false`)
+
+The "match" function extension provides a way to check whether (the
+entirety of, see {{search}} below) a given
+string matches a given regular expression, which is in {{-iregexp}} form.
+
+~~~ JSONPath
+$[?match(@.date, "1974-05-..")]
+~~~
+
+Its first argument is a string that is matched against the iregexp
+contained in the string that is the second argument.
+The result is `true` if the string matches the iregexp and `false`
+otherwise.
+
+
+### `search` Function Extension {#search}
+
+Arguments:
+: 1. value (string)
+  2. value (string conforming to {{-iregexp}})
+
+Result:
+: value (`true` or `false`)
+
+The "search" function extension provides a way to check whether a
+given string contains a substring that matches a given regular
+expression, which is in {{-iregexp}} form.
+
+~~~ JSONPath
+$[?search(@.author, "[BR]ob")]
+~~~
+
+Its first argument is a string that is searched for at least one
+substring that matches the iregexp contained in the string
+that is the second argument.
+The result is `true` if such a substring exists, `false` otherwise.
 
 ## Segments  {#segments-details}
 
