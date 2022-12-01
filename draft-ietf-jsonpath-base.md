@@ -836,7 +836,7 @@ Notes:
 #### Semantics {#index-semantics}
 {: unnumbered}
 
-The `index-selector` applied to an array selects an array element using a zero-based index.
+A non-negative `index-selector` applied to an array selects an array element using a zero-based index.
 For example, the selector `0` selects the first and the selector `4` selects the fifth element of a sufficiently long array.
 Nothing is selected, and it is not an error, if the index lies outside the range of the array. Nothing is selected from a value that is not an array.
 
