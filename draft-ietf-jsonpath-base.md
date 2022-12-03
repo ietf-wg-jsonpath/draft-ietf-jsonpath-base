@@ -1283,7 +1283,7 @@ JSON:
 | `$.a[?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": {}}` <br> `{"b": "kilo"}` | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][8]` <br> `$['a'][9]` | Array value existence |
 | `$[?@.*]` | `[3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}, {"b": {}}, {"b": "kilo"}]` <br> `{"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}}` | `$['a']` <br> `$['o']` | Existence of non-singular paths |
 | `$[?@[?@.b]]` | `[3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}, {"b": {}}, {"b": "kilo"}]` | `$['a']` | Nested filters |
-| `$.a[?@.b, ?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": "k"}` <br> `{"b": "j"}` <br> BROKEN? | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][7]` <br> `$['a'][6]` | Non-deterministic ordering |
+| `$.o[?@<3, ?@<3]` | `1` <br> `2` <br> `2` <br> `1` | `$['o']['p']` <br> `$['o']['q']` <br> `$['o']['q']` <br> `$['o']['p']` | Non-deterministic ordering |
 | `$.a[?@<2 || @.b == "k"]` | `1` <br> `{"b": "k"}` | `$['a'][2]` <br> `$['a'][7]` | Array value logical OR |
 | `$.a[?match(@.b, "[jk]")]` | `{"b": "j"}` <br> `{"b": "k"}` | `$['a'][6]` <br> `$['a'][7]` | Array value regular expression match |
 | `$.a[?search(@.b, "[jk]")]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": "kilo"}` | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][9]` | Array value regular expression search |
@@ -1294,7 +1294,7 @@ JSON:
 | `$[?(@ == @)]` | | | Comparison of structured values |
 {: title="Filter selector examples"}
 
-The example above with the query `$.a[?@.b, ?@.b]` shows that the filter selector may produce nodelists in distinct
+The example above with the query `$.o[?@<3, ?@<3]` shows that the filter selector may produce nodelists in distinct
 orders each time it appears in the child segment.
 
 ## Function Extensions {#fnex}
