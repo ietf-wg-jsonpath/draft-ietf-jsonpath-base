@@ -488,7 +488,7 @@ The examples are based on the simple JSON value shown in
 ## Overview {#synsem-overview}
 
 A JSONPath expression is a string which, when applied to a JSON value,
-the argument, selects zero or more nodes of the argument and outputs
+the *argument*, selects zero or more nodes of the argument and outputs
 these nodes as a nodelist.
 
 A query MUST be encoded using UTF-8.
@@ -530,7 +530,7 @@ errors.)
 
 Syntactically, a JSONPath query consists of a root identifier (`$`), which
 stands for a nodelist that contains the root node of the argument,
-followed by a possibly empty sequence of segments.
+followed by a possibly empty sequence of *segments*.
 
 ~~~~ abnf
 json-path = root-identifier segments
@@ -668,7 +668,7 @@ The syntax and semantics of each kind of selector are defined below.
 A name selector `'<name>'` selects at most one object member value.
 
 In contrast to JSON,
-the JSONPath syntax allows strings to be enclosed in *single* or *double* quotes.
+the JSONPath syntax allows strings to be enclosed in _single_ or _double_ quotes.
 
 ~~~~ abnf
 name-selector       = string-literal
