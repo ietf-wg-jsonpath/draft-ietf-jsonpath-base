@@ -1279,7 +1279,7 @@ JSON:
 
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
-| `$.a[@.b == "kilo"]` | `{"b": "kilo"}` | `$['a'][9]` | Member value comparison |
+| `$.a[@.b == 'kilo']` | `{"b": "kilo"}` | `$['a'][9]` | Member value comparison |
 | `$.a[?@>3.5]` | `5` <br> `4` <br> `6` | `$['a'][1]` <br> `$['a'][4]` <br> `$['a'][5]` | Array value comparison |
 | `$.a[?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": {}}` <br> `{"b": "kilo"}` | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][8]` <br> `$['a'][9]` | Array value existence |
 | `$[?@.*]` | `[3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}, {"b": {}}, {"b": "kilo"}]` <br> `{"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}}` | `$['a']` <br> `$['o']` | Existence of non-singular paths |
