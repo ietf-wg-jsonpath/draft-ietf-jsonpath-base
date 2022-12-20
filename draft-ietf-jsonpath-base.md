@@ -1060,9 +1060,9 @@ During the iteration process the node of each array element or object member val
 A boolean expression, usually involving the current node, is evaluated and
 the current node is selected if and only if the expression yields true.
 
-Paths in filter expressions are Singular Paths, each of which selects at most one node.
-
 The current node is accessible via the current node identifier `@`.
+
+An existence expression may test the result of a function expression (see {{fnex}}).
 
 ~~~~ abnf
 boolean-expr      = logical-or-expr
@@ -1093,14 +1093,16 @@ logical-not-op    = "!"               ; logical NOT operator
 relation-expr     = comp-expr         ; comparison test
 ~~~~
 
-Comparisons are restricted to Singular Path values, each of which selects at most one node, and primitive values (that is, numbers, strings, `true`, `false`,
-and `null`).
+Comparisons are restricted to primitive values (that is, numbers, strings, `true`, `false`,
+and `null`), Singular Paths, each of which selects at most one node, and function expressions (see {{fnex}})
+which return a primitive value or at most one node.
 
 ~~~~ abnf
 comp-expr    = comparable S comp-op S comparable
 comparable   = number / string-literal /        ; primitive ...
                true / false / null /            ; values only
-               singular-path                    ; Singular Path value
+               singular-path /                  ; Singular Path value
+               function-expression
 comp-op      = "==" / "!=" /                    ; comparison ...
                "<"  / ">"  /                    ; operators
                "<=" / ">="
@@ -1306,15 +1308,8 @@ subsections, JSONPath defines an extension point that can be used to
 add filter expression functionality: "Function Extensions".
 
 A function extension defines a registered name (see {{iana-fnex}}) that
-can be applied to a sequence of zero or more arguments, resulting in a
+can be applied to a sequence of zero or more arguments, producing a
 result.
-A function-expression stands for ("returns") a nodelist or a value.
-The arguments are filter expressions that are to be interpreted as
-nodelists or values.
-For each argument and for the result, the function extension defines
-the "kind" of the item, i.e., whether the item is a value, a
-nodelist (i.e., containing any number of nodes), or a Singular Nodelist
-(i.e., containing at most one node).
 
 ~~~ abnf
 function-name           = function-name-first *function-name-char
@@ -1327,33 +1322,87 @@ function-expression     = function-name "(" S [function-argument
 function-argument       = comparable / filter-path
 ~~~
 
+A `function-expression` can be used as a `filter-path`
+or a `comparable` (see {{filter-selector}}).
+
 Any function expressions in a query must be syntactically valid,
 otherwise the JSONPath implementation MUST raise an error
-(see Section {{<synsem-overview}}).
+(see {{synsem-overview}}).
+To define which function expressions are syntactically valid,
+a type system is first introduced.
 
-A function expression is syntactically valid if:
+### Type System for Function Expressions
+
+Each argument and result of a function extension must have a declared type.
+
+A type is a set of instances. A type is a subtype of another type if its set of instances (possibly after coercion)
+is a subset of the set of instances of the other type.
+
+{{tbl-types}} defines the available types in terms of abstract instances, where `n` denotes a node, `v` denotes a value, and `nl` denotes
+a non-empty nodelist. The table also lists the subtypes of each type.
+
+| Type | Abstract Instances | Subtypes |
+| :--: | :----------------: | :------: |
+| `OptionalNodeOrValue` | `Node(n)`, `Value(v)`, `None` | `OptionalNode`, `OptionalValue`, `Value`, `Absent` |
+| `OptionalNode` | `Node(n)`, `None` | `Absent` |
+| `OptionalValue` | `Value(v)`, `None` | `Value`, `Absent` |
+| `Value` | `Value(v)` | |
+| `Absent` | `None` | |
+| `OptionalNodes` | `Nodes(nl)`, `None` | `OptionalNode`, `Absent` |
+{: #tbl-types title="Function extension type system"}
+
+Notes:
+
+* `OptionalNodeOrValue` is an abstraction of a `comparable` (which may appear on either side of a comparison).
+* `OptionalNode` is an abstraction of a Singular Path.
+* `Value` is an abstraction of a primitive value.
+* `Absent` is an abstraction of an empty nodelist.
+* `OptionalNodes` is an abstraction of a path.
+
+The abstract instances above have the concrete representations in {{tbl-typerep}}.
+
+| Abstract Instance | Concrete Representation |
+| :---------------: | :---------------------: |
+| `Node(n)` | Singular Path resulting in a nodelist containing just the node `n` |
+| `Value(v)` | JSON value `v` |
+| `Nodes(nl)` | Path resulting in the non-empty nodelist `nl` |
+| `None` | Singular Path or path resulting in an empty nodelist |
+{: #tbl-typerep title="Concrete representations of abstract instances"}
+
+Notes:
+
+* `OptionalNode` is a subtype of `OptionalValue` since the `OptionalNode` instance `Node(n)` can be coerced to
+the `OptionalValue` instance `Value(v)`, where `v` is the value of the node `n`.
+* `OptionalNode` is a subtype of `OptionalNodes` since the `OptionalNode` instance `Node(n)` can be coerced to
+the `OptionalNodes` instance `Nodes(l)`, where `l` is a nodelist consisting of just the node `n`.
+
+The syntactic validity of function expressions can now be defined in terms of this type system.
+
+### Syntactic Validity of Function Expressions
+
+A function expression is syntactically valid if all the following are true:
 
 * It conforms to the ABNF syntax above.
-* It occurs as a filter-path in an existence test and the function
-is defined to return either a nodelist or a Singular Nodelist.
-* It occurs as a singular-path on either side of a comparison and the function
-is defined to return either a value or a Singular Nodelist.
-* For the function expression and any function expression it contains,
-each argument of the function matches the defined kind of the argument:
-  * An argument of kind value takes a primitive value or a function expression
-    that returns a value.
-  * An argument of kind nodelist takes a filter-path, a Singular Path, or a
-    function expression that returns a nodelist or a Singular Nodelist.
-  * An argument of kind Singular Nodelist takes a Singular Path or a function
-    expression that returns a Singular Nodelist.
+* If it occurs as a `filter-path` in an existence test, the function
+is defined to have result type `OptionalNodes` or one of its subtypes.
+* If it occurs as a `comparable` in a comparison, the function
+is defined to have result type `OptionalNodeOrValue` or one of its subtypes.
+* For it and any function expression it contains,
+each argument of the function matches the defined type of the argument
+according to one of the following rules:
+  * The argument is a function expression with defined result type
+    that is the same as, or a subtype of, the defined type of the argument.
+  * The argument is a primitive value and the defined type of the  argument is `Value` or any type of which `Value` is a subtype.
+  * The argument is a Singular Path and the defined type of the argument is `OptionalNode` or any type of which `OptionalNode` is a subtype.
+  * The argument is a `filter-path` or a Singular Path and the defined type of the argument is `OptionalNodes`.
 
 ### `length` Function Extension {#length}
 
 Arguments:
-: 1. value
+: 1. `Value`
 
 Result:
-: value (unsigned integer)
+: `Value` (unsigned integer)
 
 The "length" function extension provides a way to compute the length
 of a value and make that available for further processing in the
@@ -1379,10 +1428,10 @@ integer.
 ### `count` Function Extension {#count}
 
 Arguments:
-: 1. nodelist
+: 1. `OptionalNodes`
 
 Result:
-: value (unsigned integer)
+: `Value` (unsigned integer)
 
 The "count" function extension provides a way to obtain the number of
 nodes in a nodelist and make that available for further processing in
@@ -1403,11 +1452,11 @@ Note that there is no deduplication of the nodelist. [^dedup]
 ### `match` Function Extension {#match}
 
 Arguments:
-: 1. value (string)
-  2. value (string conforming to {{-iregexp}})
+: 1. `Value` (string)
+  2. `Value` (string conforming to {{-iregexp}})
 
 Result:
-: value (`true` or `false`)
+: `Value` (`true` or `false`)
 
 The "match" function extension provides a way to check whether (the
 entirety of, see {{search}} below) a given
@@ -1426,11 +1475,11 @@ otherwise.
 ### `search` Function Extension {#search}
 
 Arguments:
-: 1. value (string)
-  2. value (string conforming to {{-iregexp}})
+: 1. `Value` (string)
+  2. `Value` (string conforming to {{-iregexp}})
 
 Result:
-: value (`true` or `false`)
+: `Value` (`true` or `false`)
 
 The "search" function extension provides a way to check whether a
 given string contains a substring that matches a given regular
@@ -1444,6 +1493,17 @@ Its first argument is a string that is searched for at least one
 substring that matches the iregexp contained in the string
 that is the second argument.
 The result is `true` if such a substring exists, `false` otherwise.
+
+### Examples
+{: unnumbered}
+
+| Query | Comment |
+| :---: | ------- |
+| `$[?length(@) < 3]` | Valid syntax |
+| `$[?length(@.*) < 3]` | Invalid syntax |
+| `$[?count(@.*) == 1]` | Valid syntax |
+| `$[?count(dedup(@.*)) == 1]` | Valid syntax, where `dedup` is a function extension with argument of type `OptionalNodes` and result type `OptionalNodes` |
+{: title="Function expression examples"}
 
 ## Segments  {#segments-details}
 
