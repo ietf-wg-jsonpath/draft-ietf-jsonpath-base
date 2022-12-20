@@ -1452,11 +1452,11 @@ Note that there is no deduplication of the nodelist. [^dedup]
 ### `match` Function Extension {#match}
 
 Arguments:
-: 1. `Value` (string)
+: 1. `OptionalNodeOrValue` (string)
   2. `Value` (string conforming to {{-iregexp}})
 
 Result:
-: `Value` (`true` or `false`)
+: `OptionalValue` (`true`, `false`, or `None`)
 
 The "match" function extension provides a way to check whether (the
 entirety of, see {{search}} below) a given
@@ -1471,19 +1471,25 @@ contained in the string that is the second argument.
 The result is `true` if the string matches the iregexp and `false`
 otherwise.
 
+The result is `None` if the first argument is not a string or
+the second argument is not a string conforming to {{-iregexp}}.
+
 
 ### `search` Function Extension {#search}
 
 Arguments:
-: 1. `Value` (string)
+: 1. `OptionalNodeOrValue` (string)
   2. `Value` (string conforming to {{-iregexp}})
 
 Result:
-: `Value` (`true` or `false`)
+: `OptionalValue` (`true`, `false`, or `None`)
 
 The "search" function extension provides a way to check whether a
 given string contains a substring that matches a given regular
 expression, which is in {{-iregexp}} form.
+
+The result is `None` if the first argument is not a string or
+the second argument is not a string conforming to {{-iregexp}}.
 
 ~~~ JSONPath
 $[?search(@.author, "[BR]ob")]
@@ -1500,9 +1506,11 @@ The result is `true` if such a substring exists, `false` otherwise.
 | Query | Comment |
 | :---: | ------- |
 | `$[?length(@) < 3]` | Valid syntax |
-| `$[?length(@.*) < 3]` | Invalid syntax |
+| `$[?length(@.*) < 3]` | Invalid syntax since `@.*` is a non-singular path |
 | `$[?count(@.*) == 1]` | Valid syntax |
-| `$[?count(dedup(@.*)) == 1]` | Valid syntax, where `dedup` is a function extension with argument of type `OptionalNodes` and result type `OptionalNodes` |
+| `$[?count(1) == 1]` | Invalid syntax since `1` is not a path  |
+| `$[?count(foo(@.*)) == 1]` | Valid syntax, where `foo` is a function extension with argument of type `OptionalNodes` and result type `OptionalNodes` |
+| `$[?match(@.timezone, 'Europe/.*')] == true` | Valid syntax |
 {: title="Function expression examples"}
 
 ## Segments  {#segments-details}
