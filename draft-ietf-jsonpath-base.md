@@ -1376,11 +1376,11 @@ The abstract instances above can be obtained from the concrete representations i
 | `Nodes(nl)` | `filter-path` resulting in the non-empty nodelist `nl` |
 {: #tbl-typerep title="Concrete representations of abstract instances"}
 
-This structure is supplemented by the concept of Coercion:
+The following subtype relationships depend on coercion:
 
-* `OptionalNode` is a subtype of `OptionalValue` via Coercion since the `OptionalNode` instance `Node(n)` can be coerced to
+* `OptionalNode` is a subtype of `OptionalValue` via coercion since the `OptionalNode` instance `Node(n)` can be coerced to
 the `OptionalValue` instance `Value(v)`, where `v` is the value of the node `n`.
-* `OptionalNode` is a subtype of `OptionalNodes` via Coercion since the `OptionalNode` instance `Node(n)` can be coerced to
+* `OptionalNode` is a subtype of `OptionalNodes` via coercion since the `OptionalNode` instance `Node(n)` can be coerced to
 the `OptionalNodes` instance `Nodes(l)`, where `l` is a nodelist consisting of just the node `n`.
 
 The syntactic validity of function expressions can now be defined in terms of this type system.
