@@ -1361,10 +1361,12 @@ Notes:
 * `OptionalNodeOrValue` is an abstraction of a `comparable` (which may appear on either side of a comparison or as a function argument).
 * `OptionalNode` is an abstraction of a Singular Path.
 * `Value` is an abstraction of a primitive value.
+* `OptionalValue` is an abstraction of a primitive value that may also
+  be absent.
 * `Absent` is an abstraction of an empty nodelist.
 * `OptionalNodes` is an abstraction of a `filter-path` (which appears in an existence test or as a function argument).
 
-The abstract instances above have the concrete representations in {{tbl-typerep}}.
+The abstract instances above can be obtained from the concrete representations in {{tbl-typerep}}.
 
 | Abstract Instance | Concrete Representations |
 | :---------------: | :----------------------: |
@@ -1374,11 +1376,11 @@ The abstract instances above have the concrete representations in {{tbl-typerep}
 | `Nodes(nl)` | `filter-path` resulting in the non-empty nodelist `nl` |
 {: #tbl-typerep title="Concrete representations of abstract instances"}
 
-Notes:
+This structure is supplemented by the concept of Coercion:
 
-* `OptionalNode` is a subtype of `OptionalValue` since the `OptionalNode` instance `Node(n)` can be coerced to
+* `OptionalNode` is a subtype of `OptionalValue` via Coercion since the `OptionalNode` instance `Node(n)` can be coerced to
 the `OptionalValue` instance `Value(v)`, where `v` is the value of the node `n`.
-* `OptionalNode` is a subtype of `OptionalNodes` since the `OptionalNode` instance `Node(n)` can be coerced to
+* `OptionalNode` is a subtype of `OptionalNodes` via Coercion since the `OptionalNode` instance `Node(n)` can be coerced to
 the `OptionalNodes` instance `Nodes(l)`, where `l` is a nodelist consisting of just the node `n`.
 
 The syntactic validity of function expressions can now be defined in terms of this type system.
@@ -1397,7 +1399,7 @@ each argument of the function matches the defined type of the argument
 according to one of the following rules:
   * The argument is a function expression with defined result type
     that is the same as, or a subtype of, the defined type of the argument.
-  * The argument is a primitive value and the defined type of the  argument is `Value` or any type of which `Value` is a subtype.
+  * The argument is a literal primitive value and the defined type of the  argument is `Value` or any type of which `Value` is a subtype.
   * The argument is a Singular Path and the defined type of the argument is `OptionalNode` or any type of which `OptionalNode` is a subtype.
   * The argument is a `filter-path` or a Singular Path and the defined type of the argument is `OptionalNodes`.
 
