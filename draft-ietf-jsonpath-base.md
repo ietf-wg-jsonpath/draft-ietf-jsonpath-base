@@ -1094,8 +1094,11 @@ relation-expr     = comp-expr         ; comparison test
 ~~~~
 
 Comparisons are restricted to primitive values (that is, numbers, strings, `true`, `false`,
-and `null`), Singular Paths, each of which selects at most one node, and function expressions (see {{fnex}})
-which return a primitive value or at most one node.
+and `null`).
+These can be notated as literal values, or they can be derived from
+Singular Paths, each of which selects at most one node.
+Function expressions (see {{fnex}}) used in comparison expressions
+return a primitive value or at most one node.
 
 ~~~~ abnf
 comp-expr    = comparable S comp-op S comparable
