@@ -504,7 +504,7 @@ to the JSONPath processing (e.g., index values and steps) MUST be
 within the range of exact values defined in I-JSON {{-i-json}}, namely
 within the interval \[-(2<sup>53</sup>)+1, (2<sup>53</sup>)-1].
 
-2. Uses of function extensions must be syntactically valid,
+2. Uses of function extensions must be correctly typed,
 as described in {{fnex}}.
 
 A JSONPath implementation MUST raise an error for any query which is not
@@ -529,7 +529,7 @@ errors.)
 
 ## Syntax
 
-Syntactically, a JSONPath query consists of a root identifier (`$`), which
+Syntactially, a JSONPath query consists of a root identifier (`$`), which
 stands for a nodelist that contains the root node of the argument,
 followed by a possibly empty sequence of *segments*.
 
@@ -1330,10 +1330,11 @@ A function argument is a `filter-path` or a `comparable`.
 According to {{filter-selector}}, a `function-expression` is valid as a `filter-path`
 or a `comparable`.
 
-Any function expressions in a query must be syntactically valid,
+Any function expressions in a query must be well-formed (by conforming to the above ABNF)
+and correctly typed,
 otherwise the JSONPath implementation MUST raise an error
 (see {{synsem-overview}}).
-To define which function expressions are syntactically valid,
+To define which function expressions are correctly typed,
 a type system is first introduced.
 
 ### Type System for Function Expressions
@@ -1383,13 +1384,12 @@ the `OptionalValue` instance `Value(v)`, where `v` is the value of the node `n`.
 * `OptionalNode` is a subtype of `OptionalNodes` via coercion since the `OptionalNode` instance `Node(n)` can be coerced to
 the `OptionalNodes` instance `Nodes(l)`, where `l` is a nodelist consisting of just the node `n`.
 
-The syntactic validity of function expressions can now be defined in terms of this type system.
+The type correctness of function expressions can now be defined in terms of this type system.
 
-### Syntactic Validity of Function Expressions
+### Type Correctness of Function Expressions
 
-A function expression is syntactically valid if all the following are true:
+A function expression is correctly typed if all the following are true:
 
-* It conforms to the ABNF syntax above.
 * If it occurs as a `filter-path` in an existence test, the function
 is defined to have result type `OptionalNodes` or one of its subtypes.
 * If it occurs as a `comparable` in a comparison, the function
