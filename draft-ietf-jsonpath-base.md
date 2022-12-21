@@ -1319,11 +1319,13 @@ LCALPHA                 = %x61-7A  ; "a".."z"
 
 function-expression     = function-name "(" S [function-argument
                              *(S "," S function-argument)] S ")"
-function-argument       = comparable / filter-path
+function-argument       = filter-path / comparable
 ~~~
 
-A `function-expression` can be used as a `filter-path`
-or a `comparable` (see {{filter-selector}}).
+A function argument is a `filter-path` or a `comparable`.
+
+According to {{filter-selector}}, a `function-expression` is valid as a `filter-path`
+or a `comparable`.
 
 Any function expressions in a query must be syntactically valid,
 otherwise the JSONPath implementation MUST raise an error
@@ -1353,20 +1355,20 @@ a non-empty nodelist. The table also lists the subtypes of each type.
 
 Notes:
 
-* `OptionalNodeOrValue` is an abstraction of a `comparable` (which may appear on either side of a comparison).
+* `OptionalNodeOrValue` is an abstraction of a `comparable` (which may appear on either side of a comparison or as a function argument).
 * `OptionalNode` is an abstraction of a Singular Path.
 * `Value` is an abstraction of a primitive value.
 * `Absent` is an abstraction of an empty nodelist.
-* `OptionalNodes` is an abstraction of a path.
+* `OptionalNodes` is an abstraction of a `filter-path` (which appears in an existence test or as a function argument).
 
 The abstract instances above have the concrete representations in {{tbl-typerep}}.
 
-| Abstract Instance | Concrete Representation |
-| :---------------: | :---------------------: |
+| Abstract Instance | Concrete Representations |
+| :---------------: | :----------------------: |
 | `Node(n)` | Singular Path resulting in a nodelist containing just the node `n` |
 | `Value(v)` | JSON value `v` |
-| `Nodes(nl)` | Path resulting in the non-empty nodelist `nl` |
-| `None` | Singular Path or path resulting in an empty nodelist |
+| `None` | Singular Path or `filter-path` resulting in an empty nodelist |
+| `Nodes(nl)` | `filter-path` resulting in the non-empty nodelist `nl` |
 {: #tbl-typerep title="Concrete representations of abstract instances"}
 
 Notes:
@@ -1510,7 +1512,7 @@ The result is `true` if such a substring exists, `false` otherwise.
 | `$[?count(@.*) == 1]` | Valid syntax |
 | `$[?count(1) == 1]` | Invalid syntax since `1` is not a path  |
 | `$[?count(foo(@.*)) == 1]` | Valid syntax, where `foo` is a function extension with argument of type `OptionalNodes` and result type `OptionalNodes` |
-| `$[?match(@.timezone, 'Europe/.*')] == true` | Valid syntax |
+| `$[?match(@.timezone, 'Europe/.*') == true]` | Valid syntax |
 {: title="Function expression examples"}
 
 ## Segments  {#segments-details}
