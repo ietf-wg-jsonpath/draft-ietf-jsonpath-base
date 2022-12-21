@@ -340,8 +340,8 @@ becomes unpredictable when the JSON value for one of the objects
 under consideration was constructed out of JSON text that exhibits
 multiple members for a single object that share the same member name
 ("duplicate names", see {{Section 4 of -json}}).
-Also, selecting a child by name ({{<name-selector}}) and comparing strings
-({{comparisons}} in Section {{<filter-selector}}) assume these
+Also, selecting a child by name ({{name-selector}}) and comparing strings
+({{comparisons}} in {{filter-selector}}) assume these
 strings are sequences of Unicode scalar values, becoming unpredictable
 if they are not ({{Section 8.2 of -json}}).
 
@@ -505,7 +505,7 @@ within the range of exact values defined in I-JSON {{-i-json}}, namely
 within the interval \[-(2<sup>53</sup>)+1, (2<sup>53</sup>)-1].
 
 2. Uses of function extensions must be syntactically valid,
-as described in Section {{<fnex}}.
+as described in {{fnex}}.
 
 A JSONPath implementation MUST raise an error for any query which is not
 well-formed and valid.
@@ -538,7 +538,7 @@ json-path = root-identifier segments
 segments  = *(S segment)
 ~~~~
 
-The syntax and semantics of segments are defined in Section {{<segments-details}}.
+The syntax and semantics of segments are defined in {{segments-details}}.
 
 ## Semantics
 
@@ -1219,7 +1219,7 @@ obey its laws (see, for example, {{BOOLEAN-LAWS}}).
 ##### Function Extensions
 {: unnumbered}
 
-Filter selectors may use function extensions, which are covered in Section {{<fnex}}.
+Filter selectors may use function extensions, which are covered in {{fnex}}.
 
 #### Examples
 {: unnumbered}
