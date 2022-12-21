@@ -340,8 +340,8 @@ becomes unpredictable when the JSON value for one of the objects
 under consideration was constructed out of JSON text that exhibits
 multiple members for a single object that share the same member name
 ("duplicate names", see {{Section 4 of -json}}).
-Also, selecting a child by name ({{<name-selector}}) and comparing strings
-({{comparisons}} in Section {{<filter-selector}}) assume these
+Also, selecting a child by name ({{name-selector}}) and comparing strings
+({{comparisons}} in {{filter-selector}}) assume these
 strings are sequences of Unicode scalar values, becoming unpredictable
 if they are not ({{Section 8.2 of -json}}).
 
@@ -505,7 +505,7 @@ within the range of exact values defined in I-JSON {{-i-json}}, namely
 within the interval \[-(2<sup>53</sup>)+1, (2<sup>53</sup>)-1].
 
 2. Uses of function extensions must be syntactically valid,
-as described in Section {{<fnex}}.
+as described in {{fnex}}.
 
 A JSONPath implementation MUST raise an error for any query which is not
 well-formed and valid.
@@ -538,7 +538,7 @@ json-path = root-identifier segments
 segments  = *(S segment)
 ~~~~
 
-The syntax and semantics of segments are defined in Section {{<segments-details}}.
+The syntax and semantics of segments are defined in {{segments-details}}.
 
 ## Semantics
 
@@ -1094,8 +1094,11 @@ relation-expr     = comp-expr         ; comparison test
 ~~~~
 
 Comparisons are restricted to primitive values (that is, numbers, strings, `true`, `false`,
-and `null`), Singular Paths, each of which selects at most one node, and function expressions (see {{fnex}})
-which return a primitive value or at most one node.
+and `null`).
+These can be notated as literal values, or they can be derived from
+Singular Paths, each of which selects at most one node.
+Function expressions (see {{fnex}}) used in comparison expressions
+return a primitive value or at most one node.
 
 ~~~~ abnf
 comp-expr    = comparable S comp-op S comparable
@@ -1219,7 +1222,7 @@ obey its laws (see, for example, {{BOOLEAN-LAWS}}).
 ##### Function Extensions
 {: unnumbered}
 
-Filter selectors may use function extensions, which are covered in Section {{<fnex}}.
+Filter selectors may use function extensions, which are covered in {{fnex}}.
 
 #### Examples
 {: unnumbered}
@@ -1358,10 +1361,12 @@ Notes:
 * `OptionalNodeOrValue` is an abstraction of a `comparable` (which may appear on either side of a comparison or as a function argument).
 * `OptionalNode` is an abstraction of a Singular Path.
 * `Value` is an abstraction of a primitive value.
+* `OptionalValue` is an abstraction of a primitive value that may also
+  be absent.
 * `Absent` is an abstraction of an empty nodelist.
 * `OptionalNodes` is an abstraction of a `filter-path` (which appears in an existence test or as a function argument).
 
-The abstract instances above have the concrete representations in {{tbl-typerep}}.
+The abstract instances above can be obtained from the concrete representations in {{tbl-typerep}}.
 
 | Abstract Instance | Concrete Representations |
 | :---------------: | :----------------------: |
@@ -1371,11 +1376,11 @@ The abstract instances above have the concrete representations in {{tbl-typerep}
 | `Nodes(nl)` | `filter-path` resulting in the non-empty nodelist `nl` |
 {: #tbl-typerep title="Concrete representations of abstract instances"}
 
-Notes:
+This structure is supplemented by the concept of Coercion:
 
-* `OptionalNode` is a subtype of `OptionalValue` since the `OptionalNode` instance `Node(n)` can be coerced to
+* `OptionalNode` is a subtype of `OptionalValue` via Coercion since the `OptionalNode` instance `Node(n)` can be coerced to
 the `OptionalValue` instance `Value(v)`, where `v` is the value of the node `n`.
-* `OptionalNode` is a subtype of `OptionalNodes` since the `OptionalNode` instance `Node(n)` can be coerced to
+* `OptionalNode` is a subtype of `OptionalNodes` via Coercion since the `OptionalNode` instance `Node(n)` can be coerced to
 the `OptionalNodes` instance `Nodes(l)`, where `l` is a nodelist consisting of just the node `n`.
 
 The syntactic validity of function expressions can now be defined in terms of this type system.
@@ -1394,7 +1399,7 @@ each argument of the function matches the defined type of the argument
 according to one of the following rules:
   * The argument is a function expression with defined result type
     that is the same as, or a subtype of, the defined type of the argument.
-  * The argument is a primitive value and the defined type of the  argument is `Value` or any type of which `Value` is a subtype.
+  * The argument is a literal primitive value and the defined type of the  argument is `Value` or any type of which `Value` is a subtype.
   * The argument is a Singular Path and the defined type of the argument is `OptionalNode` or any type of which `OptionalNode` is a subtype.
   * The argument is a `filter-path` or a Singular Path and the defined type of the argument is `OptionalNodes`.
 
