@@ -825,7 +825,7 @@ An index selector `<index>` matches at most one array element value.
 ~~~~ abnf
 index-selector = int                             ; decimal integer
 
-int            = ["-"] ( "0" / (DIGIT1 *DIGIT) ) ; -  optional
+int            = "0" / (["-"] DIGIT1 *DIGIT)     ; -  optional
 DIGIT1         = %x31-39                         ; 1-9 non-zero digit
 ~~~~
 
@@ -1110,7 +1110,7 @@ Alphabetic characters in ABNF are case-insensitive, so "e" can be either "e" or 
 `true`, `false`, and `null` are lower-case only (case-sensitive).
 
 ~~~~ abnf
-number       = int [ frac ] [ exp ]                ; decimal number
+number       = (int / "-0") [ frac ] [ exp ]       ; decimal number
 frac         = "." 1*DIGIT                         ; decimal fraction
 exp          = "e" [ "-" / "+" ] 1*DIGIT           ; decimal exponent
 true         = %x74.72.75.65                       ; true
