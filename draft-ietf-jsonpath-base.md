@@ -18,7 +18,7 @@ abbrev: JSONPath
 area: ART
 wg: JSONPath WG
 kw: JSON
-date: 2022
+date: 2023
 
 author:
 -
