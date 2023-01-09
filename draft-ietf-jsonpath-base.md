@@ -1517,13 +1517,13 @@ The result is `true` if such a substring exists, `false` otherwise.
 
 | Query | Comment |
 | :---: | ------- |
-| `$[?length(@) < 3]` | Valid syntax |
-| `$[?length(@.*) < 3]` | Invalid syntax since `@.*` is a non-singular path |
-| `$[?count(@.*) == 1]` | Valid syntax |
-| `$[?count(1) == 1]` | Invalid syntax since `1` is not a path  |
-| `$[?count(foo(@.*)) == 1]` | Valid syntax, where `foo` is a function extension with argument of type `OptionalNodes` and result type `OptionalNodes` |
-| `$[?match(@.timezone, 'Europe/.*')]`         | Valid syntax |
-| `$[?match(@.timezone, 'Europe/.*') == true]` | Valid syntax |
+| `$[?length(@) < 3]` | Valid typing |
+| `$[?length(@.*) < 3]` | Invalid typing since `@.*` is a non-singular path |
+| `$[?count(@.*) == 1]` | Valid typing |
+| `$[?count(1) == 1]` | Invalid typing since `1` is not a path  |
+| `$[?count(foo(@.*)) == 1]` | Valid typing, where `foo` is a function extension with argument of type `OptionalNodes` and result type `OptionalNodes` |
+| `$[?match(@.timezone, 'Europe/.*')]`         | Valid typing |
+| `$[?match(@.timezone, 'Europe/.*') == true]` | Valid typing |
 {: title="Function expression examples"}
 
 ## Segments  {#segments-details}
