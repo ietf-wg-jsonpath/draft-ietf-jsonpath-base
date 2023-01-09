@@ -268,9 +268,12 @@ Unicode Scalar Value:
   In other words, integers in either of the inclusive base 16 ranges 0 to D7FF and
   E000 to 10FFFF. JSON string values are sequences of Unicode scalar values.
 
+Singular Nodelist:
+: A nodelist containing at most one node.
+
 Singular Path:
 : A JSONPath expression built from segments each of which, regardless of the input value,
-  produces at most one node.
+  produces a Singular Nodelist.
 
 Selector:
 : A single item within a segment that takes the input value and produces a nodelist
@@ -344,8 +347,8 @@ becomes unpredictable when the JSON value for one of the objects
 under consideration was constructed out of JSON text that exhibits
 multiple members for a single object that share the same member name
 ("duplicate names", see {{Section 4 of -json}}).
-Also, selecting a child by name ({{<name-selector}}) and comparing strings
-({{comparisons}} in Section {{<filter-selector}}) assume these
+Also, selecting a child by name ({{name-selector}}) and comparing strings
+({{comparisons}} in {{filter-selector}}) assume these
 strings are sequences of Unicode scalar values, becoming unpredictable
 if they are not ({{Section 8.2 of -json}}).
 
@@ -508,6 +511,11 @@ to the JSONPath processing (e.g., index values and steps) MUST be
 within the range of exact values defined in I-JSON {{-i-json}}, namely
 within the interval \[-(2<sup>53</sup>)+1, (2<sup>53</sup>)-1].
 
+2. Uses of function extensions must be correctly typed,
+as described in {{fnex}}.
+
+A JSONPath implementation MUST raise an error for any query which is not
+well-formed and valid.
 The well-formedness and the validity of JSONPath queries are independent of
 the JSON value the query is applied to; no further errors relating to the
 well-formedness and the validity of a JSONPath query can be
@@ -537,7 +545,7 @@ json-path = root-identifier segments
 segments  = *(S segment)
 ~~~~
 
-The syntax and semantics of segments are defined in Section {{<segments-details}}.
+The syntax and semantics of segments are defined in {{segments-details}}.
 
 ## Semantics
 
@@ -1059,9 +1067,9 @@ During the iteration process the node of each array element or object member val
 A boolean expression, usually involving the current node, is evaluated and
 the current node is selected if and only if the expression yields true.
 
-Paths in filter expressions are Singular Paths, each of which selects at most one node.
-
 The current node is accessible via the current node identifier `@`.
+
+An existence expression may test the result of a function expression (see {{fnex}}).
 
 ~~~~ abnf
 boolean-expr      = logical-or-expr
@@ -1092,19 +1100,25 @@ logical-not-op    = "!"               ; logical NOT operator
 relation-expr     = comp-expr         ; comparison test
 ~~~~
 
-Comparisons are restricted to Singular Path values, each of which selects at most one node, and primitive values (that is, numbers, strings, `true`, `false`,
+Comparisons are restricted to primitive values (that is, numbers, strings, `true`, `false`,
 and `null`).
+These can be notated as literal values, or they can be derived from
+Singular Paths, each of which selects at most one node.
+Function expressions (see {{fnex}}) used in comparison expressions
+return a primitive value or at most one node.
 
 ~~~~ abnf
 comp-expr    = comparable S comp-op S comparable
 comparable   = number / string-literal /        ; primitive ...
                true / false / null /            ; values only
-               singular-path                    ; Singular Path value
+               singular-path /                  ; Singular Path value
+               function-expression
 comp-op      = "==" / "!=" /                    ; comparison ...
                "<"  / ">"  /                    ; operators
                "<=" / ">="
 
-singular-path     = rel-singular-path / abs-singular-path / function-expression
+singular-path     = rel-singular-path / abs-singular-path /
+                    function-expression
 rel-singular-path = current-node-identifier singular-path-segments
 abs-singular-path = root-identifier singular-path-segments
 singular-path-segments = *(S (name-segment / index-segment))
@@ -1215,7 +1229,7 @@ obey its laws (see, for example, {{BOOLEAN-LAWS}}).
 ##### Function Extensions
 {: unnumbered}
 
-Filter selectors may use function extensions, which are covered in Section {{<fnex}}.
+Filter selectors may use function extensions, which are covered in {{fnex}}.
 
 #### Examples
 {: unnumbered}
@@ -1305,14 +1319,8 @@ subsections, JSONPath defines an extension point that can be used to
 add filter expression functionality: "Function Extensions".
 
 A function extension defines a registered name (see {{iana-fnex}}) that
-can be applied to a sequence of zero or more arguments, resulting in a
+can be applied to a sequence of zero or more arguments, producing a
 result.
-A function-expression stands for ("returns") a nodelist or a value.
-The arguments are filter expressions that are to be interpreted as
-nodelists or values.
-For each argument and for the result, the function extension defines
-the "kind" of the item, i.e., whether the item is a value or a
-nodelist ("nodes").
 
 ~~~ abnf
 function-name           = function-name-first *function-name-char
@@ -1322,21 +1330,99 @@ LCALPHA                 = %x61-7A  ; "a".."z"
 
 function-expression     = function-name "(" S [function-argument
                              *(S "," S function-argument)] S ")"
-function-argument       = comparable / filter-path
+function-argument       = filter-path / comparable
 ~~~
 
-Syntactically, a function-expression can occur anywhere where a
-singular-path can occur (exist-expr, comparable).
-A function-expression that employs a function extension that returns a
-nodelist MUST return a singular node to be used in a comparable.
+A function argument is a `filter-path` or a `comparable`.
+
+According to {{filter-selector}}, a `function-expression` is valid as a `filter-path`
+or a `comparable`.
+
+Any function expressions in a query must be well-formed (by conforming to the above ABNF)
+and correctly typed,
+otherwise the JSONPath implementation MUST raise an error
+(see {{synsem-overview}}).
+To define which function expressions are correctly typed,
+a type system is first introduced.
+
+### Type System for Function Expressions
+
+Each argument and result of a function extension must have a declared type.
+
+A type is a set of instances. A type is a subtype of another type if its set of instances (possibly after coercion)
+is a subset of the set of instances of the other type.
+
+{{tbl-types}} defines the available types in terms of abstract instances, where `n` denotes a node, `v` denotes a value, and `nl` denotes
+a non-empty nodelist. The table also lists the subtypes of each type.
+
+| Type | Abstract Instances | Subtypes |
+| :--: | :----------------: | :------: |
+| `OptionalNodeOrValue` | `Node(n)`, `Value(v)`, `Nothing` | `OptionalNode`, `OptionalValue`, `Value`, `Absent` |
+| `OptionalNode` | `Node(n)`, `Nothing` | `Absent` |
+| `OptionalValue` | `Value(v)`, `Nothing` | `Value`, `OptionalBoolean`, `Absent` |
+| `Value` | `Value(v)` | `Boolean` |
+| `OptionalBoolean` | `Value(true)`, `Value(false)`, `Nothing`             | `Boolean`, `Absent` |
+| `Boolean` | `Value(true)`, `Value(false)` | |
+| `Absent` | `Nothing` | |
+| `OptionalNodes` | `Nodes(nl)`, `Nothing` | `OptionalNode`, `Absent` |
+{: #tbl-types title="Function extension type system"}
+
+Notes:
+
+* `OptionalNodeOrValue` is an abstraction of a `comparable` (which may appear on either side of a comparison or as a function argument).
+* `OptionalNode` is an abstraction of a Singular Path.
+* `Value` is an abstraction of a primitive value.
+* `Boolean` is an abstraction of a primitive value that is either
+  `true` or `false`.
+* `OptionalValue` is an abstraction of a primitive value that may also
+  be absent.
+* `Absent` is an abstraction of an empty nodelist.
+* `OptionalNodes` is an abstraction of a `filter-path` (which appears in an existence test or as a function argument).
+
+The abstract instances above can be obtained from the concrete representations in {{tbl-typerep}}.
+
+| Abstract Instance | Concrete Representations |
+| :---------------: | :----------------------: |
+| `Node(n)` | Singular Path resulting in a nodelist containing just the node `n` |
+| `Value(v)` | JSON value `v` |
+| `Nothing` | Singular Path or `filter-path` resulting in an empty nodelist |
+| `Nodes(nl)` | `filter-path` resulting in the non-empty nodelist `nl` |
+{: #tbl-typerep title="Concrete representations of abstract instances"}
+
+The following subtype relationships depend on coercion:
+
+* `OptionalNode` is a subtype of `OptionalValue` via coercion since the `OptionalNode` instance `Node(n)` can be coerced to
+the `OptionalValue` instance `Value(v)`, where `v` is the value of the node `n`.
+* `OptionalNode` is a subtype of `OptionalNodes` via coercion since the `OptionalNode` instance `Node(n)` can be coerced to
+the `OptionalNodes` instance `Nodes(l)`, where `l` is a nodelist consisting of just the node `n`.
+
+The type correctness of function expressions can now be defined in terms of this type system.
+
+### Type Correctness of Function Expressions
+
+A function expression is correctly typed if all the following are true:
+
+* If it occurs as a `filter-path` in an existence test, the function
+is defined to have result type `OptionalNodes` or one of its subtypes,
+or to have result type `OptionalBoolean` or one of its subtypes.
+* If it occurs as a `comparable` in a comparison, the function
+is defined to have result type `OptionalNodeOrValue` or one of its subtypes.
+* For it and any function expression it contains,
+each argument of the function matches the defined type of the argument
+according to one of the following rules:
+  * The argument is a function expression with defined result type
+    that is the same as, or a subtype of, the defined type of the argument.
+  * The argument is a literal primitive value and the defined type of the  argument is `Value` or any type of which `Value` is a subtype.
+  * The argument is a Singular Path and the defined type of the argument is `OptionalNode` or any type of which `OptionalNode` is a subtype.
+  * The argument is a `filter-path` or a Singular Path and the defined type of the argument is `OptionalNodes`.
 
 ### `length` Function Extension {#length}
 
 Arguments:
-: 1. value
+: 1. `Value`
 
 Result:
-: value (unsigned integer)
+: `Value` (unsigned integer)
 
 The "length" function extension provides a way to compute the length
 of a value and make that available for further processing in the
@@ -1362,10 +1448,10 @@ integer.
 ### `count` Function Extension {#count}
 
 Arguments:
-: 1. nodelist
+: 1. `OptionalNodes`
 
 Result:
-: value (unsigned integer)
+: `Value` (unsigned integer)
 
 The "count" function extension provides a way to obtain the number of
 nodes in a nodelist and make that available for further processing in
@@ -1386,11 +1472,11 @@ Note that there is no deduplication of the nodelist. [^dedup]
 ### `match` Function Extension {#match}
 
 Arguments:
-: 1. value (string)
-  2. value (string conforming to {{-iregexp}})
+: 1. `OptionalNodeOrValue` (string)
+  2. `Value` (string conforming to {{-iregexp}})
 
 Result:
-: value (`true` or `false`)
+: `OptionalBoolean` (`true`, `false`, or `Nothing`)
 
 The "match" function extension provides a way to check whether (the
 entirety of, see {{search}} below) a given
@@ -1405,19 +1491,25 @@ contained in the string that is the second argument.
 The result is `true` if the string matches the iregexp and `false`
 otherwise.
 
+The result is `Nothing` if the first argument is not a string or
+the second argument is not a string conforming to {{-iregexp}}.
+
 
 ### `search` Function Extension {#search}
 
 Arguments:
-: 1. value (string)
-  2. value (string conforming to {{-iregexp}})
+: 1. `OptionalNodeOrValue` (string)
+  2. `Value` (string conforming to {{-iregexp}})
 
 Result:
-: value (`true` or `false`)
+: `OptionalBoolean` (`true`, `false`, or `Nothing`)
 
 The "search" function extension provides a way to check whether a
 given string contains a substring that matches a given regular
 expression, which is in {{-iregexp}} form.
+
+The result is `Nothing` if the first argument is not a string or
+the second argument is not a string conforming to {{-iregexp}}.
 
 ~~~ JSONPath
 $[?search(@.author, "[BR]ob")]
@@ -1427,6 +1519,20 @@ Its first argument is a string that is searched for at least one
 substring that matches the iregexp contained in the string
 that is the second argument.
 The result is `true` if such a substring exists, `false` otherwise.
+
+### Examples
+{: unnumbered}
+
+| Query | Comment |
+| :---: | ------- |
+| `$[?length(@) < 3]` | Valid typing |
+| `$[?length(@.*) < 3]` | Invalid typing since `@.*` is a non-singular path |
+| `$[?count(@.*) == 1]` | Valid typing |
+| `$[?count(1) == 1]` | Invalid typing since `1` is not a path  |
+| `$[?count(foo(@.*)) == 1]` | Valid typing, where `foo` is a function extension with argument of type `OptionalNodes` and result type `OptionalNodes` |
+| `$[?match(@.timezone, 'Europe/.*')]`         | Valid typing |
+| `$[?match(@.timezone, 'Europe/.*') == true]` | Valid typing |
+{: title="Function expression examples"}
 
 ## Segments  {#segments-details}
 
