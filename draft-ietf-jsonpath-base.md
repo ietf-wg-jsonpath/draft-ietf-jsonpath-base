@@ -413,7 +413,7 @@ $.store.book[?@.price < 10].title
 |---------------------|-------------------------------------------------------------------------------------------------------------------------|
 | `$`                 | [root node identifier](#root-identifier)                                                                                |
 | `@`                 | [current node identifier](#filter-selector) (valid only within filter selectors)                                          |
-| `[<selectors>]`     | [child segment](#child-segment) selects zero or more children of a mode; contains one or more selectors, separated by commas        |
+| `[<selectors>]`     | [child segment](#child-segment) selects zero or more children of a node; contains one or more selectors, separated by commas        |
 | `.name`             | shorthand for `['name']`                                                                                                |
 | `.*`                | shorthand for `[*]`                                                                                                     |
 | `..[<selectors>]`   | [descendant segment](#descendant-segment): selects zero or more descendants of a node; contains one or more selectors, separated by commas |
