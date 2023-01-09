@@ -529,7 +529,7 @@ errors.)
 
 ## Syntax
 
-Syntactially, a JSONPath query consists of a root identifier (`$`), which
+Syntactically, a JSONPath query consists of a root identifier (`$`), which
 stands for a nodelist that contains the root node of the argument,
 followed by a possibly empty sequence of *segments*.
 
