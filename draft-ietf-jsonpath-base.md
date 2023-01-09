@@ -1349,14 +1349,14 @@ a non-empty nodelist. The table also lists the subtypes of each type.
 
 | Type | Abstract Instances | Subtypes |
 | :--: | :----------------: | :------: |
-| `OptionalNodeOrValue` | `Node(n)`, `Value(v)`, `None` | `OptionalNode`, `OptionalValue`, `Value`, `Absent` |
-| `OptionalNode` | `Node(n)`, `None` | `Absent` |
-| `OptionalValue` | `Value(v)`, `None` | `Value`, `OptionalBoolean`, `Absent` |
+| `OptionalNodeOrValue` | `Node(n)`, `Value(v)`, `Nothing` | `OptionalNode`, `OptionalValue`, `Value`, `Absent` |
+| `OptionalNode` | `Node(n)`, `Nothing` | `Absent` |
+| `OptionalValue` | `Value(v)`, `Nothing` | `Value`, `OptionalBoolean`, `Absent` |
 | `Value` | `Value(v)` | `Boolean` |
-| `OptionalBoolean` | `Value(true)`, `Value(false)`, `None`             | `Boolean`, `Absent` |
+| `OptionalBoolean` | `Value(true)`, `Value(false)`, `Nothing`             | `Boolean`, `Absent` |
 | `Boolean` | `Value(true)`, `Value(false)` | |
-| `Absent` | `None` | |
-| `OptionalNodes` | `Nodes(nl)`, `None` | `OptionalNode`, `Absent` |
+| `Absent` | `Nothing` | |
+| `OptionalNodes` | `Nodes(nl)`, `Nothing` | `OptionalNode`, `Absent` |
 {: #tbl-types title="Function extension type system"}
 
 Notes:
@@ -1377,7 +1377,7 @@ The abstract instances above can be obtained from the concrete representations i
 | :---------------: | :----------------------: |
 | `Node(n)` | Singular Path resulting in a nodelist containing just the node `n` |
 | `Value(v)` | JSON value `v` |
-| `None` | Singular Path or `filter-path` resulting in an empty nodelist |
+| `Nothing` | Singular Path or `filter-path` resulting in an empty nodelist |
 | `Nodes(nl)` | `filter-path` resulting in the non-empty nodelist `nl` |
 {: #tbl-typerep title="Concrete representations of abstract instances"}
 
@@ -1468,7 +1468,7 @@ Arguments:
   2. `Value` (string conforming to {{-iregexp}})
 
 Result:
-: `OptionalBoolean` (`true`, `false`, or `None`)
+: `OptionalBoolean` (`true`, `false`, or `Nothing`)
 
 The "match" function extension provides a way to check whether (the
 entirety of, see {{search}} below) a given
@@ -1483,7 +1483,7 @@ contained in the string that is the second argument.
 The result is `true` if the string matches the iregexp and `false`
 otherwise.
 
-The result is `None` if the first argument is not a string or
+The result is `Nothing` if the first argument is not a string or
 the second argument is not a string conforming to {{-iregexp}}.
 
 
@@ -1494,13 +1494,13 @@ Arguments:
   2. `Value` (string conforming to {{-iregexp}})
 
 Result:
-: `OptionalBoolean` (`true`, `false`, or `None`)
+: `OptionalBoolean` (`true`, `false`, or `Nothing`)
 
 The "search" function extension provides a way to check whether a
 given string contains a substring that matches a given regular
 expression, which is in {{-iregexp}} form.
 
-The result is `None` if the first argument is not a string or
+The result is `Nothing` if the first argument is not a string or
 the second argument is not a string conforming to {{-iregexp}}.
 
 ~~~ JSONPath
