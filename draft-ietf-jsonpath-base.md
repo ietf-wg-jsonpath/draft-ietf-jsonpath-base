@@ -1953,10 +1953,11 @@ Initial entries in this sub-registry are as listed in {{pre-reg}}:
 
 Security considerations for JSONPath can stem from
 
-* attack vectors on JSONPath implementations, and
+* attack vectors on JSONPath implementations,
+* attack vectors on how JSONPath queries are formed, and
 * the way JSONPath is used in security-relevant mechanisms.
 
-## Attack vectors on JSONPath Implementations
+## Attack Vectors on JSONPath Implementations
 
 Historically, JSONPath has often been implemented by feeding parts of
 the query to an underlying programming language engine, e.g.,
@@ -1980,6 +1981,23 @@ crafted JSONPath queries or arguments that trigger surprisingly high, possibly
 exponential, CPU usage or, for example via a naive recursive implementation of the descendant segment,
 stack overflow. Implementations need to have appropriate resource management
 to mitigate these attacks.
+
+## Attack Vectors on How JSONPath Queries are Formed
+
+JSONPath queries are often not static, but formed from variables that
+provide index values, member names, or values to compare with in a
+filter expression.
+These variables need to be translated into the form they take in a
+JSONPath query, e.g., by escaping string delimiters, or by only
+allowing specific constructs such as `.name` to be formed when the
+given values allow that.
+Failure to perform these translations correctly can lead to unexpected
+failures, which can lead to Availability, Confidentiality, and
+Integrity breaches, in particular if an adversary has control over the
+values (e.g., by entering them into a Web form).
+The resulting class of attacks, *injections* (e.g., SQL injections),
+is consistently found among the top causes of application security
+vulnerabilities and requires particular attention.
 
 ## Attacks on Security Mechanisms that Employ JSONPath
 
