@@ -18,7 +18,7 @@ abbrev: JSONPath
 area: ART
 wg: JSONPath WG
 kw: JSON
-date: 2022
+date: 2023
 
 author:
 -
@@ -1351,8 +1351,10 @@ a non-empty nodelist. The table also lists the subtypes of each type.
 | :--: | :----------------: | :------: |
 | `OptionalNodeOrValue` | `Node(n)`, `Value(v)`, `None` | `OptionalNode`, `OptionalValue`, `Value`, `Absent` |
 | `OptionalNode` | `Node(n)`, `None` | `Absent` |
-| `OptionalValue` | `Value(v)`, `None` | `Value`, `Absent` |
-| `Value` | `Value(v)` | |
+| `OptionalValue` | `Value(v)`, `None` | `Value`, `OptionalBoolean`, `Absent` |
+| `Value` | `Value(v)` | `Boolean` |
+| `OptionalBoolean` | `Value(true)`, `Value(false)`, `None`             | `Boolean`, `Absent` |
+| `Boolean` | `Value(true)`, `Value(false)` | |
 | `Absent` | `None` | |
 | `OptionalNodes` | `Nodes(nl)`, `None` | `OptionalNode`, `Absent` |
 {: #tbl-types title="Function extension type system"}
@@ -1362,6 +1364,8 @@ Notes:
 * `OptionalNodeOrValue` is an abstraction of a `comparable` (which may appear on either side of a comparison or as a function argument).
 * `OptionalNode` is an abstraction of a Singular Path.
 * `Value` is an abstraction of a primitive value.
+* `Boolean` is an abstraction of a primitive value that is either
+  `true` or `false`.
 * `OptionalValue` is an abstraction of a primitive value that may also
   be absent.
 * `Absent` is an abstraction of an empty nodelist.
@@ -1391,7 +1395,8 @@ The type correctness of function expressions can now be defined in terms of this
 A function expression is correctly typed if all the following are true:
 
 * If it occurs as a `filter-path` in an existence test, the function
-is defined to have result type `OptionalNodes` or one of its subtypes.
+is defined to have result type `OptionalNodes` or one of its subtypes,
+or to have result type `OptionalBoolean` or one of its subtypes.
 * If it occurs as a `comparable` in a comparison, the function
 is defined to have result type `OptionalNodeOrValue` or one of its subtypes.
 * For it and any function expression it contains,
@@ -1463,7 +1468,7 @@ Arguments:
   2. `Value` (string conforming to {{-iregexp}})
 
 Result:
-: `OptionalValue` (`true`, `false`, or `None`)
+: `OptionalBoolean` (`true`, `false`, or `None`)
 
 The "match" function extension provides a way to check whether (the
 entirety of, see {{search}} below) a given
@@ -1489,7 +1494,7 @@ Arguments:
   2. `Value` (string conforming to {{-iregexp}})
 
 Result:
-: `OptionalValue` (`true`, `false`, or `None`)
+: `OptionalBoolean` (`true`, `false`, or `None`)
 
 The "search" function extension provides a way to check whether a
 given string contains a substring that matches a given regular
@@ -1517,6 +1522,7 @@ The result is `true` if such a substring exists, `false` otherwise.
 | `$[?count(@.*) == 1]` | Valid syntax |
 | `$[?count(1) == 1]` | Invalid syntax since `1` is not a path  |
 | `$[?count(foo(@.*)) == 1]` | Valid syntax, where `foo` is a function extension with argument of type `OptionalNodes` and result type `OptionalNodes` |
+| `$[?match(@.timezone, 'Europe/.*')]`         | Valid syntax |
 | `$[?match(@.timezone, 'Europe/.*') == true]` | Valid syntax |
 {: title="Function expression examples"}
 
