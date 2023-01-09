@@ -420,7 +420,7 @@ $.store.book[?@.price < 10].title
 | `..name`            | shorthand for `..['name']`                                                                                              |
 | `..*`               | shorthand for `..[*]`                                                                                                   |
 | `'name'`            | [name selector](#name-selector): selects a named child of an object                                                     |
-| `*`                 | [wildcard selector](#name-selector): selects all children of a value                                                    |
+| `*`                 | [wildcard selector](#name-selector): selects all children of a node                                                    |
 | `3`                 | [index selector](#index-selector): selects an indexed child of an array (from 0)                                        |
 | `0:100:5`           | [array slice selector](#slice): start:end:step for arrays                                                               |
 | `?<expr>`           | [filter selector](#filter-selector): selects particular children using a boolean expression                             |
