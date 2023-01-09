@@ -399,7 +399,7 @@ elements from an array, giving a start position, an end position, and
 an optional step value that moves the position from the start to the
 end.
 
-Filter expressions `?<boolean expr>` select certain children of a value, as in:
+Filter expressions `?<boolean expr>` select certain children of an object or array, as in:
 
 ~~~~
 $.store.book[?@.price < 10].title
