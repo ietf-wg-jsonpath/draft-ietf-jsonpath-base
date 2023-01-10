@@ -551,7 +551,7 @@ The syntax and semantics of segments are defined in {{segments-details}}.
 In this document, the semantics of a JSONPath query define the
 required results and do not prescribe the internal workings of an
 implementation.  This document may describe semantics in a procedural
-step-by-stap fashion, but such descriptions are non-normative and do not
+step-by-step fashion, but such descriptions are normative only in the sense that any implementation MUST produce an identical result, but not in the sense that implementors are required to use the same algorithms.
 constrain implementors.
 
 The semantics are that a valid query is executed against a value,
