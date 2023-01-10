@@ -1068,6 +1068,12 @@ A boolean expression, usually involving the current node, is evaluated and
 the current node is selected if and only if the expression yields true.
 
 The current node is accessible via the current node identifier `@`.
+This identifier addresses the current node of the filter-selector that
+is directly enclosing the identifier; note that within nested
+filter-selectors, there is no syntax to address the current node of
+any other than the directly enclosing filter-selector (i.e., of
+filter-selectors enclosing the filter-selector that is directly
+enclosing the identifier).
 
 An existence expression may test the result of a function expression (see {{fnex}}).
 
