@@ -1355,16 +1355,15 @@ is a subset of the set of instances of the other type.
 {{tbl-types}} defines the available types in terms of abstract instances, where `n` denotes a node, `v` denotes a value, and `nl` denotes
 a non-empty nodelist. The table also lists the subtypes of each type.
 
-| Type | Abstract Instances | Subtypes |
-| :--: | :----------------: | :------: |
-| `OptionalNodeOrValue` | `Node(n)`, `Value(v)`, `Nothing` | `OptionalNode`, `OptionalValue`, `Value`, `Absent` |
-| `OptionalNode` | `Node(n)`, `Nothing` | `Absent` |
-| `OptionalValue` | `Value(v)`, `Nothing` | `Value`, `OptionalBoolean`, `Absent` |
-| `Value` | `Value(v)` | `Boolean` |
-| `OptionalBoolean` | `Value(true)`, `Value(false)`, `Nothing`             | `Boolean`, `Absent` |
-| `Boolean` | `Value(true)`, `Value(false)` | |
-| `Absent` | `Nothing` | |
-| `OptionalNodes` | `Nodes(nl)`, `Nothing` | `OptionalNode`, `Absent` |
+| Type                  | Abstract Instances                       | Subtypes                                 |
+| :--:                  | :----------------:                       | :------:                                 |
+| `OptionalNodeOrValue` | `Node(n)`, `Value(v)`, `Nothing`         | `OptionalNode`, `OptionalValue`, `Value` |
+| `OptionalNode`        | `Node(n)`, `Nothing`                     |                                          |
+| `OptionalValue`       | `Value(v)`, `Nothing`                    | `Value`, `OptionalBoolean`               |
+| `Value`               | `Value(v)`                               | `Boolean`                                |
+| `OptionalBoolean`     | `Value(true)`, `Value(false)`, `Nothing` | `Boolean`                                |
+| `Boolean`             | `Value(true)`, `Value(false)`            |                                          |
+| `OptionalNodes`       | `Nodes(nl)`, `Nothing`                   | `OptionalNode`                           |
 {: #tbl-types title="Function extension type system"}
 
 Notes:
@@ -1374,19 +1373,18 @@ Notes:
 * `Value` is an abstraction of a primitive value.
 * `Boolean` is an abstraction of a primitive value that is either
   `true` or `false`.
-* `OptionalValue` is an abstraction of a primitive value that may also
-  be absent.
-* `Absent` is an abstraction of an empty nodelist.
+* `OptionalValue` is an abstraction of a primitive value that may
+  alternatively be absent (`Nothing`).
 * `OptionalNodes` is an abstraction of a `filter-path` (which appears in an existence test or as a function argument).
 
 The abstract instances above can be obtained from the concrete representations in {{tbl-typerep}}.
 
-| Abstract Instance | Concrete Representations |
-| :---------------: | :----------------------: |
-| `Node(n)` | Singular Path resulting in a nodelist containing just the node `n` |
-| `Value(v)` | JSON value `v` |
-| `Nothing` | Singular Path or `filter-path` resulting in an empty nodelist |
-| `Nodes(nl)` | `filter-path` resulting in the non-empty nodelist `nl` |
+| Abstract Instance | Concrete Representations                                           |
+| :---------------: | :----------------------:                                           |
+| `Node(n)`         | Singular Path resulting in a nodelist containing just the node `n` |
+| `Value(v)`        | JSON value `v`                                                     |
+| `Nothing`         | Singular Path or `filter-path` resulting in an empty nodelist      |
+| `Nodes(nl)`       | `filter-path` resulting in the non-empty nodelist `nl`             |
 {: #tbl-typerep title="Concrete representations of abstract instances"}
 
 The following subtype relationships depend on coercion:
