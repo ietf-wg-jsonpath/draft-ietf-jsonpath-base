@@ -1318,6 +1318,12 @@ Beyond the filter expression functionality defined in the preceding
 subsections, JSONPath defines an extension point that can be used to
 add filter expression functionality: "Function Extensions".
 
+This section defines the extension point as well as four function
+extensions that use this extension point.
+While these mechanisms are designed to use the extension point,
+they are an integral part of the JSONPath specification and are
+mandatory to implement.
+
 A function extension defines a registered name (see {{iana-fnex}}) that
 can be applied to a sequence of zero or more arguments, producing a
 result.
