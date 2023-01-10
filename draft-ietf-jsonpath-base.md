@@ -1464,9 +1464,7 @@ $[?count(@.*.author) >= 5]
 Its only argument is a nodelist.
 The result is a value, an unsigned integer, that gives the number of
 nodes in the nodelist.
-Note that there is no deduplication of the nodelist. [^dedup]
-
-[^dedup]: Well, that can be discussed.
+Note that there is no deduplication of the nodelist.
 
 
 ### `match` Function Extension {#match}
