@@ -285,11 +285,11 @@ A node is either the root node or one of its descendants.
 This document models the result of applying a query to the
 argument as a nodelist (a list of nodes).
 
-So nodes are the selectable parts of the argument.
+Nodes are the selectable parts of the argument.
 The only parts of an object that can be selected by a query are the
 member values. Member names and members (name/value pairs) cannot be
 selected.
-So member values have nodes, but members and member names do not.
+Thus, member values have nodes, but members and member names do not.
 Similarly, member values are children of an object, but members and
 member names are not.
 
@@ -489,7 +489,7 @@ The examples are based on the simple JSON value shown in
 
 ## Overview {#synsem-overview}
 
-A JSONPath expression is a string which, when applied to a JSON value,
+A JSONPath *expression* is a string which, when applied to a JSON value,
 the *argument*, selects zero or more nodes of the argument and outputs
 these nodes as a nodelist.
 
@@ -550,7 +550,9 @@ The syntax and semantics of segments are defined in {{segments-details}}.
 
 In this document, the semantics of a JSONPath query define the
 required results and do not prescribe the internal workings of an
-implementation.
+implementation.  This document may describe semantics in a procedural
+step-by-stap fashion, but such descriptions are non-normative and do not
+constrain implementors.
 
 The semantics are that a valid query is executed against a value,
 the *argument*, and produces a nodelist (i.e., a list of zero or more nodes of the value).
@@ -1590,7 +1592,7 @@ The `dot-wildcard-shorthand` is shorthand for `[*]`.
 
 A `dot-member-name-shorthand` of the form `.<member-name>` is shorthand for `['<member-name>']`, but
 can only be used with member names that are composed of certain characters.
-Thus, for example, `$.foo.bar` is shorthand for `$['foo']['bar']` (and not for `$['foo.bar']`).
+Thus, for example, `$.foo.bar` is shorthand for `$['foo']['bar']` (but not for `$['foo.bar']`).
 
 #### Semantics
 {: unnumbered}
