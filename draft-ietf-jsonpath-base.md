@@ -1069,7 +1069,10 @@ the current node is selected if and only if the expression yields true.
 
 The current node is accessible via the current node identifier `@`.
 
-An existence expression may test the result of a function expression (see {{fnex}}).
+An existence expression either tests the existence of a node
+designated by an embedded query (see {{extest}}) or tests whether the
+result of a function expression of type `Boolean` or `OptionalBoolean`
+(see {{fnex}}) is `true`.
 
 ~~~~ abnf
 boolean-expr      = logical-or-expr
@@ -1162,7 +1165,7 @@ The order in which the children of an object appear in the resultant nodelist is
 since JSON objects are unordered.
 Children of an array appear in array order in the resultant nodelist.
 
-##### Existence Tests
+##### Existence Tests {#extest}
 {: unnumbered}
 
 A path by itself in a Boolean context is an existence test which yields true if the path selects at least one node and yields false if the path does not select any nodes.
