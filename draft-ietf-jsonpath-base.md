@@ -1067,6 +1067,12 @@ During the iteration process the node of each array element or object member val
 A boolean expression, usually involving the current node, is evaluated and
 the current node is selected if and only if the expression yields true.
 
+As the expression is composed of side-effect free components,
+the order of evaluation does not need to be (and is not) defined.
+Similarly, for `&&`/`||`, both a short-circuiting and a fully evaluating
+implementation will lead to the same result; both implementation
+strategies are therefore valid.
+
 The current node is accessible via the current node identifier `@`.
 
 An existence expression may test the result of a function expression (see {{fnex}}).
@@ -1321,6 +1327,14 @@ add filter expression functionality: "Function Extensions".
 A function extension defines a registered name (see {{iana-fnex}}) that
 can be applied to a sequence of zero or more arguments, producing a
 result.
+
+A function extension MUST be defined such that its evaluation is
+side-effect free, i.e., all possible orders of evaluation and choices
+of short-circuiting or full evaluation of an expression containing it
+must lead to the same result.
+(Note that memoization or logging are not side effects in this sense
+as they are visible at the implementation level only — they do not
+influence the result of the evaluation.)
 
 ~~~ abnf
 function-name           = function-name-first *function-name-char
@@ -2178,5 +2192,5 @@ The books example was taken from
 http://coli.lili.uni-bielefeld.de/~andreas/Seminare/sommer02/books.xml
 — a dead link now.
 
-<!--  LocalWords:  JSONPath XPath nodelist
+<!--  LocalWords:  JSONPath XPath nodelist memoization
  -->
