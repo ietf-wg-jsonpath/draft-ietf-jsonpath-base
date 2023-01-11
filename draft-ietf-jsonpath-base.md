@@ -1084,7 +1084,14 @@ any other than the directly enclosing filter-selector (i.e., of
 filter-selectors enclosing the filter-selector that is directly
 enclosing the identifier).
 
-An existence expression may test the result of a function expression (see {{fnex}}).
+A test expression either tests the existence of a node
+designated by an embedded query (see {{extest}}) or tests the
+result of a function expression (see {{fnex}}).
+In the latter case, if the function expression is of type
+`OptionalBoolean` or one of its subtypes, it tests whether the result
+is `true`; if the function expression is of type `OptionalNodes` or
+one of its subtypes, it tests whether the result is different from
+`Nothing`.
 
 ~~~~ abnf
 boolean-expr      = logical-or-expr
@@ -1096,9 +1103,9 @@ logical-and-expr  = basic-expr *(S "&&" S basic-expr)
                       ; binds more tightly than disjunction
 
 basic-expr        = paren-expr /
-                    relation-expr
-                    exist-expr
-exist-expr        = [logical-not-op S] filter-path
+                    relation-expr /
+                    test-expr
+test-expr         = [logical-not-op S] filter-path
                        ; path existence or non-existence
 filter-path       = rel-path / json-path / function-expression
 rel-path          = current-node-identifier segments
@@ -1177,7 +1184,7 @@ The order in which the children of an object appear in the resultant nodelist is
 since JSON objects are unordered.
 Children of an array appear in array order in the resultant nodelist.
 
-##### Existence Tests
+##### Existence Tests {#extest}
 {: unnumbered}
 
 A path by itself in a Boolean context is an existence test which yields true if the path selects at least one node and yields false if the path does not select any nodes.
@@ -1404,7 +1411,8 @@ Notes:
   `true` or `false`.
 * `OptionalValue` is an abstraction of a primitive value that may
   alternatively be absent (`Nothing`).
-* `OptionalNodes` is an abstraction of a `filter-path` (which appears in an existence test or as a function argument).
+* `OptionalNodes` is an abstraction of a `filter-path` (which appears
+  in a test expression or as a function argument).
 
 The abstract instances above can be obtained from the concrete representations in {{tbl-typerep}}.
 
@@ -1429,7 +1437,7 @@ The type correctness of function expressions can now be defined in terms of this
 
 A function expression is correctly typed if all the following are true:
 
-* If it occurs as a `filter-path` in an existence test, the function
+* If it occurs as a `filter-path` in a test expression, the function
 is defined to have result type `OptionalNodes` or one of its subtypes,
 or to have result type `OptionalBoolean` or one of its subtypes.
 * If it occurs as a `comparable` in a comparison, the function
