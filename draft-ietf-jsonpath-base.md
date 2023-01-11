@@ -725,7 +725,7 @@ HEXDIG = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
 Note: `double-quoted` strings follow the JSON string syntax ({{Section 7 of RFC8259}});
 `single-quoted` strings follow an analogous pattern ({{syntax-index}}).
 No attempt was made to improve on this syntax, so characters with
-scalar values above 0x10000 (such as <u format="num-lit-name">🤔</u>) need to be represented
+scalar values above 0x10000, such as <u format="num-lit-name">🤔</u>, need to be represented
 by a pair of surrogate escapes (`"\uD83E\uDD14"` in this case).
 
 #### Semantics
