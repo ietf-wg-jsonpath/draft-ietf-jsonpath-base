@@ -724,6 +724,9 @@ HEXDIG = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
 
 Note: `double-quoted` strings follow the JSON string syntax ({{Section 7 of RFC8259}});
 `single-quoted` strings follow an analogous pattern ({{syntax-index}}).
+No attempt was made to improve on this syntax, so characters with
+scalar values above 0x10000, such as <u format="num-lit-name">🤔</u>, need to be represented
+by a pair of surrogate escapes (`"\uD83E\uDD14"` in this case).
 
 #### Semantics
 {: unnumbered}
@@ -1067,7 +1070,19 @@ During the iteration process the node of each array element or object member val
 A boolean expression, usually involving the current node, is evaluated and
 the current node is selected if and only if the expression yields true.
 
+As the expression is composed of side-effect free components,
+the order of evaluation does not need to be (and is not) defined.
+Similarly, for `&&`/`||`, both a short-circuiting and a fully evaluating
+implementation will lead to the same result; both implementation
+strategies are therefore valid.
+
 The current node is accessible via the current node identifier `@`.
+This identifier addresses the current node of the filter-selector that
+is directly enclosing the identifier; note that within nested
+filter-selectors, there is no syntax to address the current node of
+any other than the directly enclosing filter-selector (i.e., of
+filter-selectors enclosing the filter-selector that is directly
+enclosing the identifier).
 
 A test expression either tests the existence of a node
 designated by an embedded query (see {{extest}}) or tests the
@@ -1325,9 +1340,23 @@ Beyond the filter expression functionality defined in the preceding
 subsections, JSONPath defines an extension point that can be used to
 add filter expression functionality: "Function Extensions".
 
+This section defines the extension point as well as four function
+extensions that use this extension point.
+While these mechanisms are designed to use the extension point,
+they are an integral part of the JSONPath specification and are
+mandatory to implement.
+
 A function extension defines a registered name (see {{iana-fnex}}) that
 can be applied to a sequence of zero or more arguments, producing a
 result.
+
+A function extension MUST be defined such that its evaluation is
+side-effect free, i.e., all possible orders of evaluation and choices
+of short-circuiting or full evaluation of an expression containing it
+must lead to the same result.
+(Note that memoization or logging are not side effects in this sense
+as they are visible at the implementation level only — they do not
+influence the result of the evaluation.)
 
 ~~~ abnf
 function-name           = function-name-first *function-name-char
@@ -1362,16 +1391,15 @@ is a subset of the set of instances of the other type.
 {{tbl-types}} defines the available types in terms of abstract instances, where `n` denotes a node, `v` denotes a value, and `nl` denotes
 a non-empty nodelist. The table also lists the subtypes of each type.
 
-| Type | Abstract Instances | Subtypes |
-| :--: | :----------------: | :------: |
-| `OptionalNodeOrValue` | `Node(n)`, `Value(v)`, `Nothing` | `OptionalNode`, `OptionalValue`, `Value`, `Absent` |
-| `OptionalNode` | `Node(n)`, `Nothing` | `Absent` |
-| `OptionalValue` | `Value(v)`, `Nothing` | `Value`, `OptionalBoolean`, `Absent` |
-| `Value` | `Value(v)` | `Boolean` |
-| `OptionalBoolean` | `Value(true)`, `Value(false)`, `Nothing`             | `Boolean`, `Absent` |
-| `Boolean` | `Value(true)`, `Value(false)` | |
-| `Absent` | `Nothing` | |
-| `OptionalNodes` | `Nodes(nl)`, `Nothing` | `OptionalNode`, `Absent` |
+| Type                  | Abstract Instances                       | Subtypes                                 |
+| :--:                  | :----------------:                       | :------:                                 |
+| `OptionalNodeOrValue` | `Node(n)`, `Value(v)`, `Nothing`         | `OptionalNode`, `OptionalValue`, `Value` |
+| `OptionalNode`        | `Node(n)`, `Nothing`                     |                                          |
+| `OptionalValue`       | `Value(v)`, `Nothing`                    | `Value`, `OptionalBoolean`               |
+| `Value`               | `Value(v)`                               | `Boolean`                                |
+| `OptionalBoolean`     | `Value(true)`, `Value(false)`, `Nothing` | `Boolean`                                |
+| `Boolean`             | `Value(true)`, `Value(false)`            |                                          |
+| `OptionalNodes`       | `Nodes(nl)`, `Nothing`                   | `OptionalNode`                           |
 {: #tbl-types title="Function extension type system"}
 
 Notes:
@@ -1381,20 +1409,19 @@ Notes:
 * `Value` is an abstraction of a primitive value.
 * `Boolean` is an abstraction of a primitive value that is either
   `true` or `false`.
-* `OptionalValue` is an abstraction of a primitive value that may also
-  be absent.
-* `Absent` is an abstraction of an empty nodelist.
+* `OptionalValue` is an abstraction of a primitive value that may
+  alternatively be absent (`Nothing`).
 * `OptionalNodes` is an abstraction of a `filter-path` (which appears
   in a test expression or as a function argument).
 
 The abstract instances above can be obtained from the concrete representations in {{tbl-typerep}}.
 
-| Abstract Instance | Concrete Representations |
-| :---------------: | :----------------------: |
-| `Node(n)` | Singular Path resulting in a nodelist containing just the node `n` |
-| `Value(v)` | JSON value `v` |
-| `Nothing` | Singular Path or `filter-path` resulting in an empty nodelist |
-| `Nodes(nl)` | `filter-path` resulting in the non-empty nodelist `nl` |
+| Abstract Instance | Concrete Representations                                           |
+| :---------------: | :----------------------:                                           |
+| `Node(n)`         | Singular Path resulting in a nodelist containing just the node `n` |
+| `Value(v)`        | JSON value `v`                                                     |
+| `Nothing`         | Singular Path or `filter-path` resulting in an empty nodelist      |
+| `Nodes(nl)`       | `filter-path` resulting in the non-empty nodelist `nl`             |
 {: #tbl-typerep title="Concrete representations of abstract instances"}
 
 The following subtype relationships depend on coercion:
@@ -1472,9 +1499,7 @@ $[?count(@.*.author) >= 5]
 Its only argument is a nodelist.
 The result is a value, an unsigned integer, that gives the number of
 nodes in the nodelist.
-Note that there is no deduplication of the nodelist. [^dedup]
-
-[^dedup]: Well, that can be discussed.
+Note that there is no deduplication of the nodelist.
 
 
 ### `match` Function Extension {#match}
@@ -2186,5 +2211,5 @@ The books example was taken from
 http://coli.lili.uni-bielefeld.de/~andreas/Seminare/sommer02/books.xml
 — a dead link now.
 
-<!--  LocalWords:  JSONPath XPath nodelist
+<!--  LocalWords:  JSONPath XPath nodelist memoization
  -->
