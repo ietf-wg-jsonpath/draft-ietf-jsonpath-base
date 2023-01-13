@@ -1137,8 +1137,8 @@ comparable   = number / string-literal /        ; primitive ...
                singular-path /                  ; Singular Path value
                function-expression
 comp-op      = "==" / "!=" /                    ; comparison ...
-               "<"  / ">"  /                    ; operators
-               "<=" / ">="
+               "<=" / ">=" /                    ; operators
+               "<"  / ">"
 
 singular-path     = rel-singular-path / abs-singular-path /
                     function-expression
