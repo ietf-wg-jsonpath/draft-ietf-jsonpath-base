@@ -1679,7 +1679,7 @@ descendant-segment               = (descendant-child /
                                     descendant-member-name-shorthand)
 descendant-child                 = ".." child-longhand
 
-descendant-wildcard-shorthand    = ".." wildcard
+descendant-wildcard-shorthand    = ".." wildcard-selector
 descendant-member-name-shorthand = ".." dot-member-name
 ~~~~
 
