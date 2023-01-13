@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'abnftt'
 
 parser = ABNF.from_abnf(File.read("draft-ietf-jsonpath-base.abnf"))
