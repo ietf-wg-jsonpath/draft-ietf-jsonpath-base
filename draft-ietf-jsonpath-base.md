@@ -1676,7 +1676,7 @@ Shortand notations are also provided that correspond to the shorthand forms of t
 descendant-segment               = (descendant-child /
                                     descendant-wildcard-shorthand /
                                     descendant-member-name-shorthand)
-descendant-child                 = ".." child-segment
+descendant-child                 = ".." child-longhand
 
 descendant-wildcard-shorthand    = ".." wildcard
 descendant-member-name-shorthand = ".." dot-member-name
