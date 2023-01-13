@@ -661,8 +661,8 @@ or children of either objects or arrays.
 ~~~~ abnf
 selector =  ( name-selector  /
               wildcard-selector /
-              index-selector /
               slice-selector /
+              index-selector /
               filter-selector
             )
 ~~~~
