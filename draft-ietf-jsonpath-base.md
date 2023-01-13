@@ -1604,7 +1604,7 @@ child-segment             = (child-longhand /
                              dot-wildcard-shorthand /
                              dot-member-name-shorthand)
 
-child-longhand            = "[" S selector 1*(S "," S selector) S "]"
+child-longhand            = "[" S selector *(S "," S selector) S "]"
 
 dot-wildcard-shorthand    = "." wildcard
 
