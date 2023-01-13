@@ -338,7 +338,7 @@ This document does not attempt to define predictable
 behavior for JSONPath queries in these situations.
 
 Specifically, the "Semantics" subsections of Sections
-{{<name-selector}}, {{<wildcard}},
+{{<name-selector}}, {{<wildcard-selector}},
 {{<filter-selector}}, and {{<descendant-segment}} describe behavior that
 becomes unpredictable when the JSON value for one of the objects
 under consideration was constructed out of JSON text that exhibits
@@ -391,7 +391,7 @@ of bracket notation. Examples and descriptions use shorthands where convenient.
 
 ### Selectors
 
-A wildcard `*` ({{wildcard}}) in the expression `[*]` selects all children of a
+A wildcard `*` ({{wildcard-selector}}) in the expression `[*]` selects all children of a
 node and in the expression `..[*]` selects all descendants of a node.
 
 An array slice `start:end:step` ({{slice}}) selects a series of
@@ -660,6 +660,7 @@ or children of either objects or arrays.
 
 ~~~~ abnf
 selector =  ( name-selector  /
+              wildcard-selector /
               index-selector /
               slice-selector /
               filter-selector
@@ -784,7 +785,7 @@ Queries:
 | `$["'"]["@"]` | `2` | `$['\'']['@']` | Unusual member names
 {: title="Name selector examples"}
 
-### Wildcard Selector {#wildcard}
+### Wildcard Selector {#wildcard-selector}
 
 #### Syntax
 {: unnumbered}
@@ -792,7 +793,7 @@ Queries:
 The wildcard selector consists of an asterisk.
 
 ~~~~ abnf
-wildcard = "*"
+wildcard-selector = "*"
 ~~~~
 
 #### Semantics
@@ -1606,7 +1607,7 @@ child-segment             = (child-longhand /
 
 child-longhand            = "[" S selector *(S "," S selector) S "]"
 
-dot-wildcard-shorthand    = "." wildcard
+dot-wildcard-shorthand    = "." wildcard-selector
 
 dot-member-name-shorthand = "." dot-member-name
 dot-member-name           = name-first *name-char
