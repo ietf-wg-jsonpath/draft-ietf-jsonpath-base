@@ -906,7 +906,6 @@ B              =    %x20 / ; Space
                     %x0A / ; Line feed or New line
                     %x0D   ; Carriage return
 S              = *B        ; optional blank space
-RS             = 1*B       ; required blank space
 
 ~~~~
 
