@@ -702,15 +702,13 @@ unescaped           = %x20-21 /                      ; see RFC 8259
                       %x28-5B /                      ; omit '
                       %x5D-10FFFF                    ; omit \
 
-escapable           = ( %x62 / %x66 / %x6E / %x72 / %x74 /
-                         ; \b \f \n \r \t
-                         ; b / ;  BS backspace U+0008
-                         ; t / ;  HT horizontal tab U+0009
-                         ; n / ;  LF line feed U+000A
-                         ; f / ;  FF form feed U+000C
-                         ; r / ;  CR carriage return U+000D
-                         "/" / ;  /  slash (solidus) U+002F
-                         "\" / ; \ backslash (reverse solidus) U+005C
+escapable           = ( %x62 /  ; b  BS backspace U+0008
+                        %x66 /  ; f FF form feed U+000C
+                        %x6E /  ; n LF line feed U+000A
+                        %x72 /  ; r CR carriage return U+000D
+                        %x74 /  ; t HT horizontal tab U+0009
+                         "/" /  ; / slash (solidus) U+002F
+                         "\" /  ; \ backslash (reverse solidus) U+005C
                          (%x75 hexchar) ;  uXXXX      U+XXXX
                       )
 
