@@ -1,12 +1,20 @@
 #!/usr/bin/env ruby
 
+# $ gem install abnftt
 require 'abnftt'
 
 parser = ABNF.from_abnf(File.read("draft-ietf-jsonpath-base.abnf"))
 
 require 'json'
+# cts = JSON.parse(File.read("../jsonpath-compliance-test-suite/cts.json"))
 
-cts = JSON.parse(File.read("../jsonpath-compliance-test-suite/cts.json"))
+# $ gem install open-uri-cached
+require 'open-uri/cached'
+# remove /tmp/open-uri... to clear cache
+
+cts = JSON.parse(URI.open("https://raw.githubusercontent.com/jsonpath-standard/jsonpath-compliance-test-suite/main/cts.json").read)
+
+# cts["tests"].map{_1["name"]}.grep /erflowing/
 
 SKIPPED_TESTS = [
   "union array access, overflowing index",
