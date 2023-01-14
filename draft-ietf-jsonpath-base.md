@@ -1359,7 +1359,7 @@ influence the result of the evaluation.)
 ~~~ abnf
 function-name           = function-name-first *function-name-char
 function-name-first     = LCALPHA
-function-name-char      = DIGIT / function-name-first / "_"
+function-name-char      = function-name-first / "_" / DIGIT
 LCALPHA                 = %x61-7A  ; "a".."z"
 
 function-expression     = function-name "(" S [function-argument
