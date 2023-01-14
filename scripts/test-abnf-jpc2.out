@@ -1,0 +1,54 @@
+OK: $[?(@[0].key==42)]
+OK -- failing correctly: $...key Expected one of "[", "*", [A-Z], [a-z], "_", [-􏿿] at line 1, column 4 (byte 4) after ..
+Expected one of "[", "*", [A-Z], [a-z], "_", [-􏿿] at line 1, column 4 (byte 4):
+$...key
+~~~^
+OK: $[?(@[-1]==$[-1])]
+OK: $[?($[42])]
+OK -- failing correctly: $[?(42)] Expected one of [0-9], ".", "e", " ", "\t", "\n", "\r", "==", "!=", "<=", ">=", "<", ">" at line 1, column 7 (byte 7) after [?(42
+Expected one of [0-9], ".", "e", " ", "\t", "\n", "\r", "==", "!=", "<=", ">=", "<", ">" at line 1, column 7 (byte 7):
+$[?(42)]
+~~~~~~^
+OK: $[?($[0]==null)]
+OK: $[?(!@.key)]
+OK -- failing correctly: $[?(!!@.key)] Expected one of " ", "\t", "\n", "\r", "(", "@", "$", [a-z] at line 1, column 6 (byte 6) after [?(!
+Expected one of " ", "\t", "\n", "\r", "(", "@", "$", [a-z] at line 1, column 6 (byte 6):
+$[?(!!@.key)]
+~~~~~^
+OK: $[?(!(!@.key))]
+OK: $[?((@.key))]
+OK: $[?((@.key>42) && (@.key<44))]
+OK: $[?((@.key>42) && (@.key<44) && (@.key>0))]
+OK -- failing correctly: $[?((@.key)==42) Expected one of " ", "\t", "\n", "\r", "&&", "||", ")" at line 1, column 12 (byte 12) after [?((@.key)
+Expected one of " ", "\t", "\n", "\r", "&&", "||", ")" at line 1, column 12 (byte 12):
+$[?((@.key)==42)
+~~~~~~~~~~~^
+OK -- failing correctly: $[?((@.key==42)) Expected one of " ", "\t", "\n", "\r", "&&", "||", ",", "]" at line 1, column 17 (byte 17) after [?((@.key==42))
+Expected one of " ", "\t", "\n", "\r", "&&", "||", ",", "]" at line 1, column 17 (byte 17):
+$[?((@.key==42))
+~~~~~~~~~~~~~~~~^
+OK -- failing correctly: $[?([1,2]<[3,4])] Expected one of " ", "\t", "\n", "\r", "!", "(", "0", "-", [1-9], "-0", "\"", "'", "true", "false", "null", "@", "$", [a-z] at line 1, column 5 (byte 5) after [?(
+Expected one of " ", "\t", "\n", "\r", "!", "(", "0", "-", [1-9], "-0", "\"", "'", "true", "false", "null", "@", "$", [a-z] at line 1, column 5 (byte 5):
+$[?([1,2]<[3,4])]
+~~~~^
+OK -- failing correctly: $[?(@.key<[3,4])] Expected one of " ", "\t", "\n", "\r", "0", "-", [1-9], "-0", "\"", "'", "true", "false", "null", "@", "$", [a-z] at line 1, column 11 (byte 11) after [?(@.key<
+Expected one of " ", "\t", "\n", "\r", "0", "-", [1-9], "-0", "\"", "'", "true", "false", "null", "@", "$", [a-z] at line 1, column 11 (byte 11):
+$[?(@.key<[3,4])]
+~~~~~~~~~~^
+$[?(@[0].key==42)]
+$...key
+$[?(@[-1]==$[-1])]
+$[?($[42])]
+$[?(42)]
+$[?($[0]==null)]
+$[?(!@.key)]
+$[?(!!@.key)]
+$[?(!(!@.key))]
+$[?((@.key))]
+$[?((@.key>42) && (@.key<44))]
+$[?((@.key>42) && (@.key<44) && (@.key>0))]
+$[?((@.key)==42)
+$[?((@.key==42))
+$[?([1,2]<[3,4])]
+$[?(@.key<[3,4])]
+---- successfully completed
