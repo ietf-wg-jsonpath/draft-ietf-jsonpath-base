@@ -1816,16 +1816,14 @@ normal-single-quoted = normal-unescaped /
 normal-unescaped     = %x20-26 /                 ; omit control codes
                        %x28-5B /                 ; omit '
                        %x5D-10FFFF               ; omit \
-normal-escapable     = ( %x62 / %x66 / %x6E / %x72 / %x74 /
-                           ; \b \f \n \r \t
-                           ; b /         ;  BS backspace U+0008
-                           ; t /         ;  HT horizontal tab U+0009
-                           ; n /         ;  LF line feed U+000A
-                           ; f /         ;  FF form feed U+000C
-                           ; r /         ;  CR carriage return U+000D
-                         "'" /           ;  ' apostrophe U+0027
-                         "\" / ; \ backslash (reverse solidus) U+005C
-                         (%x75 normal-hexchar)
+normal-escapable     = (%x62 / ; b  BS backspace U+0008
+                        %x66 / ; f FF form feed U+000C
+                        %x6E / ; n LF line feed U+000A
+                        %x72 / ; r CR carriage return U+000D
+                        %x74 / ; t HT horizontal tab U+0009
+                        "'" /  ; ' apostrophe U+0027
+                        "\" /  ; \ backslash (reverse solidus) U+005C
+                        (%x75 normal-hexchar)
                                         ; certain values u00xx U+00XX
                         )
 normal-hexchar       = "0" "0"
