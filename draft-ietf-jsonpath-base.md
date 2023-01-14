@@ -697,7 +697,7 @@ single-quoted       = unescaped /
 
 ESC                 = %x5C                           ; \  backslash
 
-unescaped           = %x20-21 /                      ; s. RFC 8259
+unescaped           = %x20-21 /                      ; see RFC 8259
                       %x23-26 /                      ; omit "
                       %x28-5B /                      ; omit '
                       %x5D-10FFFF                    ; omit \
