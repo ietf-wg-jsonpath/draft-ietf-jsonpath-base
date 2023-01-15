@@ -18,7 +18,7 @@ abbrev: JSONPath
 area: ART
 wg: JSONPath WG
 kw: JSON
-date: 2022
+date: 2023
 
 author:
 -
@@ -204,10 +204,7 @@ Element:
 : A value in a JSON array.
 
 Index:
-: A non-negative integer that identifies a specific element in an array.
-  Note that the term _indexing_ is also used for accessing elements
-  using negative integers ({{index-semantics}}), and for accessing
-  member values in an object using their member name.
+: An integer that identifies a specific element in an array.
 
 Query:
 : Short name for a JSONPath expression.
@@ -268,9 +265,12 @@ Unicode Scalar Value:
   In other words, integers in either of the inclusive base 16 ranges 0 to D7FF and
   E000 to 10FFFF. JSON string values are sequences of Unicode scalar values.
 
+Singular Nodelist:
+: A nodelist containing at most one node.
+
 Singular Path:
 : A JSONPath expression built from segments each of which, regardless of the input value,
-  produces at most one node.
+  produces a Singular Nodelist.
 
 Selector:
 : A single item within a segment that takes the input value and produces a nodelist
@@ -285,11 +285,11 @@ A node is either the root node or one of its descendants.
 This document models the result of applying a query to the
 argument as a nodelist (a list of nodes).
 
-So nodes are the selectable parts of the argument.
+Nodes are the selectable parts of the argument.
 The only parts of an object that can be selected by a query are the
 member values. Member names and members (name/value pairs) cannot be
 selected.
-So member values have nodes, but members and member names do not.
+Thus, member values have nodes, but members and member names do not.
 Similarly, member values are children of an object, but members and
 member names are not.
 
@@ -338,14 +338,14 @@ This document does not attempt to define predictable
 behavior for JSONPath queries in these situations.
 
 Specifically, the "Semantics" subsections of Sections
-{{<name-selector}}, {{<wildcard}},
+{{<name-selector}}, {{<wildcard-selector}},
 {{<filter-selector}}, and {{<descendant-segment}} describe behavior that
 becomes unpredictable when the JSON value for one of the objects
 under consideration was constructed out of JSON text that exhibits
 multiple members for a single object that share the same member name
 ("duplicate names", see {{Section 4 of -json}}).
-Also, selecting a child by name ({{<name-selector}}) and comparing strings
-({{comparisons}} in Section {{<filter-selector}}) assume these
+Also, selecting a child by name ({{name-selector}}) and comparing strings
+({{comparisons}} in {{filter-selector}}) assume these
 strings are sequences of Unicode scalar values, becoming unpredictable
 if they are not ({{Section 8.2 of -json}}).
 
@@ -370,7 +370,9 @@ of the evaluation of a filter expression (described later).
 
 ### Segments
 
-Segments can use the *bracket notation*, for example:
+Segments select children (`[]`) or descendants (`..[]`) of an input value.
+
+Segments can use *bracket notation*, for example:
 
 ~~~~
 $['store']['book'][0]['title']
@@ -389,15 +391,15 @@ of bracket notation. Examples and descriptions use shorthands where convenient.
 
 ### Selectors
 
-A wildcard `*` ({{wildcard}}) in the expression `[*]` selects all children of an
-object or an array and in the expression `..[*]` selects all descendants of an object or an array.
+A wildcard `*` ({{wildcard-selector}}) in the expression `[*]` selects all children of a
+node and in the expression `..[*]` selects all descendants of a node.
 
 An array slice `start:end:step` ({{slice}}) selects a series of
 elements from an array, giving a start position, an end position, and
-possibly a step value that moves the position from the start to the
+an optional step value that moves the position from the start to the
 end.
 
-Filter expressions `?<boolean expr>` select certain children of an object or array as in
+Filter expressions `?<boolean expr>` select certain children of an object or array, as in:
 
 ~~~~
 $.store.book[?@.price < 10].title
@@ -405,25 +407,25 @@ $.store.book[?@.price < 10].title
 
 ### Summary
 
-{{tbl-overview}} provides a quick overview of the JSONPath syntax elements.
+{{tbl-overview}} provides a brief overview of JSONPath syntax.
 
 | Syntax Element      | Description                                                                                                             |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------|
 | `$`                 | [root node identifier](#root-identifier)                                                                                |
 | `@`                 | [current node identifier](#filter-selector) (valid only within filter selectors)                                          |
-| `[<selectors>]`     | [child segment](#child-segment) selects zero or more children of JSON objects and arrays; contains one or more selectors, separated by commas        |
+| `[<selectors>]`     | [child segment](#child-segment) selects zero or more children of a node; contains one or more selectors, separated by commas        |
 | `.name`             | shorthand for `['name']`                                                                                                |
 | `.*`                | shorthand for `[*]`                                                                                                     |
-| `..[<selectors>]`   | [descendant segment](#descendant-segment): selects zero or more descendants of JSON objects and arrays; contains one or more selectors, separated by commas |
+| `..[<selectors>]`   | [descendant segment](#descendant-segment): selects zero or more descendants of a node; contains one or more selectors, separated by commas |
 | `..name`            | shorthand for `..['name']`                                                                                              |
 | `..*`               | shorthand for `..[*]`                                                                                                   |
 | `'name'`            | [name selector](#name-selector): selects a named child of an object                                                     |
-| `*`                 | [wildcard selector](#name-selector): selects all children of an array or object                                         |
+| `*`                 | [wildcard selector](#name-selector): selects all children of a node                                                    |
 | `3`                 | [index selector](#index-selector): selects an indexed child of an array (from 0)                                        |
 | `0:100:5`           | [array slice selector](#slice): start:end:step for arrays                                                               |
 | `?<expr>`           | [filter selector](#filter-selector): selects particular children using a boolean expression                             |
 | `length(@.foo)`     | [function extension](#fnex): invokes a function in a filter expression                                                  |
-{: #tbl-overview title="Overview of JSONPath"}
+{: #tbl-overview title="Overview of JSONPath syntax"}
 
 ## JSONPath Examples
 
@@ -487,7 +489,7 @@ The examples are based on the simple JSON value shown in
 
 ## Overview {#synsem-overview}
 
-A JSONPath expression is a string which, when applied to a JSON value,
+A JSONPath *expression* is a string which, when applied to a JSON value,
 the *argument*, selects zero or more nodes of the argument and outputs
 these nodes as a nodelist.
 
@@ -508,6 +510,11 @@ to the JSONPath processing (e.g., index values and steps) MUST be
 within the range of exact values defined in I-JSON {{-i-json}}, namely
 within the interval \[-(2<sup>53</sup>)+1, (2<sup>53</sup>)-1].
 
+2. Uses of function extensions must be correctly typed,
+as described in {{fnex}}.
+
+A JSONPath implementation MUST raise an error for any query which is not
+well-formed and valid.
 The well-formedness and the validity of JSONPath queries are independent of
 the JSON value the query is applied to; no further errors relating to the
 well-formedness and the validity of a JSONPath query can be
@@ -537,13 +544,14 @@ json-path = root-identifier segments
 segments  = *(S segment)
 ~~~~
 
-The syntax and semantics of segments are defined in Section {{<segments-details}}.
+The syntax and semantics of segments are defined in {{segments-details}}.
 
 ## Semantics
 
 In this document, the semantics of a JSONPath query define the
 required results and do not prescribe the internal workings of an
-implementation.
+implementation.  This document may describe semantics in a procedural
+step-by-step fashion, but such descriptions are normative only in the sense that any implementation MUST produce an identical result, but not in the sense that implementors are required to use the same algorithms.
 
 The semantics are that a valid query is executed against a value,
 the *argument*, and produces a nodelist (i.e., a list of zero or more nodes of the value).
@@ -571,8 +579,8 @@ appears that number of times in the nodelist. Duplicate nodes are not removed.
 
 A syntactically valid segment MUST NOT produce errors when executing the query.
 This means that some
-operations that might be considered erroneous, such as indexing beyond the
-end of an array,
+operations that might be considered erroneous, such as using an index
+lying outside the range of an array,
 simply result in fewer nodes being selected.
 
 Consider this example. With the argument `{"a":[{"b":0},{"b":1},{"c":2}]}`, the
@@ -652,8 +660,9 @@ or children of either objects or arrays.
 
 ~~~~ abnf
 selector =  ( name-selector  /
-              index-selector /
+              wildcard-selector /
               slice-selector /
+              index-selector /
               filter-selector
             )
 ~~~~
@@ -716,6 +725,9 @@ HEXDIG = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
 
 Note: `double-quoted` strings follow the JSON string syntax ({{Section 7 of RFC8259}});
 `single-quoted` strings follow an analogous pattern ({{syntax-index}}).
+No attempt was made to improve on this syntax, so characters with
+scalar values above 0x10000, such as <u format="num-lit-name">🤔</u>, need to be represented
+by a pair of surrogate escapes (`"\uD83E\uDD14"` in this case).
 
 #### Semantics
 {: unnumbered}
@@ -773,7 +785,7 @@ Queries:
 | `$["'"]["@"]` | `2` | `$['\'']['@']` | Unusual member names
 {: title="Name selector examples"}
 
-### Wildcard Selector {#wildcard}
+### Wildcard Selector {#wildcard-selector}
 
 #### Syntax
 {: unnumbered}
@@ -781,7 +793,7 @@ Queries:
 The wildcard selector consists of an asterisk.
 
 ~~~~ abnf
-wildcard = "*"
+wildcard-selector = "*"
 ~~~~
 
 #### Semantics
@@ -832,7 +844,7 @@ An index selector `<index>` matches at most one array element value.
 ~~~~ abnf
 index-selector = int                             ; decimal integer
 
-int            = ["-"] ( "0" / (DIGIT1 *DIGIT) ) ; -  optional
+int            = "0" / (["-"] DIGIT1 *DIGIT)     ; -  optional
 DIGIT1         = %x31-39                         ; 1-9 non-zero digit
 ~~~~
 
@@ -846,7 +858,7 @@ Notes:
 #### Semantics {#index-semantics}
 {: unnumbered}
 
-The `index-selector` applied to an array selects an array element using a zero-based index.
+A non-negative `index-selector` applied to an array selects an array element using a zero-based index.
 For example, the selector `0` selects the first and the selector `4` selects the fifth element of a sufficiently long array.
 Nothing is selected, and it is not an error, if the index lies outside the range of the array. Nothing is selected from a value that is not an array.
 
@@ -972,7 +984,7 @@ FUNCTION Normalize(i, len):
   END IF
 ~~~~
 
-The result of the array indexing expression `i` applied to an array
+The result of the array index expression `i` applied to an array
 of length `len` is defined to be the result of the array
 slicing expression `Normalize(i, len):Normalize(i, len)+1:1`.
 
@@ -999,8 +1011,8 @@ FUNCTION Bounds(start, end, step, len):
 
 The slice expression selects elements with indices between the lower and
 upper bounds.
-In the following pseudocode, the `a(i)` construct expresses the
-0-based indexing operation on the underlying array.
+In the following pseudocode, `a(i)` is the `i+1`th element of the array `a`
+(i.e., `a(0)` is the first element, `a(1)` the second, and so forth).
 
 ~~~~
 IF step > 0 THEN
@@ -1059,9 +1071,28 @@ During the iteration process the node of each array element or object member val
 A boolean expression, usually involving the current node, is evaluated and
 the current node is selected if and only if the expression yields true.
 
-Paths in filter expressions are Singular Paths, each of which selects at most one node.
+As the expression is composed of side-effect free components,
+the order of evaluation does not need to be (and is not) defined.
+Similarly, for `&&`/`||`, both a short-circuiting and a fully evaluating
+implementation will lead to the same result; both implementation
+strategies are therefore valid.
 
 The current node is accessible via the current node identifier `@`.
+This identifier addresses the current node of the filter-selector that
+is directly enclosing the identifier; note that within nested
+filter-selectors, there is no syntax to address the current node of
+any other than the directly enclosing filter-selector (i.e., of
+filter-selectors enclosing the filter-selector that is directly
+enclosing the identifier).
+
+A test expression either tests the existence of a node
+designated by an embedded query (see {{extest}}) or tests the
+result of a function expression (see {{fnex}}).
+In the latter case, if the function expression is of type
+`OptionalBoolean` or one of its subtypes, it tests whether the result
+is `true`; if the function expression is of type `OptionalNodes` or
+one of its subtypes, it tests whether the result is different from
+`Nothing`.
 
 ~~~~ abnf
 boolean-expr      = logical-or-expr
@@ -1073,9 +1104,9 @@ logical-and-expr  = basic-expr *(S "&&" S basic-expr)
                       ; binds more tightly than disjunction
 
 basic-expr        = paren-expr /
-                    relation-expr
-                    exist-expr
-exist-expr        = [logical-not-op S] filter-path
+                    relation-expr /
+                    test-expr
+test-expr         = [logical-not-op S] filter-path
                        ; path existence or non-existence
 filter-path       = rel-path / json-path / function-expression
 rel-path          = current-node-identifier segments
@@ -1092,19 +1123,25 @@ logical-not-op    = "!"               ; logical NOT operator
 relation-expr     = comp-expr         ; comparison test
 ~~~~
 
-Comparisons are restricted to Singular Path values, each of which selects at most one node, and primitive values (that is, numbers, strings, `true`, `false`,
+Comparisons are restricted to primitive values (that is, numbers, strings, `true`, `false`,
 and `null`).
+These can be notated as literal values, or they can be derived from
+Singular Paths, each of which selects at most one node.
+Function expressions (see {{fnex}}) used in comparison expressions
+return a primitive value or at most one node.
 
 ~~~~ abnf
 comp-expr    = comparable S comp-op S comparable
 comparable   = number / string-literal /        ; primitive ...
                true / false / null /            ; values only
-               singular-path                    ; Singular Path value
+               singular-path /                  ; Singular Path value
+               function-expression
 comp-op      = "==" / "!=" /                    ; comparison ...
-               "<"  / ">"  /                    ; operators
-               "<=" / ">="
+               "<=" / ">=" /                    ; operators
+               "<"  / ">"
 
-singular-path     = rel-singular-path / abs-singular-path / function-expression
+singular-path     = rel-singular-path / abs-singular-path /
+                    function-expression
 rel-singular-path = current-node-identifier singular-path-segments
 abs-singular-path = root-identifier singular-path-segments
 singular-path-segments = *(S (name-segment / index-segment))
@@ -1117,7 +1154,7 @@ Alphabetic characters in ABNF are case-insensitive, so "e" can be either "e" or 
 `true`, `false`, and `null` are lower-case only (case-sensitive).
 
 ~~~~ abnf
-number       = int [ frac ] [ exp ]                ; decimal number
+number       = (int / "-0") [ frac ] [ exp ]       ; decimal number
 frac         = "." 1*DIGIT                         ; decimal fraction
 exp          = "e" [ "-" / "+" ] 1*DIGIT           ; decimal exponent
 true         = %x74.72.75.65                       ; true
@@ -1148,7 +1185,7 @@ The order in which the children of an object appear in the resultant nodelist is
 since JSON objects are unordered.
 Children of an array appear in array order in the resultant nodelist.
 
-##### Existence Tests
+##### Existence Tests {#extest}
 {: unnumbered}
 
 A path by itself in a Boolean context is an existence test which yields true if the path selects at least one node and yields false if the path does not select any nodes.
@@ -1215,7 +1252,7 @@ obey its laws (see, for example, {{BOOLEAN-LAWS}}).
 ##### Function Extensions
 {: unnumbered}
 
-Filter selectors may use function extensions, which are covered in Section {{<fnex}}.
+Filter selectors may use function extensions, which are covered in {{fnex}}.
 
 #### Examples
 {: unnumbered}
@@ -1279,7 +1316,7 @@ JSON:
 
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
-| `$.a[@.b == 'kilo']` | `{"b": "kilo"}` | `$['a'][9]` | Member value comparison |
+| `$.a[?@.b == 'kilo']` | `{"b": "kilo"}` | `$['a'][9]` | Member value comparison |
 | `$.a[?@>3.5]` | `5` <br> `4` <br> `6` | `$['a'][1]` <br> `$['a'][4]` <br> `$['a'][5]` | Array value comparison |
 | `$.a[?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": {}}` <br> `{"b": "kilo"}` | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][8]` <br> `$['a'][9]` | Array value existence |
 | `$[?@.*]` | `[3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}, {"b": {}}, {"b": "kilo"}]` <br> `{"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}}` | `$['a']` <br> `$['o']` | Existence of non-singular paths |
@@ -1304,15 +1341,23 @@ Beyond the filter expression functionality defined in the preceding
 subsections, JSONPath defines an extension point that can be used to
 add filter expression functionality: "Function Extensions".
 
+This section defines the extension point as well as four function
+extensions that use this extension point.
+While these mechanisms are designed to use the extension point,
+they are an integral part of the JSONPath specification and are
+mandatory to implement.
+
 A function extension defines a registered name (see {{iana-fnex}}) that
-can be applied to a sequence of zero or more arguments, resulting in a
+can be applied to a sequence of zero or more arguments, producing a
 result.
-A function-expression stands for ("returns") a nodelist or a value.
-The arguments are filter expressions that are to be interpreted as
-nodelists or values.
-For each argument and for the result, the function extension defines
-the "kind" of the item, i.e., whether the item is a value or a
-nodelist ("nodes").
+
+A function extension MUST be defined such that its evaluation is
+side-effect free, i.e., all possible orders of evaluation and choices
+of short-circuiting or full evaluation of an expression containing it
+must lead to the same result.
+(Note that memoization or logging are not side effects in this sense
+as they are visible at the implementation level only — they do not
+influence the result of the evaluation.)
 
 ~~~ abnf
 function-name           = function-name-first *function-name-char
@@ -1322,21 +1367,98 @@ LCALPHA                 = %x61-7A  ; "a".."z"
 
 function-expression     = function-name "(" S [function-argument
                              *(S "," S function-argument)] S ")"
-function-argument       = comparable / filter-path
+function-argument       = filter-path / comparable
 ~~~
 
-Syntactically, a function-expression can occur anywhere where a
-singular-path can occur (exist-expr, comparable).
-A function-expression that employs a function extension that returns a
-nodelist MUST return a singular node to be used in a comparable.
+A function argument is a `filter-path` or a `comparable`.
+
+According to {{filter-selector}}, a `function-expression` is valid as a `filter-path`
+or a `comparable`.
+
+Any function expressions in a query must be well-formed (by conforming to the above ABNF)
+and correctly typed,
+otherwise the JSONPath implementation MUST raise an error
+(see {{synsem-overview}}).
+To define which function expressions are correctly typed,
+a type system is first introduced.
+
+### Type System for Function Expressions
+
+Each argument and result of a function extension must have a declared type.
+
+A type is a set of instances. A type is a subtype of another type if its set of instances (possibly after coercion)
+is a subset of the set of instances of the other type.
+
+{{tbl-types}} defines the available types in terms of abstract instances, where `n` denotes a node, `v` denotes a value, and `nl` denotes
+a non-empty nodelist. The table also lists the subtypes of each type.
+
+| Type                  | Abstract Instances                       | Subtypes                                 |
+| :--:                  | :----------------:                       | :------:                                 |
+| `OptionalNodeOrValue` | `Node(n)`, `Value(v)`, `Nothing`         | `OptionalNode`, `OptionalValue`, `Value` |
+| `OptionalNode`        | `Node(n)`, `Nothing`                     |                                          |
+| `OptionalValue`       | `Value(v)`, `Nothing`                    | `Value`, `OptionalBoolean`               |
+| `Value`               | `Value(v)`                               | `Boolean`                                |
+| `OptionalBoolean`     | `Value(true)`, `Value(false)`, `Nothing` | `Boolean`                                |
+| `Boolean`             | `Value(true)`, `Value(false)`            |                                          |
+| `OptionalNodes`       | `Nodes(nl)`, `Nothing`                   | `OptionalNode`                           |
+{: #tbl-types title="Function extension type system"}
+
+Notes:
+
+* `OptionalNodeOrValue` is an abstraction of a `comparable` (which may appear on either side of a comparison or as a function argument).
+* `OptionalNode` is an abstraction of a Singular Path.
+* `Value` is an abstraction of a primitive value.
+* `Boolean` is an abstraction of a primitive value that is either
+  `true` or `false`.
+* `OptionalValue` is an abstraction of a primitive value that may
+  alternatively be absent (`Nothing`).
+* `OptionalNodes` is an abstraction of a `filter-path` (which appears
+  in a test expression or as a function argument).
+
+The abstract instances above can be obtained from the concrete representations in {{tbl-typerep}}.
+
+| Abstract Instance | Concrete Representations                                           |
+| :---------------: | :----------------------:                                           |
+| `Node(n)`         | Singular Path resulting in a nodelist containing just the node `n` |
+| `Value(v)`        | JSON value `v`                                                     |
+| `Nothing`         | Singular Path or `filter-path` resulting in an empty nodelist      |
+| `Nodes(nl)`       | `filter-path` resulting in the non-empty nodelist `nl`             |
+{: #tbl-typerep title="Concrete representations of abstract instances"}
+
+The following subtype relationships depend on coercion:
+
+* `OptionalNode` is a subtype of `OptionalValue` via coercion since the `OptionalNode` instance `Node(n)` can be coerced to
+the `OptionalValue` instance `Value(v)`, where `v` is the value of the node `n`.
+* `OptionalNode` is a subtype of `OptionalNodes` via coercion since the `OptionalNode` instance `Node(n)` can be coerced to
+the `OptionalNodes` instance `Nodes(l)`, where `l` is a nodelist consisting of just the node `n`.
+
+The type correctness of function expressions can now be defined in terms of this type system.
+
+### Type Correctness of Function Expressions
+
+A function expression is correctly typed if all the following are true:
+
+* If it occurs as a `filter-path` in a test expression, the function
+is defined to have result type `OptionalNodes` or one of its subtypes,
+or to have result type `OptionalBoolean` or one of its subtypes.
+* If it occurs as a `comparable` in a comparison, the function
+is defined to have result type `OptionalNodeOrValue` or one of its subtypes.
+* For it and any function expression it contains,
+each argument of the function matches the defined type of the argument
+according to one of the following rules:
+  * The argument is a function expression with defined result type
+    that is the same as, or a subtype of, the defined type of the argument.
+  * The argument is a literal primitive value and the defined type of the  argument is `Value` or any type of which `Value` is a subtype.
+  * The argument is a Singular Path and the defined type of the argument is `OptionalNode` or any type of which `OptionalNode` is a subtype.
+  * The argument is a `filter-path` or a Singular Path and the defined type of the argument is `OptionalNodes`.
 
 ### `length` Function Extension {#length}
 
 Arguments:
-: 1. value
+: 1. `Value`
 
 Result:
-: value (unsigned integer)
+: `Value` (unsigned integer)
 
 The "length" function extension provides a way to compute the length
 of a value and make that available for further processing in the
@@ -1362,10 +1484,10 @@ integer.
 ### `count` Function Extension {#count}
 
 Arguments:
-: 1. nodelist
+: 1. `OptionalNodes`
 
 Result:
-: value (unsigned integer)
+: `Value` (unsigned integer)
 
 The "count" function extension provides a way to obtain the number of
 nodes in a nodelist and make that available for further processing in
@@ -1378,19 +1500,17 @@ $[?count(@.*.author) >= 5]
 Its only argument is a nodelist.
 The result is a value, an unsigned integer, that gives the number of
 nodes in the nodelist.
-Note that there is no deduplication of the nodelist. [^dedup]
-
-[^dedup]: Well, that can be discussed.
+Note that there is no deduplication of the nodelist.
 
 
 ### `match` Function Extension {#match}
 
 Arguments:
-: 1. value (string)
-  2. value (string conforming to {{-iregexp}})
+: 1. `OptionalNodeOrValue` (string)
+  2. `Value` (string conforming to {{-iregexp}})
 
 Result:
-: value (`true` or `false`)
+: `OptionalBoolean` (`true`, `false`, or `Nothing`)
 
 The "match" function extension provides a way to check whether (the
 entirety of, see {{search}} below) a given
@@ -1405,19 +1525,25 @@ contained in the string that is the second argument.
 The result is `true` if the string matches the iregexp and `false`
 otherwise.
 
+The result is `Nothing` if the first argument is not a string or
+the second argument is not a string conforming to {{-iregexp}}.
+
 
 ### `search` Function Extension {#search}
 
 Arguments:
-: 1. value (string)
-  2. value (string conforming to {{-iregexp}})
+: 1. `OptionalNodeOrValue` (string)
+  2. `Value` (string conforming to {{-iregexp}})
 
 Result:
-: value (`true` or `false`)
+: `OptionalBoolean` (`true`, `false`, or `Nothing`)
 
 The "search" function extension provides a way to check whether a
 given string contains a substring that matches a given regular
 expression, which is in {{-iregexp}} form.
+
+The result is `Nothing` if the first argument is not a string or
+the second argument is not a string conforming to {{-iregexp}}.
 
 ~~~ JSONPath
 $[?search(@.author, "[BR]ob")]
@@ -1427,6 +1553,20 @@ Its first argument is a string that is searched for at least one
 substring that matches the iregexp contained in the string
 that is the second argument.
 The result is `true` if such a substring exists, `false` otherwise.
+
+### Examples
+{: unnumbered}
+
+| Query | Comment |
+| :---: | ------- |
+| `$[?length(@) < 3]` | Valid typing |
+| `$[?length(@.*) < 3]` | Invalid typing since `@.*` is a non-singular path |
+| `$[?count(@.*) == 1]` | Valid typing |
+| `$[?count(1) == 1]` | Invalid typing since `1` is not a path  |
+| `$[?count(foo(@.*)) == 1]` | Valid typing, where `foo` is a function extension with argument of type `OptionalNodes` and result type `OptionalNodes` |
+| `$[?match(@.timezone, 'Europe/.*')]`         | Valid typing |
+| `$[?match(@.timezone, 'Europe/.*') == true]` | Valid typing |
+{: title="Function expression examples"}
 
 ## Segments  {#segments-details}
 
@@ -1465,9 +1605,9 @@ child-segment             = (child-longhand /
                              dot-wildcard-shorthand /
                              dot-member-name-shorthand)
 
-child-longhand            = "[" S selector 1*(S "," S selector) S "]"
+child-longhand            = "[" S selector *(S "," S selector) S "]"
 
-dot-wildcard-shorthand    = "." wildcard
+dot-wildcard-shorthand    = "." wildcard-selector
 
 dot-member-name-shorthand = "." dot-member-name
 dot-member-name           = name-first *name-char
@@ -1485,7 +1625,7 @@ The `dot-wildcard-shorthand` is shorthand for `[*]`.
 
 A `dot-member-name-shorthand` of the form `.<member-name>` is shorthand for `['<member-name>']`, but
 can only be used with member names that are composed of certain characters.
-Thus, for example, `$.foo.bar` is shorthand for `$['foo']['bar']` (and not for `$['foo.bar']`).
+Thus, for example, `$.foo.bar` is shorthand for `$['foo']['bar']` (but not for `$['foo.bar']`).
 
 #### Semantics
 {: unnumbered}
@@ -1537,9 +1677,9 @@ Shortand notations are also provided that correspond to the shorthand forms of t
 descendant-segment               = (descendant-child /
                                     descendant-wildcard-shorthand /
                                     descendant-member-name-shorthand)
-descendant-child                 = ".." child-segment
+descendant-child                 = ".." child-longhand
 
-descendant-wildcard-shorthand    = ".." wildcard
+descendant-wildcard-shorthand    = ".." wildcard-selector
 descendant-member-name-shorthand = ".." dot-member-name
 ~~~~
 
@@ -1848,10 +1988,11 @@ Initial entries in this sub-registry are as listed in {{pre-reg}}:
 
 Security considerations for JSONPath can stem from
 
-* attack vectors on JSONPath implementations, and
+* attack vectors on JSONPath implementations,
+* attack vectors on how JSONPath queries are formed, and
 * the way JSONPath is used in security-relevant mechanisms.
 
-## Attack vectors on JSONPath Implementations
+## Attack Vectors on JSONPath Implementations
 
 Historically, JSONPath has often been implemented by feeding parts of
 the query to an underlying programming language engine, e.g.,
@@ -1875,6 +2016,23 @@ crafted JSONPath queries or arguments that trigger surprisingly high, possibly
 exponential, CPU usage or, for example via a naive recursive implementation of the descendant segment,
 stack overflow. Implementations need to have appropriate resource management
 to mitigate these attacks.
+
+## Attack Vectors on How JSONPath Queries are Formed
+
+JSONPath queries are often not static, but formed from variables that
+provide index values, member names, or values to compare with in a
+filter expression.
+These variables need to be translated into the form they take in a
+JSONPath query, e.g., by escaping string delimiters, or by only
+allowing specific constructs such as `.name` to be formed when the
+given values allow that.
+Failure to perform these translations correctly can lead to unexpected
+failures, which can lead to Availability, Confidentiality, and
+Integrity breaches, in particular if an adversary has control over the
+values (e.g., by entering them into a Web form).
+The resulting class of attacks, *injections* (e.g., SQL injections),
+is consistently found among the top causes of application security
+vulnerabilities and requires particular attention.
 
 ## Attacks on Security Mechanisms that Employ JSONPath
 
@@ -2040,7 +2198,7 @@ is known only in a general way.
 
 A Normalized JSONPath can be converted into a JSON Pointer by converting the syntax,
 without knowledge of any JSON value. The inverse is not generally true: a numeric
-path component in a JSON Pointer may identify a member value of a JSON object or may index an array.
+path component in a JSON Pointer may identify a member value of an object or an element of an array.
 For conversion to a JSONPath query, knowledge of the structure of the JSON value is
 needed to distinguish these cases.
 
@@ -2054,5 +2212,5 @@ The books example was taken from
 http://coli.lili.uni-bielefeld.de/~andreas/Seminare/sommer02/books.xml
 — a dead link now.
 
-<!--  LocalWords:  JSONPath XPath nodelist
+<!--  LocalWords:  JSONPath XPath nodelist memoization
  -->
