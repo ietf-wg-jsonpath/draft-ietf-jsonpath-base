@@ -1619,10 +1619,12 @@ DIGIT                     =  %x30-39              ; 0-9
 ALPHA                     =  %x41-5A / %x61-7A    ; A-Z / a-z
 ~~~~
 
-The `dot-wildcard-shorthand` is shorthand for `[*]`.
+`.*`, a `child-segment` built from the `wildcard-shorthand`, is shorthand for `[*]`.
 
-A `dot-member-name-shorthand` of the form `.<member-name>` is shorthand for `['<member-name>']`, but
-can only be used with member names that are composed of certain characters.
+ `.<member-name>`, a `child-segment` built from a
+ `member-name-shorthand`, is shorthand for `['<member-name>']`.
+Note that this can only be used with member names that are composed of certain
+characters, as specified in the ABNF rule `member-name-shorthand`.
 Thus, for example, `$.foo.bar` is shorthand for `$['foo']['bar']` (but not for `$['foo.bar']`).
 
 #### Semantics
@@ -1678,9 +1680,14 @@ descendant-segment               = ".."
                                     member-name-shorthand)
 ~~~~
 
-The `descendant-wildcard-shorthand` is shorthand for `..[*]`.
+`..*`, the `descendant-segment` built from a `wildcard-shorthand`, is
+shorthand for `..[*]`.
 
-A `descendant-member-name-shorthand` of the form `..<member-name>` is shorthand for `..['<member-name>']`.
+`..<member-name>`, a `descendant-segment` built from a
+`member-name-shorthand`, is shorthand for `..['<member-name>']`.
+As with the similar shorthand of a `child-segment`, note that this can
+only be used with member names that are composed of certain
+characters, as specified in the ABNF rule `member-name-shorthand`.
 
 Note that `..` on its own is not a valid segment.
 
