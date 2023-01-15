@@ -1142,7 +1142,8 @@ singular-path     = rel-singular-path / abs-singular-path /
 rel-singular-path = current-node-identifier singular-path-segments
 abs-singular-path = root-identifier singular-path-segments
 singular-path-segments = *(S (name-segment / index-segment))
-name-segment      = "[" name-selector "]" / dot-member-name-shorthand
+name-segment      = ("[" name-selector "]")
+                  / ("." member-name-shorthand)
 index-segment     = "[" index-selector "]"
 ~~~~
 
@@ -1598,16 +1599,16 @@ Shorthand notations are also provided for when there is a single
 wildcard or name selector.
 
 ~~~~ abnf
-child-segment             = (child-longhand /
-                             dot-wildcard-shorthand /
-                             dot-member-name-shorthand)
+child-segment             = bracketed-selection /
+                            ("."
+                             (wildcard-shorthand /
+                              member-name-shorthand))
 
-child-longhand            = "[" S selector *(S "," S selector) S "]"
+bracketed-selection       = "[" S selector *(S "," S selector) S "]"
 
-dot-wildcard-shorthand    = "." wildcard-selector
+wildcard-shorthand        = wildcard-selector
 
-dot-member-name-shorthand = "." dot-member-name
-dot-member-name           = name-first *name-char
+member-name-shorthand     =  name-first *name-char
 name-first                = ALPHA /
                             "_"   /            ; _
                             %x80-10FFFF
@@ -1671,13 +1672,10 @@ followed by a child segment (`descendant-segment`).
 Shortand notations are also provided that correspond to the shorthand forms of the child segment.
 
 ~~~~ abnf
-descendant-segment               = (descendant-child /
-                                    descendant-wildcard-shorthand /
-                                    descendant-member-name-shorthand)
-descendant-child                 = ".." child-longhand
-
-descendant-wildcard-shorthand    = ".." wildcard-selector
-descendant-member-name-shorthand = ".." dot-member-name
+descendant-segment               = ".."
+                                   (bracketed-selection /
+                                    wildcard-shorthand /
+                                    member-name-shorthand)
 ~~~~
 
 The `descendant-wildcard-shorthand` is shorthand for `..[*]`.
