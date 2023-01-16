@@ -697,19 +697,17 @@ single-quoted       = unescaped /
 
 ESC                 = %x5C                           ; \  backslash
 
-unescaped           = %x20-21 /                      ; s. RFC 8259
+unescaped           = %x20-21 /                      ; see RFC 8259
                       %x23-26 /                      ; omit "
                       %x28-5B /                      ; omit '
                       %x5D-10FFFF                    ; omit \
 
-escapable           = ( %x62 / %x66 / %x6E / %x72 / %x74 /
-                         ; \b \f \n \r \t
-                         ; b / ;  BS backspace U+0008
-                         ; t / ;  HT horizontal tab U+0009
-                         ; n / ;  LF line feed U+000A
-                         ; f / ;  FF form feed U+000C
-                         ; r / ;  CR carriage return U+000D
-                         "/" / ;  /  slash (solidus) U+002F
+escapable           = ( %x62 / ; b BS backspace U+0008
+                        %x66 / ; f FF form feed U+000C
+                        %x6E / ; n LF line feed U+000A
+                        %x72 / ; r CR carriage return U+000D
+                        %x74 / ; t HT horizontal tab U+0009
+                         "/" / ; / slash (solidus) U+002F
                          "\" / ; \ backslash (reverse solidus) U+005C
                          (%x75 hexchar) ;  uXXXX      U+XXXX
                       )
@@ -908,7 +906,6 @@ B              =    %x20 / ; Space
                     %x0A / ; Line feed or New line
                     %x0D   ; Carriage return
 S              = *B        ; optional blank space
-RS             = 1*B       ; required blank space
 
 ~~~~
 
@@ -1145,7 +1142,8 @@ singular-path     = rel-singular-path / abs-singular-path /
 rel-singular-path = current-node-identifier singular-path-segments
 abs-singular-path = root-identifier singular-path-segments
 singular-path-segments = *(S (name-segment / index-segment))
-name-segment      = "[" name-selector "]" / dot-member-name-shorthand
+name-segment      = ("[" name-selector "]")
+                  / ("." member-name-shorthand)
 index-segment     = "[" index-selector "]"
 ~~~~
 
@@ -1362,7 +1360,7 @@ influence the result of the evaluation.)
 ~~~ abnf
 function-name           = function-name-first *function-name-char
 function-name-first     = LCALPHA
-function-name-char      = DIGIT / function-name-first / "_"
+function-name-char      = function-name-first / "_" / DIGIT
 LCALPHA                 = %x61-7A  ; "a".."z"
 
 function-expression     = function-name "(" S [function-argument
@@ -1601,16 +1599,14 @@ Shorthand notations are also provided for when there is a single
 wildcard or name selector.
 
 ~~~~ abnf
-child-segment             = (child-longhand /
-                             dot-wildcard-shorthand /
-                             dot-member-name-shorthand)
+child-segment             = bracketed-selection /
+                            ("."
+                             (wildcard-selector /
+                              member-name-shorthand))
 
-child-longhand            = "[" S selector *(S "," S selector) S "]"
+bracketed-selection       = "[" S selector *(S "," S selector) S "]"
 
-dot-wildcard-shorthand    = "." wildcard-selector
-
-dot-member-name-shorthand = "." dot-member-name
-dot-member-name           = name-first *name-char
+member-name-shorthand     = name-first *name-char
 name-first                = ALPHA /
                             "_"   /            ; _
                             %x80-10FFFF
@@ -1621,10 +1617,13 @@ DIGIT                     =  %x30-39              ; 0-9
 ALPHA                     =  %x41-5A / %x61-7A    ; A-Z / a-z
 ~~~~
 
-The `dot-wildcard-shorthand` is shorthand for `[*]`.
+`.*`, a `child-segment` directly built from a `wildcard-selector`, is
+shorthand for `[*]`.
 
-A `dot-member-name-shorthand` of the form `.<member-name>` is shorthand for `['<member-name>']`, but
-can only be used with member names that are composed of certain characters.
+ `.<member-name>`, a `child-segment` built from a
+ `member-name-shorthand`, is shorthand for `['<member-name>']`.
+Note that this can only be used with member names that are composed of certain
+characters, as specified in the ABNF rule `member-name-shorthand`.
 Thus, for example, `$.foo.bar` is shorthand for `$['foo']['bar']` (but not for `$['foo.bar']`).
 
 #### Semantics
@@ -1674,18 +1673,20 @@ followed by a child segment (`descendant-segment`).
 Shortand notations are also provided that correspond to the shorthand forms of the child segment.
 
 ~~~~ abnf
-descendant-segment               = (descendant-child /
-                                    descendant-wildcard-shorthand /
-                                    descendant-member-name-shorthand)
-descendant-child                 = ".." child-longhand
-
-descendant-wildcard-shorthand    = ".." wildcard-selector
-descendant-member-name-shorthand = ".." dot-member-name
+descendant-segment               = ".."
+                                   (bracketed-selection /
+                                    wildcard-selector /
+                                    member-name-shorthand)
 ~~~~
 
-The `descendant-wildcard-shorthand` is shorthand for `..[*]`.
+`..*`, the `descendant-segment` directly built from a
+`wildcard-selector`, is shorthand for `..[*]`.
 
-A `descendant-member-name-shorthand` of the form `..<member-name>` is shorthand for `..['<member-name>']`.
+`..<member-name>`, a `descendant-segment` built from a
+`member-name-shorthand`, is shorthand for `..['<member-name>']`.
+As with the similar shorthand of a `child-segment`, note that this can
+only be used with member names that are composed of certain
+characters, as specified in the ABNF rule `member-name-shorthand`.
 
 Note that `..` on its own is not a valid segment.
 
@@ -1819,16 +1820,14 @@ normal-single-quoted = normal-unescaped /
 normal-unescaped     = %x20-26 /                 ; omit control codes
                        %x28-5B /                 ; omit '
                        %x5D-10FFFF               ; omit \
-normal-escapable     = ( %x62 / %x66 / %x6E / %x72 / %x74 /
-                           ; \b \f \n \r \t
-                           ; b /         ;  BS backspace U+0008
-                           ; t /         ;  HT horizontal tab U+0009
-                           ; n /         ;  LF line feed U+000A
-                           ; f /         ;  FF form feed U+000C
-                           ; r /         ;  CR carriage return U+000D
-                         "'" /           ;  ' apostrophe U+0027
-                         "\" / ; \ backslash (reverse solidus) U+005C
-                         (%x75 normal-hexchar)
+normal-escapable     = (%x62 / ; b BS backspace U+0008
+                        %x66 / ; f FF form feed U+000C
+                        %x6E / ; n LF line feed U+000A
+                        %x72 / ; r CR carriage return U+000D
+                        %x74 / ; t HT horizontal tab U+0009
+                        "'" /  ; ' apostrophe U+0027
+                        "\" /  ; \ backslash (reverse solidus) U+005C
+                        (%x75 normal-hexchar)
                                         ; certain values u00xx U+00XX
                         )
 normal-hexchar       = "0" "0"
