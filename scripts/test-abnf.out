@@ -22,6 +22,8 @@
 "$[-3:-21:2, -6]"
 "$[?@>=true]"
 "$[?@.__B&&@[-3]||@>=true]"
+"$[?@]"
+"$[?(@)]"
 ---- should_accept = false
 "nodollar"
 *** Expected "$" at line 1, column 1 (byte 1)
@@ -42,6 +44,16 @@ $[:-0:]
 Expected [1-9] at line 1, column 4 (byte 4):
 $[-0]
 ~~~^
+"$[?@.@]"
+*** Expected one of [A-Z], [a-z], "_", [-􏿿], "*" at line 1, column 6 (byte 6) after [?@.
+Expected one of [A-Z], [a-z], "_", [-􏿿], "*" at line 1, column 6 (byte 6):
+$[?@.@]
+~~~~~^
+"$[?(@.@)]"
+*** Expected one of [A-Z], [a-z], "_", [-􏿿], "*" at line 1, column 7 (byte 7) after [?(@.
+Expected one of [A-Z], [a-z], "_", [-􏿿], "*" at line 1, column 7 (byte 7):
+$[?(@.@)]
+~~~~~~^
 ---- should_accept = true
 "$"
 "$.store.book[*].author"
