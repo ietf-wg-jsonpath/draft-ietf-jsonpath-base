@@ -702,7 +702,7 @@ unescaped           = %x20-21 /                      ; see RFC 8259
                       %x28-5B /                      ; omit '
                       %x5D-10FFFF                    ; omit \
 
-escapable           = ( %x62 / ; b  BS backspace U+0008
+escapable           = ( %x62 / ; b BS backspace U+0008
                         %x66 / ; f FF form feed U+000C
                         %x6E / ; n LF line feed U+000A
                         %x72 / ; r CR carriage return U+000D
@@ -1821,7 +1821,7 @@ normal-single-quoted = normal-unescaped /
 normal-unescaped     = %x20-26 /                 ; omit control codes
                        %x28-5B /                 ; omit '
                        %x5D-10FFFF               ; omit \
-normal-escapable     = (%x62 / ; b  BS backspace U+0008
+normal-escapable     = (%x62 / ; b BS backspace U+0008
                         %x66 / ; f FF form feed U+000C
                         %x6E / ; n LF line feed U+000A
                         %x72 / ; r CR carriage return U+000D
