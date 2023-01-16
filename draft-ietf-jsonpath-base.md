@@ -1601,14 +1601,12 @@ wildcard or name selector.
 ~~~~ abnf
 child-segment             = bracketed-selection /
                             ("."
-                             (wildcard-shorthand /
+                             (wildcard-selector /
                               member-name-shorthand))
 
 bracketed-selection       = "[" S selector *(S "," S selector) S "]"
 
-wildcard-shorthand        = wildcard-selector
-
-member-name-shorthand     =  name-first *name-char
+member-name-shorthand     = name-first *name-char
 name-first                = ALPHA /
                             "_"   /            ; _
                             %x80-10FFFF
@@ -1619,7 +1617,8 @@ DIGIT                     =  %x30-39              ; 0-9
 ALPHA                     =  %x41-5A / %x61-7A    ; A-Z / a-z
 ~~~~
 
-`.*`, a `child-segment` built from the `wildcard-shorthand`, is shorthand for `[*]`.
+`.*`, a `child-segment` directly built from a `wildcard-selector`, is
+shorthand for `[*]`.
 
  `.<member-name>`, a `child-segment` built from a
  `member-name-shorthand`, is shorthand for `['<member-name>']`.
@@ -1676,12 +1675,12 @@ Shortand notations are also provided that correspond to the shorthand forms of t
 ~~~~ abnf
 descendant-segment               = ".."
                                    (bracketed-selection /
-                                    wildcard-shorthand /
+                                    wildcard-selector /
                                     member-name-shorthand)
 ~~~~
 
-`..*`, the `descendant-segment` built from a `wildcard-shorthand`, is
-shorthand for `..[*]`.
+`..*`, the `descendant-segment` directly built from a
+`wildcard-selector`, is shorthand for `..[*]`.
 
 `..<member-name>`, a `descendant-segment` built from a
 `member-name-shorthand`, is shorthand for `..['<member-name>']`.
