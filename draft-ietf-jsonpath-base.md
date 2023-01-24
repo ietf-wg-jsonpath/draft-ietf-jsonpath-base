@@ -1563,7 +1563,7 @@ The result is `true` if such a substring exists, `false` otherwise.
 | `$[?count(1) == 1]` | Invalid typing since `1` is not a path  |
 | `$[?count(foo(@.*)) == 1]` | Valid typing, where `foo` is a function extension with argument of type `OptionalNodes` and result type `OptionalNodes` |
 | `$[?match(@.timezone, 'Europe/.*')]`         | Valid typing |
-| `$[?match(@.timezone, 'Europe/.*') == true]` | Valid typing |
+| `$[?match(@.timezone, 'Europe/.*') == true]` | Invalid typing since `OptionBoolean` is not a `comparable` |
 {: title="Function expression examples"}
 
 ## Segments  {#segments-details}
