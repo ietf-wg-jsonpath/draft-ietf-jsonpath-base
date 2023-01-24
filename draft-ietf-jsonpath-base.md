@@ -1456,7 +1456,7 @@ Arguments:
 : 1. `Value`
 
 Result:
-: `Value` (unsigned integer)
+: `OptionalValue` (unsigned integer or `Nothing`)
 
 The "length" function extension provides a way to compute the length
 of a value and make that available for further processing in the
@@ -1476,7 +1476,7 @@ integer.
   elements in the array.
 * If the argument value is an object, the result is the number of
   members in the object.
-* For any other argument value, the result is one.
+* For any other argument value, the result is `Nothing`.
 
 
 ### `count` Function Extension {#count}
