@@ -1540,9 +1540,6 @@ The "search" function extension provides a way to check whether a
 given string contains a substring that matches a given regular
 expression, which is in {{-iregexp}} form.
 
-The result is `Nothing` if the first argument is not a string or
-the second argument is not a string conforming to {{-iregexp}}.
-
 ~~~ JSONPath
 $[?search(@.author, "[BR]ob")]
 ~~~
@@ -1551,6 +1548,10 @@ Its first argument is a string that is searched for at least one
 substring that matches the iregexp contained in the string
 that is the second argument.
 The result is `true` if such a substring exists, `false` otherwise.
+
+The result is `Nothing` if the first argument is not a string or
+the second argument is not a string conforming to {{-iregexp}}.
+
 
 ### Examples
 {: unnumbered}
@@ -1563,7 +1564,7 @@ The result is `true` if such a substring exists, `false` otherwise.
 | `$[?count(1) == 1]` | Invalid typing since `1` is not a path  |
 | `$[?count(foo(@.*)) == 1]` | Valid typing, where `foo` is a function extension with argument of type `OptionalNodes` and result type `OptionalNodes` |
 | `$[?match(@.timezone, 'Europe/.*')]`         | Valid typing |
-| `$[?match(@.timezone, 'Europe/.*') == true]` | Valid typing |
+| `$[?match(@.timezone, 'Europe/.*') == true]` | Invalid typing since `OptionBoolean` is not a `comparable` |
 {: title="Function expression examples"}
 
 ## Segments  {#segments-details}
