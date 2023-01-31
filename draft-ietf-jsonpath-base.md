@@ -1140,8 +1140,7 @@ comparison-op = "==" / "!=" /
                 "<=" / ">=" /
                 "<"  / ">"
 
-singular-path     = rel-singular-path / abs-singular-path /
-                    function-expr
+singular-path     = rel-singular-path / abs-singular-path
 rel-singular-path = current-node-identifier singular-path-segments
 abs-singular-path = root-identifier singular-path-segments
 singular-path-segments = *(S (name-segment / index-segment))
