@@ -1134,8 +1134,8 @@ comparable   = number / string-literal /        ; primitive ...
                true / false / null /            ; values only
                singular-path /                  ; Singular Path value
                function-expr
-comparison-op = "==" / "!=" /                   ; comparison ...
-                "<=" / ">=" /                   ; operators
+comparison-op = "==" / "!=" /
+                "<=" / ">=" /
                 "<"  / ">"
 
 singular-path     = rel-singular-path / abs-singular-path /
@@ -1365,7 +1365,7 @@ function-name-char      = function-name-first / "_" / DIGIT
 LCALPHA                 = %x61-7A  ; "a".."z"
 
 function-expr           = function-name "(" S [function-argument
-                          *(S "," S function-argument)] S ")"
+                             *(S "," S function-argument)] S ")"
 function-argument       = filter-path / comparable
 ~~~
 
