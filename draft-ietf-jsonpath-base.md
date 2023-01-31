@@ -363,7 +363,6 @@ of zero or more segments each of which contains one or more selectors.
 
 The root node identifier `$` refers to the root node of the argument,
 i.e., to the argument as a whole.
-Every JSONPath expression begins with the root node identifier.
 
 The current node identifier `@` refers to the current node in the context
 of the evaluation of a filter expression (described later).
@@ -622,7 +621,7 @@ of input node.
 ### Syntax
 {: unnumbered}
 
-Every JSONPath query MUST begin with the root identifier `$`.
+Every JSONPath query (except those inside filter expressions, see {{filter-selector}}) MUST begin with the root identifier `$`.
 
 ~~~~ abnf
 root-identifier     = "$"
