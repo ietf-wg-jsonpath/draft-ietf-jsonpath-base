@@ -1104,7 +1104,7 @@ logical-and-expr  = basic-expr *(S "&&" S basic-expr)
                       ; binds more tightly than disjunction
 
 basic-expr        = paren-expr /
-                    relation-expr /
+                    comparison-expr /
                     test-expr
 test-expr         = [logical-not-op S] filter-path
                        ; path existence or non-existence
@@ -1119,8 +1119,6 @@ Parentheses MAY be used within `boolean-expr` for grouping.
 paren-expr        = [logical-not-op S] "(" S boolean-expr S ")"
                                       ; parenthesized expression
 logical-not-op    = "!"               ; logical NOT operator
-
-relation-expr     = comp-expr         ; comparison test
 ~~~~
 
 Comparisons are restricted to primitive values (that is, numbers, strings, `true`, `false`,
@@ -1131,14 +1129,14 @@ Function expressions (see {{fnex}}) used in comparison expressions
 return a primitive value or at most one node.
 
 ~~~~ abnf
-comp-expr    = comparable S comp-op S comparable
+comparison-expr = comparable S comparison-op S comparable
 comparable   = number / string-literal /        ; primitive ...
                true / false / null /            ; values only
                singular-path /                  ; Singular Path value
                function-expression
-comp-op      = "==" / "!=" /                    ; comparison ...
-               "<=" / ">=" /                    ; operators
-               "<"  / ">"
+comparison-op = "==" / "!=" /                   ; comparison ...
+                "<=" / ">=" /                   ; operators
+                "<"  / ">"
 
 singular-path     = rel-singular-path / abs-singular-path /
                     function-expression
