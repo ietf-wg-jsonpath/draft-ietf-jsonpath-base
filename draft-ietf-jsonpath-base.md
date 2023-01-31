@@ -391,6 +391,10 @@ of bracket notation. Examples and descriptions use shorthands where convenient.
 
 ### Selectors
 
+A name selector, e.g. `name`, selects a named child of an object.
+
+An index selector, e.g. `3`, selects an indexed child of an array.
+
 A wildcard `*` ({{wildcard-selector}}) in the expression `[*]` selects all children of a
 node and in the expression `..[*]` selects all descendants of a node.
 
@@ -482,7 +486,7 @@ The examples are based on the simple JSON value shown in
 | `$..book[0,1]`<br>`$..book[:2]`           | the first two books                                          |
 | `$..book[?(@.isbn)]`                      | all books with an ISBN number                                |
 | `$..book[?(@.price<10)]`                  | all books cheaper than 10                                    |
-| `$..*`                                    | all member values and array elements contained in input value |
+| `$..*`                                    | all member values and array elements contained in the input value |
 {: #tbl-example title="Example JSONPath expressions and their intended results when applied to the example JSON value"}
 
 # JSONPath Syntax and Semantics
@@ -583,6 +587,14 @@ operations that might be considered erroneous, such as using an index
 lying outside the range of an array,
 simply result in fewer nodes being selected.
 
+As a consequence of this approach, if any of the segments produces an empty nodelist,
+then the whole query produces an empty nodelist.
+
+If a query may produce a nodelist with more than one possible ordering, a particular implementation
+may also produce distinct orderings in successive runs of the query.
+
+### Worked Example
+
 Consider this example. With the argument `{"a":[{"b":0},{"b":1},{"c":2}]}`, the
 query `$.a[*].b` selects the following list of nodes: `0`, `1`
 (denoted here by their value).
@@ -607,15 +619,6 @@ Finally, `.b` selects from any object input node with a member name
 The result is a list containing `0`, `1`.
 This is the concatenation of three lists, two of length one containing
 `0`, `1`, respectively, and one of length zero.
-
-As a consequence of this approach, if any of the segments produces an empty nodelist,
-then the whole query produces an empty nodelist.
-
-If a query may produce a nodelist with more than one possible ordering, a particular implementation
-may also produce distinct orderings in successive runs of the query.
-
-In what follows, the semantics of each segment are defined for each kind
-of input node.
 
 ## Root Identifier
 
@@ -661,8 +664,8 @@ or children of either objects or arrays.
 ~~~~ abnf
 selector            = name-selector  /
                       wildcard-selector /
-                      slice-selector /
                       index-selector /
+                      slice-selector /
                       filter-selector
 ~~~~
 
@@ -778,6 +781,8 @@ JSON:
 
 Queries:
 
+The following examples show the name selector in use by child segments.
+
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
 | `$.o['j j']['k.k']`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
@@ -832,9 +837,9 @@ The following examples show the `wildcard` selector in use by a child segment.
 
 The example above with the query `$.o[*, *]` shows that the wildcard selector may produce nodelists in distinct
 orders each time it appears in the child segment, when it is applied to an object node with two or more
-members (but not when it is applied to object nodes with less than two members or to array nodes).
+members (but not when it is applied to object nodes with fewer than two members or to array nodes).
 
-### Index selector {#index-selector}
+### Index Selector {#index-selector}
 
 #### Syntax {#syntax-index}
 {: unnumbered}
@@ -850,6 +855,9 @@ DIGIT1              = %x31-39                     ; 1-9 non-zero digit
 
 Applying the numerical `index-selector` selects the corresponding
 element. JSONPath allows it to be negative (see {{index-semantics}}).
+
+To be valid, the index selector value MUST be in the I-JSON
+range of exact values, see {{synsem-overview}}.
 
 Notes:
 1. An `index-selector` is an integer (in base 10, as in JSON numbers).
@@ -913,6 +921,9 @@ S                   = *B        ; optional blank space
 
 The slice selector consists of three optional decimal integers separated by colons.
 
+To be valid, the integers provided MUST be in the I-JSON
+range of exact values, see {{synsem-overview}}.
+
 #### Semantics
 {: unnumbered}
 
@@ -947,7 +958,7 @@ raises an error in this case.)
 The following section specifies the behavior fully, without depending on
 JavaScript or Python behavior.
 
-##### Detailed Semantics
+##### Normative Semantics
 {: unnumbered}
 
 A slice expression selects a subset of the elements of the input array, in
@@ -958,7 +969,7 @@ It selects no nodes from a node that is not an array.
 A slice is defined by the two slice parameters, `start` and `end`, and
 an iteration delta, `step`.
 Each of these parameters is
-optional. `len` is the length of the input array.
+optional. In the rest of this section, `len` denotes the length of the input array.
 
 The default value for `step` is `1`.
 The default values for `start` and `end` depend on the sign of `step`,
@@ -984,7 +995,7 @@ FUNCTION Normalize(i, len):
 ~~~~
 
 The result of the array index expression `i` applied to an array
-of length `len` is defined to be the result of the array
+of length `len` is the result of the array
 slicing expression `Normalize(i, len):Normalize(i, len)+1:1`.
 
 Slice expression parameters `start` and `end` are used to derive slice bounds `lower` and `upper`.
@@ -1035,9 +1046,6 @@ END IF
 
 When `step = 0`, no elements are selected and the result array is empty.
 
-To be valid, the slice expression parameters MUST be in the I-JSON
-range of exact values, see {{synsem-overview}}.
-
 #### Examples
 {: unnumbered}
 
@@ -1046,6 +1054,8 @@ JSON:
     ["a", "b", "c", "d", "e", "f", "g"]
 
 Queries:
+
+The following examples show the array slice selector in use by a child segment.
 
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
@@ -1072,7 +1082,7 @@ the current node is selected if and only if the expression yields true.
 
 As the expression is composed of side-effect free components,
 the order of evaluation does not need to be (and is not) defined.
-Similarly, for `&&`/`||`, both a short-circuiting and a fully evaluating
+Similarly, for conjunction (`&&`) and disjunction (`||`) (defined later), both a short-circuiting and a fully evaluating
 implementation will lead to the same result; both implementation
 strategies are therefore valid.
 
@@ -1105,11 +1115,11 @@ logical-and-expr    = basic-expr *(S "&&" S basic-expr)
 basic-expr          = paren-expr /
                       comparison-expr /
                       test-expr
-test-expr           = [logical-not-op S] filter-path
+test-expr           = [logical-not-op S] filter-path /
                          ; path existence or non-existence
+                      function-expr ; OptionalBoolean or subtype
 filter-path         = rel-path / json-path /
-                      function-expr ; OptionalNodes or subtype or
-                                    ; OptionalBoolean or subtype
+                      function-expr ; OptionalNodes or subtype
 rel-path            = current-node-identifier segments
 current-node-identifier = "@"
 ~~~~
@@ -1122,11 +1132,10 @@ paren-expr          = [logical-not-op S] "(" S boolean-expr S ")"
 logical-not-op      = "!"             ; logical NOT operator
 ~~~~
 
-Comparisons are restricted to primitive values (that is, numbers, strings, `true`, `false`,
-and `null`).
-These can be notated as literal values, or they can be derived from
-Singular Paths, each of which selects at most one node.
-Function expressions (see {{fnex}}) used in comparison expressions
+Comparisons are between primitive values (that is, numbers, strings, `true`, `false`,
+and `null`),
+Singular Paths, each of which selects at most one node, and
+function expressions (see {{fnex}}) that
 return a primitive value or at most one node.
 
 ~~~~ abnf
@@ -1178,7 +1187,7 @@ The following table lists filter expression operators in order of precedence fro
 {: unnumbered}
 
 The filter selector works with arrays and objects exclusively. Its result is a list of *zero*, *one*, *multiple* or *all* of their array elements or member values, respectively.
-Applied to primitive values, it will select nothing.
+Applied to primitive values, it selects nothing.
 
 The order in which the children of an object appear in the resultant nodelist is not stipulated,
 since JSON objects are unordered.
@@ -1266,6 +1275,8 @@ JSON:
       "arr": [2, 3]
     }
 
+Comparisons:
+
 | Comparison | Result | Comment |
 |:--:|:--:|:--:|
 | `$.absent1 == $.absent2` | true | Empty nodelists |
@@ -1313,6 +1324,10 @@ JSON:
       "e": "f"
     }
 
+Queries:
+
+The following examples show the filter selector in use by a child segment.
+
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
 | `$.a[?@.b == 'kilo']` | `{"b": "kilo"}` | `$['a'][9]` | Member value comparison |
@@ -1328,10 +1343,10 @@ JSON:
 | `$.o[?@>1 && @<4]` | `3` <br> `2` | `$['o']['r']` <br> `$['o']['q']` | Alternative result |
 | `$.o[?@.u || @.x]` | `{"u": 6}` | `$['o']['t']` | Object value logical OR |
 | `$.a[?(@.b == $.x)]`| `3` <br> `5` <br> `1` <br> `2` <br> `4` <br> `6` | `$['a'][0]` <br>`$['a'][1]` <br> `$['a'][2]` <br> `$['a'][3]` <br> `$['a'][4]` | Comparison of paths with no values |
-| `$[?(@ == @)]` | | | Comparison of structured values |
+| `$.a[?(@ == @)]` | `3` <br> `5` <br> `1` <br> `2` <br> `4` <br> `6` <br> `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": {}}` <br> `{"b": "kilo"}` | `$['a'][0]` <br> `$['a'][1]` <br>`$['a'][2]` <br>`$['a'][3]` <br>`$['a'][4]` <br>`$['a'][5]` <br>`$['a'][6]` <br>`$['a'][7]` <br>`$['a'][8]` <br>`$['a'][9]` | Comparisons of primitive and of structured values |
 {: title="Filter selector examples"}
 
-The example above with the query `$.o[?@<3, ?@<3]` shows that the filter selector may produce nodelists in distinct
+The example above with the query `$.o[?@<3, ?@<3]` shows that a filter selector may produce nodelists in distinct
 orders each time it appears in the child segment.
 
 ## Function Extensions {#fnex}
@@ -1669,7 +1684,7 @@ Queries:
 {: unnumbered}
 
 The descendant segment consists of a double dot `..`
-followed by a child segment (`descendant-segment`).
+followed by a child segment (using bracket notation).
 
 Shortand notations are also provided that correspond to the shorthand forms of the child segment.
 
@@ -1704,7 +1719,9 @@ its descendants such that:
 The order in which the children of an object are visited is not stipulated, since
 JSON objects are unordered.
 
-Suppose the nodes, in the order visited, are `D1`, ..., `Dn` (where `n >= 1`).
+Suppose the descendant segment is of the form `..[<selectors>]` (after converting any shorthand
+form to bracket notation)
+and the nodes, in the order visited, are `D1`, ..., `Dn` (where `n >= 1`).
 Note that `D1` is the input value.
 
 For each `i` such that `1 <= i <= n`, the nodelist `Ri` is defined to be a result of applying
@@ -2125,10 +2142,10 @@ The descendant operators, starting with `..`, borrowed from {{E4X}}, are similar
 The array slicing construct `[start:end:step]` is unique to JSONPath,
 inspired by {{SLICE}} from ECMASCRIPT 4.
 
-Filter expressions are supported via the syntax `?(<boolean expr>)` as in
+Filter expressions are supported via the syntax `?<boolean expr>` as in
 
 ~~~~
-$.store.book[?(@.price < 10)].title
+$.store.book[?@.price < 10].title
 ~~~~
 
 {{tbl-xpath-overview}} extends {{tbl-overview}} by providing a comparison
@@ -2146,7 +2163,7 @@ with similar XPath concepts.
 | `[]`  | `[]`               | subscript operator used to iterate over XML element collections and for predicates                                                    |
 | `¦`   | `[,]`              | Union operator (results in a combination of node sets); called list operator in JSONPath, allows combining member names, array indices, and slices |
 | n/a   | `[start:end:step]` | array slice operator borrowed from ES4                                                                                                |
-| `[]`  | `?()`              | applies a filter (script) expression                                                                                                  |
+| `[]`  | `?`                | applies a filter (script) expression                                                                                                  |
 | seamless   | n/a                | expression engine                                                                                                                     |
 | `()`  | n/a                | grouping                                                                                                                     |
 {: #tbl-xpath-overview title="XPath syntax compared to JSONPath"}
@@ -2165,8 +2182,8 @@ and their JSONPath equivalents.
 | `//book[3]`            | `$..book[2]`                              | the third book                                               |
 | `//book[last()]`       | `$..book[-1]`                             | the last book in order                                       |
 | `//book[position()<3]` | `$..book[0,1]`<br>`$..book[:2]`           | the first two books                                          |
-| `//book[isbn]`         | `$..book[?(@.isbn)]`                      | filter all books with isbn number                            |
-| `//book[price<10]`     | `$..book[?(@.price<10)]`                  | filter all books cheaper than 10                             |
+| `//book[isbn]`         | `$..book[?@.isbn]`                        | filter all books with isbn number                            |
+| `//book[price<10]`     | `$..book[?@.price<10]`                    | filter all books cheaper than 10                             |
 | `//*`                  | `$..*`                                    | all elements in XML document; all member values and array elements contained in input value |
 {: #tbl-xpath-equivalents title="Example XPath expressions and their JSONPath equivalents"}
 
@@ -2178,8 +2195,8 @@ JSONPath:
 * Square brackets in XPath expressions always operate on the *node
   set* resulting from the previous path fragment. Indices always start
   at 1.
-* With JSONPath, square brackets operate on the *object* or *array*
-  addressed by the previous path fragment. Array indices always start
+* With JSONPath, square brackets operate on the *nodelist*
+  resulting from the previous path fragment. Array indices always start
   at 0.
 
 # JSON Pointer
