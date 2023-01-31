@@ -1108,7 +1108,7 @@ basic-expr        = paren-expr /
                     test-expr
 test-expr         = [logical-not-op S] filter-path
                        ; path existence or non-existence
-filter-path       = rel-path / json-path / function-expression
+filter-path       = rel-path / json-path / function-expr
 rel-path          = current-node-identifier segments
 current-node-identifier = "@"
 ~~~~
@@ -1133,18 +1133,18 @@ comparison-expr = comparable S comparison-op S comparable
 comparable   = number / string-literal /        ; primitive ...
                true / false / null /            ; values only
                singular-path /                  ; Singular Path value
-               function-expression
-comparison-op = "==" / "!=" /                   ; comparison ...
-                "<=" / ">=" /                   ; operators
+               function-expr
+comparison-op = "==" / "!=" /
+                "<=" / ">=" /
                 "<"  / ">"
 
 singular-path     = rel-singular-path / abs-singular-path /
-                    function-expression
+                    function-expr
 rel-singular-path = current-node-identifier singular-path-segments
 abs-singular-path = root-identifier singular-path-segments
 singular-path-segments = *(S (name-segment / index-segment))
-name-segment      = ("[" name-selector "]")
-                  / ("." member-name-shorthand)
+name-segment      = ("[" name-selector "]") /
+                    ("." member-name-shorthand)
 index-segment     = "[" index-selector "]"
 ~~~~
 
@@ -1364,14 +1364,14 @@ function-name-first     = LCALPHA
 function-name-char      = function-name-first / "_" / DIGIT
 LCALPHA                 = %x61-7A  ; "a".."z"
 
-function-expression     = function-name "(" S [function-argument
+function-expr           = function-name "(" S [function-argument
                              *(S "," S function-argument)] S ")"
 function-argument       = filter-path / comparable
 ~~~
 
 A function argument is a `filter-path` or a `comparable`.
 
-According to {{filter-selector}}, a `function-expression` is valid as a `filter-path`
+According to {{filter-selector}}, a `function-expr` is valid as a `filter-path`
 or a `comparable`.
 
 Any function expressions in a query must be well-formed (by conforming to the above ABNF)
