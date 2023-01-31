@@ -1963,11 +1963,11 @@ Brief description:
 : a brief description
 
 Input:
-: A comma-separated list of zero or more kinds (value or nodes) of the
+: A comma-separated list of zero or more types of the
   arguments expected for this function extension
 
 Output:
-: The kind (value or nodes) of the result for this function extension
+: The type of the result for this function extension
 
 Change Controller:
 : (see {{Section 2.3 of -ianacons}})
@@ -1978,11 +1978,11 @@ Reference:
 
 Initial entries in this sub-registry are as listed in {{pre-reg}}:
 
-| Function Name | Brief description                  | Input        | Output | Change Controller | Reference         |
-| length        | length of array                    | value        | value  | IESG              | {{fnex}} of RFCthis |
-| count         | size of nodelist                   | nodelist     | value  | IESG              | {{fnex}} of RFCthis |
-| match         | regular expression full match      | value, value | value  | IESG              | {{fnex}} of RFCthis |
-| search        | regular expression substring match | value, value | value  | IESG              | {{fnex}} of RFCthis |
+| Function Name | Brief description                  | Input                          | Output            | Change Controller | Reference           |
+| length        | length of array                    | `Value`                        | `OptionalValue`   | IESG              | {{fnex}} of RFCthis |
+| count         | size of nodelist                   | `OptionalNodes`                | `Value`           | IESG              | {{fnex}} of RFCthis |
+| match         | regular expression full match      | `OptionalNodeOrValue`, `Value` | `OptionalBoolean` | IESG              | {{fnex}} of RFCthis |
+| search        | regular expression substring match | `OptionalNodeOrValue`, `Value` | `OptionalBoolean` | IESG              | {{fnex}} of RFCthis |
 {: #pre-reg title="Initial Entries in the Function Extensions Subregistry"}
 
 
