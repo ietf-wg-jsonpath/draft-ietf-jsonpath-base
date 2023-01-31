@@ -1101,7 +1101,7 @@ logical-and-expr  = basic-expr *(S "&&" S basic-expr)
                       ; binds more tightly than disjunction
 
 basic-expr        = paren-expr /
-                    relation-expr /
+                    comp-expr /  ; comparison
                     test-expr
 test-expr         = [logical-not-op S] filter-path
                        ; path existence or non-existence
@@ -1116,8 +1116,6 @@ Parentheses MAY be used within `boolean-expr` for grouping.
 paren-expr        = [logical-not-op S] "(" S boolean-expr S ")"
                                       ; parenthesized expression
 logical-not-op    = "!"               ; logical NOT operator
-
-relation-expr     = comp-expr         ; comparison test
 ~~~~
 
 Comparisons are restricted to primitive values (that is, numbers, strings, `true`, `false`,
