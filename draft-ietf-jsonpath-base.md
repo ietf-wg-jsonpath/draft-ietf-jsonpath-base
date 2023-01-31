@@ -698,11 +698,11 @@ single-quoted       = unescaped /
 ESC                 = %x5C                           ; \  backslash
 
 unescaped           = %x20-21 /                      ; see RFC 8259
-                                                     ; omit 0x22 "
+                         ; omit 0x22 "
                       %x23-26 /
-                                                     ; omit 0x27 '
+                         ; omit 0x27 '
                       %x28-5B /
-                                                     ; omit 0x5C \
+                         ; omit 0x5C \
                       %x5D-10FFFF
 
 escapable           = ( %x62 / ; b BS backspace U+0008
@@ -1108,7 +1108,9 @@ basic-expr        = paren-expr /
                     test-expr
 test-expr         = [logical-not-op S] filter-path
                        ; path existence or non-existence
-filter-path       = rel-path / json-path / function-expr
+filter-path       = rel-path / json-path /
+                    function-expr ; OptionalNodes or subtype or
+                                  ; OptionalBoolean or subtype
 rel-path          = current-node-identifier segments
 current-node-identifier = "@"
 ~~~~
@@ -1130,10 +1132,10 @@ return a primitive value or at most one node.
 
 ~~~~ abnf
 comparison-expr = comparable S comparison-op S comparable
-comparable   = number / string-literal /        ; primitive ...
-               true / false / null /            ; values only
-               singular-path /                  ; Singular Path value
-               function-expr
+comparable   = number / string-literal /
+               true / false / null /
+               singular-path /       ; Singular Path value
+               function-expr         ; OptionalNodeOrValue or subtype
 comparison-op = "==" / "!=" /
                 "<=" / ">=" /
                 "<"  / ">"
@@ -1819,11 +1821,11 @@ normal-selector      = normal-name-selector / normal-index-selector
 normal-name-selector = %x27 *normal-single-quoted %x27 ; 'string'
 normal-single-quoted = normal-unescaped /
                        ESC normal-escapable
-normal-unescaped     =                           ; omit %x0-1F control codes
+normal-unescaped     =    ; omit %x0-1F control codes
                        %x20-26 /
-                                                 ; omit 0x27 '
+                          ; omit 0x27 '
                        %x28-5B /
-                                                 ; omit 0x5C \
+                          ; omit 0x5C \
                        %x5D-10FFFF
 normal-escapable     = (%x62 / ; b BS backspace U+0008
                         %x66 / ; f FF form feed U+000C
@@ -1838,9 +1840,9 @@ normal-escapable     = (%x62 / ; b BS backspace U+0008
 normal-hexchar       = "0" "0"
                        (
                           ("0" %x30-37) / ; "00"-"07"
-                                          ; omit U+0008-U+000A BS HT LF
+                             ; omit U+0008-U+000A BS HT LF
                           ("0" %x62) /    ; "0b"
-                                          ; omit U+000C-U+000D FF CR
+                             ; omit U+000C-U+000D FF CR
                           ("0" %x65-66) / ; "0e"-"0f"
                           ("1" normal-HEXDIG)
                         )
