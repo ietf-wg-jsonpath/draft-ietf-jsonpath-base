@@ -847,10 +847,11 @@ members (but not when it is applied to object nodes with fewer than two members 
 An index selector `<index>` matches at most one array element value.
 
 ~~~~ abnf
-index-selector      = int                         ; decimal integer
+index-selector      = int                        ; decimal integer
 
-int                 = "0" / (["-"] DIGIT1 *DIGIT) ; -  optional
-DIGIT1              = %x31-39                     ; 1-9 non-zero digit
+int                 = "0" /
+                      (["-"] DIGIT1 *DIGIT)      ; - optional
+DIGIT1              = %x31-39                    ; 1-9 non-zero digit
 ~~~~
 
 Applying the numerical `index-selector` selects the corresponding
@@ -1143,7 +1144,7 @@ comparison-expr     = comparable S comparison-op S comparable
 comparable          = number / string-literal /
                       true / false / null /
                       singular-path / ; Singular Path value
-                      function-expr   ; OptionalNodeOrValue or subtype
+                      function-expr  ; OptionalNodeOrValue or subtype
 comparison-op       = "==" / "!=" /
                       "<=" / ">=" /
                       "<"  / ">"
@@ -1163,8 +1164,8 @@ Alphabetic characters in ABNF are case-insensitive, so "e" can be either "e" or 
 
 ~~~~ abnf
 number              = (int / "-0") [ frac ] [ exp ] ; decimal number
-frac                = "." 1*DIGIT                   ; decimal fraction
-exp                 = "e" [ "-" / "+" ] 1*DIGIT     ; decimal exponent
+frac                = "." 1*DIGIT                  ; decimal fraction
+exp                 = "e" [ "-" / "+" ] 1*DIGIT    ; decimal exponent
 true                = %x74.72.75.65                 ; true
 false               = %x66.61.6c.73.65              ; false
 null                = %x6e.75.6c.6c                 ; null
@@ -1626,7 +1627,7 @@ bracketed-selection = "[" S selector *(S "," S selector) S "]"
 member-name-shorthand = name-first *name-char
 name-first          = ALPHA /
                       "_"   /
-                      %x80-10FFFF    ; any non-ASCII Unicode character
+                      %x80-10FFFF   ; any non-ASCII Unicode character
 name-char           = DIGIT / name-first
 
 DIGIT               = %x30-39              ; 0-9
