@@ -698,11 +698,11 @@ single-quoted       = unescaped /
 ESC                 = %x5C                           ; \  backslash
 
 unescaped           = %x20-21 /                      ; see RFC 8259
-                                                     ; omit "
+                                                     ; omit 0x22 "
                       %x23-26 /
-                                                     ; omit '
+                                                     ; omit 0x27 '
                       %x28-5B /
-                                                     ; omit \
+                                                     ; omit 0x5C \
                       %x5D-10FFFF
 
 escapable           = ( %x62 / ; b BS backspace U+0008
@@ -1821,11 +1821,11 @@ normal-selector      = normal-name-selector / normal-index-selector
 normal-name-selector = %x27 *normal-single-quoted %x27 ; 'string'
 normal-single-quoted = normal-unescaped /
                        ESC normal-escapable
-normal-unescaped     =                           ; omit control codes
+normal-unescaped     =                           ; omit %x0-1F control codes
                        %x20-26 /
-                                                 ; omit '
+                                                 ; omit 0x27 '
                        %x28-5B /
-                                                 ; omit \
+                                                 ; omit 0x5C \
                        %x5D-10FFFF
 normal-escapable     = (%x62 / ; b BS backspace U+0008
                         %x66 / ; f FF form feed U+000C
@@ -1840,9 +1840,9 @@ normal-escapable     = (%x62 / ; b BS backspace U+0008
 normal-hexchar       = "0" "0"
                        (
                           ("0" %x30-37) / ; "00"-"07"
-                                          ; omit U+0008-U+000A
+                                          ; omit U+0008-U+000A BS HT LF
                           ("0" %x62) /    ; "0b"
-                                          ; omit U+000C-U+000D
+                                          ; omit U+000C-U+000D FF CR
                           ("0" %x65-66) / ; "0e"-"0f"
                           ("1" normal-HEXDIG)
                         )
