@@ -912,10 +912,10 @@ start               = int       ; included in selection
 end                 = int       ; not included in selection
 step                = int       ; default: 1
 
-B                   = %x20 / ; Space
-                      %x09 / ; Horizontal tab
-                      %x0A / ; Line feed or New line
-                      %x0D   ; Carriage return
+B                   = %x20 /    ; Space
+                      %x09 /    ; Horizontal tab
+                      %x0A /    ; Line feed or New line
+                      %x0D      ; Carriage return
 S                   = *B        ; optional blank space
 
 ~~~~
@@ -1129,8 +1129,8 @@ Parentheses MAY be used within `boolean-expr` for grouping.
 
 ~~~~ abnf
 paren-expr          = [logical-not-op S] "(" S boolean-expr S ")"
-                                      ; parenthesized expression
-logical-not-op      = "!"             ; logical NOT operator
+                                        ; parenthesized expression
+logical-not-op      = "!"               ; logical NOT operator
 ~~~~
 
 Comparisons are between primitive values (that is, numbers, strings, `true`, `false`,
@@ -1143,7 +1143,7 @@ return a primitive value or at most one node.
 comparison-expr     = comparable S comparison-op S comparable
 comparable          = number / string-literal /
                       true / false / null /
-                      singular-path / ; Singular Path value
+                      singular-path /   ; Singular Path value
                       function-expr  ; OptionalNodeOrValue or subtype
 comparison-op       = "==" / "!=" /
                       "<=" / ">=" /
@@ -1166,9 +1166,9 @@ Alphabetic characters in ABNF are case-insensitive, so "e" can be either "e" or 
 number              = (int / "-0") [ frac ] [ exp ] ; decimal number
 frac                = "." 1*DIGIT                  ; decimal fraction
 exp                 = "e" [ "-" / "+" ] 1*DIGIT    ; decimal exponent
-true                = %x74.72.75.65                 ; true
-false               = %x66.61.6c.73.65              ; false
-null                = %x6e.75.6c.6c                 ; null
+true                = %x74.72.75.65                ; true
+false               = %x66.61.6c.73.65             ; false
+null                = %x6e.75.6c.6c                ; null
 ~~~~
 
 The following table lists filter expression operators in order of precedence from highest (binds most tightly) to lowest (binds least tightly).
@@ -1859,7 +1859,7 @@ normal-hexchar       = "0" "0"
                           ("0" %x65-66) / ; "0e"-"0f"
                           ("1" normal-HEXDIG)
                         )
-normal-HEXDIG        = DIGIT / %x61-66   ; "0"-"9", "a"-"f"
+normal-HEXDIG        = DIGIT / %x61-66    ; "0"-"9", "a"-"f"
 normal-index-selector = "0" / (DIGIT1 *DIGIT)
                         ; non-negative decimal integer
 ~~~~
