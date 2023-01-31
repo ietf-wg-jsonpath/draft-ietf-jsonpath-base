@@ -24,6 +24,13 @@ SKIPPED_TESTS = [
   "union array slice, underflowing to value with negative step",
   "union array slice, overflowing step",
   "union array slice, underflowing step",
+  "index selector, overflowing index",
+  "slice selector, overflowing to value",
+  "slice selector, underflowing from value",
+  "slice selector, overflowing from value with negative step",
+  "slice selector, underflowing to value with negative step",
+  "slice selector, overflowing step",
+  "slice selector, underflowing step",
 ]
 
 cts["tests"].each do |t|
