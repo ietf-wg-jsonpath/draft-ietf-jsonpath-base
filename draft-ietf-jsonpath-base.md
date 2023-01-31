@@ -1101,7 +1101,7 @@ logical-and-expr  = basic-expr *(S "&&" S basic-expr)
                       ; binds more tightly than disjunction
 
 basic-expr        = paren-expr /
-                    comp-expr /  ; comparison
+                    comparison-expr /
                     test-expr
 test-expr         = [logical-not-op S] filter-path
                        ; path existence or non-existence
@@ -1126,14 +1126,14 @@ Function expressions (see {{fnex}}) used in comparison expressions
 return a primitive value or at most one node.
 
 ~~~~ abnf
-comp-expr    = comparable S comp-op S comparable
+comparison-expr = comparable S comparison-op S comparable
 comparable   = number / string-literal /        ; primitive ...
                true / false / null /            ; values only
                singular-path /                  ; Singular Path value
                function-expression
-comp-op      = "==" / "!=" /                    ; comparison ...
-               "<=" / ">=" /                    ; operators
-               "<"  / ">"
+comparison-op = "==" / "!=" /                   ; comparison ...
+                "<=" / ">=" /                   ; operators
+                "<"  / ">"
 
 singular-path     = rel-singular-path / abs-singular-path /
                     function-expression
