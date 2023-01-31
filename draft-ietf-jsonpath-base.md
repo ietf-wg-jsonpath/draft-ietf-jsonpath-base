@@ -540,8 +540,8 @@ stands for a nodelist that contains the root node of the argument,
 followed by a possibly empty sequence of *segments*.
 
 ~~~~ abnf
-json-path = root-identifier segments
-segments  = *(S segment)
+json-path           = root-identifier segments
+segments            = *(S segment)
 ~~~~
 
 The syntax and semantics of segments are defined in {{segments-details}}.
@@ -625,7 +625,7 @@ of input node.
 Every JSONPath query MUST begin with the root identifier `$`.
 
 ~~~~ abnf
-root-identifier  = "$"
+root-identifier     = "$"
 ~~~~
 
 ### Semantics
@@ -659,12 +659,11 @@ There are various kinds of selectors which produce children of objects, children
 or children of either objects or arrays.
 
 ~~~~ abnf
-selector =  ( name-selector  /
-              wildcard-selector /
-              slice-selector /
-              index-selector /
-              filter-selector
-            )
+selector            = name-selector  /
+                      wildcard-selector /
+                      slice-selector /
+                      index-selector /
+                      filter-selector
 ~~~~
 
 The syntax and semantics of each kind of selector are defined below.
@@ -705,23 +704,23 @@ unescaped           = %x20-21 /                      ; see RFC 8259
                          ; omit 0x5C \
                       %x5D-10FFFF
 
-escapable           = ( %x62 / ; b BS backspace U+0008
-                        %x66 / ; f FF form feed U+000C
-                        %x6E / ; n LF line feed U+000A
-                        %x72 / ; r CR carriage return U+000D
-                        %x74 / ; t HT horizontal tab U+0009
-                         "/" / ; / slash (solidus) U+002F
-                         "\" / ; \ backslash (reverse solidus) U+005C
-                         (%x75 hexchar) ;  uXXXX      U+XXXX
-                      )
+escapable           = %x62 / ; b BS backspace U+0008
+                      %x66 / ; f FF form feed U+000C
+                      %x6E / ; n LF line feed U+000A
+                      %x72 / ; r CR carriage return U+000D
+                      %x74 / ; t HT horizontal tab U+0009
+                      "/"  / ; / slash (solidus) U+002F
+                      "\"  / ; \ backslash (reverse solidus) U+005C
+                      (%x75 hexchar) ;  uXXXX      U+XXXX
 
-hexchar = non-surrogate / (high-surrogate "\" %x75 low-surrogate)
-non-surrogate = ((DIGIT / "A"/"B"/"C" / "E"/"F") 3HEXDIG) /
-                 ("D" %x30-37 2HEXDIG )
-high-surrogate = "D" ("8"/"9"/"A"/"B") 2HEXDIG
-low-surrogate = "D" ("C"/"D"/"E"/"F") 2HEXDIG
+hexchar             = non-surrogate /
+                      (high-surrogate "\" %x75 low-surrogate)
+non-surrogate       = ((DIGIT / "A"/"B"/"C" / "E"/"F") 3HEXDIG) /
+                       ("D" %x30-37 2HEXDIG )
+high-surrogate      = "D" ("8"/"9"/"A"/"B") 2HEXDIG
+low-surrogate       = "D" ("C"/"D"/"E"/"F") 2HEXDIG
 
-HEXDIG = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
+HEXDIG              = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
 ~~~~
 
 Note: `double-quoted` strings follow the JSON string syntax ({{Section 7 of RFC8259}});
@@ -794,7 +793,7 @@ Queries:
 The wildcard selector consists of an asterisk.
 
 ~~~~ abnf
-wildcard-selector = "*"
+wildcard-selector   = "*"
 ~~~~
 
 #### Semantics
@@ -843,10 +842,10 @@ members (but not when it is applied to object nodes with less than two members o
 An index selector `<index>` matches at most one array element value.
 
 ~~~~ abnf
-index-selector = int                             ; decimal integer
+index-selector      = int                         ; decimal integer
 
-int            = "0" / (["-"] DIGIT1 *DIGIT)     ; -  optional
-DIGIT1         = %x31-39                         ; 1-9 non-zero digit
+int                 = "0" / (["-"] DIGIT1 *DIGIT) ; -  optional
+DIGIT1              = %x31-39                     ; 1-9 non-zero digit
 ~~~~
 
 Applying the numerical `index-selector` selects the corresponding
@@ -898,17 +897,17 @@ It matches elements from arrays starting at index `<start>`, ending at — but
 not including — `<end>`, while incrementing by `step` with a default of `1`.
 
 ~~~~ abnf
-slice-selector =  [start S] ":" S [end S] [":" [S step ]]
+slice-selector      = [start S] ":" S [end S] [":" [S step ]]
 
-start          = int       ; included in selection
-end            = int       ; not included in selection
-step           = int       ; default: 1
+start               = int       ; included in selection
+end                 = int       ; not included in selection
+step                = int       ; default: 1
 
-B              =    %x20 / ; Space
-                    %x09 / ; Horizontal tab
-                    %x0A / ; Line feed or New line
-                    %x0D   ; Carriage return
-S              = *B        ; optional blank space
+B                   = %x20 / ; Space
+                      %x09 / ; Horizontal tab
+                      %x0A / ; Line feed or New line
+                      %x0D   ; Carriage return
+S                   = *B        ; optional blank space
 
 ~~~~
 
@@ -1064,7 +1063,7 @@ Queries:
 The filter selector has the form `?<expr>`. It iterates over structured values, i.e., arrays and objects.
 
 ~~~~ abnf
-filter-selector = "?" S boolean-expr
+filter-selector     = "?" S boolean-expr
 ~~~~
 
 During the iteration process the node of each array element or object member value being visited is known as the current node.
@@ -1095,32 +1094,32 @@ one of its subtypes, it tests whether the result is different from
 `Nothing`.
 
 ~~~~ abnf
-boolean-expr      = logical-or-expr
-logical-or-expr   = logical-and-expr *(S "||" S logical-and-expr)
-                      ; disjunction
-                      ; binds less tightly than conjunction
-logical-and-expr  = basic-expr *(S "&&" S basic-expr)
-                      ; conjunction
-                      ; binds more tightly than disjunction
+boolean-expr        = logical-or-expr
+logical-or-expr     = logical-and-expr *(S "||" S logical-and-expr)
+                        ; disjunction
+                        ; binds less tightly than conjunction
+logical-and-expr    = basic-expr *(S "&&" S basic-expr)
+                        ; conjunction
+                        ; binds more tightly than disjunction
 
-basic-expr        = paren-expr /
-                    comparison-expr /
-                    test-expr
-test-expr         = [logical-not-op S] filter-path
-                       ; path existence or non-existence
-filter-path       = rel-path / json-path /
-                    function-expr ; OptionalNodes or subtype or
-                                  ; OptionalBoolean or subtype
-rel-path          = current-node-identifier segments
+basic-expr          = paren-expr /
+                      comparison-expr /
+                      test-expr
+test-expr           = [logical-not-op S] filter-path
+                         ; path existence or non-existence
+filter-path         = rel-path / json-path /
+                      function-expr ; OptionalNodes or subtype or
+                                    ; OptionalBoolean or subtype
+rel-path            = current-node-identifier segments
 current-node-identifier = "@"
 ~~~~
 
 Parentheses MAY be used within `boolean-expr` for grouping.
 
 ~~~~ abnf
-paren-expr        = [logical-not-op S] "(" S boolean-expr S ")"
+paren-expr          = [logical-not-op S] "(" S boolean-expr S ")"
                                       ; parenthesized expression
-logical-not-op    = "!"               ; logical NOT operator
+logical-not-op      = "!"             ; logical NOT operator
 ~~~~
 
 Comparisons are restricted to primitive values (that is, numbers, strings, `true`, `false`,
@@ -1131,23 +1130,22 @@ Function expressions (see {{fnex}}) used in comparison expressions
 return a primitive value or at most one node.
 
 ~~~~ abnf
-comparison-expr = comparable S comparison-op S comparable
-comparable   = number / string-literal /
-               true / false / null /
-               singular-path /       ; Singular Path value
-               function-expr         ; OptionalNodeOrValue or subtype
-comparison-op = "==" / "!=" /
-                "<=" / ">=" /
-                "<"  / ">"
+comparison-expr     = comparable S comparison-op S comparable
+comparable          = number / string-literal /
+                      true / false / null /
+                      singular-path / ; Singular Path value
+                      function-expr   ; OptionalNodeOrValue or subtype
+comparison-op       = "==" / "!=" /
+                      "<=" / ">=" /
+                      "<"  / ">"
 
-singular-path     = rel-singular-path / abs-singular-path /
-                    function-expr
-rel-singular-path = current-node-identifier singular-path-segments
-abs-singular-path = root-identifier singular-path-segments
+singular-path       = rel-singular-path / abs-singular-path
+rel-singular-path   = current-node-identifier singular-path-segments
+abs-singular-path   = root-identifier singular-path-segments
 singular-path-segments = *(S (name-segment / index-segment))
-name-segment      = ("[" name-selector "]") /
-                    ("." member-name-shorthand)
-index-segment     = "[" index-selector "]"
+name-segment        = ("[" name-selector "]") /
+                      ("." member-name-shorthand)
+index-segment       = "[" index-selector "]"
 ~~~~
 
 Alphabetic characters in ABNF are case-insensitive, so "e" can be either "e" or "E".
@@ -1155,12 +1153,12 @@ Alphabetic characters in ABNF are case-insensitive, so "e" can be either "e" or 
 `true`, `false`, and `null` are lower-case only (case-sensitive).
 
 ~~~~ abnf
-number       = (int / "-0") [ frac ] [ exp ]       ; decimal number
-frac         = "." 1*DIGIT                         ; decimal fraction
-exp          = "e" [ "-" / "+" ] 1*DIGIT           ; decimal exponent
-true         = %x74.72.75.65                       ; true
-false        = %x66.61.6c.73.65                    ; false
-null         = %x6e.75.6c.6c                       ; null
+number              = (int / "-0") [ frac ] [ exp ] ; decimal number
+frac                = "." 1*DIGIT                   ; decimal fraction
+exp                 = "e" [ "-" / "+" ] 1*DIGIT     ; decimal exponent
+true                = %x74.72.75.65                 ; true
+false               = %x66.61.6c.73.65              ; false
+null                = %x6e.75.6c.6c                 ; null
 ~~~~
 
 The following table lists filter expression operators in order of precedence from highest (binds most tightly) to lowest (binds least tightly).
@@ -1361,14 +1359,14 @@ as they are visible at the implementation level only — they do not
 influence the result of the evaluation.)
 
 ~~~ abnf
-function-name           = function-name-first *function-name-char
-function-name-first     = LCALPHA
-function-name-char      = function-name-first / "_" / DIGIT
-LCALPHA                 = %x61-7A  ; "a".."z"
+function-name       = function-name-first *function-name-char
+function-name-first = LCALPHA
+function-name-char  = function-name-first / "_" / DIGIT
+LCALPHA             = %x61-7A  ; "a".."z"
 
-function-expr           = function-name "(" S [function-argument
-                             *(S "," S function-argument)] S ")"
-function-argument       = filter-path / comparable
+function-expr       = function-name "(" S [function-argument
+                         *(S "," S function-argument)] S ")"
+function-argument   = filter-path / comparable
 ~~~
 
 A function argument is a `filter-path` or a `comparable`.
@@ -1586,7 +1584,7 @@ produces a nodelist consisting of nodes precisely at depth N in the input value.
 There are two kinds of segment: child segments and descendant segments.
 
 ~~~~ abnf
-segment = child-segment / descendant-segment
+segment             = child-segment / descendant-segment
 ~~~~
 
 The syntax and semantics of each kind of segment are defined below.
@@ -1603,22 +1601,21 @@ Shorthand notations are also provided for when there is a single
 wildcard or name selector.
 
 ~~~~ abnf
-child-segment             = bracketed-selection /
-                            ("."
-                             (wildcard-selector /
-                              member-name-shorthand))
+child-segment       = bracketed-selection /
+                      ("."
+                       (wildcard-selector /
+                        member-name-shorthand))
 
-bracketed-selection       = "[" S selector *(S "," S selector) S "]"
+bracketed-selection = "[" S selector *(S "," S selector) S "]"
 
-member-name-shorthand     = name-first *name-char
-name-first                = ALPHA /
-                            "_"   /            ; _
-                            %x80-10FFFF
-                              ; any non-ASCII Unicode character
-name-char                 = DIGIT / name-first
+member-name-shorthand = name-first *name-char
+name-first          = ALPHA /
+                      "_"   /
+                      %x80-10FFFF    ; any non-ASCII Unicode character
+name-char           = DIGIT / name-first
 
-DIGIT                     =  %x30-39              ; 0-9
-ALPHA                     =  %x41-5A / %x61-7A    ; A-Z / a-z
+DIGIT               = %x30-39              ; 0-9
+ALPHA               = %x41-5A / %x61-7A    ; A-Z / a-z
 ~~~~
 
 `.*`, a `child-segment` directly built from a `wildcard-selector`, is
@@ -1677,10 +1674,9 @@ followed by a child segment (`descendant-segment`).
 Shortand notations are also provided that correspond to the shorthand forms of the child segment.
 
 ~~~~ abnf
-descendant-segment               = ".."
-                                   (bracketed-selection /
-                                    wildcard-selector /
-                                    member-name-shorthand)
+descendant-segment  = ".." (bracketed-selection /
+                            wildcard-selector /
+                            member-name-shorthand)
 ~~~~
 
 `..*`, the `descendant-segment` directly built from a
@@ -1827,16 +1823,15 @@ normal-unescaped     =    ; omit %x0-1F control codes
                        %x28-5B /
                           ; omit 0x5C \
                        %x5D-10FFFF
-normal-escapable     = (%x62 / ; b BS backspace U+0008
-                        %x66 / ; f FF form feed U+000C
-                        %x6E / ; n LF line feed U+000A
-                        %x72 / ; r CR carriage return U+000D
-                        %x74 / ; t HT horizontal tab U+0009
-                        "'" /  ; ' apostrophe U+0027
-                        "\" /  ; \ backslash (reverse solidus) U+005C
-                        (%x75 normal-hexchar)
-                                        ; certain values u00xx U+00XX
-                        )
+normal-escapable     = %x62 / ; b BS backspace U+0008
+                       %x66 / ; f FF form feed U+000C
+                       %x6E / ; n LF line feed U+000A
+                       %x72 / ; r CR carriage return U+000D
+                       %x74 / ; t HT horizontal tab U+0009
+                       "'" /  ; ' apostrophe U+0027
+                       "\" /  ; \ backslash (reverse solidus) U+005C
+                       (%x75 normal-hexchar)
+                                       ; certain values u00xx U+00XX
 normal-hexchar       = "0" "0"
                        (
                           ("0" %x30-37) / ; "00"-"07"
@@ -1848,7 +1843,7 @@ normal-hexchar       = "0" "0"
                         )
 normal-HEXDIG        = DIGIT / %x61-66   ; "0"-"9", "a"-"f"
 normal-index-selector = "0" / (DIGIT1 *DIGIT)
-                          ; non-negative decimal integer
+                        ; non-negative decimal integer
 ~~~~
 
 Since there can only be one Normalized Path identifying a given node, the syntax
