@@ -1471,7 +1471,7 @@ according to one of the following rules:
 ### `length` Function Extension {#length}
 
 Arguments:
-: 1. `Value`
+: 1. `OptionalValue`
 
 Result:
 : `OptionalValue` (unsigned integer or `Nothing`)
@@ -2000,7 +2000,7 @@ Column "Change Controller" always has the value "IESG" and the column
 "Reference" always has the value "{{fnex}} of RFCthis":
 
 | Function Name | Brief description                  | Input                          | Output            |
-| length        | length of array                    | `Value`                        | `OptionalValue`   |
+| length        | length of array                    | `OptionalValue`                | `OptionalValue`   |
 | count         | size of nodelist                   | `OptionalNodes`                | `Value`           |
 | match         | regular expression full match      | `OptionalNodeOrValue`, `Value` | `OptionalBoolean` |
 | search        | regular expression substring match | `OptionalNodeOrValue`, `Value` | `OptionalBoolean` |
