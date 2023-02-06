@@ -1225,7 +1225,9 @@ replaced by the value of its node and then:
 
 * a comparison using the operator `==` yields true if and only if the comparison
 is between:
-    * equal primitive values,
+    * numbers expected to interoperate as per {{Section 2.2 of -i-json (I-JSON)}} that compare equal using normal mathematical equality,
+    * numbers at least one of which is not expected to interoperate as per I-JSON, where the numbers compare equal using an implementation specific equality,
+    * equal primitive values which are not numbers,
     * equal arrays, that is arrays of the same length where each element of the first array is equal to the corresponding
       element of the second array, or
     * equal objects with no duplicate names, that is where:
