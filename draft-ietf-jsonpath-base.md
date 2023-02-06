@@ -1471,7 +1471,7 @@ according to one of the following rules:
 ### `length` Function Extension {#length}
 
 Arguments:
-: 1. `Value`
+: 1. `OptionalValue`
 
 Result:
 : `OptionalValue` (unsigned integer or `Nothing`)
@@ -1484,8 +1484,8 @@ filter expression:
 $[?length(@.authors) >= 5]
 ~~~
 
-Its only argument is a value (possibly taken from a singular path as
-in the example above).  The result also is a value, an unsigned
+Its only argument is an optional value (possibly taken from a singular path as
+in the example above).  The result also is an optional value, an unsigned
 integer.
 
 * If the argument value is a string, the result is the number of
@@ -1536,7 +1536,7 @@ string matches a given regular expression, which is in {{-iregexp}} form.
 $[?match(@.date, "1974-05-..")]
 ~~~
 
-Its first argument is a string that is matched against the iregexp
+Its first argument is an optional string that is matched against the iregexp
 contained in the string that is the second argument.
 The result is `true` if the string matches the iregexp and `false`
 otherwise.
@@ -1562,7 +1562,7 @@ expression, which is in {{-iregexp}} form.
 $[?search(@.author, "[BR]ob")]
 ~~~
 
-Its first argument is a string that is searched for at least one
+Its first argument is an optional string that is searched for at least one
 substring that matches the iregexp contained in the string
 that is the second argument.
 The result is `true` if such a substring exists, `false` otherwise.
@@ -2000,7 +2000,7 @@ Column "Change Controller" always has the value "IESG" and the column
 "Reference" always has the value "{{fnex}} of RFCthis":
 
 | Function Name | Brief description                  | Input                          | Output            |
-| length        | length of array                    | `Value`                        | `OptionalValue`   |
+| length        | length of array                    | `OptionalValue`                | `OptionalValue`   |
 | count         | size of nodelist                   | `OptionalNodes`                | `Value`           |
 | match         | regular expression full match      | `OptionalNodeOrValue`, `Value` | `OptionalBoolean` |
 | search        | regular expression substring match | `OptionalNodeOrValue`, `Value` | `OptionalBoolean` |
