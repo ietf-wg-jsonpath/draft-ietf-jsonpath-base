@@ -1976,13 +1976,15 @@ Reference:
 : a reference document that provides a description of the function
   extension
 
-Initial entries in this sub-registry are as listed in {{pre-reg}}:
+Initial entries in this sub-registry are as listed in {{pre-reg}}; the
+Column "Change Controller" always has the value "IESG" and the column
+"Reference" always has the value "{{fnex}} of RFCthis":
 
-| Function Name | Brief description                  | Input                          | Output            | Change Controller | Reference           |
-| length        | length of array                    | `Value`                        | `OptionalValue`   | IESG              | {{fnex}} of RFCthis |
-| count         | size of nodelist                   | `OptionalNodes`                | `Value`           | IESG              | {{fnex}} of RFCthis |
-| match         | regular expression full match      | `OptionalNodeOrValue`, `Value` | `OptionalBoolean` | IESG              | {{fnex}} of RFCthis |
-| search        | regular expression substring match | `OptionalNodeOrValue`, `Value` | `OptionalBoolean` | IESG              | {{fnex}} of RFCthis |
+| Function Name | Brief description                  | Input                          | Output            |
+| length        | length of array                    | `Value`                        | `OptionalValue`   |
+| count         | size of nodelist                   | `OptionalNodes`                | `Value`           |
+| match         | regular expression full match      | `OptionalNodeOrValue`, `Value` | `OptionalBoolean` |
+| search        | regular expression substring match | `OptionalNodeOrValue`, `Value` | `OptionalBoolean` |
 {: #pre-reg title="Initial Entries in the Function Extensions Subregistry"}
 
 
