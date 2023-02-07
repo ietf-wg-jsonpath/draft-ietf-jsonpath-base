@@ -1409,7 +1409,7 @@ is a subset of the set of instances of the other type.
 a non-empty nodelist. The table also lists the subtypes of each type.
 
 | Type                  | Abstract Instances                       | Subtypes                                                               |
-| :--:                  | :----------------:                       | :------:                                                               |
+| :--                  | :----------------                       | :------                                                               |
 | `OptionalNodeOrValue` | `Node(n)`, `Value(v)`, `Nothing`         | `OptionalNode`, `OptionalValue`, `OptionalBoolean`, `Value`, `Boolean` |
 | `OptionalNode`        | `Node(n)`, `Nothing`                     |                                                                        |
 | `OptionalValue`       | `Value(v)`, `Nothing`                    | `OptionalNode`, `Value`, `OptionalBoolean`, `Boolean`                  |
