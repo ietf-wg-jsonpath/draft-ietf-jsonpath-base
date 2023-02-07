@@ -1404,19 +1404,20 @@ Each argument and result of a function extension must have a declared type.
 
 A type is a set of instances. A type is a subtype of another type if its set of instances (possibly after coercion)
 is a subset of the set of instances of the other type.
+The subtype relationship is transitive: for any A, B, and C if B is a subtype of A and C is a subtype of B, then C is a subtype of A.
 
 {{tbl-types}} defines the available types in terms of abstract instances, where `n` denotes a node, `v` denotes a value, and `nl` denotes
-a non-empty nodelist. The table also lists the subtypes of each type.
+a non-empty nodelist. The table also lists the (immediate) subtypes of each type.
 
-| Type                  | Abstract Instances                       | Subtypes                                                               |
-| :--                  | :----------------                       | :------                                                               |
-| `OptionalNodeOrValue` | `Node(n)`, `Value(v)`, `Nothing`         | `OptionalNode`, `OptionalValue`, `OptionalBoolean`, `Value`, `Boolean` |
-| `OptionalNode`        | `Node(n)`, `Nothing`                     |                                                                        |
-| `OptionalValue`       | `Value(v)`, `Nothing`                    | `OptionalNode`, `Value`, `OptionalBoolean`, `Boolean`                  |
-| `Value`               | `Value(v)`                               | `Boolean`                                                              |
-| `OptionalBoolean`     | `Value(true)`, `Value(false)`, `Nothing` | `Boolean`                                                              |
-| `Boolean`             | `Value(true)`, `Value(false)`            |                                                                        |
-| `OptionalNodes`       | `Nodes(nl)`, `Nothing`                   | `OptionalNode`                                                         |
+| Type                  | Abstract Instances                       | Subtypes                                   |
+| :--                   | :----------------                        | :------                                    |
+| `OptionalNodeOrValue` | `Node(n)`, `Value(v)`, `Nothing`         | `OptionalNode`, `OptionalValue`            |
+| `OptionalNode`        | `Node(n)`, `Nothing`                     |                                            |
+| `OptionalValue`       | `Value(v)`, `Nothing`                    | `OptionalNode`, `Value`, `OptionalBoolean` |
+| `Value`               | `Value(v)`                               | `Boolean`                                  |
+| `OptionalBoolean`     | `Value(true)`, `Value(false)`, `Nothing` | `Boolean`                                  |
+| `Boolean`             | `Value(true)`, `Value(false)`            |                                            |
+| `OptionalNodes`       | `Nodes(nl)`, `Nothing`                   | `OptionalNode`                             |
 {: #tbl-types title="Function extension type system"}
 
 Notes:
