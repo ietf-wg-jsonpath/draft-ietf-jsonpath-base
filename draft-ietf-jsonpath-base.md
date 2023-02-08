@@ -1098,8 +1098,8 @@ A test expression either tests the existence of a node
 designated by an embedded query (see {{extest}}) or tests the
 result of a function expression (see {{fnex}}).
 In the latter case, if the function expression is of type
-`OptionalBoolean` or one of its subtypes, it tests whether the result
-is `true`; if the function expression is of type `OptionalNodes` or
+`OptionalBooleanType` or one of its subtypes, it tests whether the result
+is `true`; if the function expression is of type `OptionalNodesType` or
 one of its subtypes, it tests whether the result is different from
 `Nothing`.
 
@@ -1117,9 +1117,9 @@ basic-expr          = paren-expr /
                       test-expr
 test-expr           = [logical-not-op S] filter-path /
                          ; path existence or non-existence
-                      function-expr ; OptionalBoolean or subtype
+                      function-expr ; OptionalBooleanType or subtype
 filter-path         = rel-path / json-path /
-                      function-expr ; OptionalNodes or subtype
+                      function-expr ; OptionalNodesType or subtype
 rel-path            = current-node-identifier segments
 current-node-identifier = "@"
 ~~~~
@@ -1143,7 +1143,7 @@ comparison-expr     = comparable S comparison-op S comparable
 comparable          = number / string-literal /
                       true / false / null /
                       singular-path /   ; Singular Path value
-                      function-expr  ; OptionalNodeOrValue or subtype
+                      function-expr  ; OptionalNodeTypeOrValueType or subtype
 comparison-op       = "==" / "!=" /
                       "<=" / ">=" /
                       "<"  / ">"
@@ -1411,25 +1411,25 @@ a non-empty nodelist. The table also lists the (immediate) subtypes of each type
 
 | Type                  | Abstract Instances                       | Subtypes                                   |
 | :--                   | :----------------                        | :------                                    |
-| `OptionalNodeOrValue` | `Node(n)`, `Value(v)`, `Nothing`         | `OptionalNode`, `OptionalValue`            |
-| `OptionalNode`        | `Node(n)`, `Nothing`                     |                                            |
-| `OptionalValue`       | `Value(v)`, `Nothing`                    | `OptionalNode`, `Value`, `OptionalBoolean` |
-| `Value`               | `Value(v)`                               | `Boolean`                                  |
-| `OptionalBoolean`     | `Value(true)`, `Value(false)`, `Nothing` | `Boolean`                                  |
-| `Boolean`             | `Value(true)`, `Value(false)`            |                                            |
-| `OptionalNodes`       | `Nodes(nl)`, `Nothing`                   | `OptionalNode`                             |
+| `OptionalNodeTypeOrValueType` | `Node(n)`, `Value(v)`, `Nothing`         | `OptionalNodeType`, `OptionalValueType`            |
+| `OptionalNodeType`        | `Node(n)`, `Nothing`                     |                                            |
+| `OptionalValueType`       | `Value(v)`, `Nothing`                    | `OptionalNodeType`, `ValueType`, `OptionalBooleanType` |
+| `ValueType`               | `Value(v)`                               | `BooleanType`                                  |
+| `OptionalBooleanType`     | `Value(true)`, `Value(false)`, `Nothing` | `BooleanType`                                  |
+| `BooleanType`             | `Value(true)`, `Value(false)`            |                                            |
+| `OptionalNodesType`       | `Nodes(nl)`, `Nothing`                   | `OptionalNodeType`                             |
 {: #tbl-types title="Function extension type system"}
 
 Notes:
 
-* `OptionalNodeOrValue` is an abstraction of a `comparable` (which may appear on either side of a comparison or as a function argument).
-* `OptionalNode` is an abstraction of a Singular Path.
-* `Value` is an abstraction of a primitive value.
-* `Boolean` is an abstraction of a primitive value that is either
+* `OptionalNodeTypeOrValueType` is an abstraction of a `comparable` (which may appear on either side of a comparison or as a function argument).
+* `OptionalNodeType` is an abstraction of a Singular Path.
+* `ValueType` is an abstraction of a primitive value.
+* `BooleanType` is an abstraction of a primitive value that is either
   `true` or `false`.
-* `OptionalValue` is an abstraction of a primitive value that may
+* `OptionalValueType` is an abstraction of a primitive value that may
   alternatively be absent (`Nothing`).
-* `OptionalNodes` is an abstraction of a `filter-path` (which appears
+* `OptionalNodesType` is an abstraction of a `filter-path` (which appears
   in a test expression or as a function argument).
 
 The abstract instances above can be obtained from the concrete representations in {{tbl-typerep}}.
@@ -1444,10 +1444,10 @@ The abstract instances above can be obtained from the concrete representations i
 
 The following subtype relationships depend on coercion:
 
-* `OptionalNode` is a subtype of `OptionalValue` via coercion since the `OptionalNode` instance `Node(n)` can be coerced to
-the `OptionalValue` instance `Value(v)`, where `v` is the value of the node `n`.
-* `OptionalNode` is a subtype of `OptionalNodes` via coercion since the `OptionalNode` instance `Node(n)` can be coerced to
-the `OptionalNodes` instance `Nodes(l)`, where `l` is a nodelist consisting of just the node `n`.
+* `OptionalNodeType` is a subtype of `OptionalValueType` via coercion since the `OptionalNodeType` instance `Node(n)` can be coerced to
+the `OptionalValueType` instance `Value(v)`, where `v` is the value of the node `n`.
+* `OptionalNodeType` is a subtype of `OptionalNodesType` via coercion since the `OptionalNodeType` instance `Node(n)` can be coerced to
+the `OptionalNodesType` instance `Nodes(l)`, where `l` is a nodelist consisting of just the node `n`.
 
 The type correctness of function expressions can now be defined in terms of this type system.
 
@@ -1456,26 +1456,26 @@ The type correctness of function expressions can now be defined in terms of this
 A function expression is correctly typed if all the following are true:
 
 * If it occurs as a `filter-path` in a test expression, the function
-is defined to have result type `OptionalNodes` or one of its subtypes,
-or to have result type `OptionalBoolean` or one of its subtypes.
+is defined to have result type `OptionalNodesType` or one of its subtypes,
+or to have result type `OptionalBooleanType` or one of its subtypes.
 * If it occurs as a `comparable` in a comparison, the function
-is defined to have result type `OptionalNodeOrValue` or one of its subtypes.
+is defined to have result type `OptionalNodeTypeOrValueType` or one of its subtypes.
 * For it and any function expression it contains,
 each argument of the function matches the defined type of the argument
 according to one of the following rules:
   * The argument is a function expression with defined result type
     that is the same as, or a subtype of, the defined type of the argument.
   * The argument is a literal primitive value and the defined type of the  argument is `Value` or any type of which `Value` is a subtype.
-  * The argument is a Singular Path and the defined type of the argument is `OptionalNode` or any type of which `OptionalNode` is a subtype.
-  * The argument is a `filter-path` or a Singular Path and the defined type of the argument is `OptionalNodes`.
+  * The argument is a Singular Path and the defined type of the argument is `OptionalNodeType` or any type of which `OptionalNodeType` is a subtype.
+  * The argument is a `filter-path` or a Singular Path and the defined type of the argument is `OptionalNodesType`.
 
 ### `length` Function Extension {#length}
 
 Arguments:
-: 1. `OptionalValue`
+: 1. `OptionalValueType`
 
 Result:
-: `OptionalValue` (unsigned integer or `Nothing`)
+: `OptionalValueType` (unsigned integer or `Nothing`)
 
 The "length" function extension provides a way to compute the length
 of a value and make that available for further processing in the
@@ -1501,10 +1501,10 @@ integer.
 ### `count` Function Extension {#count}
 
 Arguments:
-: 1. `OptionalNodes`
+: 1. `OptionalNodesType`
 
 Result:
-: `Value` (unsigned integer)
+: `ValueType` (unsigned integer)
 
 The "count" function extension provides a way to obtain the number of
 nodes in a nodelist and make that available for further processing in
@@ -1523,11 +1523,11 @@ Note that there is no deduplication of the nodelist.
 ### `match` Function Extension {#match}
 
 Arguments:
-: 1. `OptionalNodeOrValue` (string)
-  2. `Value` (string conforming to {{-iregexp}})
+: 1. `OptionalNodeTypeOrValueType` (string)
+  2. `ValueType` (string conforming to {{-iregexp}})
 
 Result:
-: `OptionalBoolean` (`true`, `false`, or `Nothing`)
+: `OptionalBooleanType` (`true`, `false`, or `Nothing`)
 
 The "match" function extension provides a way to check whether (the
 entirety of, see {{search}} below) a given
@@ -1549,11 +1549,11 @@ the second argument is not a string conforming to {{-iregexp}}.
 ### `search` Function Extension {#search}
 
 Arguments:
-: 1. `OptionalNodeOrValue` (string)
-  2. `Value` (string conforming to {{-iregexp}})
+: 1. `OptionalNodeTypeOrValueType` (string)
+  2. `ValueType` (string conforming to {{-iregexp}})
 
 Result:
-: `OptionalBoolean` (`true`, `false`, or `Nothing`)
+: `OptionalBooleanType` (`true`, `false`, or `Nothing`)
 
 The "search" function extension provides a way to check whether a
 given string contains a substring that matches a given regular
@@ -1581,9 +1581,9 @@ the second argument is not a string conforming to {{-iregexp}}.
 | `$[?length(@.*) < 3]` | Invalid typing since `@.*` is a non-singular path |
 | `$[?count(@.*) == 1]` | Valid typing |
 | `$[?count(1) == 1]` | Invalid typing since `1` is not a path  |
-| `$[?count(foo(@.*)) == 1]` | Valid typing, where `foo` is a function extension with argument of type `OptionalNodes` and result type `OptionalNodes` |
+| `$[?count(foo(@.*)) == 1]` | Valid typing, where `foo` is a function extension with argument of type `OptionalNodesType` and result type `OptionalNodesType` |
 | `$[?match(@.timezone, 'Europe/.*')]`         | Valid typing |
-| `$[?match(@.timezone, 'Europe/.*') == true]` | Invalid typing since `OptionBoolean` is not a `comparable` |
+| `$[?match(@.timezone, 'Europe/.*') == true]` | Invalid typing since `OptionalBooleanType` is not a `comparable` |
 {: title="Function expression examples"}
 
 ## Segments  {#segments-details}
@@ -2001,10 +2001,10 @@ Column "Change Controller" always has the value "IESG" and the column
 "Reference" always has the value "{{fnex}} of RFCthis":
 
 | Function Name | Brief description                  | Input                          | Output            |
-| length        | length of array                    | `OptionalValue`                | `OptionalValue`   |
-| count         | size of nodelist                   | `OptionalNodes`                | `Value`           |
-| match         | regular expression full match      | `OptionalNodeOrValue`, `Value` | `OptionalBoolean` |
-| search        | regular expression substring match | `OptionalNodeOrValue`, `Value` | `OptionalBoolean` |
+| length        | length of array                    | `OptionalValueType`                | `OptionalValueType`   |
+| count         | size of nodelist                   | `OptionalNodesType`                | `Value`           |
+| match         | regular expression full match      | `OptionalNodeTypeOrValueType`, `Value` | `OptionalBooleanType` |
+| search        | regular expression substring match | `OptionalNodeTypeOrValueType`, `Value` | `OptionalBooleanType` |
 {: #pre-reg title="Initial Entries in the Function Extensions Subregistry"}
 
 
