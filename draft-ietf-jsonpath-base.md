@@ -1143,7 +1143,7 @@ comparison-expr     = comparable S comparison-op S comparable
 comparable          = number / string-literal /
                       true / false / null /
                       singular-path /   ; Singular Path value
-                      function-expr  ; OptionalNodeTypeOrValueType or subtype
+                      function-expr  ; OptionalNodeOrValueType or subtype
 comparison-op       = "==" / "!=" /
                       "<=" / ">=" /
                       "<"  / ">"
@@ -1409,20 +1409,20 @@ The subtype relationship is transitive: for any A, B, and C if B is a subtype of
 {{tbl-types}} defines the available types in terms of abstract instances, where `n` denotes a node, `v` denotes a value, and `nl` denotes
 a non-empty nodelist. The table also lists the (immediate) subtypes of each type.
 
-| Type                  | Abstract Instances                       | Subtypes                                   |
-| :--                   | :----------------                        | :------                                    |
-| `OptionalNodeTypeOrValueType` | `Node(n)`, `Value(v)`, `Nothing`         | `OptionalNodeType`, `OptionalValueType`            |
-| `OptionalNodeType`        | `Node(n)`, `Nothing`                     |                                            |
+| Type                      | Abstract Instances                       | Subtypes                                       |
+| :--                       | :----------------                        | :------                                        |
+| `OptionalNodeOrValueType` | `Node(n)`, `Value(v)`, `Nothing`         | `OptionalNodeType`, `OptionalValueType`        |
+| `OptionalNodeType`        | `Node(n)`, `Nothing`                     |                                                |
 | `OptionalValueType`       | `Value(v)`, `Nothing`                    | `OptionalNodeType`, `ValueType`, `OptionalBooleanType` |
 | `ValueType`               | `Value(v)`                               | `BooleanType`                                  |
 | `OptionalBooleanType`     | `Value(true)`, `Value(false)`, `Nothing` | `BooleanType`                                  |
-| `BooleanType`             | `Value(true)`, `Value(false)`            |                                            |
+| `BooleanType`             | `Value(true)`, `Value(false)`            |                                                |
 | `OptionalNodesType`       | `Nodes(nl)`, `Nothing`                   | `OptionalNodeType`                             |
 {: #tbl-types title="Function extension type system"}
 
 Notes:
 
-* `OptionalNodeTypeOrValueType` is an abstraction of a `comparable` (which may appear on either side of a comparison or as a function argument).
+* `OptionalNodeOrValueType` is an abstraction of a `comparable` (which may appear on either side of a comparison or as a function argument).
 * `OptionalNodeType` is an abstraction of a Singular Path.
 * `ValueType` is an abstraction of a primitive value.
 * `BooleanType` is an abstraction of a primitive value that is either
@@ -1459,7 +1459,7 @@ A function expression is correctly typed if all the following are true:
 is defined to have result type `OptionalNodesType` or one of its subtypes,
 or to have result type `OptionalBooleanType` or one of its subtypes.
 * If it occurs as a `comparable` in a comparison, the function
-is defined to have result type `OptionalNodeTypeOrValueType` or one of its subtypes.
+is defined to have result type `OptionalNodeOrValueType` or one of its subtypes.
 * For it and any function expression it contains,
 each argument of the function matches the defined type of the argument
 according to one of the following rules:
@@ -1523,7 +1523,7 @@ Note that there is no deduplication of the nodelist.
 ### `match` Function Extension {#match}
 
 Arguments:
-: 1. `OptionalNodeTypeOrValueType` (string)
+: 1. `OptionalNodeOrValueType` (string)
   2. `ValueType` (string conforming to {{-iregexp}})
 
 Result:
@@ -1549,7 +1549,7 @@ the second argument is not a string conforming to {{-iregexp}}.
 ### `search` Function Extension {#search}
 
 Arguments:
-: 1. `OptionalNodeTypeOrValueType` (string)
+: 1. `OptionalNodeOrValueType` (string)
   2. `ValueType` (string conforming to {{-iregexp}})
 
 Result:
@@ -2003,8 +2003,8 @@ Column "Change Controller" always has the value "IESG" and the column
 | Function Name | Brief description                  | Input                          | Output            |
 | length        | length of array                    | `OptionalValueType`                | `OptionalValueType`   |
 | count         | size of nodelist                   | `OptionalNodesType`                | `Value`           |
-| match         | regular expression full match      | `OptionalNodeTypeOrValueType`, `Value` | `OptionalBooleanType` |
-| search        | regular expression substring match | `OptionalNodeTypeOrValueType`, `Value` | `OptionalBooleanType` |
+| match         | regular expression full match      | `OptionalNodeOrValueType`, `Value` | `OptionalBooleanType` |
+| search        | regular expression substring match | `OptionalNodeOrValueType`, `Value` | `OptionalBooleanType` |
 {: #pre-reg title="Initial Entries in the Function Extensions Subregistry"}
 
 
