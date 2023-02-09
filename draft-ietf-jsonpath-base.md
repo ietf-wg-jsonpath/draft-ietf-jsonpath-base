@@ -1098,9 +1098,9 @@ A test expression either tests the existence of a node
 designated by an embedded query (see {{extest}}) or tests the
 result of a function expression (see {{fnex}}).
 In the latter case, if the function expression is of type
-`OptionalBooleanType` or one of its subtypes, it tests whether the result
-is `true`; if the function expression is of type `OptionalNodesType` or
-one of its subtypes, it tests whether the result is different from
+`ST(OptionalBooleanType)` (see {{typesys}}), it tests whether the result
+is `true`; if the function expression is of type
+`ST(OptionalNodesType)`, it tests whether the result is different from
 `Nothing`.
 
 ~~~~ abnf
@@ -1117,7 +1117,8 @@ basic-expr          = paren-expr /
                       test-expr
 test-expr           = [logical-not-op S]
                       (filter-path / ; path existence or non-existence
-                       function-expr) ; OptionalBooleanType or subtype
+                       function-expr) ; ST(OptionalBooleanType) or
+                                      ; ST(OptionalNodesType)
 filter-path         = rel-path / json-path
 rel-path            = current-node-identifier segments
 current-node-identifier = "@"
@@ -1143,8 +1144,7 @@ literal             = number / string-literal /
                       true / false / null
 comparable          = literal /
                       singular-path /   ; Singular Path value
-                      function-expr  ; OptionalNodeOrValueType
-                                     ; or subtype
+                      function-expr  ; ST(OptionalNodeOrValueType)
 comparison-op       = "==" / "!=" /
                       "<=" / ">=" /
                       "<"  / ">"
@@ -1401,13 +1401,14 @@ otherwise the JSONPath implementation MUST raise an error
 To define which function expressions are correctly typed,
 a type system is first introduced.
 
-### Type System for Function Expressions
+### Type System for Function Expressions {#typesys}
 
 Each argument and result of a function extension must have a declared type.
 
 A type is a set of instances. A type is a subtype of another type if its set of instances (possibly after coercion)
 is a subset of the set of instances of the other type.
 The subtype relationship is transitive: for any A, B, and C if B is a subtype of A and C is a subtype of B, then C is a subtype of A.
+We denote a type `T` and the transitive closure of all its subtypes as `ST(T)`.
 
 {{tbl-types}} defines the available types in terms of abstract instances, where `n` denotes a node, `v` denotes a value, and `nl` denotes
 a non-empty nodelist. The table also lists the (immediate) subtypes of each type.
@@ -1458,11 +1459,11 @@ The type correctness of function expressions can now be defined in terms of this
 
 A function expression is correctly typed if all the following are true:
 
-* If it occurs as a `filter-path` in a test expression, the function
-is defined to have result type `OptionalNodesType` or one of its subtypes,
-or to have result type `OptionalBooleanType` or one of its subtypes.
+* If it occurs directly in a test expression, the function
+is defined to have a result type out of `ST(OptionalNodesType)`.
+or to have a result type out of `ST(OptionalBooleanType)`.
 * If it occurs as a `comparable` in a comparison, the function
-is defined to have result type `OptionalNodeOrValueType` or one of its subtypes.
+is defined to have a result type out of `ST(OptionalNodeOrValueType)`.
 * For it and any function expression it contains,
 each argument of the function matches the defined type of the argument
 according to one of the following rules:
@@ -1470,7 +1471,7 @@ according to one of the following rules:
     that is the same as, or a subtype of, the defined type of the argument.
   * The argument is a literal primitive value and the defined type of the  argument is `Value` or any type of which `Value` is a subtype.
   * The argument is a Singular Path and the defined type of the argument is `OptionalNodeType` or any type of which `OptionalNodeType` is a subtype.
-  * The argument is a `filter-path` or a Singular Path and the defined type of the argument is `OptionalNodesType`.
+  * The argument is a `filter-path` (which includes Singular Paths) and the defined type of the argument is `OptionalNodesType`.
 
 ### `length` Function Extension {#length}
 
