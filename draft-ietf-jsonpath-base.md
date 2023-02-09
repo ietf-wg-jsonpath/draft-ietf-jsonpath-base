@@ -1460,10 +1460,10 @@ The type correctness of function expressions can now be defined in terms of this
 A function expression is correctly typed if all the following are true:
 
 * If it occurs directly in a test expression, the function
-is defined to have a result type out of `ST(OptionalNodesType)`.
-or to have a result type out of `ST(OptionalBooleanType)`.
+is defined to have a result type in `ST(OptionalNodesType)`.
+or to have a result type in `ST(OptionalBooleanType)`.
 * If it occurs as a `comparable` in a comparison, the function
-is defined to have a result type out of `ST(OptionalNodeOrValueType)`.
+is defined to have a result type in `ST(OptionalNodeOrValueType)`.
 * For it and any function expression it contains,
 each argument of the function matches the defined type of the argument
 according to one of the following rules:
