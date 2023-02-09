@@ -1115,11 +1115,10 @@ logical-and-expr    = basic-expr *(S "&&" S basic-expr)
 basic-expr          = paren-expr /
                       comparison-expr /
                       test-expr
-test-expr           = [logical-not-op S] filter-path /
-                         ; path existence or non-existence
-                      function-expr ; OptionalBooleanType or subtype
-filter-path         = rel-path / json-path /
-                      function-expr ; OptionalNodesType or subtype
+test-expr           = [logical-not-op S]
+                      (filter-path / ; path existence or non-existence
+                       function-expr) ; OptionalBooleanType or subtype
+filter-path         = rel-path / json-path
 rel-path            = current-node-identifier segments
 current-node-identifier = "@"
 ~~~~
@@ -1140,8 +1139,9 @@ return a primitive value or at most one node.
 
 ~~~~ abnf
 comparison-expr     = comparable S comparison-op S comparable
-comparable          = number / string-literal /
-                      true / false / null /
+literal             = number / string-literal /
+                      true / false / null
+comparable          = literal /
                       singular-path /   ; Singular Path value
                       function-expr  ; OptionalNodeOrValueType
                                      ; or subtype
@@ -1384,7 +1384,9 @@ LCALPHA             = %x61-7A  ; "a".."z"
 
 function-expr       = function-name "(" S [function-argument
                          *(S "," S function-argument)] S ")"
-function-argument   = filter-path / comparable
+function-argument   = literal /
+                      filter-path / ; (includes singular-path)
+                      function-expr
 ~~~
 
 A function argument is a `filter-path` or a `comparable`.
