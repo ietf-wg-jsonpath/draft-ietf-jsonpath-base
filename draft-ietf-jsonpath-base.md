@@ -1143,7 +1143,8 @@ comparison-expr     = comparable S comparison-op S comparable
 comparable          = number / string-literal /
                       true / false / null /
                       singular-path /   ; Singular Path value
-                      function-expr  ; OptionalNodeOrValueType or subtype
+                      function-expr  ; OptionalNodeOrValueType
+                                     ; or subtype
 comparison-op       = "==" / "!=" /
                       "<=" / ">=" /
                       "<"  / ">"
