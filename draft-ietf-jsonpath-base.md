@@ -1520,6 +1520,9 @@ The result is a value, an unsigned integer, that gives the number of
 nodes in the nodelist.
 Note that there is no deduplication of the nodelist.
 
+If the argument is `Nothing` (which corresponds to an empty nodelist),
+the result is the value `0`.
+
 
 ### `match` Function Extension {#match}
 
