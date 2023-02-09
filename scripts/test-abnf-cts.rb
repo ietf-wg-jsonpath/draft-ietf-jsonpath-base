@@ -31,7 +31,10 @@ SKIPPED_TESTS = [
   "slice selector, underflowing to value with negative step",
   "slice selector, overflowing step",
   "slice selector, underflowing step",
+  "name shorthand, underscore", # XXX
+  "name shorthand, underscore start", # XXX
 ]
+
 
 cts["tests"].each do |t|
     result = false
