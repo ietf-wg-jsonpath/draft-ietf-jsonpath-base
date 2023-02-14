@@ -1429,8 +1429,8 @@ Notes:
 * `OptionalNodeType` is an abstraction of a Singular Path.
 * `ValueType` is an abstraction of a primitive value.
 * `BooleanType` is an abstraction of the boolean result of a `test-expr`.
-  Its "true" and "false" values are not relatable to the JSON literals `true` and `false`.
-  These values have no syntactical representation in JSON Path.
+  Its "true" and "false" values are not relatable to the JSON literals `true` and `false`
+  and have no syntactical representation in JSON Path.
 * `OptionalValueType` is an abstraction of a primitive value that may
   alternatively be absent (`Nothing`).
 * `OptionalNodesType` is an abstraction of a `filter-path` (which appears
