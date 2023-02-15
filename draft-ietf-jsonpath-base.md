@@ -1098,7 +1098,7 @@ A test expression either tests the existence of a node
 designated by an embedded query (see {{extest}}) or tests the
 result of a function expression (see {{fnex}}).
 In the latter case, if the function expression is of type
-`ST(BooleanType)` (see {{typesys}}), it tests whether the result
+`ST(PropositionType)` (see {{typesys}}), it tests whether the result
 is a logical "true;" if the function expression is of type
 `ST(OptionalNodesType)`, it tests whether the result is different from
 `Nothing`.
@@ -1117,7 +1117,7 @@ basic-expr          = paren-expr /
                       test-expr
 test-expr           = [logical-not-op S]
                       (filter-path / ; path existence or non-existence
-                       function-expr) ; ST(BooleanType) or
+                       function-expr) ; ST(PropositionType) or
                                       ; ST(OptionalNodesType)
 filter-path         = rel-path / json-path
 rel-path            = current-node-identifier segments
@@ -1418,8 +1418,8 @@ a non-empty nodelist. The table also lists the (immediate) subtypes of each type
 | `OptionalNodeOrValueType` | `Node(n)`, `Value(v)`, `Nothing`         | `OptionalNodeType`, `OptionalValueType`        |
 | `OptionalNodeType`        | `Node(n)`, `Nothing`                     |                                                |
 | `OptionalValueType`       | `Value(v)`, `Nothing`                    | `OptionalNodeType`, `ValueType`                |
-| `ValueType`               | `Value(v)`                               | `BooleanType`                                  |
-| `BooleanType`             | `Logic`                                  |                                                |
+| `ValueType`               | `Value(v)`                               |                                                |
+| `PropositionType`         | `PropositionTrue`, `PropositionFalse`    |                                                |
 | `OptionalNodesType`       | `Nodes(nl)`, `Nothing`                   | `OptionalNodeType`                             |
 {: #tbl-types title="Function extension type system"}
 
@@ -1428,9 +1428,9 @@ Notes:
 * `OptionalNodeOrValueType` is an abstraction of a `comparable` (which may appear on either side of a comparison or as a function argument).
 * `OptionalNodeType` is an abstraction of a Singular Path.
 * `ValueType` is an abstraction of a primitive value.
-* `BooleanType` is an abstraction of the boolean result of a `test-expr`.
-  Its "true" and "false" values are not relatable to the JSON literals `true` and `false`
-  and have no syntactical representation in JSON Path.
+* `PropositionType` is an abstraction of the logical result of a `test-expr`.
+  Its `PropositionTrue` and `PropositionFalse` values are not relatable to
+  the JSON literals `true` and `false` and have no syntactical representation in JSON Path.
 * `OptionalValueType` is an abstraction of a primitive value that may
   alternatively be absent (`Nothing`).
 * `OptionalNodesType` is an abstraction of a `filter-path` (which appears
@@ -1438,13 +1438,13 @@ Notes:
 
 The abstract instances above can be obtained from the concrete representations in {{tbl-typerep}}.
 
-| Abstract Instance | Concrete Representations                                           |
-| :---------------: | :----------------------:                                           |
-| `Node(n)`         | Singular Path resulting in a nodelist containing just the node `n` |
-| `Value(v)`        | JSON value `v`                                                     |
-| `Logic`           | The result of a `test-expr`: a logical "true" or "false"           |
-| `Nothing`         | Singular Path or `filter-path` resulting in an empty nodelist      |
-| `Nodes(nl)`       | `filter-path` resulting in the non-empty nodelist `nl`             |
+| Abstract Instance                        | Concrete Representations                                                |
+| :---------------:                        | :----------------------:                                                |
+| `Node(n)`                                | Singular Path resulting in a nodelist containing just the node `n`      |
+| `Value(v)`                               | JSON value `v`                                                          |
+| `PropositionTrue`<br>`PropositionFalse`  | The result of a `test-expr`: a logical "true" or "false", respectively  |
+| `Nothing`                                | Singular Path or `filter-path` resulting in an empty nodelist           |
+| `Nodes(nl)`                              | `filter-path` resulting in the non-empty nodelist `nl`                  |
 {: #tbl-typerep title="Concrete representations of abstract instances"}
 
 The following subtype relationships depend on coercion:
@@ -1462,7 +1462,7 @@ A function expression is correctly typed if all the following are true:
 
 * If it occurs directly in a test expression, the function
 is defined to have a result type in `ST(OptionalNodesType)`.
-or to have a result type in `ST(BooleanType)`.
+or to have a result type in `ST(PropositionType)`.
 * If it occurs as a `comparable` in a comparison, the function
 is defined to have a result type in `ST(OptionalNodeOrValueType)`.
 * For it and any function expression it contains,
@@ -1535,7 +1535,7 @@ Arguments:
   2. `ValueType` (string conforming to {{-iregexp}})
 
 Result:
-: `BooleanType` (logical "true" or "false")
+: `PropositionType` (logical "true" or "false")
 
 The "match" function extension provides a way to check whether (the
 entirety of, see {{search}} below) a given
@@ -1547,7 +1547,7 @@ $[?match(@.date, "1974-05-..")]
 
 Its first argument is an optional string that is matched against the iregexp
 contained in the string that is the second argument.
-The result is logical "true" if the string matches the iregexp and "false"
+The result is `PropositionTrue` if the string matches the iregexp and `PropositionFalse`
 otherwise.
 
 
@@ -1558,7 +1558,7 @@ Arguments:
   2. `ValueType` (string conforming to {{-iregexp}})
 
 Result:
-: `BooleanType` (logical "true" or "false")
+: `PropositionType` (logical "true" or "false")
 
 The "search" function extension provides a way to check whether a
 given string contains a substring that matches a given regular
@@ -1571,7 +1571,7 @@ $[?search(@.author, "[BR]ob")]
 Its first argument is an optional string that is searched for at least one
 substring that matches the iregexp contained in the string
 that is the second argument.
-The result is `true` if such a substring exists, `false` otherwise.
+The result is `PropositionTrue` if such a substring exists, `PropositionFalse` otherwise.
 
 
 ### Examples
@@ -1585,7 +1585,7 @@ The result is `true` if such a substring exists, `false` otherwise.
 | `$[?count(1) == 1]` | Invalid typing since `1` is not a path  |
 | `$[?count(foo(@.*)) == 1]` | Valid typing, where `foo` is a function extension with argument of type `OptionalNodesType` and result type `OptionalNodesType` |
 | `$[?match(@.timezone, 'Europe/.*')]`         | Valid typing |
-| `$[?match(@.timezone, 'Europe/.*') == true]` | Invalid typing since `BooleanType` can only appear in `test-expr` |
+| `$[?match(@.timezone, 'Europe/.*') == true]` | Invalid typing since `PropositionType` can only appear in `test-expr` |
 {: title="Function expression examples"}
 
 ## Segments  {#segments-details}
@@ -2005,8 +2005,8 @@ Column "Change Controller" always has the value "IESG" and the column
 | Function Name | Brief description                  | Input                          | Output            |
 | length        | length of array                    | `OptionalValueType`                | `OptionalValueType`   |
 | count         | size of nodelist                   | `OptionalNodesType`                | `Value`           |
-| match         | regular expression full match      | `OptionalNodeOrValueType`, `Value` | `BooleanType` |
-| search        | regular expression substring match | `OptionalNodeOrValueType`, `Value` | `BooleanType` |
+| match         | regular expression full match      | `OptionalNodeOrValueType`, `Value` | `PropositionType` |
+| search        | regular expression substring match | `OptionalNodeOrValueType`, `Value` | `PropositionType` |
 {: #pre-reg title="Initial Entries in the Function Extensions Subregistry"}
 
 
