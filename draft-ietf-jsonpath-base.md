@@ -1590,7 +1590,7 @@ the second argument is not a string conforming to {{-iregexp}}.
 | `$[?count(1) == 1]` | Invalid typing since `1` is not a path  |
 | `$[?count(foo(@.*)) == 1]` | Valid typing, where `foo` is a function extension with argument of type `OptionalNodesType` and result type `OptionalNodesType` |
 | `$[?match(@.timezone, 'Europe/.*')]`         | Valid typing |
-| `$[?match(@.timezone, 'Europe/.*') == true]` | Invalid typing since `OptionalBooleanType` is not a `comparable` |
+| `$[?match(@.timezone, 'Europe/.*') == true]` | Valid typing |
 {: title="Function expression examples"}
 
 ## Segments  {#segments-details}
