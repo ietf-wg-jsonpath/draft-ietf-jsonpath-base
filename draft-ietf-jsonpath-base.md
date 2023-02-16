@@ -1067,18 +1067,49 @@ The following examples show the array slice selector in use by a child segment.
 
 ### Filter selector {#filter-selector}
 
+Filter selectors are used to iterate over the elements or members of
+structured values, i.e., JSON arrays and objects.
+The structured values are identified in the nodelist offered by a
+child or descendant segment.
+
+For each iteration (element/member), a logical expression is
+evaluated, the *filter expression*, which decides whether the node of
+the element/member is selected.
+(While a logical expression evaluates to a Boolean value, we use the
+term logical to maintain a distinction from the Boolean values that
+JSON can represent.)
+
+During the iteration process, the filter expression receives the node
+of each array element or object member of the structured value being
+filtered, which is then known as the *current node*.
+
+The current node can be used as the start of one or more JSONPath
+queries used inside subexpressions of the filter expression, notated
+via the current-node-identifier `@`.
+Each JSONPath query can be used either for testing existence of a
+result of the query, or for obtaining a specific JSON value resulting
+from that query that can then be used in a comparison.
+
+Within the logical expression for a filter selector, function
+expressions can be used to operate on nodelists and values.
+The set of available functions is extensible, with a number of
+functions predefined, see {{fnex}}, and the ability to register further
+functions in the Function Extensions sub-registry ({{iana-fnex}}).
+When a function is defined, it is given a unique name, and the *type*
+of each of its arguments as well as the type returned from the
+function is declared.
+The type system is limited in scope; its function is to express
+restrictions that are otherwise implicit in the grammar of filter
+expressions.
+
 #### Syntax
 {: unnumbered}
 
-The filter selector has the form `?<expr>`. It iterates over structured values, i.e., arrays and objects.
+The filter selector has the form `?<expr>`.
 
 ~~~~ abnf
-filter-selector     = "?" S boolean-expr
+filter-selector     = "?" S logical-expr
 ~~~~
-
-During the iteration process the node of each array element or object member value being visited is known as the current node.
-A boolean expression, usually involving the current node, is evaluated and
-the current node is selected if and only if the expression yields true.
 
 As the expression is composed of side-effect free components,
 the order of evaluation does not need to be (and is not) defined.
@@ -1094,17 +1125,12 @@ any other than the directly enclosing filter-selector (i.e., of
 filter-selectors enclosing the filter-selector that is directly
 enclosing the identifier).
 
-A test expression either tests the existence of a node
-designated by an embedded query (see {{extest}}) or tests the
-result of a function expression (see {{fnex}}).
-In the latter case, if the function expression is of type
-`ST(OptionalBooleanType)` (see {{typesys}}), it tests whether the result
-is `true`; if the function expression is of type
-`ST(OptionalNodesType)`, it tests whether the result is different from
-`Nothing`.
+Logical expressions offer the usual boolean operators (`||` for OR,
+`&&` for AND, and `!` for NOT).
+Parentheses MAY be used within `logical-expr` for grouping.
 
 ~~~~ abnf
-boolean-expr        = logical-or-expr
+logical-expr        = logical-or-expr
 logical-or-expr     = logical-and-expr *(S "||" S logical-and-expr)
                         ; disjunction
                         ; binds less tightly than conjunction
@@ -1115,6 +1141,30 @@ logical-and-expr    = basic-expr *(S "&&" S basic-expr)
 basic-expr          = paren-expr /
                       comparison-expr /
                       test-expr
+
+paren-expr          = [logical-not-op S] "(" S logical-expr S ")"
+                                        ; parenthesized expression
+logical-not-op      = "!"               ; logical NOT operator
+~~~~
+
+A test expression is shorthand for a comparison
+either tests the existence of a node
+designated by an embedded query (see {{extest}}) or tests the
+result of a function expression (see {{fnex}}).
+In the latter case, if the function expression is of type
+`ST(OptionalBooleanType)` (see {{typesys}}), it tests whether the result
+is `true`; if the function expression is of type
+`ST(OptionalNodesType)`, it tests whether the result is different from
+`Nothing`.
+
+| Test Expression                              | result   | comparison | with    |
+|----------------------------------------------|----------|------------|---------|
+| embedded query (`filter-path`)               | nodelist | !=         | Nothing |
+| `function-expr` <br> ST(OptionalNodesType)   | nodelist | !=         | Nothing |
+| `function-expr` <br> ST(OptionalBooleanType) | value    | ==         | true    |
+
+~~~ abnf
+
 test-expr           = [logical-not-op S]
                       (filter-path / ; path existence or non-existence
                        function-expr) ; ST(OptionalBooleanType) or
@@ -1124,19 +1174,13 @@ rel-path            = current-node-identifier segments
 current-node-identifier = "@"
 ~~~~
 
-Parentheses MAY be used within `boolean-expr` for grouping.
 
-~~~~ abnf
-paren-expr          = [logical-not-op S] "(" S boolean-expr S ")"
-                                        ; parenthesized expression
-logical-not-op      = "!"               ; logical NOT operator
-~~~~
-
-Comparisons are between primitive values (that is, numbers, strings, `true`, `false`,
-and `null`),
-Singular Paths, each of which selects at most one node, and
-function expressions (see {{fnex}}) that
-return a primitive value or at most one node.
+Comparison expression are available for comparisons between primitive
+values (that is, numbers, strings, `true`, `false`, and `null`).
+These can be obtained via literal values; Singular Paths, each of
+which selects at most one node the value of which is then used, and
+function expressions (see {{fnex}}) that return a primitive value or at
+most one node.
 
 ~~~~ abnf
 comparison-expr     = comparable S comparison-op S comparable
@@ -1158,7 +1202,11 @@ name-segment        = ("[" name-selector "]") /
 index-segment       = "[" index-selector "]"
 ~~~~
 
-Alphabetic characters in ABNF are case-insensitive, so "e" can be either "e" or "E".
+Literals can be notated in the way that is usual for JSON (with the
+extension that strings can use single-quote delimiters).
+Alphabetic characters in ABNF are case-insensitive, so within a
+floating point number the ABNF expression "e" can be either the value
+'e' or 'E'.
 
 `true`, `false`, and `null` are lower-case only (case-sensitive).
 
@@ -1322,7 +1370,7 @@ JSON:
 
     {
       "a": [3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"},
-           {"b": {}}, {"b": "kilo"}],
+            {"b": {}}, {"b": "kilo"}],
       "o": {"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}},
       "e": "f"
     }
