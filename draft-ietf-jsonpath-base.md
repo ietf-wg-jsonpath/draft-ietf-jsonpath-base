@@ -1147,7 +1147,7 @@ paren-expr          = [logical-not-op S] "(" S logical-expr S ")"
 logical-not-op      = "!"               ; logical NOT operator
 ~~~~
 
-A test expression is shorthand for a comparison
+A test expression is shorthand for a comparison that
 either tests the existence of a node
 designated by an embedded query (see {{extest}}) or tests the
 result of a function expression (see {{fnex}}).
@@ -1175,10 +1175,10 @@ current-node-identifier = "@"
 ~~~~
 
 
-Comparison expression are available for comparisons between primitive
+Comparison expressions are available for comparisons between primitive
 values (that is, numbers, strings, `true`, `false`, and `null`).
 These can be obtained via literal values; Singular Paths, each of
-which selects at most one node the value of which is then used, and
+which selects at most one node the value of which is then used; and
 function expressions (see {{fnex}}) that return a primitive value or at
 most one node.
 
