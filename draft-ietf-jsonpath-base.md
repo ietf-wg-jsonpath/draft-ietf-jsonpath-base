@@ -1345,7 +1345,7 @@ The following examples show the filter selector in use by a child segment.
 | `$.o[?@>1 && @<4]` | `2` <br> `3` | `$['o']['q']` <br> `$['o']['r']` | Object value logical AND |
 | `$.o[?@>1 && @<4]` | `3` <br> `2` | `$['o']['r']` <br> `$['o']['q']` | Alternative result |
 | `$.o[?@.u || @.x]` | `{"u": 6}` | `$['o']['t']` | Object value logical OR |
-| `$.a[?(@.b == $.x)]`| `3` <br> `5` <br> `1` <br> `2` <br> `4` <br> `6` | `$['a'][0]` <br>`$['a'][1]` <br> `$['a'][2]` <br> `$['a'][3]` <br> `$['a'][4]` | Comparison of paths with no values |
+| `$.a[?(@.b == $.x)]`| `3` <br> `5` <br> `1` <br> `2` <br> `4` <br> `6` | `$['a'][0]` <br>`$['a'][1]` <br> `$['a'][2]` <br> `$['a'][3]` <br> `$['a'][4]` <br> `$['a'][5]` | Comparison of paths with no values |
 | `$.a[?(@ == @)]` | `3` <br> `5` <br> `1` <br> `2` <br> `4` <br> `6` <br> `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": {}}` <br> `{"b": "kilo"}` | `$['a'][0]` <br> `$['a'][1]` <br>`$['a'][2]` <br>`$['a'][3]` <br>`$['a'][4]` <br>`$['a'][5]` <br>`$['a'][6]` <br>`$['a'][7]` <br>`$['a'][8]` <br>`$['a'][9]` | Comparisons of primitive and of structured values |
 {: title="Filter selector examples"}
 
@@ -1762,7 +1762,7 @@ Queries:
 | `$..[*]` <br> `$..*` | `{"j": 1, "k" : 2}` <br> `[5, 3, [{"j": 4}, {"k": 6}]]` <br> `1` <br> `2` <br> `5` <br> `3` <br> `[{"j": 4}, {"k": 6}]` <br> `{"j": 4}` <br> `4` <br> `{"k": 6}` <br> `6` | `$['o']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][0]['j']` <br> `$['a'][2][1]` <br> `$['a'][2][1]['k']` | All values    |
 | `$..o`   | `{"j": 1, "k": 2}` | `$['o']` | Input value is visited |
 | `$.o..[*, *]` | `1` <br> `2` <br> `2` <br> `1` | `$['o']['j']` <br> `$['o']['k']` <br> `$['o']['k']` <br> `$['o']['j']` | Non-deterministic ordering |
-| `$.a..[0, 1]`| `5` <br> `3` <br> `{"j": 4}` <br> `{"k": 6}` | `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][0][2][0]` <br> `$['a'][0][2][1]` | Multiple segments |
+| `$.a..[0, 1]`| `5` <br> `3` <br> `{"j": 4}` <br> `{"k": 6}` | `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2][0]` <br> `$['a'][2][1]`       | Multiple segments |
 {: title="Descendant segment examples"}
 
 Note: The ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that:
