@@ -373,13 +373,13 @@ Segments select children (`[]`) or descendants (`..[]`) of an input value.
 
 Segments can use *bracket notation*, for example:
 
-~~~~
+~~~~ JSONPath
 $['store']['book'][0]['title']
 ~~~~
 
 or the more compact *dot notation*, for example:
 
-~~~~
+~~~~ JSONPath
 $.store.book[0].title
 ~~~~
 
@@ -404,7 +404,7 @@ end.
 
 Filter expressions `?<boolean expr>` select certain children of an object or array, as in:
 
-~~~~
+~~~~ JSONPath
 $.store.book[?@.price < 10].title
 ~~~~
 
@@ -437,7 +437,7 @@ This section is informative. It provides examples of JSONPath expressions.
 The examples are based on the simple JSON value shown in
 {{fig-example-value}}, representing a bookstore (that also has a bicycle).
 
-~~~~json
+~~~~ json
 { "store": {
     "book": [
       { "category": "reference",
@@ -642,6 +642,7 @@ and produces a nodelist consisting of that root node.
 JSON:
 
     {"k": "v"}
+{: .language-json}
 
 Queries:
 
@@ -777,6 +778,7 @@ JSON:
       "o": {"j j": {"k.k": 3}},
       "'": {"@": 2}
     }
+{: .language-json}
 
 Queries:
 
@@ -820,6 +822,7 @@ JSON:
       "o": {"j": 1, "k": 2},
       "a": [5, 3]
     }
+{: .language-json}
 
 Queries:
 
@@ -884,6 +887,7 @@ not exist; this simply means that no element is selected.
 JSON:
 
     ["a","b"]
+{: .language-json}
 
 Queries:
 
@@ -985,7 +989,7 @@ Slice expression parameters `start` and `end` are not directly usable
 as slice bounds and must first be normalized.
 Normalization for this purpose is defined as:
 
-~~~~
+~~~~ pseudocode
 FUNCTION Normalize(i, len):
   IF i >= 0 THEN
     RETURN i
@@ -1003,7 +1007,7 @@ The direction of the iteration, defined
 by the sign of `step`, determines which of the parameters is the lower bound and which
 is the upper bound:
 
-~~~~
+~~~~ pseudocode
 FUNCTION Bounds(start, end, step, len):
   n_start = Normalize(start, len)
   n_end = Normalize(end, len)
@@ -1024,7 +1028,7 @@ upper bounds.
 In the following pseudocode, `a(i)` is the `i+1`th element of the array `a`
 (i.e., `a(0)` is the first element, `a(1)` the second, and so forth).
 
-~~~~
+~~~~ pseudocode
 IF step > 0 THEN
 
   i = lower
@@ -1052,6 +1056,7 @@ When `step = 0`, no elements are selected and the result array is empty.
 JSON:
 
     ["a", "b", "c", "d", "e", "f", "g"]
+{: .language-json}
 
 Queries:
 
@@ -1277,6 +1282,7 @@ JSON:
       "obj": {"x": "y"},
       "arr": [2, 3]
     }
+{: .language-json}
 
 Comparisons:
 
@@ -1326,6 +1332,7 @@ JSON:
       "o": {"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}},
       "e": "f"
     }
+{: .language-json}
 
 Queries:
 
@@ -1678,6 +1685,7 @@ So a child segment drills down one more level into the structure of the input va
 JSON:
 
     ["a", "b", "c", "d", "e", "f", "g"]
+{: .language-json}
 
 Queries:
 
@@ -1750,6 +1758,7 @@ JSON:
       "o": {"j": 1, "k": 2},
       "a": [5, 3, [{"j": 4}, {"k": 6}]]
     }
+{: .language-json}
 
 Queries:
 
@@ -1792,6 +1801,7 @@ Note that JSON `null` is treated the same as any other JSON value: it is not tak
 JSON:
 
     {"a": null, "b": [null], "c": [{}], "null": 1}
+{: .language-json}
 
 Queries:
 
@@ -2111,19 +2121,19 @@ using JSON in a dynamic language.
 E.g., in popular dynamic programming languages such as JavaScript,
 Python and PHP, the semantics of the XPath expression
 
-~~~~
+~~~~ xpath
 /store/book[1]/title
 ~~~~
 
 can be realized in the expression
 
-~~~~
+~~~~ xpath
 x.store.book[0].title
 ~~~~
 
 or, in bracket notation,
 
-~~~~
+~~~~ xpath
 x['store']['book'][0]['title']
 ~~~~
 
@@ -2156,7 +2166,7 @@ inspired by {{SLICE}} from ECMASCRIPT 4.
 
 Filter expressions are supported via the syntax `?<boolean expr>` as in
 
-~~~~
+~~~~ JSONPath
 $.store.book[?@.price < 10].title
 ~~~~
 
