@@ -1,0 +1,259 @@
+
+
+
+
+=== no JSON for <table anchor='tbl-overview'>
+            <name>Overview of JSONPath sy.
+
+---
+store:
+  book:
+  - category: reference
+    author: Nigel Rees
+    title: Sayings of the Century
+    price: 8.95
+  - category: fiction
+    author: Evelyn Waugh
+    title: Sword of Honour
+    price: 12.99
+  - category: fiction
+    author: Herman Melville
+    title: Moby Dick
+    isbn: 0-553-21311-3
+    price: 8.99
+  - category: fiction
+    author: J. R. R. Tolkien
+    title: The Lord of the Rings
+    isbn: 0-395-19395-8
+    price: 22.99
+  bicycle:
+    color: red
+    price: 399
+
+--- Checking values against normalized paths in: 
+{ "store": {
+    "book": [
+      { "category": "reference",
+        "author": "Nigel Rees",
+        "title": "Sayings of the Century",
+        "price": 8.95
+      },
+      { "category": "fiction",
+        "author": "Evelyn Waugh",
+        "title": "Sword of Honour",
+        "price": 12.99
+      },
+      { "category": "fiction",
+        "author": "Herman Melville",
+        "title": "Moby Dick",
+        "isbn": "0-553-21311-3",
+        "price": 8.99
+      },
+      { "category": "fiction",
+        "author": "J. R. R. Tolkien",
+        "title": "The Lord of the Rings",
+        "isbn": "0-395-19395-8",
+        "price": 22.99
+      }
+    ],
+    "bicycle": {
+      "color": "red",
+      "price": 399
+    }
+  }
+}
+... not done anything.
+
+
+
+---
+k: v
+
+--- Checking values against normalized paths in: 
+{"k": "v"}
+
+
+
+=== no JSON for <table>
+              <name>Escape Sequence Replacements</name>
+       .
+
+---
+o:
+  j j:
+    k.k: 3
+"'":
+  "@": 2
+
+--- Checking values against normalized paths in: 
+{
+  "o": {"j j": {"k.k": 3}},
+  "'": {"@": 2}
+}
+
+
+---
+o:
+  j: 1
+  k: 2
+a:
+- 5
+- 3
+
+--- Checking values against normalized paths in: 
+{
+  "o": {"j": 1, "k": 2},
+  "a": [5, 3]
+}
+
+
+---
+- a
+- b
+
+--- Checking values against normalized paths in: 
+["a","b"]
+
+
+=== no JSON for <table>
+                <name>Default array slice start and end values<.
+
+
+
+
+---
+- a
+- b
+- c
+- d
+- e
+- f
+- g
+
+--- Checking values against normalized paths in: 
+["a", "b", "c", "d", "e", "f", "g"]
+
+
+
+
+
+
+=== no JSON for <table>
+              <name>Filter expression operator precedence</name.
+
+---
+obj:
+  x: "y"
+arr:
+- 2
+- 3
+
+--- Checking values against normalized paths in: 
+{
+  "obj": {"x": "y"},
+  "arr": [2, 3]
+}
+
+---
+a:
+- 3
+- 5
+- 1
+- 2
+- 4
+- 6
+- b: j
+- b: k
+- b: {}
+- b: kilo
+o:
+  p: 1
+  q: 2
+  r: 3
+  s: 5
+  t:
+    u: 6
+e: f
+
+--- Checking values against normalized paths in: 
+{
+  "a": [3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"},
+       {"b": {}}, {"b": "kilo"}],
+  "o": {"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}},
+  "e": "f"
+}
+
+
+=== no JSON for <table anchor='tbl-types'>
+            <name>Function extension type sy.
+
+=== no JSON for <table anchor='tbl-typerep'>
+            <name>Concrete representations.
+
+
+
+
+
+=== no JSON for <table>
+            <name>Function expression examples</name>
+         .
+
+
+
+---
+- a
+- b
+- c
+- d
+- e
+- f
+- g
+
+--- Checking values against normalized paths in: 
+["a", "b", "c", "d", "e", "f", "g"]
+
+
+---
+o:
+  j: 1
+  k: 2
+a:
+- 5
+- 3
+- - j: 4
+  - k: 6
+
+--- Checking values against normalized paths in: 
+{
+  "o": {"j": 1, "k": 2},
+  "a": [5, 3, [{"j": 4}, {"k": 6}]]
+}
+
+---
+a:
+b:
+-
+c:
+- {}
+'null': 1
+
+--- Checking values against normalized paths in: 
+{"a": null, "b": [null], "c": [{}], "null": 1}
+
+
+=== no JSON for <table>
+            <name>Normalized Path examples</name>
+            <.
+
+=== no JSON for <table anchor='pre-reg'>
+          <name>Initial Entries in the Functio.
+
+
+
+
+
+=== no JSON for <table anchor='tbl-xpath-overview'>
+          <name>XPath syntax compar.
+
+=== no JSON for <table anchor='tbl-xpath-equivalents'>
+          <name>Example XPath ex.
