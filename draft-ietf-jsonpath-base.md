@@ -1102,11 +1102,10 @@ enclosing the identifier).
 A test expression either tests the existence of a node
 designated by an embedded query (see {{extest}}) or tests the
 result of a function expression (see {{fnex}}).
-In the latter case, if the function expression is of type
-`ST(OptionalBooleanType)` (see {{typesys}}), it tests whether the result
-is `true`; if the function expression is of type
-`ST(OptionalNodesType)`, it tests whether the result is different from
-`Nothing`.
+In the latter case, the function expression MUST be of type
+`BooleanType` (see {{typesys}}) or of type `NodelistType` to appear
+in a test expression.  The expression tests whether the result
+is or can be converted to `PropositionTrue` (see {{type-conv}}).
 
 ~~~~ abnf
 boolean-expr        = logical-or-expr
@@ -1122,8 +1121,8 @@ basic-expr          = paren-expr /
                       test-expr
 test-expr           = [logical-not-op S]
                       (filter-path / ; path existence or non-existence
-                       function-expr) ; ST(OptionalBooleanType) or
-                                      ; ST(OptionalNodesType)
+                       function-expr) ; BooleanType or
+                                      ; NodelistType
 filter-path         = rel-path / json-path
 rel-path            = current-node-identifier segments
 current-node-identifier = "@"
@@ -1140,8 +1139,8 @@ logical-not-op      = "!"               ; logical NOT operator
 Comparisons are between primitive values (that is, numbers, strings, `true`, `false`,
 and `null`),
 Singular Paths, each of which selects at most one node, and
-function expressions (see {{fnex}}) that
-return a primitive value or at most one node.
+function expressions (see {{fnex}}) of type `ValueType` or
+`NodelistType` (see {{type-conv}}).
 
 ~~~~ abnf
 comparison-expr     = comparable S comparison-op S comparable
@@ -1149,7 +1148,7 @@ literal             = number / string-literal /
                       true / false / null
 comparable          = literal /
                       singular-path /   ; Singular Path value
-                      function-expr  ; ST(OptionalNodeOrValueType)
+                      function-expr  ; ValueType
 comparison-op       = "==" / "!=" /
                       "<=" / ">=" /
                       "<"  / ">"
@@ -1322,7 +1321,7 @@ The second set of examples shows some complete JSONPath queries that make use
 of filter selectors, and the results of evaluating these queries on a
 given JSON value as input.
 (Note that two of the queries employ function extensions; please see
-Sections {{<match}} and {{<search}} below for details about these.)
+Sections {{match}} and {{search}} below for details about these.)
 
 JSON:
 
@@ -1411,82 +1410,100 @@ a type system is first introduced.
 ### Type System for Function Expressions {#typesys}
 
 Each argument and result of a function extension must have a declared type.
+Overall, a function is said to be of the type that it returns.
 
-A type is a set of instances. A type is a subtype of another type if its set of instances (possibly after coercion)
-is a subset of the set of instances of the other type.
-The subtype relationship is transitive: for any A, B, and C if B is a subtype of A and C is a subtype of B, then C is a subtype of A.
-We denote a type `T` and the transitive closure of all its subtypes as `ST(T)`.
+A type is a set of instances.
 
 {{tbl-types}} defines the available types in terms of abstract instances, where `n` denotes a node, `v` denotes a value, and `nl` denotes
-a non-empty nodelist. The table also lists the (immediate) subtypes of each type.
+a non-empty nodelist.
 
-| Type                      | Abstract Instances                       | Subtypes                                       |
-| :--                       | :----------------                        | :------                                        |
-| `OptionalNodeOrValueType` | `Node(n)`, `Value(v)`, `Nothing`         | `OptionalNodeType`, `OptionalValueType`        |
-| `OptionalNodeType`        | `Node(n)`, `Nothing`                     |                                                |
-| `OptionalValueType`       | `Value(v)`, `Nothing`                    | `OptionalNodeType`, `ValueType`, `OptionalBooleanType` |
-| `ValueType`               | `Value(v)`                               | `BooleanType`                                  |
-| `OptionalBooleanType`     | `Value(true)`, `Value(false)`, `Nothing` | `BooleanType`                                  |
-| `BooleanType`             | `Value(true)`, `Value(false)`            |                                                |
-| `OptionalNodesType`       | `Nodes(nl)`, `Nothing`                   | `OptionalNodeType`                             |
+| Type                 | Abstract Instances                       |
+| :--                  | :----------------                        |
+| `ValueType`          | `Value(v)`, `Nothing`                    |
+| `BooleanType`        | `BooleanTrue`, `BooleanFalse`            |
+| `NodelistType`       | `Nodes(nl)`                              |
 {: #tbl-types title="Function extension type system"}
 
 Notes:
 
-* `OptionalNodeOrValueType` is an abstraction of a `comparable` (which may appear on either side of a comparison or as a function argument).
-* `OptionalNodeType` is an abstraction of a Singular Path.
-* `ValueType` is an abstraction of a primitive value.
-* `BooleanType` is an abstraction of a primitive value that is either
-  `true` or `false`.
-* `OptionalValueType` is an abstraction of a primitive value that may
-  alternatively be absent (`Nothing`).
-* `OptionalNodesType` is an abstraction of a `filter-path` (which appears
+* `ValueType` is an abstraction of a JSON value or `Nothing`.
+* `BooleanType` is an abstraction of a the result of a `test-expr`.
+  Its `BooleanTrue` and `BooleanFalse` values are not relatable to
+  the JSON literals `true` and `false` and have no syntactical representation in JSON Path.
+* `NodelistType` is an abstraction of a `filter-path` (which appears
   in a test expression or as a function argument).
+  Members of `NodelistType` have no syntactical representation in JSON Path.
 
 The abstract instances above can be obtained from the concrete representations in {{tbl-typerep}}.
 
 | Abstract Instance | Concrete Representations                                           |
 | :---------------: | :----------------------:                                           |
-| `Node(n)`         | Singular Path resulting in a nodelist containing just the node `n` |
 | `Value(v)`        | JSON value `v`                                                     |
-| `Nothing`         | Singular Path or `filter-path` resulting in an empty nodelist      |
-| `Nodes(nl)`       | `filter-path` resulting in the non-empty nodelist `nl`             |
+| `Nothing`         | A representation of the absence of a JSON value, distinct from the JSON literal `null` |
+| `Nodes(nl)`       | `filter-path` resulting in the nodelist `nl`, which may or may not be empty  |
 {: #tbl-typerep title="Concrete representations of abstract instances"}
 
-The following subtype relationships depend on coercion:
+### Type Conversions {#type-conv}
 
-* `OptionalNodeType` is a subtype of `OptionalValueType` via coercion since the `OptionalNodeType` instance `Node(n)` can be coerced to
-the `OptionalValueType` instance `Value(v)`, where `v` is the value of the node `n`.
-* `OptionalNodeType` is a subtype of `OptionalNodesType` via coercion since the `OptionalNodeType` instance `Node(n)` can be coerced to
-the `OptionalNodesType` instance `Nodes(l)`, where `l` is a nodelist consisting of just the node `n`.
+The following type conversions may occur:
+
+* A member of `NodelistType` may be converted to a `ValueType` as follows:
+  * If the nodelist contains a single node, the resulting value is the value of the node.
+  * If the nodelist is empty or contains multiple nodes, the resulting value is `Nothing`.
+* A member of `NodelistType` may be converted to a `BooleanType` as follows:
+  * If the nodelist contains one or more nodes, the resulting value is `BooleanTrue`.
+  * If the nodelist is empty, the resulting value is `BooleanFalse`.
 
 The type correctness of function expressions can now be defined in terms of this type system.
 
 ### Type Correctness of Function Expressions
 
-A function expression is correctly typed if all the following are true:
+A function expression is typed based on its return, and may only appear in expressions as follows:
 
-* If it occurs directly in a test expression, the function
-is defined to have a result type in `ST(OptionalNodesType)`.
-or to have a result type in `ST(OptionalBooleanType)`.
-* If it occurs as a `comparable` in a comparison, the function
-is defined to have a result type in `ST(OptionalNodeOrValueType)`.
-* For it and any function expression it contains,
-each argument of the function matches the defined type of the argument
-according to one of the following rules:
-  * The argument is a function expression with defined result type
-    that is the same as, or a subtype of, the defined type of the argument.
-  * The argument is a literal primitive value and the defined type of the  argument is `Value` or any type of which `Value` is a subtype.
-  * The argument is a Singular Path and the defined type of the argument is `OptionalNodeType` or any type of which `OptionalNodeType` is a subtype.
-  * The argument is a `filter-path` (which includes Singular Paths) and the defined type of the argument is `OptionalNodesType`.
+* If the function return is of type `ValueType`, it may only
+  appear as a `comparable` in a comparison.
+* If the function return is of type `BooleanType`, it may
+  only appear in a `test-expr`.
+* If the function return is of type `NodelistType`, it may
+  appear either as a `comparable` in a comparison or in
+  a `test-expr` as members of `NodelistType` can be converted
+  to either `ValueType` or `BooleanType`.
+
+#### A Note of Caution for Defining Functions and Authoring Paths
+
+While functions returning `NodelistType` can appear in both comparisons and test expressions,
+path authors must be aware of the conversions and the potential outcomes.
+Specifically, nodelists convert to values and booleans according to {{tbl-typeconv}}:
+
+| Function return | Converted Value | Converted Boolean |
+| :-: | :-: | :-: |
+| empty nodelist | `Nothing` | `BooleanFalse` |
+| single-node nodelist | the node's JSON value | `BooleanTrue` |
+| multiple-node nodelist | `Nothing` | `BooleanTrue` |
+{: #tbl-typeconv title="Conversion of nodelists to values and booleans"}
+
+For example, given a `NodelistType` function `myfunc()`, the following paths
+are both valid but can have different and unexpected results:
+
+| function return | `myfunc(@.a)` evaluation | `myfunc(@.a)==42` evaluation |
+| :-: | :- | :- |
+| empty nodelist | The nodelist is converted to `BooleanFalse`.<br>The expression result is false. | The empty nodelist is converted to `Nothing`.<br>The expression result is false. |
+| single-node nodelist| The nodelist is converted to `BooleanTrue`.<br>The expression result is true. | The nodelist is converted to the node's value.<br>The expression result is true. |
+| mutliple-node nodelist| The nodelist is converted to `BooleanTrue`.<br>The expression result is true. | The nodelist is converted to `Nothing`.<br>The expression result is false. |
+
+The expression outcome is different in the multiple-node nodelist case.
+This is a result of the type system and cannot be resolved in a way that keeps
+the type system consistent.
+Instead, this behavior is explicitly called out for awareness.
+
 
 ### `length` Function Extension {#length}
 
 Arguments:
-: 1. `OptionalValueType`
+: 1. `ValueType`
 
 Result:
-: `OptionalValueType` (unsigned integer or `Nothing`)
+: `ValueType` (unsigned integer or `Nothing`)
 
 The "length" function extension provides a way to compute the length
 of a value and make that available for further processing in the
@@ -1496,9 +1513,9 @@ filter expression:
 $[?length(@.authors) >= 5]
 ~~~
 
-Its only argument is an optional value (possibly taken from a singular path as
-in the example above).  The result also is an optional value, an unsigned
-integer.
+Its only argument is a value (possibly taken from a singular path as
+in the example above).  The result also is a value: an unsigned
+integer or `Nothing`.
 
 * If the argument value is a string, the result is the number of
   Unicode scalar values in the string.
@@ -1512,7 +1529,7 @@ integer.
 ### `count` Function Extension {#count}
 
 Arguments:
-: 1. `OptionalNodesType`
+: 1. `NodelistType`
 
 Result:
 : `ValueType` (unsigned integer)
@@ -1530,18 +1547,15 @@ The result is a value, an unsigned integer, that gives the number of
 nodes in the nodelist.
 Note that there is no deduplication of the nodelist.
 
-If the argument is `Nothing` (which corresponds to an empty nodelist),
-the result is the value `0`.
-
 
 ### `match` Function Extension {#match}
 
 Arguments:
-: 1. `OptionalNodeOrValueType` (string)
+: 1. `ValueType` (string)
   2. `ValueType` (string conforming to {{-iregexp}})
 
 Result:
-: `OptionalBooleanType` (`true`, `false`, or `Nothing`)
+: `BooleanType`
 
 The "match" function extension provides a way to check whether (the
 entirety of, see {{search}} below) a given
@@ -1551,23 +1565,20 @@ string matches a given regular expression, which is in {{-iregexp}} form.
 $[?match(@.date, "1974-05-..")]
 ~~~
 
-Its first argument is an optional string that is matched against the iregexp
+Its first argument is a string that is matched against the iregexp
 contained in the string that is the second argument.
-The result is `true` if the string matches the iregexp and `false`
-otherwise.
-
-The result is `Nothing` if the first argument is not a string or
-the second argument is not a string conforming to {{-iregexp}}.
+The result is `BooleanTrue` if the string matches the iregexp
+and `BooleanFalse` otherwise.
 
 
 ### `search` Function Extension {#search}
 
 Arguments:
-: 1. `OptionalNodeOrValueType` (string)
+: 1. `ValueType` (string)
   2. `ValueType` (string conforming to {{-iregexp}})
 
 Result:
-: `OptionalBooleanType` (`true`, `false`, or `Nothing`)
+: `BooleanType`
 
 The "search" function extension provides a way to check whether a
 given string contains a substring that matches a given regular
@@ -1580,10 +1591,8 @@ $[?search(@.author, "[BR]ob")]
 Its first argument is an optional string that is searched for at least one
 substring that matches the iregexp contained in the string
 that is the second argument.
-The result is `true` if such a substring exists, `false` otherwise.
-
-The result is `Nothing` if the first argument is not a string or
-the second argument is not a string conforming to {{-iregexp}}.
+The result is `BooleanTrue` if such a substring exists,
+and `BooleanFalse` otherwise.
 
 
 ### Examples
@@ -1595,7 +1604,7 @@ the second argument is not a string conforming to {{-iregexp}}.
 | `$[?length(@.*) < 3]` | Invalid typing since `@.*` is a non-singular path |
 | `$[?count(@.*) == 1]` | Valid typing |
 | `$[?count(1) == 1]` | Invalid typing since `1` is not a path  |
-| `$[?count(foo(@.*)) == 1]` | Valid typing, where `foo` is a function extension with argument of type `OptionalNodesType` and result type `OptionalNodesType` |
+| `$[?count(foo(@.*)) == 1]` | Valid typing, where `foo` is a function extension with argument of type `NodelistType` and result type `NodelistType` |
 | `$[?match(@.timezone, 'Europe/.*')]`         | Valid typing |
 | `$[?match(@.timezone, 'Europe/.*') == true]` | Valid typing |
 {: title="Function expression examples"}
@@ -2019,7 +2028,7 @@ Column "Change Controller" always has the value "IESG" and the column
 
 | Function Name | Brief description                  | Input                          | Output            |
 | length        | length of array                    | `OptionalValueType`                | `OptionalValueType`   |
-| count         | size of nodelist                   | `OptionalNodesType`                | `Value`           |
+| count         | size of nodelist                   | `NodelistType`                | `Value`           |
 | match         | regular expression full match      | `OptionalNodeOrValueType`, `Value` | `OptionalBooleanType` |
 | search        | regular expression substring match | `OptionalNodeOrValueType`, `Value` | `OptionalBooleanType` |
 {: #pre-reg title="Initial Entries in the Function Extensions Subregistry"}
