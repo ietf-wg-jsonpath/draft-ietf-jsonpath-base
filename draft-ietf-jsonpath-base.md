@@ -1448,11 +1448,11 @@ The abstract instances above can be obtained from the concrete representations i
 The following type conversions may occur:
 
 * A member of `NodelistType` may be converted to a `ValueType` as follows:
-  * If the nodelist contains a single node, the resulting value is the value of the node.
-  * If the nodelist is empty or contains multiple nodes, the resulting value is `Nothing`.
+  * If the nodelist contains a single node, the conversion result is the value of the node.
+  * If the nodelist is empty or contains multiple nodes, the conversion result is `Nothing`.
 * A member of `NodelistType` may be converted to a `BooleanType` as follows:
-  * If the nodelist contains one or more nodes, the resulting value is `BooleanTrue`.
-  * If the nodelist is empty, the resulting value is `BooleanFalse`.
+  * If the nodelist contains one or more nodes, the conversion result is `BooleanTrue`.
+  * If the nodelist is empty, the conversion result is `BooleanFalse`.
 
 The type correctness of function expressions can now be defined in terms of this type system.
 
