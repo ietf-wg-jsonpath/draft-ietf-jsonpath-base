@@ -1492,8 +1492,8 @@ are both valid but can have different and unexpected results:
 | mutliple-node nodelist| The nodelist is converted to `BooleanTrue`.<br>The expression result is true. | The nodelist is converted to `Nothing`.<br>The expression result is false. |
 
 The expression outcome is different in the multiple-node nodelist case.
-This is a result of the type system and cannot be resolved in a way that keeps
-the type system consistent.
+This is a result of the type system and conversions, and it cannot be resolved
+in a way that keeps the type system consistent.
 Instead, this behavior is explicitly called out for awareness.
 
 
