@@ -1485,13 +1485,14 @@ Specifically, nodelists convert to values and booleans according to {{tbl-typeco
 For example, given a `NodelistType` function `myfunc()`, the following paths
 are both valid but can have different and unexpected results:
 
-| function return | `myfunc(@.a)` evaluation | `myfunc(@.a)==42` evaluation |
+| function return | `myfunc(@.a)` evaluation (as a test) | `myfunc(@.a)==42` evaluation (in a comparison) |
 | :-: | :- | :- |
 | empty nodelist | The nodelist is converted to `BooleanFalse`.<br>The expression result is false. | The empty nodelist is converted to `Nothing`.<br>The expression result is false. |
 | single-node nodelist| The nodelist is converted to `BooleanTrue`.<br>The expression result is true. | The nodelist is converted to the node's value.<br>The expression result is true. |
 | mutliple-node nodelist| The nodelist is converted to `BooleanTrue`.<br>The expression result is true. | The nodelist is converted to `Nothing`.<br>The expression result is false. |
 
-The expression outcome is different in the multiple-node nodelist case.
+The expression outcome is different between the test expression and comparison
+in the multiple-node nodelist case.
 This is a result of the type system and conversions, and it cannot be resolved
 in a way that keeps the type system consistent.
 Instead, this behavior is explicitly called out for awareness.
