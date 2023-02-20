@@ -1921,9 +1921,6 @@ IANA is requested to register the following media type {{RFC6838}}:
 Type name:
 : application
 
-Subtype name:
-: jsonpath
-
 Required parameters:
 : N/A
 
