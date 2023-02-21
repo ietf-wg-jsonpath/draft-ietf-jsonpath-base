@@ -1110,8 +1110,9 @@ When a function is defined, it is given a unique name, and its return value and 
 The type system is limited in scope; its purpose is to express
 restrictions that, without functions, are implicit in the grammar of
 filter expressions.
-The type system also guides conversions ({{type-conv}}) that are
-implicit in the grammar without the use of function expressions.
+The type system also guides conversions ({{type-conv}}) that mimic the
+way different kinds of expressions are handled in the grammar when
+function expressions are not in use.
 
 #### Syntax
 {: unnumbered}
