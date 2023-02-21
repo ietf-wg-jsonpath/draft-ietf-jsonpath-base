@@ -406,7 +406,7 @@ elements from an array, giving a start position, an end position, and
 an optional step value that moves the position from the start to the
 end.
 
-Filter expressions `?<boolean expr>` select certain children of an object or array, as in:
+Filter expressions `?<expr>` select certain children of an object or array, as in:
 
 ~~~~ JSONPath
 $.store.book[?@.price < 10].title
@@ -430,7 +430,7 @@ $.store.book[?@.price < 10].title
 | `*`                 | [wildcard selector](#name-selector): selects all children of a node                                                    |
 | `3`                 | [index selector](#index-selector): selects an indexed child of an array (from 0)                                        |
 | `0:100:5`           | [array slice selector](#slice): start:end:step for arrays                                                               |
-| `?<expr>`           | [filter selector](#filter-selector): selects particular children using a boolean expression                             |
+| `?<expr>`           | [filter selector](#filter-selector): selects particular children using a logical expression                      |
 | `length(@.foo)`     | [function extension](#fnex): invokes a function in a filter expression                                                  |
 {: #tbl-overview title="Overview of JSONPath syntax"}
 
@@ -1139,7 +1139,7 @@ any other than the directly enclosing filter-selector (i.e., of
 filter-selectors enclosing the filter-selector that is directly
 enclosing the identifier).
 
-Logical expressions offer the usual boolean operators (`||` for OR,
+Logical expressions offer the usual Boolean operators (`||` for OR,
 `&&` for AND, and `!` for NOT).
 Parentheses MAY be used within `logical-expr` for grouping.
 
@@ -1165,17 +1165,12 @@ A test expression is shorthand for a comparison that
 either tests the existence of a node
 designated by an embedded query (see {{extest}}) or tests the
 result of a function expression (see {{fnex}}).
-In the latter case, if the function expression is of type
-`ST(OptionalBooleanType)` (see {{typesys}}), it tests whether the result
-is `true`; if the function expression is of type
-`ST(OptionalNodesType)`, it tests whether the result is different from
-`Nothing`.
-
-| Test Expression                              | result   | comparison | with    |
-|----------------------------------------------|----------|------------|---------|
-| embedded query (`filter-path`)               | nodelist | !=         | Nothing |
-| `function-expr` <br> ST(OptionalNodesType)   | nodelist | !=         | Nothing |
-| `function-expr` <br> ST(OptionalBooleanType) | value    | ==         | true    |
+In the latter case, if the function result type is declared as
+`LogicalType` (see {{typesys}}), it tests whether the result
+is `LogicalTrue`; if the function result type is declared as
+`NodesType`, it tests whether the result is non-empty.
+If the declared function result type is `ValueType`, its use in a
+test expression is not well-typed.
 
 ~~~ abnf
 
@@ -1259,7 +1254,7 @@ Children of an array appear in array order in the resultant nodelist.
 ##### Existence Tests {#extest}
 {: unnumbered}
 
-A path by itself in a Boolean context is an existence test which yields true if the path selects at least one node and yields false if the path does not select any nodes.
+A path by itself in a Logical context is an existence test which yields true if the path selects at least one node and yields false if the path does not select any nodes.
 
 Existence tests differ from comparisons in that:
 
@@ -1316,7 +1311,7 @@ compared is an object, array, boolean, or `null`.
 * The comparison `a > b` yields true if and only if `b < a` yields true.
 * The comparison `a >= b` yields true if and only if `b < a` yields true or `a == b` yields true.
 
-##### Boolean Operators
+##### Logical Operators
 {: unnumbered}
 
 The logical AND, OR, and NOT operators have the normal semantics of Boolean algebra and
@@ -1547,14 +1542,14 @@ A function expression is well-typed if all of the following are true:
 
 While functions returning `NodesType` can appear in both comparisons and test expressions,
 path authors must be aware of the conversions and the potential outcomes.
-Specifically, nodelists convert to values and booleans according to {{tbl-typeconv}}:
+Specifically, nodelists convert to values and logicals according to {{tbl-typeconv}}:
 
 | Function return        | Converted as Value    | Converted as Logical |
 | :-:                    | :-:                   | :-:                  |
 | empty nodelist         | `Nothing`             | `LogicalFalse`       |
 | single-node nodelist   | the node's JSON value | `LogicalTrue`        |
 | multiple-node nodelist | `Nothing`             | `LogicalTrue`        |
-{: #tbl-typeconv title="Conversion of nodelists to values and booleans"}
+{: #tbl-typeconv title="Conversion of nodelists to values and logicals"}
 
 For example, given a function `myfunc()` of declared result type
 `NodesType`, the following filter expressions are both valid but can
@@ -1678,13 +1673,13 @@ that is the second argument; the result is `LogicalTrue` if
 
 | Query | Comment |
 | :---: | ------- |
-| `$[?length(@) < 3]` | Valid typing |
-| `$[?length(@.*) < 3]` | Invalid typing since `@.*` is a non-singular path |
-| `$[?count(@.*) == 1]` | Valid typing |
-| `$[?count(1) == 1]` | Invalid typing since `1` is not a path  |
-| `$[?count(foo(@.*)) == 1]` | Valid typing, where `foo` is a function extension with argument of type `NodesType` and result type `NodesType` |
-| `$[?match(@.timezone, 'Europe/.*')]`         | Valid typing |
-| `$[?match(@.timezone, 'Europe/.*') == true]` | Valid typing |
+| `$[?length(@) < 3]` | well-typed |
+| `$[?length(@.*) < 3]` | not well-typed since `@.*` is a non-singular path |
+| `$[?count(@.*) == 1]` | well-typed |
+| `$[?count(1) == 1]` | not well-typed since `1` is not a path  |
+| `$[?count(foo(@.*)) == 1]` | well-typed, where `foo` is a function extension with argument of type `NodesType` and result type `NodesType` |
+| `$[?match(@.timezone, 'Europe/.*')]`         | well-typed |
+| `$[?match(@.timezone, 'Europe/.*') == true]` | not well-typed as JSONPath logicals and JSON booleans do not mix |
 {: title="Function expression examples"}
 
 ## Segments  {#segments-details}
@@ -2086,12 +2081,12 @@ Function Name:
 Brief description:
 : a brief description
 
-Input:
-: A comma-separated list of zero or more types of the
+Parameters:
+: A comma-separated list of zero or more declared types, each for one of the
   arguments expected for this function extension
 
-Output:
-: The type of the result for this function extension
+Result:
+: The declared type of the result for this function extension
 
 Change Controller:
 : (see {{Section 2.3 of -ianacons}})
@@ -2104,7 +2099,7 @@ Initial entries in this sub-registry are as listed in {{pre-reg}}; the
 Column "Change Controller" always has the value "IESG" and the column
 "Reference" always has the value "{{fnex}} of RFCthis":
 
-| Function Name | Brief description                  | Input                    | Output        |
+| Function Name | Brief description                  | Parameters               | Result        |
 | length        | length of array                    | `ValueType`              | `ValueType`   |
 | count         | size of nodelist                   | `NodesType`              | `ValueType`   |
 | match         | regular expression full match      | `ValueType`, `ValueType` | `LogicalType` |
@@ -2251,7 +2246,7 @@ The descendant operators, starting with `..`, borrowed from {{E4X}}, are similar
 The array slicing construct `[start:end:step]` is unique to JSONPath,
 inspired by {{SLICE}} from ECMASCRIPT 4.
 
-Filter expressions are supported via the syntax `?<boolean expr>` as in
+Filter expressions are supported via the syntax `?<expr>` as in
 
 ~~~~ JSONPath
 $.store.book[?@.price < 10].title
