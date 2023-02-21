@@ -1079,7 +1079,7 @@ The following examples show the array slice selector in use by a child segment.
 Filter selectors are used to iterate over the elements or members of
 structured values, i.e., JSON arrays and objects.
 The structured values are identified in the nodelist offered by the
-child or descendant segment the filter selector is used in.
+child or descendant segment using the filter selector.
 
 For each iteration (element/member), a logical expression is
 evaluated, the *filter expression*, which decides whether the node of
