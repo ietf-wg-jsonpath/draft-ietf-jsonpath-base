@@ -211,6 +211,7 @@ Query:
 
 Argument:
 : Short name for the value a JSONPath expression is applied to.
+  (Also used for actual parameters of function-expressions.)
 
 Location:
 : the position of a value within the argument. This can be thought of
@@ -254,6 +255,9 @@ Nodelist:
 : A list of nodes.
   While a nodelist can be represented in JSON, e.g. as an array, this document
   does not require or assume any particular representation.
+
+Parameter:
+: Formal parameter that can take Arguments (actual parameters) in a function-expression.
 
 Normalized Path:
 : A simple form of JSONPath expression that identifies a node in a value by
@@ -1074,38 +1078,40 @@ The following examples show the array slice selector in use by a child segment.
 
 Filter selectors are used to iterate over the elements or members of
 structured values, i.e., JSON arrays and objects.
-The structured values are identified in the nodelist offered by a
-child or descendant segment.
+The structured values are identified in the nodelist offered by the
+child or descendant segment the filter selector is used in.
 
 For each iteration (element/member), a logical expression is
 evaluated, the *filter expression*, which decides whether the node of
 the element/member is selected.
-(While a logical expression evaluates to a Boolean value, we use the
-term logical to maintain a distinction from the Boolean values that
-JSON can represent.)
+(While a logical expression evaluates to what mathematically is a
+Boolean value, we use the term *logical* to maintain a distinction from
+the Boolean values that JSON can represent.)
 
 During the iteration process, the filter expression receives the node
-of each array element or object member of the structured value being
-filtered, which is then known as the *current node*.
+of each array element or value in an object member of the structured value being
+filtered; this element or member value is then known as the *current node*.
 
 The current node can be used as the start of one or more JSONPath
 queries used inside subexpressions of the filter expression, notated
 via the current-node-identifier `@`.
 Each JSONPath query can be used either for testing existence of a
-result of the query, or for obtaining a specific JSON value resulting
-from that query that can then be used in a comparison.
+result of the query, for obtaining a specific JSON value resulting
+from that query that can then be used in a comparison, or as a
+*function argument*.
 
 Within the logical expression for a filter selector, function
 expressions can be used to operate on nodelists and values.
 The set of available functions is extensible, with a number of
 functions predefined, see {{fnex}}, and the ability to register further
 functions in the Function Extensions sub-registry ({{iana-fnex}}).
-When a function is defined, it is given a unique name, and the *type*
-of each of its arguments as well as the type returned from the
+When a function is defined, it is given a unique name, and the
+*declared type*
+of each of its arguments as well as the declared type returned from the
 function is declared.
 The type system is limited in scope; its function is to express
-restrictions that are otherwise implicit in the grammar of filter
-expressions.
+restrictions that, without functions, are implicit in the grammar of
+filter expressions.
 
 #### Syntax
 {: unnumbered}
@@ -1116,9 +1122,10 @@ The filter selector has the form `?<expr>`.
 filter-selector     = "?" S logical-expr
 ~~~~
 
-As the expression is composed of side-effect free components,
+As the filter expression is composed of side-effect free components,
 the order of evaluation does not need to be (and is not) defined.
-Similarly, for conjunction (`&&`) and disjunction (`||`) (defined later), both a short-circuiting and a fully evaluating
+Similarly, for conjunction (`&&`) and disjunction (`||`) (defined later),
+both a short-circuiting and a fully evaluating
 implementation will lead to the same result; both implementation
 strategies are therefore valid.
 
