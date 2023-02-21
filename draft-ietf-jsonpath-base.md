@@ -185,7 +185,7 @@ Additional terms used in this document are defined below.
 
 Value:
 : As per {{-json}}, a structure conforming to the generic data model of JSON, i.e.,
-  composed of components such as structured values, namely JSON objects and arrays, and
+  composed of constituents such as structured values, namely JSON objects and arrays, and
   primitive data, namely numbers and text strings as well as the special
   values null, true, and false.
   {{-json}} focuses on the textual representation of JSON values and
@@ -1123,7 +1123,7 @@ The filter selector has the form `?<expr>`.
 filter-selector     = "?" S logical-expr
 ~~~~
 
-As the filter expression is composed of side-effect free components,
+As the filter expression is composed of side-effect free constituents,
 the order of evaluation does not need to be (and is not) defined.
 Similarly, for conjunction (`&&`) and disjunction (`||`) (defined later),
 both a short-circuiting and a fully evaluating
@@ -2320,7 +2320,7 @@ is known only in a general way.
 
 A Normalized JSONPath can be converted into a JSON Pointer by converting the syntax,
 without knowledge of any JSON value. The inverse is not generally true: a numeric
-path component in a JSON Pointer may identify a member value of an object or an element of an array.
+reference token (path component) in a JSON Pointer may identify a member value of an object or an element of an array.
 For conversion to a JSONPath query, knowledge of the structure of the JSON value is
 needed to distinguish these cases.
 
