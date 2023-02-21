@@ -1089,7 +1089,7 @@ Boolean value, this specification uses the term *logical* to maintain a distinct
 the Boolean values that JSON can represent.)
 
 During the iteration process, the filter expression receives the node
-of each array element or value in an object member of the structured value being
+of each array element or object member value of the structured value being
 filtered; this element or member value is then known as the *current node*.
 
 The current node can be used as the start of one or more JSONPath
