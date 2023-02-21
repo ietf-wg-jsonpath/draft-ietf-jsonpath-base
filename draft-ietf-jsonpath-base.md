@@ -1104,7 +1104,7 @@ Within the logical expression for a filter selector, function
 expressions can be used to operate on nodelists and values.
 The set of available functions is extensible, with a number of
 functions predefined, see {{fnex}}, and the ability to register further
-functions in the Function Extensions sub-registry ({{iana-fnex}}).
+functions provided by the Function Extensions sub-registry ({{iana-fnex}}).
 When a function is defined, it is given a unique name, and the
 *declared type*
 of each of its arguments as well as the declared type returned from the
