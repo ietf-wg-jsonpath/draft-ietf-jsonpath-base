@@ -1105,7 +1105,7 @@ result of a function expression (see {{fnex}}).
 In the latter case, the function expression MUST be of type
 `BooleanType` (see {{typesys}}) or of type `NodelistType` to appear
 in a test expression.  The expression tests whether the result
-is or can be converted to `PropositionTrue` (see {{type-conv}}).
+is or can be converted to `BooleanTrue` (see {{type-conv}}).
 
 ~~~~ abnf
 boolean-expr        = logical-or-expr
@@ -1589,7 +1589,7 @@ expression, which is in {{-iregexp}} form.
 $[?search(@.author, "[BR]ob")]
 ~~~
 
-Its first argument is an optional string that is searched for at least one
+Its first argument is a string that is searched for at least one
 substring that matches the iregexp contained in the string
 that is the second argument.
 The result is `BooleanTrue` if such a substring exists,
@@ -1607,7 +1607,7 @@ and `BooleanFalse` otherwise.
 | `$[?count(1) == 1]` | Invalid typing since `1` is not a path  |
 | `$[?count(foo(@.*)) == 1]` | Valid typing, where `foo` is a function extension with argument of type `NodelistType` and result type `NodelistType` |
 | `$[?match(@.timezone, 'Europe/.*')]`         | Valid typing |
-| `$[?match(@.timezone, 'Europe/.*') == true]` | Valid typing |
+| `$[?match(@.timezone, 'Europe/.*') == true]` | Invalid typing since `BooleanType` cannot be used in a comparison |
 {: title="Function expression examples"}
 
 ## Segments  {#segments-details}
@@ -2024,11 +2024,11 @@ Initial entries in this sub-registry are as listed in {{pre-reg}}; the
 Column "Change Controller" always has the value "IESG" and the column
 "Reference" always has the value "{{fnex}} of RFCthis":
 
-| Function Name | Brief description                  | Input                          | Output            |
-| length        | length of array                    | `OptionalValueType`                | `OptionalValueType`   |
-| count         | size of nodelist                   | `NodelistType`                | `Value`           |
-| match         | regular expression full match      | `OptionalNodeOrValueType`, `Value` | `OptionalBooleanType` |
-| search        | regular expression substring match | `OptionalNodeOrValueType`, `Value` | `OptionalBooleanType` |
+| Function Name | Brief description                  | Input                    | Output        |
+| length        | length of array                    | `ValueType`              | `ValueType`   |
+| count         | size of nodelist                   | `NodelistType`           | `ValueType`   |
+| match         | regular expression full match      | `ValueType`, `ValueType` | `BooleanType` |
+| search        | regular expression substring match | `ValueType`, `ValueType` | `BooleanType` |
 {: #pre-reg title="Initial Entries in the Function Extensions Subregistry"}
 
 
