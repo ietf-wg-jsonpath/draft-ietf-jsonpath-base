@@ -1085,7 +1085,7 @@ For each iteration (element/member), a logical expression, the *filter expressio
 is evaluated which decides whether the node of
 the element/member is selected.
 (While a logical expression evaluates to what mathematically is a
-Boolean value, we use the term *logical* to maintain a distinction from
+Boolean value, this specification uses the term *logical* to maintain a distinction from
 the Boolean values that JSON can represent.)
 
 During the iteration process, the filter expression receives the node
@@ -1535,7 +1535,7 @@ A function expression is well-typed if all of the following are true:
    * The argument is a Singular Path or `filter-path` (which includes
      Singular Paths), or a function expression with declared result
      type `NodesType`.  Where the declared type of the parameter is
-     not `NodeType`, a conversion applies.
+     not `NodesType`, a conversion applies.
 
 #### Conversion example
 {:unnumbered}
