@@ -406,7 +406,7 @@ elements from an array, giving a start position, an end position, and
 an optional step value that moves the position from the start to the
 end.
 
-Filter expressions `?<expr>` select certain children of an object or array, as in:
+Filter expressions `?<logical-expr>` select certain children of an object or array, as in:
 
 ~~~~ JSONPath
 $.store.book[?@.price < 10].title
@@ -430,7 +430,7 @@ $.store.book[?@.price < 10].title
 | `*`                 | [wildcard selector](#name-selector): selects all children of a node                                                    |
 | `3`                 | [index selector](#index-selector): selects an indexed child of an array (from 0)                                        |
 | `0:100:5`           | [array slice selector](#slice): start:end:step for arrays                                                               |
-| `?<expr>`           | [filter selector](#filter-selector): selects particular children using a logical expression                      |
+| `?<logical-expr>`   | [filter selector](#filter-selector): selects particular children using a logical expression                      |
 | `length(@.foo)`     | [function extension](#fnex): invokes a function in a filter expression                                                  |
 {: #tbl-overview title="Overview of JSONPath syntax"}
 
@@ -1117,7 +1117,7 @@ function expressions are not in use.
 #### Syntax
 {: unnumbered}
 
-The filter selector has the form `?<expr>`.
+The filter selector has the form `?<logical-expr>`.
 
 ~~~~ abnf
 filter-selector     = "?" S logical-expr
@@ -2246,7 +2246,7 @@ The descendant operators, starting with `..`, borrowed from {{E4X}}, are similar
 The array slicing construct `[start:end:step]` is unique to JSONPath,
 inspired by {{SLICE}} from ECMASCRIPT 4.
 
-Filter expressions are supported via the syntax `?<expr>` as in
+Filter expressions are supported via the syntax `?<logical-expr>` as in
 
 ~~~~ JSONPath
 $.store.book[?@.price < 10].title
