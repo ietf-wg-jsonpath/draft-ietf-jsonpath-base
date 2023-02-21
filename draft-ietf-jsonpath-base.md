@@ -1679,7 +1679,7 @@ substring exists and `LogicalFalse` otherwise.
 | `$[?count(1) == 1]` | not well-typed since `1` is not a path  |
 | `$[?count(foo(@.*)) == 1]` | well-typed, where `foo` is a function extension with a parameter of type `NodesType` and result type `NodesType` |
 | `$[?match(@.timezone, 'Europe/.*')]`         | well-typed |
-| `$[?match(@.timezone, 'Europe/.*') == true]` | not well-typed as JSONPath logicals and JSON booleans do not mix |
+| `$[?match(@.timezone, 'Europe/.*') == true]` | not well-typed as JSONPath logicals may not be used in comparisons |
 {: title="Function expression examples"}
 
 ## Segments  {#segments-details}
