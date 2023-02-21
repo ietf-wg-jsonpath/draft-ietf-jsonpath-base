@@ -1160,7 +1160,7 @@ paren-expr          = [logical-not-op S] "(" S logical-expr S ")"
 logical-not-op      = "!"               ; logical NOT operator
 ~~~~
 
-A test expression is shorthand for a comparison that
+A test expression
 either tests the existence of a node
 designated by an embedded query (see {{extest}}) or tests the
 result of a function expression (see {{fnex}}).
