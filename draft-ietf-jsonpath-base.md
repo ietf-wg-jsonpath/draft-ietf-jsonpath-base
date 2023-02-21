@@ -1664,7 +1664,8 @@ If the first argument is not a string or the second argument is not a
 string conforming to {{-iregexp}}, the result is `LogicalFalse`. <!-- XXX -->
 Otherwise, the string that is the first argument is searched for at
 least one substring that matches the iregexp contained in the string
-that is the second argument; the result is `LogicalTrue` if
+that is the second argument; the result is `LogicalTrue` if such a
+substring exists and `LogicalFalse` otherwise.
 
 
 ### Examples
