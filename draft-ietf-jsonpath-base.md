@@ -1633,7 +1633,7 @@ string matches a given regular expression, which is in {{-iregexp}} form.
 $[?match(@.date, "1974-05-..")]
 ~~~
 
-Its arguments are instances of ValueType.
+Its arguments are instances of `ValueType`.
 If the first argument is not a string or the second argument is not a
 string conforming to {{-iregexp}}, the result is `LogicalFalse`. <!-- XXX -->
 Otherwise, the string that is the first argument is matched against
@@ -1659,7 +1659,7 @@ expression, which is in {{-iregexp}} form.
 $[?search(@.author, "[BR]ob")]
 ~~~
 
-Its arguments are instances of ValueType.
+Its arguments are instances of `ValueType`.
 If the first argument is not a string or the second argument is not a
 string conforming to {{-iregexp}}, the result is `LogicalFalse`. <!-- XXX -->
 Otherwise, the string that is the first argument is searched for at
