@@ -1105,10 +1105,8 @@ expressions can be used to operate on nodelists and values.
 The set of available functions is extensible, with a number of
 functions predefined, see {{fnex}}, and the ability to register further
 functions provided by the Function Extensions sub-registry ({{iana-fnex}}).
-When a function is defined, it is given a unique name, and the
-*declared type*
-of each of its arguments as well as the declared type returned from the
-function is declared.
+When a function is defined, it is given a unique name, and its return value and each of its arguments is given a
+*declared type*.
 The type system is limited in scope; its function is to express
 restrictions that, without functions, are implicit in the grammar of
 filter expressions.
