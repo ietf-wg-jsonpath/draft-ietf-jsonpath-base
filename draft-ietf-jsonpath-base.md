@@ -1480,12 +1480,12 @@ a nodelist.
 Notes:
 
 * `ValueType` is an abstraction of a JSON value or `Nothing`.
-* `LogicalType` is an abstraction of the value of a `logical-expr`.
-  Its `LogicalTrue` and `LogicalFalse` values are not related to
-  the JSON literals `true` and `false` and have no syntactical representation in JSON Path.
+* `LogicalType` is an abstraction of the result of a `logical-expr`.
+  Its two instances, `LogicalTrue` and `LogicalFalse`, are not related to
+  the JSON literals `true` and `false` and have no syntactical representation in JSONPath.
 * `NodesType` is an abstraction of a `filter-path` (which appears
   in a test expression or as a function argument).
-  Members of `NodesType` have no syntactical representation in JSON Path.
+  Members of `NodesType` have no syntactical representation in JSONPath.
 
 The abstract instances above can be obtained from the concrete representations in {{tbl-typerep}}.
 
