@@ -1105,7 +1105,7 @@ expressions can be used to operate on nodelists and values.
 The set of available functions is extensible, with a number of
 functions predefined, see {{fnex}}, and the ability to register further
 functions provided by the Function Extensions sub-registry ({{iana-fnex}}).
-When a function is defined, it is given a unique name, and its return value and each of its arguments is given a
+When a function is defined, it is given a unique name, and its return value and each of its parameters is given a
 *declared type*.
 The type system is limited in scope; its purpose is to express
 restrictions that, without functions, are implicit in the grammar of
@@ -1460,7 +1460,7 @@ a type system is first introduced.
 
 ### Type System for Function Expressions {#typesys}
 
-Each argument and result of a function extension must have a declared type.
+Each parameter and the result of a function extension must have a declared type.
 
 A type is a set of instances.
 Declared types enable testing a JSONPath query for well-typedness
@@ -1566,7 +1566,7 @@ value and thus feeds a comparison with `Nothing`.
 
 ### `length` Function Extension {#length}
 
-Arguments:
+Parameters:
 : 1. `ValueType`
 
 Result:
@@ -1595,7 +1595,7 @@ instance of `ValueType`: an unsigned integer or `Nothing`.
 
 ### `count` Function Extension {#count}
 
-Arguments:
+Parameters:
 : 1. `NodesType`
 
 Result:
@@ -1617,7 +1617,7 @@ Note that there is no deduplication of the nodelist.
 
 ### `match` Function Extension {#match}
 
-Arguments:
+Parameters:
 : 1. `ValueType` (string)
   2. `ValueType` (string conforming to {{-iregexp}})
 
@@ -1643,7 +1643,7 @@ the result is `LogicalTrue` if the string matches the iregexp and
 
 ### `search` Function Extension {#search}
 
-Arguments:
+Parameters:
 : 1. `ValueType` (string)
   2. `ValueType` (string conforming to {{-iregexp}})
 
@@ -1675,7 +1675,7 @@ that is the second argument; the result is `LogicalTrue` if
 | `$[?length(@.*) < 3]` | not well-typed since `@.*` is a non-singular path |
 | `$[?count(@.*) == 1]` | well-typed |
 | `$[?count(1) == 1]` | not well-typed since `1` is not a path  |
-| `$[?count(foo(@.*)) == 1]` | well-typed, where `foo` is a function extension with argument of type `NodesType` and result type `NodesType` |
+| `$[?count(foo(@.*)) == 1]` | well-typed, where `foo` is a function extension with a parameter of type `NodesType` and result type `NodesType` |
 | `$[?match(@.timezone, 'Europe/.*')]`         | well-typed |
 | `$[?match(@.timezone, 'Europe/.*') == true]` | not well-typed as JSONPath logicals and JSON booleans do not mix |
 {: title="Function expression examples"}
