@@ -1179,8 +1179,8 @@ is `true`; if the function expression is of type
 
 test-expr           = [logical-not-op S]
                       (filter-path / ; path existence or non-existence
-                       function-expr) ; ST(OptionalBooleanType) or
-                                      ; ST(OptionalNodesType)
+                       function-expr) ; LogicalType or
+                                      ; NodesType
 filter-path         = rel-path / json-path
 rel-path            = current-node-identifier segments
 current-node-identifier = "@"
@@ -1191,8 +1191,8 @@ Comparison expressions are available for comparisons between primitive
 values (that is, numbers, strings, `true`, `false`, and `null`).
 These can be obtained via literal values; Singular Paths, each of
 which selects at most one node the value of which is then used; and
-function expressions (see {{fnex}}) that return a primitive value or at
-most one node.
+function expressions (see {{fnex}}) of type `ValueType` or
+`NodesType` (see {{type-conv}}).
 
 ~~~~ abnf
 comparison-expr     = comparable S comparison-op S comparable
@@ -1200,7 +1200,7 @@ literal             = number / string-literal /
                       true / false / null
 comparable          = literal /
                       singular-path /   ; Singular Path value
-                      function-expr  ; ST(OptionalNodeOrValueType)
+                      function-expr  ; ValueType
 comparison-op       = "==" / "!=" /
                       "<=" / ">=" /
                       "<"  / ">"
@@ -1467,81 +1467,115 @@ a type system is first introduced.
 
 Each argument and result of a function extension must have a declared type.
 
-A type is a set of instances. A type is a subtype of another type if its set of instances (possibly after coercion)
-is a subset of the set of instances of the other type.
-The subtype relationship is transitive: for any A, B, and C if B is a subtype of A and C is a subtype of B, then C is a subtype of A.
-We denote a type `T` and the transitive closure of all its subtypes as `ST(T)`.
+A type is a set of instances.
+Declared types enable testing a JSONPath query for well-typedness
+independent of any argument the JSONPath query is applied to.
 
 {{tbl-types}} defines the available types in terms of abstract instances, where `n` denotes a node, `v` denotes a value, and `nl` denotes
-a non-empty nodelist. The table also lists the (immediate) subtypes of each type.
+a non-empty nodelist.
 
-| Type                      | Abstract Instances                       | Subtypes                                       |
-| :--                       | :----------------                        | :------                                        |
-| `OptionalNodeOrValueType` | `Node(n)`, `Value(v)`, `Nothing`         | `OptionalNodeType`, `OptionalValueType`        |
-| `OptionalNodeType`        | `Node(n)`, `Nothing`                     |                                                |
-| `OptionalValueType`       | `Value(v)`, `Nothing`                    | `OptionalNodeType`, `ValueType`, `OptionalBooleanType` |
-| `ValueType`               | `Value(v)`                               | `BooleanType`                                  |
-| `OptionalBooleanType`     | `Value(true)`, `Value(false)`, `Nothing` | `BooleanType`                                  |
-| `BooleanType`             | `Value(true)`, `Value(false)`            |                                                |
-| `OptionalNodesType`       | `Nodes(nl)`, `Nothing`                   | `OptionalNodeType`                             |
+| Type                 | Abstract Instances                       |
+| :--                  | :----------------                        |
+| `ValueType`          | `Value(v)`, `Nothing`                    |
+| `LogicalType`        | `LogicalTrue`, `LogicalFalse`            |
+| `NodesType`       | `Nodes(nl)`                              |
 {: #tbl-types title="Function extension type system"}
 
 Notes:
 
-* `OptionalNodeOrValueType` is an abstraction of a `comparable` (which may appear on either side of a comparison or as a function argument).
-* `OptionalNodeType` is an abstraction of a Singular Path.
-* `ValueType` is an abstraction of a primitive value.
-* `BooleanType` is an abstraction of a primitive value that is either
-  `true` or `false`.
-* `OptionalValueType` is an abstraction of a primitive value that may
-  alternatively be absent (`Nothing`).
-* `OptionalNodesType` is an abstraction of a `filter-path` (which appears
+* `ValueType` is an abstraction of a JSON value or `Nothing`.
+* `LogicalType` is an abstraction of a the result of a `test-expr`.
+  Its `LogicalTrue` and `LogicalFalse` values are not relatable to
+  the JSON literals `true` and `false` and have no syntactical representation in JSON Path.
+* `NodesType` is an abstraction of a `filter-path` (which appears
   in a test expression or as a function argument).
+  Members of `NodesType` have no syntactical representation in JSON Path.
 
 The abstract instances above can be obtained from the concrete representations in {{tbl-typerep}}.
 
 | Abstract Instance | Concrete Representations                                           |
 | :---------------: | :----------------------:                                           |
-| `Node(n)`         | Singular Path resulting in a nodelist containing just the node `n` |
 | `Value(v)`        | JSON value `v`                                                     |
-| `Nothing`         | Singular Path or `filter-path` resulting in an empty nodelist      |
-| `Nodes(nl)`       | `filter-path` resulting in the non-empty nodelist `nl`             |
+| `Nothing`         | A representation of the absence of a JSON value, distinct from the JSON literal `null`, e.g., from a Singular Path or `filter-path` resulting in an empty nodelist   |
+| `Nodes(nl)`       | A list of zero or more nodes, e.g., from a `filter-path` resulting in the nodelist `nl`, which may or may not be empty  |
 {: #tbl-typerep title="Concrete representations of abstract instances"}
 
-The following subtype relationships depend on coercion:
+### Type Conversions {#type-conv}
 
-* `OptionalNodeType` is a subtype of `OptionalValueType` via coercion since the `OptionalNodeType` instance `Node(n)` can be coerced to
-the `OptionalValueType` instance `Value(v)`, where `v` is the value of the node `n`.
-* `OptionalNodeType` is a subtype of `OptionalNodesType` via coercion since the `OptionalNodeType` instance `Node(n)` can be coerced to
-the `OptionalNodesType` instance `Nodes(l)`, where `l` is a nodelist consisting of just the node `n`.
+The following type conversions may occur:
+
+* Where an expression with a declared type of `NodesType` needs to be
+  converted to a `ValueType`, the conversion proceeds as follows:
+  * If the nodelist contains a single node, the conversion result is
+    the value of the node.
+  * If the nodelist is empty or contains multiple nodes, the
+    conversion result is `Nothing`.
+* Where a member of `NodesType` needs to be converted to a
+  `LogicalType`, the conversion proceeds as follows:
+  * If the nodelist contains one or more nodes, the conversion result
+    is `LogicalTrue`.
+  * If the nodelist is empty, the conversion result is `LogicalFalse`.
 
 The type correctness of function expressions can now be defined in terms of this type system.
 
 ### Type Correctness of Function Expressions
 
-A function expression is correctly typed if all the following are true:
+A function expression is well-typed if all of the following are true:
 
-* If it occurs directly in a test expression, the function
-is defined to have a result type in `ST(OptionalNodesType)`.
-or to have a result type in `ST(OptionalBooleanType)`.
-* If it occurs as a `comparable` in a comparison, the function
-is defined to have a result type in `ST(OptionalNodeOrValueType)`.
-* For it and any function expression it contains,
-each argument of the function matches the defined type of the argument
-according to one of the following rules:
-  * The argument is a function expression with defined result type
-    that is the same as, or a subtype of, the defined type of the argument.
-  * The argument is a literal primitive value and the defined type of the  argument is `Value` or any type of which `Value` is a subtype.
-  * The argument is a Singular Path and the defined type of the argument is `OptionalNodeType` or any type of which `OptionalNodeType` is a subtype.
-  * The argument is a `filter-path` (which includes Singular Paths) and the defined type of the argument is `OptionalNodesType`.
+* If it occurs directly in a test expression, the function is declared
+  to have a result type of `LogicalType`, or (conversion applies)
+  `NodesType`.
+* If it occurs directly as a `comparable` in a comparison, the
+  function is declared to have a result type of `ValueType`, or
+  (conversion applies) `NodesType`.
+* Otherwise, it is occurring as an argument to a further function
+  expression, and the following rules for function arguments apply to
+  its declared result type.
+* Each argument of the function can be used for the declared type of the corresponding declared
+  parameter according to one of the following rules:
+   * The argument is a function expression with declared result type that is the same as the declared type of the parameter.
+   * The argument is a literal primitive value and the defined type of the parameter is `ValueType`.
+   * The argument is a Singular Path or `filter-path` (which includes
+     Singular Paths), or a function expression with declared result
+     type `NodesType`.  Where the declared type of the parameter is
+     not `NodeType`, a conversion applies.
+
+#### Conversion example
+{:unnumbered}
+
+While functions returning `NodesType` can appear in both comparisons and test expressions,
+path authors must be aware of the conversions and the potential outcomes.
+Specifically, nodelists convert to values and booleans according to {{tbl-typeconv}}:
+
+| Function return        | Converted as Value    | Converted as Logical |
+| :-:                    | :-:                   | :-:                  |
+| empty nodelist         | `Nothing`             | `LogicalFalse`       |
+| single-node nodelist   | the node's JSON value | `LogicalTrue`        |
+| multiple-node nodelist | `Nothing`             | `LogicalTrue`        |
+{: #tbl-typeconv title="Conversion of nodelists to values and booleans"}
+
+For example, given a function `myfunc()` of declared result type
+`NodesType`, the following filter expressions are both valid but can
+have different and unexpected results:
+
+| function result        | `myfunc(@.a)` evaluation (as a test expression)                              | `myfunc(@.a)==42` evaluation (in a comparison)                                |
+| :-:                    | :-                                                                           | :-                                                                            |
+| empty nodelist         | The nodelist is converted to `LogicalFalse`.<br>The expression result is false. | The empty nodelist is converted to `Nothing`.<br>The expression result is false. |
+| single-node nodelist   | The nodelist is converted to `LogicalTrue`.<br>The expression result is true.   | The nodelist is converted to the node's value.<br>The expression result is true. |
+| multiple-node nodelist | The nodelist is converted to `LogicalTrue`.<br>The expression result is true.   | The nodelist is converted to `Nothing`.<br>The expression result is false.       |
+
+Note that a multiple-node nodelist result is deemed `LogicalTrue` in
+the test expression, but cannot be used for conversion to a single
+value and thus feeds a comparison with `Nothing`.
+
 
 ### `length` Function Extension {#length}
 
 Arguments:
-: 1. `OptionalValueType`
+: 1. `ValueType`
 
 Result:
-: `OptionalValueType` (unsigned integer or `Nothing`)
+: `ValueType` (unsigned integer or `Nothing`)
 
 The "length" function extension provides a way to compute the length
 of a value and make that available for further processing in the
@@ -1551,9 +1585,9 @@ filter expression:
 $[?length(@.authors) >= 5]
 ~~~
 
-Its only argument is an optional value (possibly taken from a singular path as
-in the example above).  The result also is an optional value, an unsigned
-integer.
+Its only argument is an instance of `ValueType` (possibly taken from a
+singular path as in the example above).  The result also is an
+instance of `ValueType`: an unsigned integer or `Nothing`.
 
 * If the argument value is a string, the result is the number of
   Unicode scalar values in the string.
@@ -1567,7 +1601,7 @@ integer.
 ### `count` Function Extension {#count}
 
 Arguments:
-: 1. `OptionalNodesType`
+: 1. `NodesType`
 
 Result:
 : `ValueType` (unsigned integer)
@@ -1585,18 +1619,15 @@ The result is a value, an unsigned integer, that gives the number of
 nodes in the nodelist.
 Note that there is no deduplication of the nodelist.
 
-If the argument is `Nothing` (which corresponds to an empty nodelist),
-the result is the value `0`.
-
 
 ### `match` Function Extension {#match}
 
 Arguments:
-: 1. `OptionalNodeOrValueType` (string)
+: 1. `ValueType` (string)
   2. `ValueType` (string conforming to {{-iregexp}})
 
 Result:
-: `OptionalBooleanType` (`true`, `false`, or `Nothing`)
+: `LogicalType`
 
 The "match" function extension provides a way to check whether (the
 entirety of, see {{search}} below) a given
@@ -1606,23 +1637,23 @@ string matches a given regular expression, which is in {{-iregexp}} form.
 $[?match(@.date, "1974-05-..")]
 ~~~
 
-Its first argument is an optional string that is matched against the iregexp
-contained in the string that is the second argument.
-The result is `true` if the string matches the iregexp and `false`
-otherwise.
-
-The result is `Nothing` if the first argument is not a string or
-the second argument is not a string conforming to {{-iregexp}}.
+Its arguments are instances of ValueType.
+If the first argument is not a string or the second argument is not a
+string conforming to {{-iregexp}}, the result is `LogicalFalse`. <!-- XXX -->
+Otherwise, the string that is the first argument is matched against
+the iregexp contained in the string that is the second argument;
+the result is `LogicalTrue` if the string matches the iregexp and
+`LogicalFalse` otherwise.
 
 
 ### `search` Function Extension {#search}
 
 Arguments:
-: 1. `OptionalNodeOrValueType` (string)
+: 1. `ValueType` (string)
   2. `ValueType` (string conforming to {{-iregexp}})
 
 Result:
-: `OptionalBooleanType` (`true`, `false`, or `Nothing`)
+: `LogicalType`
 
 The "search" function extension provides a way to check whether a
 given string contains a substring that matches a given regular
@@ -1632,13 +1663,12 @@ expression, which is in {{-iregexp}} form.
 $[?search(@.author, "[BR]ob")]
 ~~~
 
-Its first argument is an optional string that is searched for at least one
-substring that matches the iregexp contained in the string
-that is the second argument.
-The result is `true` if such a substring exists, `false` otherwise.
-
-The result is `Nothing` if the first argument is not a string or
-the second argument is not a string conforming to {{-iregexp}}.
+Its arguments are instances of ValueType.
+If the first argument is not a string or the second argument is not a
+string conforming to {{-iregexp}}, the result is `LogicalFalse`. <!-- XXX -->
+Otherwise, the string that is the first argument is searched for at
+least one substring that matches the iregexp contained in the string
+that is the second argument; the result is `LogicalTrue` if
 
 
 ### Examples
@@ -1650,7 +1680,7 @@ the second argument is not a string conforming to {{-iregexp}}.
 | `$[?length(@.*) < 3]` | Invalid typing since `@.*` is a non-singular path |
 | `$[?count(@.*) == 1]` | Valid typing |
 | `$[?count(1) == 1]` | Invalid typing since `1` is not a path  |
-| `$[?count(foo(@.*)) == 1]` | Valid typing, where `foo` is a function extension with argument of type `OptionalNodesType` and result type `OptionalNodesType` |
+| `$[?count(foo(@.*)) == 1]` | Valid typing, where `foo` is a function extension with argument of type `NodesType` and result type `NodesType` |
 | `$[?match(@.timezone, 'Europe/.*')]`         | Valid typing |
 | `$[?match(@.timezone, 'Europe/.*') == true]` | Valid typing |
 {: title="Function expression examples"}
@@ -2072,11 +2102,11 @@ Initial entries in this sub-registry are as listed in {{pre-reg}}; the
 Column "Change Controller" always has the value "IESG" and the column
 "Reference" always has the value "{{fnex}} of RFCthis":
 
-| Function Name | Brief description                  | Input                          | Output            |
-| length        | length of array                    | `OptionalValueType`                | `OptionalValueType`   |
-| count         | size of nodelist                   | `OptionalNodesType`                | `Value`           |
-| match         | regular expression full match      | `OptionalNodeOrValueType`, `Value` | `OptionalBooleanType` |
-| search        | regular expression substring match | `OptionalNodeOrValueType`, `Value` | `OptionalBooleanType` |
+| Function Name | Brief description                  | Input                    | Output        |
+| length        | length of array                    | `ValueType`              | `ValueType`   |
+| count         | size of nodelist                   | `NodesType`              | `ValueType`   |
+| match         | regular expression full match      | `ValueType`, `ValueType` | `LogicalType` |
+| search        | regular expression substring match | `ValueType`, `ValueType` | `LogicalType` |
 {: #pre-reg title="Initial Entries in the Function Extensions Subregistry"}
 
 
