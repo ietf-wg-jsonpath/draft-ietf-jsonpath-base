@@ -1093,7 +1093,7 @@ of each array element or object member value of the structured value being
 filtered; this element or member value is then known as the *current node*.
 
 The current node can be used as the start of one or more JSONPath
-queries used inside subexpressions of the filter expression, notated
+queries in subexpressions of the filter expression, notated
 via the current-node-identifier `@`.
 Each JSONPath query can be used either for testing existence of a
 result of the query, for obtaining a specific JSON value resulting
