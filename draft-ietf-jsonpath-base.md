@@ -1107,7 +1107,7 @@ functions predefined, see {{fnex}}, and the ability to register further
 functions provided by the Function Extensions sub-registry ({{iana-fnex}}).
 When a function is defined, it is given a unique name, and its return value and each of its arguments is given a
 *declared type*.
-The type system is limited in scope; its function is to express
+The type system is limited in scope; its purpose is to express
 restrictions that, without functions, are implicit in the grammar of
 filter expressions.
 The type system also guides conversions ({{type-conv}}) that are
