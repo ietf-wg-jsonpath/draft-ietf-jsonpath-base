@@ -2082,7 +2082,7 @@ Brief description:
 : a brief description
 
 Parameters:
-: A comma-separated list of zero or more declared types, each for one of the
+: A comma-separated list of zero or more declared types, one for each of the
   arguments expected for this function extension
 
 Result:
