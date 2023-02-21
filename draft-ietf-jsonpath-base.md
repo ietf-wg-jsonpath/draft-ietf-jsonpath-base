@@ -517,7 +517,7 @@ to the JSONPath processing (e.g., index values and steps) MUST be
 within the range of exact values defined in I-JSON {{-i-json}}, namely
 within the interval \[-(2<sup>53</sup>)+1, (2<sup>53</sup>)-1].
 
-2. Uses of function extensions must be correctly typed,
+2. Uses of function extensions must be *well-typed*,
 as described in {{fnex}}.
 
 A JSONPath implementation MUST raise an error for any query which is not
@@ -1112,6 +1112,8 @@ function is declared.
 The type system is limited in scope; its function is to express
 restrictions that, without functions, are implicit in the grammar of
 filter expressions.
+The type system also guides conversions ({{type-conv}}) that are
+implicit in the grammar without the use of function expressions.
 
 #### Syntax
 {: unnumbered}
@@ -1457,10 +1459,10 @@ According to {{filter-selector}}, a `function-expr` is valid as a `filter-path`
 or a `comparable`.
 
 Any function expressions in a query must be well-formed (by conforming to the above ABNF)
-and correctly typed,
+and well-typed,
 otherwise the JSONPath implementation MUST raise an error
 (see {{synsem-overview}}).
-To define which function expressions are correctly typed,
+To define which function expressions are well-typed,
 a type system is first introduced.
 
 ### Type System for Function Expressions {#typesys}
@@ -1516,9 +1518,9 @@ The following type conversions may occur:
     is `LogicalTrue`.
   * If the nodelist is empty, the conversion result is `LogicalFalse`.
 
-The type correctness of function expressions can now be defined in terms of this type system.
+The well-typedness of function expressions can now be defined in terms of this type system.
 
-### Type Correctness of Function Expressions
+### Well-Typedness of Function Expressions
 
 A function expression is well-typed if all of the following are true:
 
