@@ -1081,8 +1081,8 @@ structured values, i.e., JSON arrays and objects.
 The structured values are identified in the nodelist offered by the
 child or descendant segment using the filter selector.
 
-For each iteration (element/member), a logical expression is
-evaluated, the *filter expression*, which decides whether the node of
+For each iteration (element/member), a logical expression, the *filter expression*,
+is evaluated which decides whether the node of
 the element/member is selected.
 (While a logical expression evaluates to what mathematically is a
 Boolean value, we use the term *logical* to maintain a distinction from
