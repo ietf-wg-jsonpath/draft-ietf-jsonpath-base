@@ -580,7 +580,8 @@ representation as desired by the implementation.
 Note that an empty nodelist is a valid query result.
 
 A segment operates on each of the nodes in its input nodelist in turn,
-and the resultant nodelists are concatenated to produce
+and the resultant nodelists are concatenated in the order of the input
+nodelist they were derived from to produce
 the result of the segment. A node may be selected more than once and
 appears that number of times in the nodelist. Duplicate nodes are not removed.
 
@@ -1684,7 +1685,11 @@ substring exists and `LogicalFalse` otherwise.
 
 ## Segments  {#segments-details}
 
-Segments apply one or more selectors to an input value and concatenate the results into a single nodelist.
+For each node in an input nodelist,
+segments apply one or more selectors to the node and concatenate the
+results of each selector into per-input-node nodelists, which are then
+concatenated in the order of the input nodelist to form a single
+segment result nodelist.
 
 It turns out that the more segments there are in a query, the greater the depth in the input value of the
 nodes of the resultant nodelist:
@@ -1749,7 +1754,8 @@ selects zero or more children of the input value.
 
 Selectors of different kinds may be combined within a single child segment.
 
-The resulting nodelist of a child segment is the concatenation of
+For each node in the input nodelist,
+the resulting nodelist of a child segment is the concatenation of
 the nodelists from each of its selectors in the order that the selectors
 appear in the list.
 Note that any node matched by more than one selector is kept
@@ -1808,9 +1814,10 @@ Note that `..` on its own is not a valid segment.
 #### Semantics
 {: unnumbered}
 
-A descendant segment produces zero or more descendants of the input value.
+A descendant segment produces zero or more descendants of an input value.
 
-A descendant selector visits the input value and each of
+For each node in the input nodelist,
+a descendant selector visits the input node and each of
 its descendants such that:
 
 * nodes of any array are visited in array order, and
@@ -1827,9 +1834,13 @@ Note that `D1` is the input value.
 For each `i` such that `1 <= i <= n`, the nodelist `Ri` is defined to be a result of applying
 the child segment `[<selectors>]` to the node `Di`.
 
-The result of the descendant selector is the concatenation of `R1`, ..., `Rn` (in that order).
+For each node in the input nodelist,
+the result of the descendant segment is the concatenation of `R1`,
+..., `Rn` (in that order).
+These results are then concatenated in input nodelist order to form
+the result of the segment.
 
-So a descendant segment drills down one or more levels into the structure of the input value.
+So a descendant segment drills down one or more levels into the structure of each input value.
 
 #### Examples
 {: unnumbered}
