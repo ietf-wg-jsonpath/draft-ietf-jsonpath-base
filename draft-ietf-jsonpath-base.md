@@ -1113,8 +1113,10 @@ When a function is defined, it is given a unique name, and its return value and 
 The type system is limited in scope; its purpose is to express
 restrictions that, without functions, are implicit in the grammar of
 filter expressions.
-The type system also guides conversions ({{type-conv}}) that mimic the
-way different kinds of expressions are handled in the grammar when
+The type system is supported by the two conversion functions `exist`
+and `value` (see Sections {{<exist-fn}} and {{<value-fn}}), which enable
+explicitly performing transitions between different types, mimicking
+the way different kinds of expressions are handled in the grammar when
 function expressions are not in use.
 
 #### Syntax
@@ -1166,20 +1168,18 @@ logical-not-op      = "!"               ; logical NOT operator
 A test expression
 either tests the existence of a node
 designated by an embedded query (see {{extest}}) or tests the
-result of a function expression (see {{fnex}}).
-In the latter case, if the function result type is declared as
-`LogicalType` (see {{typesys}}), it tests whether the result
-is `LogicalTrue`; if the function result type is declared as
-`NodesType`, it tests whether the result is non-empty.
-If the declared function result type is `ValueType`, its use in a
-test expression is not well-typed.
+result of a function expression of declared type `LogicalType` (see
+{{fnex}}).
+In the latter case, the test expression tests whether the function
+result is `LogicalTrue`.
+If the declared function result type is any other than `LogicalType`,
+its use in a test expression is not well-typed.
 
 ~~~ abnf
 
 test-expr           = [logical-not-op S]
                       (filter-path /  ; path existence/non-existence
-                       function-expr) ; LogicalType or
-                                      ; NodesType
+                       function-expr) ; LogicalType
 filter-path         = rel-path / json-path
 rel-path            = current-node-identifier segments
 current-node-identifier = "@"
@@ -1190,15 +1190,16 @@ Comparison expressions are available for comparisons between primitive
 values (that is, numbers, strings, `true`, `false`, and `null`).
 These can be obtained via literal values; Singular Paths, each of
 which selects at most one node the value of which is then used; and
-function expressions (see {{fnex}}) of type `ValueType` or
-`NodesType` (see {{type-conv}}).
+function expressions (see {{fnex}}) of type `ValueType`.
+If the declared function result type is any other than `ValueType`,
+its use in a comparison expression is not well-typed.
 
 ~~~~ abnf
 comparison-expr     = comparable S comparison-op S comparable
 literal             = number / string-literal /
                       true / false / null
 comparable          = literal /
-                      singular-path /   ; Singular Path value
+                      singular-path /   ; Singular Path -> value
                       function-expr  ; ValueType
 comparison-op       = "==" / "!=" /
                       "<=" / ">=" /
@@ -1450,10 +1451,13 @@ function-argument   = literal /
                       function-expr
 ~~~
 
-A function argument is a `filter-path` or a `comparable`.
+A function argument is a `filter-path` (which yields a `NodesType`), a
+literal (which yields a `ValueType`), or a function expression (which
+yields the declared type of the function named).
 
-According to {{filter-selector}}, a `function-expr` is valid as a `filter-path`
-or a `comparable`.
+According to {{filter-selector}}, a `function-expr` is valid as part of
+a test expression (if the declared type is `NodesType`) or as a
+`comparable` (if the declared type is `ValueType`).
 
 Any function expressions in a query must be well-formed (by conforming to the above ABNF)
 and well-typed,
@@ -1499,22 +1503,6 @@ The abstract instances above can be obtained from the concrete representations i
 | `Nodes(nl)`       | A list of zero or more nodes, e.g., from a `filter-path` resulting in the nodelist `nl`, which may or may not be empty  |
 {: #tbl-typerep title="Concrete representations of abstract instances"}
 
-### Type Conversions {#type-conv}
-
-The following type conversions may occur:
-
-* Where an expression with a declared type of `NodesType` needs to be
-  converted to a `ValueType`, the conversion proceeds as follows:
-  * If the nodelist contains a single node, the conversion result is
-    the value of the node.
-  * If the nodelist is empty or contains multiple nodes, the
-    conversion result is `Nothing`.
-* Where a member of `NodesType` needs to be converted to a
-  `LogicalType`, the conversion proceeds as follows:
-  * If the nodelist contains one or more nodes, the conversion result
-    is `LogicalTrue`.
-  * If the nodelist is empty, the conversion result is `LogicalFalse`.
-
 The well-typedness of function expressions can now be defined in terms of this type system.
 
 ### Well-Typedness of Function Expressions
@@ -1522,11 +1510,9 @@ The well-typedness of function expressions can now be defined in terms of this t
 A function expression is well-typed if all of the following are true:
 
 * If it occurs directly in a test expression, the function is declared
-  to have a result type of `LogicalType`, or (conversion applies)
-  `NodesType`.
+  to have a result type of `LogicalType`.
 * If it occurs directly as a `comparable` in a comparison, the
-  function is declared to have a result type of `ValueType`, or
-  (conversion applies) `NodesType`.
+  function is declared to have a result type of `ValueType`.
 * Otherwise, it occurs as an argument in another function
   expression, and the following rules for function arguments apply to
   its declared result type.
@@ -1536,36 +1522,80 @@ A function expression is well-typed if all of the following are true:
    * The argument is a literal primitive value and the defined type of the parameter is `ValueType`.
    * The argument is a Singular Path or `filter-path` (which includes
      Singular Paths), or a function expression with declared result
-     type `NodesType`.  Where the declared type of the parameter is
-     not `NodesType`, a conversion applies.
+     type `NodesType`.
 
-#### Conversion example
-{:unnumbered}
+{{tab-exist-value}} summarizes how the two conversion functions can be
+used to make use of functions returning nodelists, using a
+hypothetical function `fn` of declared type `NodesType`: The table
+gives the result of the conversion function, and the effect of that
+result on the expression given. (`fn` is a hypothetical function
+extension that takes and results in `NodesType`; this function will
+also be used in example further below.)
 
-While functions returning `NodesType` can appear in both comparisons and test expressions,
-path authors must be aware of the conversions and the potential outcomes.
-Specifically, nodelists convert to values and logicals according to {{tbl-typeconv}}:
 
-| Function return        | Converted as Value    | Converted as Logical |
-| :-:                    | :-:                   | :-:                  |
-| empty nodelist         | `Nothing`             | `LogicalFalse`       |
-| single-node nodelist   | the node's JSON value | `LogicalTrue`        |
-| multiple-node nodelist | `Nothing`             | `LogicalTrue`        |
-{: #tbl-typeconv title="Conversion of nodelists to values and logicals"}
-
-For example, given a function `myfunc()` of declared result type
-`NodesType`, the following filter expressions are both valid but can
-have different and unexpected results:
-
-| function result        | `myfunc(@.a)` evaluation (as a test expression)                              | `myfunc(@.a)==42` evaluation (in a comparison)                                |
-| :-:                    | :-                                                                           | :-                                                                            |
-| empty nodelist         | The nodelist is converted to `LogicalFalse`.<br>The expression result is false. | The empty nodelist is converted to `Nothing`.<br>The expression result is false. |
-| single-node nodelist   | The nodelist is converted to `LogicalTrue`.<br>The expression result is true.   | The nodelist is converted to the node's value.<br>The expression result is true. |
-| multiple-node nodelist | The nodelist is converted to `LogicalTrue`.<br>The expression result is true.   | The nodelist is converted to `Nothing`.<br>The expression result is false.       |
+| fn(...) result         | `exist(fn(@..a))` evaluation (as a test expression) | `value(fn(@..a))==42` evaluation (in a comparison)             |
+| :-:                    | :-                                                  | :-                                                             |
+| empty nodelist         | `LogicalFalse`.<br>The test fails.                     | `Nothing`.<br>The expression result is false.                     |
+| single-node nodelist   | `LogicalTrue`.<br>The test succeeds.                   | The node's value.<br>The expression result is true if that is 42. |
+| multiple-node nodelist | `LogicalTrue`.<br>The test succeeds.                   | `Nothing`.<br>The expression result is false.                     |
+{: #tab-exist-value title="Using a function returning a `NodesType` in
+test expressions and comparisons"}
 
 Note that a multiple-node nodelist result is deemed `LogicalTrue` in
-the test expression, but cannot be used for conversion to a single
-value and thus feeds a comparison with `Nothing`.
+the test expression, but cannot be used for obtaining a single
+value and thus feeds the comparison expression with `Nothing`.
+
+
+### `exist` Function Extension {#exist-fn}
+
+Parameters:
+: 1. `NodesType`
+
+Result:
+: `LogicalType`
+
+The "exist" function extension returns `LogicalTrue` if the nodelist
+given consists of at least one node, `LogicalFalse` otherwise:
+
+~~~ JSONPath
+$[?exist(fn(@.*.price))]
+~~~
+
+The effect of the `exist` function is similar to the existence test
+that is performed when a query expression is directly used in a test
+expression:
+If the nodelist contains one or more nodes, the result is
+`LogicalTrue`.
+If the nodelist is empty, the result is `LogicalFalse`.
+
+
+### `value` Function Extension {#value-fn}
+
+Parameters:
+: 1. `NodesType`
+
+Result:
+: `ValueType`
+
+The "value" function extension provides a way to obtain the value of a
+node in a single-element nodelist and make that available for further
+processing in the filter expression:
+
+~~~ JSONPath
+$[?value(fn(@.*.price)) >= 7.99]
+~~~
+
+Its only argument is a nodelist.
+If the nodelist contains a single node, the result is the value of the node.
+If the nodelist is empty or contains multiple nodes, the result is `Nothing`.
+
+The effect of the `value` function is similar to the extraction of a
+node value that is performed when a query expression is used as either
+side of a comparison operator.  These query expressions, however, are
+syntactically limited to singular paths.  Here, the argument might be
+a nodelist with multiple nodes: it would be confusing to notate
+queries such as `fn(@..a) == fn(@..b)` without explicit indication
+that an extraction of a single value takes place at either side.
 
 
 ### `length` Function Extension {#length}
@@ -1680,9 +1710,9 @@ substring exists and `LogicalFalse` otherwise.
 | `$[?length(@.*) < 3]` | not well-typed since `@.*` is a non-singular path |
 | `$[?count(@.*) == 1]` | well-typed |
 | `$[?count(1) == 1]` | not well-typed since `1` is not a path  |
-| `$[?count(foo(@.*)) == 1]` | well-typed, where `foo` is a function extension with a parameter of type `NodesType` and result type `NodesType` |
+| `$[?count(fn(@.*)) == 1]`  | well-typed, where `fn` is a function extension with a parameter of type `NodesType` and result type `NodesType` |
 | `$[?match(@.timezone, 'Europe/.*')]`         | well-typed |
-| `$[?match(@.timezone, 'Europe/.*') == true]` | not well-typed as JSONPath logicals may not be used in comparisons |
+| `$[?match(@.timezone, 'Europe/.*') == true]` | not well-typed as `LogicalType` may not be used in comparisons |
 {: title="Function expression examples"}
 
 ## Segments  {#segments-details}
