@@ -1175,7 +1175,7 @@ test expression is not well-typed.
 ~~~ abnf
 
 test-expr           = [logical-not-op S]
-                      (filter-path / ; path existence or non-existence
+                      (filter-path /  ; path existence/non-existence
                        function-expr) ; LogicalType or
                                       ; NodesType
 filter-path         = rel-path / json-path
@@ -1421,7 +1421,8 @@ This section defines the extension point as well as four function
 extensions that use this extension point.
 While these mechanisms are designed to use the extension point,
 they are an integral part of the JSONPath specification and are
-mandatory to implement.
+expected to be implemented like any other integral part of this
+specification.
 
 A function extension defines a registered name (see {{iana-fnex}}) that
 can be applied to a sequence of zero or more arguments, producing a
