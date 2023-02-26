@@ -1456,7 +1456,7 @@ literal (which yields a `ValueType`), or a function expression (which
 yields the declared type of the function named).
 
 According to {{filter-selector}}, a `function-expr` is valid as part of
-a test expression (if the declared type is `NodesType`) or as a
+a test expression (if the declared type is `LogicalType`) or as a
 `comparable` (if the declared type is `ValueType`).
 
 Any function expressions in a query must be well-formed (by conforming to the above ABNF)
@@ -1520,10 +1520,9 @@ A function expression is well-typed if all of the following are true:
 * Each argument of the function can be used for the declared type of the corresponding declared
   parameter according to one of the following rules:
    * The argument is a function expression with declared result type that is the same as the declared type of the parameter.
-   * The argument is a literal primitive value and the defined type of the parameter is `ValueType`.
+   * The argument is a literal primitive value and the declared type of the parameter is `ValueType`.
    * The argument is a Singular Path or `filter-path` (which includes
-     Singular Paths), or a function expression with declared result
-     type `NodesType`.
+     Singular Paths) and the declared type of the parameter is `NodesType`.
 
 {{tab-exist-value}} summarizes how the two conversion functions can be
 used to make use of functions returning nodelists, using a
@@ -1543,8 +1542,8 @@ also be used in example further below.)
 test expressions and comparisons"}
 
 Note that a multiple-node nodelist result is deemed `LogicalTrue` in
-the test expression, but cannot be used for obtaining a single
-value and thus feeds the comparison expression with `Nothing`.
+a test expression, but cannot be used for obtaining a single
+value and thus feeds a comparison expression with `Nothing`.
 
 
 ### `exist` Function Extension {#exist-fn}
