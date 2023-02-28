@@ -1276,7 +1276,7 @@ The comparison operators `==` and `<` are defined first and then these are used 
 When a path or function expression resulting in an empty nodelist appears on either side of a comparison:
 
 * a comparison using the operator `==` yields true if and only if the comparison
-is between two expressions, each of which is a path or a function expression, and each of which result in an empty nodelist.
+is between two `comparable`s, each of which is a path or a function expression, and each of which result in an empty nodelist.
 
 * a comparison using the operator `<` yields false.
 
