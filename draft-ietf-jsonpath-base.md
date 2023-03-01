@@ -1527,8 +1527,10 @@ A function expression is well-typed if all of the following are true:
   its declared result type.
 * Each argument of the function conforms to the declared type of the corresponding declared
   parameter according to one of the following rules:
-   * The argument is a function expression with declared result type that is the same as,
-     or a subtype of, the declared type of the parameter.
+   * The argument is a function expression with declared result type that is the same as
+     the declared type of the parameter.
+   * The argument is a function expression with declared result type `SingleNodeType` and
+     the declared type of the parameter is `NodesType`.
    * The argument is a literal primitive value and the declared type of the parameter is `ValueType`.
    * The argument is a Singular Path and the declared type of the parameter is `SingleNodeType`.
    * The argument is a Singular Path or `filter-path` (which includes
