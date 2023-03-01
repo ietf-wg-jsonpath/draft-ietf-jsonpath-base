@@ -1544,7 +1544,6 @@ When any `singular-path` or function expression with declared type of `SingleNod
 
 When any `filter-path` or function expression with declared type of `SingleNodeType` or `NodesType` appears as an argument for a parameter of type `LogicalType`, each such path or function expression is replaced by `LogicalTrue` if the resulting nodelist contains any nodes and `LogicalFalse` if the resulting nodelist is empty.
 
-
 ### `length` Function Extension {#length}
 
 Parameters:
