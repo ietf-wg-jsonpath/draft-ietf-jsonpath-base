@@ -1523,7 +1523,7 @@ A function expression is well-typed if all of the following are true:
 * Otherwise, it occurs as an argument in another function
   expression, and the following rules for function arguments apply to
   its declared result type.
-* Each argument of the function can be used for the declared type of the corresponding declared
+* Each argument of the function conforms to the declared type of the corresponding declared
   parameter according to one of the following rules:
    * The argument is a function expression with declared result type that is the same as,
      or a subtype of, the declared type of the parameter.
