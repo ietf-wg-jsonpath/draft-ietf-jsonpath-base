@@ -1496,6 +1496,7 @@ Notes:
   the JSON literals `true` and `false` and have no direct syntactical representation in JSONPath.
 * `SingleNodeType` is an abstraction of a `singular-path` (which appears in a comparison,
   in a test expression, or as a function argument).
+  Members of `SingleNodeType` have no syntactical representation in JSONPath.
 * `NodesType` is an abstraction of a `filter-path` (which appears
   in a test expression or as a function argument).
   Members of `NodesType` have no direct syntactical representation in JSONPath.
