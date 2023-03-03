@@ -1452,6 +1452,7 @@ function-argument   = literal /
 ~~~
 
 A function argument is a `filter-path` (which yields a `NodesType`), a
+`singular-path` (which yields a `SingleNodeType`), a
 literal (which yields a `ValueType`), or a function expression (which
 yields the declared type of the function named).
 
@@ -1474,13 +1475,15 @@ A type is a set of instances.
 Declared types enable checking a JSONPath query for well-typedness
 independent of any argument the JSONPath query is applied to.
 
-{{tbl-types}} defines the available types in terms of abstract instances, where `n` denotes a node, `v` denotes a value, and `nl` denotes
+{{tbl-types}} defines the available types in terms of abstract instances, where `n` denotes a node, `v` denotes a value,
+`nl1` denotes a nodelist with at most one node, and `nl` denotes
 a nodelist.
 
 | Type                 | Abstract Instances                       |
 | :--                  | :----------------                        |
 | `ValueType`          | `Value(v)`, `Nothing`                    |
 | `LogicalType`        | `LogicalTrue`, `LogicalFalse`            |
+| `SingleNodeType`  | `Nodes(nl1)`                                |
 | `NodesType`       | `Nodes(nl)`                              |
 {: #tbl-types title="Function extension type system"}
 
@@ -1490,6 +1493,9 @@ Notes:
 * `LogicalType` is an abstraction of the result of a `logical-expr`.
   Its two instances, `LogicalTrue` and `LogicalFalse`, are not related to
   the JSON literals `true` and `false` and have no direct syntactical representation in JSONPath.
+* `SingleNodeType` is an abstractions of a `singular-path` (which appears in a comparison,
+  in a test expression, or as a function argument).
+  Members of `SingleNodeType` have no direct syntactical representation in JSONPath.
 * `NodesType` is an abstraction of a `filter-path` (which appears
   in a test expression or as a function argument).
   Members of `NodesType` have no direct syntactical representation in JSONPath.
@@ -1500,7 +1506,7 @@ The abstract instances above can be obtained from the concrete representations i
 | :---------------: | :----------------------:                                           |
 | `Value(v)`        | JSON value `v`                                                     |
 | `Nothing`         | A representation of the absence of a JSON value, distinct from the JSON literal `null`, e.g., from a Singular Path or `filter-path` resulting in an empty nodelist   |
-| `Nodes(nl)`       | A list of zero or more nodes, e.g., from a `filter-path` resulting in the nodelist `nl`, which may or may not be empty  |
+| `Nodes(nl)`       | A list of zero or more nodes, e.g., from a `filter-path` or a `singular-path` resulting in the nodelist `nl`, which may or may not be empty  |
 {: #tbl-typerep title="Concrete representations of abstract instances"}
 
 The well-typedness of function expressions can now be defined in terms of this type system.
@@ -1521,29 +1527,43 @@ A function expression is well-typed if all of the following are true:
   parameter according to one of the following rules:
    * The argument is a function expression with declared result type that is the same as the declared type of the parameter.
    * The argument is a literal primitive value and the declared type of the parameter is `ValueType`.
+   * The argument is a Singular Path and the declared type of the parameter is `SingleNodeType`.
    * The argument is a Singular Path or `filter-path` (which includes
      Singular Paths) and the declared type of the parameter is `NodesType`.
 
-{{tab-exist-value}} summarizes how the two conversion functions can be
-used to make use of functions returning nodelists, using a
+{{tab-exist-value}} summarizes how the two conversion functions behave
+with functions returning nodelists, using a
 hypothetical function `fn` of declared type `NodesType`: The table
-gives the result of the conversion function, and the effect of that
+gives the behaviour of the conversion function, and the effect of that
 result on the expression given. (`fn` is a hypothetical function
 extension that takes and results in `NodesType`; this function will
-also be used in example further below.)
+also be used in examples further below.)
 
 
 | fn(...) result         | `exist(fn(@..a))` evaluation (as a test expression) | `value(fn(@..a))==42` evaluation (in a comparison)             |
 | :-:                    | :-                                                  | :-                                                             |
-| empty nodelist         | `LogicalFalse`.<br>The test fails.                     | `Nothing`.<br>The expression result is false.                     |
-| single-node nodelist   | `LogicalTrue`.<br>The test succeeds.                   | The node's value.<br>The expression result is true if that is 42. |
-| multiple-node nodelist | `LogicalTrue`.<br>The test succeeds.                   | `Nothing`.<br>The expression result is false.                     |
+| empty nodelist         | `LogicalFalse`.<br>The test fails.                  | Not well-typed.                                                |
+| single-node nodelist   | `LogicalTrue`.<br>The test succeeds.                | Not well-typed.                                                |
+| multiple-node nodelist | `LogicalTrue`.<br>The test succeeds.                | Not well-typed.                                                |
 {: #tab-exist-value title="Using a function returning a `NodesType` in
 test expressions and comparisons"}
 
 Note that a multiple-node nodelist result is deemed `LogicalTrue` in
-a test expression, but cannot be used for obtaining a single
-value and thus feeds a comparison expression with `Nothing`.
+a test expression, but is not well-typed in a comparison expression.
+
+{{tab-single}} summarizes how the two conversion functions can be
+used to make use of functions returning singular nodelists, using a
+hypothetical function `sfn` of declared type `SingleNodeType`: The table
+gives the result of the conversion function, and the effect of that
+result on the expression given. (`sfn` is a hypothetical function
+extension that takes a `NodesType` and results in `SingleNodeType`.)
+
+| sfn(...) result        | `exist(sfn(@..a))` evaluation (as a test expression) | `value(sfn(@..a))==42` evaluation (in a comparison)               |
+| :-:                    | :-                                                   | :-                                                                |
+| empty nodelist         | `LogicalFalse`.<br>The test fails.                   | `Nothing`.<br>The comparison yields false.                        |
+| single-node nodelist   | `LogicalTrue`.<br>The test succeeds.                 | The node's value.<br>The comparison result is true if that is 42. |
+{: #tab-single title="Using a function returning a `SingleNodeType` in
+test expressions and comparisons"}
 
 
 ### `exist` Function Extension {#exist-fn}
@@ -1568,11 +1588,31 @@ If the nodelist contains one or more nodes, the result is
 `LogicalTrue`.
 If the nodelist is empty, the result is `LogicalFalse`.
 
+### `single` Function Extension {#single-fn}
+
+Parameters:
+: 1. `NodesType`
+
+Result:
+: `SingleNodeType`
+
+The "single" function extension provides a way to obtain a
+node in a nodelist and make that available for further
+processing in the filter expression:
+
+~~~ JSONPath
+$[?value(single(fn(@.*.price))) >= 7.99]
+~~~
+
+Its only argument is a nodelist.
+If the nodelist contains a single node, the result is the value of the node.
+If the nodelist is empty or contains multiple nodes, the result is `Nothing`.
+
 
 ### `value` Function Extension {#value-fn}
 
 Parameters:
-: 1. `NodesType`
+: 1. `SingleNodeType`
 
 Result:
 : `ValueType`
@@ -1582,20 +1622,16 @@ node in a single-element nodelist and make that available for further
 processing in the filter expression:
 
 ~~~ JSONPath
-$[?value(fn(@.*.price)) >= 7.99]
+$[?value(fn(@.price)) >= 7.99]
 ~~~
 
-Its only argument is a nodelist.
+Its only argument is a singular nodelist.
 If the nodelist contains a single node, the result is the value of the node.
-If the nodelist is empty or contains multiple nodes, the result is `Nothing`.
+If the nodelist is empty, the result is `Nothing`.
 
 The effect of the `value` function is similar to the extraction of a
 node value that is performed when a query expression is used as either
-side of a comparison operator.  These query expressions, however, are
-syntactically limited to singular paths.  Here, the argument might be
-a nodelist with multiple nodes: it would be confusing to notate
-queries such as `fn(@..a) == fn(@..b)` without explicit indication
-that an extraction of a single value takes place at either side.
+side of a comparison operator.
 
 
 ### `length` Function Extension {#length}
@@ -2142,11 +2178,14 @@ Initial entries in this sub-registry are as listed in {{pre-reg}}; the
 Column "Change Controller" always has the value "IESG" and the column
 "Reference" always has the value "{{fnex}} of RFCthis":
 
-| Function Name | Brief description                  | Parameters               | Result        |
-| length        | length of array                    | `ValueType`              | `ValueType`   |
-| count         | size of nodelist                   | `NodesType`              | `ValueType`   |
-| match         | regular expression full match      | `ValueType`, `ValueType` | `LogicalType` |
-| search        | regular expression substring match | `ValueType`, `ValueType` | `LogicalType` |
+| Function Name | Brief description                  | Parameters               | Result           |
+| exist         | non-emptiness of nodelist          | `NodesType`              | `LogicalType`    |
+| single        | the one node in a nodelist         | `NodesType`              | `SingleNodeType` |
+| value         | value of singular nodelist         | `SingleNodeType`         | `ValueType`      |
+| length        | length of array                    | `ValueType`              | `ValueType`      |
+| count         | size of nodelist                   | `NodesType`              | `ValueType`      |
+| match         | regular expression full match      | `ValueType`, `ValueType` | `LogicalType`    |
+| search        | regular expression substring match | `ValueType`, `ValueType` | `LogicalType`    |
 {: #pre-reg title="Initial Entries in the Function Extensions Subregistry"}
 
 
