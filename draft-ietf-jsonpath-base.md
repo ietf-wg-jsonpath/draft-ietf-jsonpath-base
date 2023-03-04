@@ -1494,7 +1494,7 @@ Notes:
 * `LogicalType` is an abstraction of the result of a `logical-expr`.
   Its two instances, `LogicalTrue` and `LogicalFalse`, are not related to
   the JSON literals `true` and `false` and have no direct syntactical representation in JSONPath.
-* `SingleNodeType` is an abstractions of a `singular-path` (which appears in a comparison,
+* `SingleNodeType` is an abstraction of a `singular-path` (which appears in a comparison,
   in a test expression, or as a function argument).
   Members of `SingleNodeType` have no direct syntactical representation in JSONPath.
 * `NodesType` is an abstraction of a `filter-path` (which appears
