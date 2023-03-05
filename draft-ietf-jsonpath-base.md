@@ -1172,11 +1172,16 @@ If a declared function result type is any other than `SingleNodeType`, `NodesTyp
 its use in a test expression is not well-typed.
 
 ~~~ abnf
-
 test-expr           = [logical-not-op S]
                       (filter-path /  ; path existence/non-existence
-                       function-expr) ; SingleNodeType/NodesType
-                                      ; existence or LogicalType
+                       logical-func /
+                       nodes-func /
+                       single-node-func)
+
+logical-func        = function-expr ; LogicalType
+nodes-func          = function-expr ; NodesType
+single-node-func    = function-expr ; SingleNodeType
+
 filter-path         = rel-path / json-path
 rel-path            = current-node-identifier segments
 current-node-identifier = "@"
@@ -1197,7 +1202,9 @@ literal             = number / string-literal /
                       true / false / null
 comparable          = literal /
                       singular-path /   ; Singular Path -> value
-                      function-expr  ; ValueType/SingleNodeType
+                      value-func /
+                      single-node-func
+value-func          = function-expr  ; ValueType
 comparison-op       = "==" / "!=" /
                       "<=" / ">=" /
                       "<"  / ">"
@@ -1485,7 +1492,7 @@ a nodelist.
 | `ValueType`          | `Value(v)`, `Nothing`                    |
 | `LogicalType`        | `LogicalTrue`, `LogicalFalse`            |
 | `SingleNodeType`     | `Nodes(nl1)`                             |
-| `NodesType`       | `Nodes(nl)`                              |
+| `NodesType`          | `Nodes(nl)`                              |
 {: #tbl-types title="Function extension type system"}
 
 Notes:
