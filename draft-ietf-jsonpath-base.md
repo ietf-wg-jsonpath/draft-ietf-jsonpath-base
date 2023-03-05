@@ -1174,14 +1174,8 @@ its use in a test expression is not well-typed.
 ~~~ abnf
 test-expr           = [logical-not-op S]
                       (filter-path /  ; path existence/non-existence
-                       logical-func /
-                       nodes-func /
-                       single-node-func)
-
-logical-func        = function-expr ; LogicalType
-nodes-func          = function-expr ; NodesType
-single-node-func    = function-expr ; SingleNodeType
-
+                       function-expr) ; SingleNodeType/NodesType
+                                      ; existence or LogicalType
 filter-path         = rel-path / json-path
 rel-path            = current-node-identifier segments
 current-node-identifier = "@"
@@ -1202,9 +1196,7 @@ literal             = number / string-literal /
                       true / false / null
 comparable          = literal /
                       singular-path /   ; Singular Path -> value
-                      value-func /
-                      single-node-func
-value-func          = function-expr  ; ValueType
+                      function-expr  ; ValueType/SingleNodeType
 comparison-op       = "==" / "!=" /
                       "<=" / ">=" /
                       "<"  / ">"
