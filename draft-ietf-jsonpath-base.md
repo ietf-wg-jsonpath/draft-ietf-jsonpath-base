@@ -1530,9 +1530,6 @@ A function expression is well-typed if all of the following are true:
   to have a result type of `LogicalType`, `SingleNodeType`, or `NodesType`.
 * If it occurs directly as a `comparable` in a comparison, the
   function is declared to have a result type of `ValueType` or `SingleNodeType`.
-* Otherwise, it occurs as an argument to a further function
-  expression and the following rules for function arguments apply to
-  its declared result type.
 * Each argument of the function conforms to the declared type of the corresponding declared
   parameter according to one of the following rules:
    * The argument is a function expression with declared result type that is the same as
