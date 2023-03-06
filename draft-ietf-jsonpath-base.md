@@ -1540,6 +1540,7 @@ extension that takes and results in `NodesType`; this function will
 also be used in examples further below.)
 
 
+
 | fn(...) result         | `exist(fn(@..a))` evaluation (as a test expression) | `value(fn(@..a))==42` evaluation (in a comparison)             |
 | :-:                    | :-                                                  | :-                                                             |
 | empty nodelist         | `LogicalFalse`.<br>The test fails.                  | Not well-typed.                                                |
@@ -1609,6 +1610,7 @@ If the nodelist contains a single node, the result is the value of the node.
 If the nodelist is empty or contains multiple nodes, the result is `Nothing`.
 
 
+
 ### `value` Function Extension {#value-fn}
 
 Parameters:
@@ -1632,6 +1634,7 @@ If the nodelist is empty, the result is `Nothing`.
 The effect of the `value` function is similar to the extraction of a
 node value that is performed when a query expression is used as either
 side of a comparison operator.
+
 
 
 ### `length` Function Extension {#length}
