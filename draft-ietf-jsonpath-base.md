@@ -1537,6 +1537,12 @@ A function expression is well-typed if all of the following are true:
      * a function with declared type of `SingleNodeType` or `NodesType`
      * a `filter-path`
 
+### Processing Nodelists as Arguments
+
+When any `singular-path` or function expression with declared type of `SingleNodeType` appears as an argument for a parameter of type `ValueType`, each such path or function expression is replaced by the value of its node or `Nothing` if it is empty.
+
+When any `filter-path` or function expression with declared type of `SingleNodeType` or `NodesType` appears as an argument for a parameter of type `LogicalType`, each such path or function expression is replaced by `LogicalTrue` if the resulting nodelist contains any nodes and `LogicalFalse` if the resulting nodelist is empty.
+
 ### `length` Function Extension {#length}
 
 Parameters:
