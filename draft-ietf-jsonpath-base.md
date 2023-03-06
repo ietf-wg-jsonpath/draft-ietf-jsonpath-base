@@ -733,15 +733,17 @@ HEXDIG              = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
 
 Note: `double-quoted` strings follow the JSON string syntax ({{Section 7 of RFC8259}});
 `single-quoted` strings follow an analogous pattern ({{syntax-index}}).
-No attempt was made to improve on this syntax, so characters with
-scalar values above 0x10000, such as <u format="num-lit-name">🤔</u>, need to be represented
+No attempt was made to improve on this syntax, so if it is desired to
+escape characters with
+scalar values above 0x10000, such as <u format="num-lit-name">🤔</u>,
+they need to be represented
 by a pair of surrogate escapes (`"\uD83E\uDD14"` in this case).
 
 #### Semantics
 {: unnumbered}
 
 A `name-selector` string MUST be converted to a
-member name M by removing the surrounding quotes and
+member name `M` by removing the surrounding quotes and
 replacing each escape sequence with its equivalent Unicode character, as
 in the table below:
 
@@ -760,15 +762,15 @@ in the table below:
 {: title="Escape Sequence Replacements" cols="c c"}
 
 Applying the `name-selector` to an object node
-selects a member value whose name equals the member name M,
+selects a member value whose name equals the member name `M`,
 or selects nothing if there is no such member value.
 Nothing is selected from a value that is not an object.
 
-Note that processing the name selector requires comparing the member name string M
+Note that processing the name selector requires comparing the member name string `M`
 with member name strings in the JSON to which the selector is being applied.
 Two strings MUST be considered equal if and only if they are identical
 sequences of Unicode scalar values. In other words, normalization operations
-MUST NOT be applied to either the member name string M from the JSONPath or to
+MUST NOT be applied to either the member name string `M` from the JSONPath or to
 the member name strings in the JSON prior to comparison.
 
 #### Examples
