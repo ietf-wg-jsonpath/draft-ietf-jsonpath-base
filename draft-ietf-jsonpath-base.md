@@ -1521,19 +1521,21 @@ A function expression is well-typed if all of the following are true:
   to have a result type of `LogicalType`, `SingleNodeType`, or `NodesType`.
 * If it occurs directly as a `comparable` in a comparison, the
   function is declared to have a result type of `ValueType` or `SingleNodeType`.
-* Otherwise, it occurs as an argument to a further function
-  expression and the following rules for function arguments apply to
-  its declared result type.
 * Each argument of the function conforms to the declared type of the corresponding declared
-  parameter according to one of the following rules:
-   * The argument is a function expression with declared result type that is the same as
-     the declared type of the parameter.
-   * The argument is a function expression with declared result type `SingleNodeType` and
-     the declared type of the parameter is `NodesType`.
-   * The argument is a literal primitive value and the declared type of the parameter is `ValueType`.
-   * The argument is a Singular Path and the declared type of the parameter is `SingleNodeType`.
-   * The argument is a Singular Path or `filter-path` (which includes
-     Singular Paths) and the declared type of the parameter is `NodesType`.
+  parameter according to one of the following scenarios:
+   * The declared type of the parameter is `ValueType` and the argument is one of:
+     * a function with declared type of `ValueType` or `SingleNodeType`
+     * a `singular-path`
+     * a `literal`
+   * The declared type of the parameter is `LogicalType` and the argument is one of:
+     * a function with declared type of `LogicalType`, `SingleNodeType`, or `NodesType`
+     * a `filter-path` (which includes `singular-path`)
+   * The declared type of the parameter is `SingleNodeType` and the argument is one of:
+     * a function with declared type of `SingleNodeType`
+     * a `singular-path`
+   * The declared type of the parameter is `NodesType` and the argument is one of:
+     * a function with declared type of `SingleNodeType` or `NodesType`
+     * a `filter-path`
 
 ### `length` Function Extension {#length}
 
