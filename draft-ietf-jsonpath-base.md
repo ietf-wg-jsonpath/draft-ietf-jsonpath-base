@@ -1498,6 +1498,8 @@ Notes:
 * `NodesType` is an abstraction of a `filter-path` (which appears
   in a test expression or as a function argument).
   Members of `NodesType` have no direct syntactical representation in JSONPath.
+* `SingleNodeType` is a subtype of `NodesType`. An instance of `SingleNodeType` is well-typed
+  wherever an instance of `NodesType` is well-typed.
 
 The abstract instances above can be obtained from the concrete representations in {{tbl-typerep}}.
 
