@@ -1113,11 +1113,6 @@ When a function is defined, it is given a unique name, and its return value and 
 The type system is limited in scope; its purpose is to express
 restrictions that, without functions, are implicit in the grammar of
 filter expressions.
-The type system is supported by the two conversion functions `exist`
-and `value` (see Sections {{<exist-fn}} and {{<value-fn}}), which enable
-explicitly performing transitions between different types, mimicking
-the way different kinds of expressions are handled in the grammar when
-function expressions are not in use.
 
 #### Syntax
 {: unnumbered}
@@ -1166,20 +1161,22 @@ logical-not-op      = "!"               ; logical NOT operator
 ~~~~
 
 A test expression
-either tests the existence of a node
-designated by an embedded query (see {{extest}}) or tests the
+either tests the existence of nodes
+designated by an embedded query or by a function expression of declared type
+`SingleNodeType` or `NodesType` (see {{extest}}) or tests the
 result of a function expression of declared type `LogicalType` (see
 {{fnex}}).
 In the latter case, the test expression tests whether the function
 result is `LogicalTrue`.
-If the declared function result type is any other than `LogicalType`,
+If a declared function result type is any other than `SingleNodeType`, `NodesType`, or `LogicalType`,
 its use in a test expression is not well-typed.
 
 ~~~ abnf
 
 test-expr           = [logical-not-op S]
                       (filter-path /  ; path existence/non-existence
-                       function-expr) ; LogicalType
+                       function-expr) ; SingleNodeType/NodesType
+                                      ; existence or LogicalType
 filter-path         = rel-path / json-path
 rel-path            = current-node-identifier segments
 current-node-identifier = "@"
@@ -1190,8 +1187,8 @@ Comparison expressions are available for comparisons between primitive
 values (that is, numbers, strings, `true`, `false`, and `null`).
 These can be obtained via literal values; Singular Paths, each of
 which selects at most one node the value of which is then used; and
-function expressions (see {{fnex}}) of type `ValueType`.
-If the declared function result type is any other than `ValueType`,
+function expressions (see {{fnex}}) of type `ValueType` or `SingleNodeType`.
+If the declared function result type is any other than `ValueType` or `SingleNodeType`,
 its use in a comparison expression is not well-typed.
 
 ~~~~ abnf
@@ -1200,7 +1197,7 @@ literal             = number / string-literal /
                       true / false / null
 comparable          = literal /
                       singular-path /   ; Singular Path -> value
-                      function-expr  ; ValueType
+                      function-expr  ; ValueType/SingleNodeType
 comparison-op       = "==" / "!=" /
                       "<=" / ">=" /
                       "<"  / ">"
@@ -1258,13 +1255,16 @@ Children of an array appear in array order in the resultant nodelist.
 {: unnumbered}
 
 A path by itself in a Logical context is an existence test which yields true if the path selects at least one node and yields false if the path does not select any nodes.
+A function expression with result type `SingleNodeType` or `NodesType` in a Logical context is an existence test
+which yields true if the function returns a non-empty nodelist and yields false if the function returns an empty node-list.
 
 Existence tests differ from comparisons in that:
 
 * they work with arbitrary relative or absolute paths (not just Singular Paths).
 * they work with paths that select structured values.
+* they work with function expressions with result type `SingleNodeType` or `NodesType` (not just `SingleNodeType`).
 
-To test the value of a node selected by a path, an explicit comparison is necessary.
+To test the value of a node selected by a path or returned by a function expression, an explicit comparison is necessary.
 For example, to test whether the node selected by the path `@.foo` has the value `null`, use `@.foo == null` (see {{null-semantics}})
 rather than the negated existence test `!@.foo` (which yields false if `@.foo` selects a node, regardless of the node's value).
 
@@ -1273,14 +1273,15 @@ rather than the negated existence test `!@.foo` (which yields false if `@.foo` s
 
 The comparison operators `==` and `<` are defined first and then these are used to define `!=`, `<=`, `>`, and `>=`.
 
-When a path resulting in an empty nodelist appears on either side of a comparison:
+When a path or function expression resulting in an empty nodelist appears on either side of a comparison:
 
 * a comparison using the operator `==` yields true if and only if the comparison
-is between two paths each of which result in an empty nodelist.
+is between two paths or function expressions each of which result in an empty nodelist.
 
 * a comparison using the operator `<` yields false.
 
-When any path on either side of a comparison results in a nodelist consisting of a single node, each such path is
+When any path or function expression on either side of a comparison results in a nodelist consisting of a single node, each such path
+or function expression is
 replaced by the value of its node and then:
 
 * a comparison using the operator `==` yields true if and only if the comparison
@@ -1457,8 +1458,8 @@ literal (which yields a `ValueType`), or a function expression (which
 yields the declared type of the function named).
 
 According to {{filter-selector}}, a `function-expr` is valid as part of
-a test expression (if the declared type is `LogicalType`) or as a
-`comparable` (if the declared type is `ValueType`).
+a test expression (if the declared type is `SingleNodeType`, `NodesType`, or `LogicalType`) or as a
+`comparable` (if the declared type is `ValueType` or `SingleNodeType`).
 
 Any function expressions in a query must be well-formed (by conforming to the above ABNF)
 and well-typed,
@@ -1475,13 +1476,15 @@ A type is a set of instances.
 Declared types enable checking a JSONPath query for well-typedness
 independent of any argument the JSONPath query is applied to.
 
-{{tbl-types}} defines the available types in terms of abstract instances, where `n` denotes a node, `v` denotes a value, and `nl` denotes
+{{tbl-types}} defines the available types in terms of abstract instances, where `n` denotes a node, `v` denotes a value, `nl1` denotes a nodelist
+with at most one node, and `nl` denotes
 a nodelist.
 
 | Type                 | Abstract Instances                       |
 | :--                  | :----------------                        |
 | `ValueType`          | `Value(v)`, `Nothing`                    |
 | `LogicalType`        | `LogicalTrue`, `LogicalFalse`            |
+| `SingleNodeType`     | `Nodes(nl1)`                             |
 | `NodesType`       | `Nodes(nl)`                              |
 {: #tbl-types title="Function extension type system"}
 
@@ -1491,6 +1494,9 @@ Notes:
 * `LogicalType` is an abstraction of the result of a `logical-expr`.
   Its two instances, `LogicalTrue` and `LogicalFalse`, are not related to
   the JSON literals `true` and `false` and have no direct syntactical representation in JSONPath.
+* `SingleNodeType` is an abstraction of a `singular-path` (which appears in a comparison,
+  in a test expression, or as a function argument).
+  Members of `SingleNodeType` have no direct syntactical representation in JSONPath.
 * `NodesType` is an abstraction of a `filter-path` (which appears
   in a test expression or as a function argument).
   Members of `NodesType` have no direct syntactical representation in JSONPath.
@@ -1501,7 +1507,7 @@ The abstract instances above can be obtained from the concrete representations i
 | :---------------: | :----------------------:                                           |
 | `Value(v)`        | JSON value `v`                                                     |
 | `Nothing`         | A representation of the absence of a JSON value, distinct from the JSON literal `null`, e.g., from a Singular Path or `filter-path` resulting in an empty nodelist   |
-| `Nodes(nl)`       | A list of zero or more nodes, e.g., from a `filter-path` resulting in the nodelist `nl`, which may or may not be empty  |
+| `Nodes(nl)`       | A list of zero or more nodes, e.g., from a `filter-path` or a `singular-path` resulting in the nodelist `nl`, which may or may not be empty  |
 {: #tbl-typerep title="Concrete representations of abstract instances"}
 
 The well-typedness of function expressions can now be defined in terms of this type system.
@@ -1511,92 +1517,20 @@ The well-typedness of function expressions can now be defined in terms of this t
 A function expression is well-typed if all of the following are true:
 
 * If it occurs directly in a test expression, the function is declared
-  to have a result type of `LogicalType`.
+  to have a result type of `LogicalType`, `SingleNodeType`, or `NodesType`.
 * If it occurs directly as a `comparable` in a comparison, the
-  function is declared to have a result type of `ValueType`.
+  function is declared to have a result type of `ValueType` or `SingleNodeType`.
 * Otherwise, it is occurring as an argument to a further function
   expression, and the following rules for function arguments apply to
   its declared result type.
 * Each argument of the function can be used for the declared type of the corresponding declared
   parameter according to one of the following rules:
-   * The argument is a function expression with declared result type that is the same as the declared type of the parameter.
+   * The argument is a function expression with declared result type that is the same as,
+     or a subtype of, the declared type of the parameter.
    * The argument is a literal primitive value and the declared type of the parameter is `ValueType`.
+   * The argument is a Singular Path and the declared type of the parameter is `SingleNodeType`.
    * The argument is a Singular Path or `filter-path` (which includes
      Singular Paths) and the declared type of the parameter is `NodesType`.
-
-{{tab-exist-value}} summarizes how the two conversion functions can be
-used to make use of functions returning nodelists, using a
-hypothetical function `fn` of declared type `NodesType`: The table
-gives the result of the conversion function, and the effect of that
-result on the expression given. (`fn` is a hypothetical function
-extension that takes and results in `NodesType`; this function will
-also be used in example further below.)
-
-
-| fn(...) result         | `exist(fn(@..a))` evaluation (as a test expression) | `value(fn(@..a))==42` evaluation (in a comparison)             |
-| :-:                    | :-                                                  | :-                                                             |
-| empty nodelist         | `LogicalFalse`.<br>The test fails.                     | `Nothing`.<br>The expression result is false.                     |
-| single-node nodelist   | `LogicalTrue`.<br>The test succeeds.                   | The node's value.<br>The expression result is true if that is 42. |
-| multiple-node nodelist | `LogicalTrue`.<br>The test succeeds.                   | `Nothing`.<br>The expression result is false.                     |
-{: #tab-exist-value title="Using a function returning a `NodesType` in
-test expressions and comparisons"}
-
-Note that a multiple-node nodelist result is deemed `LogicalTrue` in
-a test expression, but cannot be used for obtaining a single
-value and thus feeds a comparison expression with `Nothing`.
-
-
-### `exist` Function Extension {#exist-fn}
-
-Parameters:
-: 1. `NodesType`
-
-Result:
-: `LogicalType`
-
-The "exist" function extension returns `LogicalTrue` if the nodelist
-given consists of at least one node, `LogicalFalse` otherwise:
-
-~~~ JSONPath
-$[?exist(fn(@.*.price))]
-~~~
-
-The effect of the `exist` function is similar to the existence test
-that is performed when a query expression is directly used in a test
-expression:
-If the nodelist contains one or more nodes, the result is
-`LogicalTrue`.
-If the nodelist is empty, the result is `LogicalFalse`.
-
-
-### `value` Function Extension {#value-fn}
-
-Parameters:
-: 1. `NodesType`
-
-Result:
-: `ValueType`
-
-The "value" function extension provides a way to obtain the value of a
-node in a single-element nodelist and make that available for further
-processing in the filter expression:
-
-~~~ JSONPath
-$[?value(fn(@.*.price)) >= 7.99]
-~~~
-
-Its only argument is a nodelist.
-If the nodelist contains a single node, the result is the value of the node.
-If the nodelist is empty or contains multiple nodes, the result is `Nothing`.
-
-The effect of the `value` function is similar to the extraction of a
-node value that is performed when a query expression is used as either
-side of a comparison operator.  These query expressions, however, are
-syntactically limited to singular paths.  Here, the argument might be
-a nodelist with multiple nodes: it would be confusing to notate
-queries such as `fn(@..a) == fn(@..b)` without explicit indication
-that an extraction of a single value takes place at either side.
-
 
 ### `length` Function Extension {#length}
 
