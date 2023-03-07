@@ -1522,7 +1522,7 @@ A function expression is well-typed if all of the following are true:
 * If it occurs directly as a `comparable` in a comparison, the
   function is declared to have a result type of `ValueType` or `SingleNodeType`.
 * Each argument of the function conforms to the declared type of the corresponding declared
-  parameter according to one of the following scenarios:
+  parameter according to one of the following:
    * The declared type of the parameter is `ValueType` and the argument is one of:
      * a function with declared type of `ValueType` or `SingleNodeType`
      * a `singular-path`
