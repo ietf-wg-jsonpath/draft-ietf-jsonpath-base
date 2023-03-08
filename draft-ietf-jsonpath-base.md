@@ -1535,7 +1535,7 @@ A function expression is well-typed if all of the following are true:
      * a function with declared type of `SingleNodeType`
      * a `singular-path`
    * The declared type of the parameter is `NodesType` and the argument is one of:
-     * a function with declared type of `SingleNodeType` or `NodesType`
+     * a function with declared type of `NodesType` or `SingleNodeType`
      * a `filter-path`
 
 ### Processing Nodelists as Arguments
