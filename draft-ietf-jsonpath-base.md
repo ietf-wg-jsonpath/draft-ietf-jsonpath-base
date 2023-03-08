@@ -1508,7 +1508,7 @@ The following implicit type conversion may occur:
   * If the nodelist contains one or more nodes, the conversion result
     is `LogicalTrue`.
   * If the nodelist is empty, the conversion result is `LogicalFalse`.
-  
+
 An expression with a declared type of `NodesType` can be converted to a `ValueType` using the explicit type conversion function `value()` (see {{value}}).
 
 The well-typedness of function expressions can now be defined in terms of this type system.
