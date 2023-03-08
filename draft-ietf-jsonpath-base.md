@@ -1499,21 +1499,17 @@ The abstract instances above can be obtained from the concrete representations i
 | `Nodes(nl)`       | A list of zero or more nodes, e.g., from a `filter-path` resulting in the nodelist `nl`, which may or may not be empty  |
 {: #tbl-typerep title="Concrete representations of abstract instances"}
 
-### Type Conversions {#type-conv}
+### Type Conversion {#type-conv}
 
-The following type conversions may occur:
+The following implicit type conversion may occur:
 
-* Where an expression with a declared type of `NodesType` needs to be
-  converted to a `ValueType`, the conversion proceeds as follows:
-  * If the nodelist contains a single node, the conversion result is
-    the value of the node.
-  * If the nodelist is empty or contains multiple nodes, the
-    conversion result is `Nothing`.
 * Where a member of `NodesType` needs to be converted to a
   `LogicalType`, the conversion proceeds as follows:
   * If the nodelist contains one or more nodes, the conversion result
     is `LogicalTrue`.
   * If the nodelist is empty, the conversion result is `LogicalFalse`.
+  
+An expression with a declared type of `NodesType` can be converted to a `ValueType` using the explicit type conversion function `value()` (see {{value}}).
 
 The well-typedness of function expressions can now be defined in terms of this type system.
 
@@ -1536,37 +1532,9 @@ A function expression is well-typed if all of the following are true:
    * The argument is a literal primitive value and the defined type of the parameter is `ValueType`.
    * The argument is a Singular Path or `filter-path` (which includes
      Singular Paths), or a function expression with declared result
-     type `NodesType`.  Where the declared type of the parameter is
+     type `NodesType` and the defined type of the parameter is `NodesType`.
+     Where the declared type of the parameter is
      not `NodesType`, a conversion applies.
-
-#### Conversion example
-{:unnumbered}
-
-While functions returning `NodesType` can appear in both comparisons and test expressions,
-path authors must be aware of the conversions and the potential outcomes.
-Specifically, nodelists convert to values and logicals according to {{tbl-typeconv}}:
-
-| Function return        | Converted as Value    | Converted as Logical |
-| :-:                    | :-:                   | :-:                  |
-| empty nodelist         | `Nothing`             | `LogicalFalse`       |
-| single-node nodelist   | the node's JSON value | `LogicalTrue`        |
-| multiple-node nodelist | `Nothing`             | `LogicalTrue`        |
-{: #tbl-typeconv title="Conversion of nodelists to values and logicals"}
-
-For example, given a function `myfunc()` of declared result type
-`NodesType`, the following filter expressions are both valid but can
-have different and unexpected results:
-
-| function result        | `myfunc(@.a)` evaluation (as a test expression)                              | `myfunc(@.a)==42` evaluation (in a comparison)                                |
-| :-:                    | :-                                                                           | :-                                                                            |
-| empty nodelist         | The nodelist is converted to `LogicalFalse`.<br>The expression result is false. | The empty nodelist is converted to `Nothing`.<br>The expression result is false. |
-| single-node nodelist   | The nodelist is converted to `LogicalTrue`.<br>The expression result is true.   | The nodelist is converted to the node's value.<br>The expression result is true. |
-| multiple-node nodelist | The nodelist is converted to `LogicalTrue`.<br>The expression result is true.   | The nodelist is converted to `Nothing`.<br>The expression result is false.       |
-
-Note that a multiple-node nodelist result is deemed `LogicalTrue` in
-the test expression, but cannot be used for conversion to a single
-value and thus feeds a comparison with `Nothing`.
-
 
 ### `length` Function Extension {#length}
 
@@ -1669,6 +1637,31 @@ Otherwise, the string that is the first argument is searched for at
 least one substring that matches the iregexp contained in the string
 that is the second argument; the result is `LogicalTrue` if such a
 substring exists and `LogicalFalse` otherwise.
+
+
+### `value` Function Extension {#value}
+
+Parameters:
+: 1. `NodesType`
+
+Result:
+: `ValueType`
+
+The "value" function extension provides a way to convert a instance of `NodesType` to a value and
+make that available for further processing in the filter expression:
+
+~~~ JSONPath
+$[?value(@..color) == "red"]
+~~~
+
+Its only argument is an instance of `NodesType` (possibly taken from a
+`filter-path` as in the example above).  The result is an
+instance of `ValueType`.
+
+* If the argument contains a single node, the result is
+  the value of the node.
+* If the argument is `Nothing` or contains multiple nodes, the
+  result is `Nothing`.
 
 
 ### Examples
