@@ -1263,7 +1263,7 @@ Existence tests differ from comparisons in that:
 * they work with arbitrary relative or absolute paths (not just Singular Paths).
 * they work with paths that select structured values.
 
-To test the value of a node selected by a path, an explicit comparison is necessary.
+To examine the value of a node selected by a path, an explicit comparison is necessary.
 For example, to test whether the node selected by the path `@.foo` has the value `null`, use `@.foo == null` (see {{null-semantics}})
 rather than the negated existence test `!@.foo` (which yields false if `@.foo` selects a node, regardless of the node's value).
 
@@ -1272,14 +1272,13 @@ rather than the negated existence test `!@.foo` (which yields false if `@.foo` s
 
 The comparison operators `==` and `<` are defined first and then these are used to define `!=`, `<=`, `>`, and `>=`.
 
-When a path resulting in an empty nodelist appears on either side of a comparison:
+When either side of a comparison results in an empty nodelist or `Nothing`:
 
-* a comparison using the operator `==` yields true if and only if the comparison
-is between two paths each of which result in an empty nodelist.
+* a comparison using the operator `==` yields true if and only the other side also results in an empty nodelist or `Nothing`.
 
 * a comparison using the operator `<` yields false.
 
-When any path on either side of a comparison results in a nodelist consisting of a single node, each such path is
+When any path or function expression on either side of a comparison results in a nodelist consisting of a single node, that side is
 replaced by the value of its node and then:
 
 * a comparison using the operator `==` yields true if and only if the comparison
@@ -1465,7 +1464,7 @@ a type system is first introduced.
 
 ### Type System for Function Expressions {#typesys}
 
-Each parameter and the result of a function extension must have a declared type.
+Each parameter as well as the result of a function extension must have a declared type.
 
 A type is a set of instances.
 Declared types enable checking a JSONPath query for well-typedness
@@ -1528,7 +1527,7 @@ A function expression is well-typed if all of the following are true:
 * If it occurs directly as a `comparable` in a comparison, the
   function is declared to have a result type of `ValueType`, or
   (conversion applies) `NodesType`.
-* Otherwise, it is occurring as an argument to a further function
+* Otherwise, it occurs as an argument in another function
   expression, and the following rules for function arguments apply to
   its declared result type.
 * Each argument of the function can be used for the declared type of the corresponding declared
