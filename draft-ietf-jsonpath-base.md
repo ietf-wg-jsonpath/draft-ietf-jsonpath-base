@@ -1263,7 +1263,7 @@ Existence tests differ from comparisons in that:
 * they work with arbitrary relative or absolute paths (not just Singular Paths).
 * they work with paths that select structured values.
 
-To test the value of a node selected by a path, an explicit comparison is necessary.
+To examine the value of a node selected by a path, an explicit comparison is necessary.
 For example, to test whether the node selected by the path `@.foo` has the value `null`, use `@.foo == null` (see {{null-semantics}})
 rather than the negated existence test `!@.foo` (which yields false if `@.foo` selects a node, regardless of the node's value).
 
