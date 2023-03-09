@@ -1272,14 +1272,18 @@ rather than the negated existence test `!@.foo` (which yields false if `@.foo` s
 
 The comparison operators `==` and `<` are defined first and then these are used to define `!=`, `<=`, `>`, and `>=`.
 
-When a path resulting in an empty nodelist appears on either side of a comparison:
+When a path resulting in an empty nodelist or a function expression returning `Nothing` appears on either side of a comparison:
 
 * a comparison using the operator `==` yields true if and only if the comparison
-is between two paths each of which result in an empty nodelist.
+is between:
+    * two paths each of which result in an empty nodelist,
+    * two functions each of which returns `Nothing`, or
+    * a path which results in an empty nodelist and a function which returns `Nothing`.
 
 * a comparison using the operator `<` yields false.
 
-When any path on either side of a comparison results in a nodelist consisting of a single node, each such path is
+When any path or function expression on either side of a comparison results in a nodelist consisting of a single node, each such path
+or function expression is
 replaced by the value of its node and then:
 
 * a comparison using the operator `==` yields true if and only if the comparison
@@ -1465,7 +1469,7 @@ a type system is first introduced.
 
 ### Type System for Function Expressions {#typesys}
 
-Each parameter and the result of a function extension must have a declared type.
+Each parameter as well as the result of a function extension must have a declared type.
 
 A type is a set of instances.
 Declared types enable checking a JSONPath query for well-typedness
