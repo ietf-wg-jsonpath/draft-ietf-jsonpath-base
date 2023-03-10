@@ -1675,7 +1675,9 @@ instance of `ValueType`.
 | `$[?count(1) == 1]` | not well-typed since `1` is not a path  |
 | `$[?count(foo(@.*)) == 1]` | well-typed, where `foo` is a function extension with a parameter of type `NodesType` and result type `NodesType` |
 | `$[?match(@.timezone, 'Europe/.*')]`         | well-typed |
-| `$[?match(@.timezone, 'Europe/.*') == true]` | not well-typed as JSONPath logicals may not be used in comparisons |
+| `$[?match(@.timezone, 'Europe/.*') == true]` | not well-typed as `LogicalType` may not be used in comparisons |
+| `$[?value(@..color) == "red"]` | well-typed |
+| `$[?value(@..color)]` | not well-typed as `ValueType` may not be used in a test expression |
 {: title="Function expression examples"}
 
 ## Segments  {#segments-details}
