@@ -2307,7 +2307,7 @@ JSONPath:
   set* resulting from the previous path fragment. Indices always start
   at 1.
 * With JSONPath, square brackets operate on each of the nodes in the *nodelist*
-  resulting from the previous path fragment. Array indices always start
+  resulting from the previous query segment. Array indices always start
   at 0.
 
 # JSON Pointer
