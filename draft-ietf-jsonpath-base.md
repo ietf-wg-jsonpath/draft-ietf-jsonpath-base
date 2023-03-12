@@ -1470,7 +1470,7 @@ A type is a set of instances.
 Declared types enable checking a JSONPath query for well-typedness
 independent of any argument the JSONPath query is applied to.
 
-{{tbl-types}} defines the available types in terms of abstract instances, where `n` denotes a node, `v` denotes a value, and `nl` denotes
+{{tbl-types}} defines the available types in terms of abstract instances, where `v` denotes a value, and `nl` denotes
 a nodelist.
 
 | Type                 | Abstract Instances                       |
