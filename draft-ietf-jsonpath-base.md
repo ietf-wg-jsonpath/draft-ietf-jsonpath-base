@@ -2107,10 +2107,11 @@ Column "Change Controller" always has the value "IESG" and the column
 "Reference" always has the value "{{fnex}} of RFCthis":
 
 | Function Name | Brief description                  | Parameters               | Result        |
-| length        | length of array                    | `ValueType`              | `ValueType`   |
+| length        | length of string, array, object    | `ValueType`              | `ValueType`   |
 | count         | size of nodelist                   | `NodesType`              | `ValueType`   |
 | match         | regular expression full match      | `ValueType`, `ValueType` | `LogicalType` |
 | search        | regular expression substring match | `ValueType`, `ValueType` | `LogicalType` |
+| value         | value of single node in nodelist   | `NodesType`              | `ValueType`   |
 {: #pre-reg title="Initial Entries in the Function Extensions Subregistry"}
 
 
