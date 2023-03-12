@@ -1647,7 +1647,7 @@ Parameters:
 Result:
 : `ValueType`
 
-The "value" function extension provides a way to convert a instance of `NodesType` to a value and
+The "value" function extension provides a way to convert an instance of `NodesType` to a value and
 make that available for further processing in the filter expression:
 
 ~~~ JSONPath
