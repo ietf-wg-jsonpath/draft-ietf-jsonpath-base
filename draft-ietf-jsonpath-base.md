@@ -45,7 +45,6 @@ author:
   role: editor
   name: Carsten Bormann
   org: Universität Bremen TZI
-  orgascii: Universitaet Bremen TZI
   street: Postfach 330440
   city: Bremen
   code: D-28359
@@ -272,7 +271,7 @@ Unicode Scalar Value:
 Singular Nodelist:
 : A nodelist containing at most one node.
 
-Singular Path:
+Singular Query:
 : A JSONPath expression built from segments each of which, regardless of the input value,
   produces a Singular Nodelist.
 
@@ -547,7 +546,7 @@ stands for a nodelist that contains the root node of the argument,
 followed by a possibly empty sequence of *segments*.
 
 ~~~~ abnf
-json-path           = root-identifier segments
+jsonpath-query      = root-identifier segments
 segments            = *(S segment)
 ~~~~
 
@@ -1177,18 +1176,18 @@ test expression is not well-typed.
 ~~~ abnf
 
 test-expr           = [logical-not-op S]
-                      (filter-path /  ; path existence/non-existence
-                       function-expr) ; LogicalType or
-                                      ; NodesType
-filter-path         = rel-path / json-path
-rel-path            = current-node-identifier segments
+                     (filter-query / ; existence/non-existence
+                      function-expr) ; LogicalType or
+                                     ; NodesType
+filter-query        = rel-query / jsonpath-query
+rel-query           = current-node-identifier segments
 current-node-identifier = "@"
 ~~~~
 
 
 Comparison expressions are available for comparisons between primitive
 values (that is, numbers, strings, `true`, `false`, and `null`).
-These can be obtained via literal values; Singular Paths, each of
+These can be obtained via literal values; Singular Queries, each of
 which selects at most one node the value of which is then used; and
 function expressions (see {{fnex}}) of type `ValueType` or
 `NodesType` (see {{type-conv}}).
@@ -1198,16 +1197,16 @@ comparison-expr     = comparable S comparison-op S comparable
 literal             = number / string-literal /
                       true / false / null
 comparable          = literal /
-                      singular-path /   ; Singular Path value
-                      function-expr  ; ValueType
+                      singular-query / ; Singular Query value
+                      function-expr    ; ValueType
 comparison-op       = "==" / "!=" /
                       "<=" / ">=" /
                       "<"  / ">"
 
-singular-path       = rel-singular-path / abs-singular-path
-rel-singular-path   = current-node-identifier singular-path-segments
-abs-singular-path   = root-identifier singular-path-segments
-singular-path-segments = *(S (name-segment / index-segment))
+singular-query      = rel-singular-query / abs-singular-query
+rel-singular-query  = current-node-identifier singular-query-segments
+abs-singular-query  = root-identifier singular-query-segments
+singular-query-segments = *(S (name-segment / index-segment))
 name-segment        = ("[" name-selector "]") /
                       ("." member-name-shorthand)
 index-segment       = "[" index-selector "]"
@@ -1256,15 +1255,15 @@ Children of an array appear in array order in the resultant nodelist.
 ##### Existence Tests {#extest}
 {: unnumbered}
 
-A path by itself in a Logical context is an existence test which yields true if the path selects at least one node and yields false if the path does not select any nodes.
+A query by itself in a Logical context is an existence test which yields true if the query selects at least one node and yields false if the query does not select any nodes.
 
 Existence tests differ from comparisons in that:
 
-* they work with arbitrary relative or absolute paths (not just Singular Paths).
-* they work with paths that select structured values.
+* they work with arbitrary relative or absolute queries (not just Singular Queries).
+* they work with queries that select structured values.
 
-To examine the value of a node selected by a path, an explicit comparison is necessary.
-For example, to test whether the node selected by the path `@.foo` has the value `null`, use `@.foo == null` (see {{null-semantics}})
+To examine the value of a node selected by a query, an explicit comparison is necessary.
+For example, to test whether the node selected by the query `@.foo` has the value `null`, use `@.foo == null` (see {{null-semantics}})
 rather than the negated existence test `!@.foo` (which yields false if `@.foo` selects a node, regardless of the node's value).
 
 ##### Comparisons
@@ -1278,7 +1277,7 @@ When either side of a comparison results in an empty nodelist or `Nothing`:
 
 * a comparison using the operator `<` yields false.
 
-When any path or function expression on either side of a comparison results in a nodelist consisting of a single node, that side is
+When any query or function expression on either side of a comparison results in a nodelist consisting of a single node, that side is
 replaced by the value of its node and then:
 
 * a comparison using the operator `==` yields true if and only if the comparison
@@ -1396,7 +1395,7 @@ The following examples show the filter selector in use by a child segment.
 | `$.a[?@.b == 'kilo']` | `{"b": "kilo"}` | `$['a'][9]` | Member value comparison |
 | `$.a[?@>3.5]` | `5` <br> `4` <br> `6` | `$['a'][1]` <br> `$['a'][4]` <br> `$['a'][5]` | Array value comparison |
 | `$.a[?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": {}}` <br> `{"b": "kilo"}` | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][8]` <br> `$['a'][9]` | Array value existence |
-| `$[?@.*]` | `[3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}, {"b": {}}, {"b": "kilo"}]` <br> `{"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}}` | `$['a']` <br> `$['o']` | Existence of non-singular paths |
+| `$[?@.*]` | `[3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}, {"b": {}}, {"b": "kilo"}]` <br> `{"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}}` | `$['a']` <br> `$['o']` | Existence of non-singular queries |
 | `$[?@[?@.b]]` | `[3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}, {"b": {}}, {"b": "kilo"}]` | `$['a']` | Nested filters |
 | `$.o[?@<3, ?@<3]` | `1` <br> `2` <br> `2` <br> `1` | `$['o']['p']` <br> `$['o']['q']` <br> `$['o']['q']` <br> `$['o']['p']` | Non-deterministic ordering |
 | `$.a[?@<2 || @.b == "k"]` | `1` <br> `{"b": "k"}` | `$['a'][2]` <br> `$['a'][7]` | Array value logical OR |
@@ -1405,7 +1404,7 @@ The following examples show the filter selector in use by a child segment.
 | `$.o[?@>1 && @<4]` | `2` <br> `3` | `$['o']['q']` <br> `$['o']['r']` | Object value logical AND |
 | `$.o[?@>1 && @<4]` | `3` <br> `2` | `$['o']['r']` <br> `$['o']['q']` | Alternative result |
 | `$.o[?@.u || @.x]` | `{"u": 6}` | `$['o']['t']` | Object value logical OR |
-| `$.a[?(@.b == $.x)]`| `3` <br> `5` <br> `1` <br> `2` <br> `4` <br> `6` | `$['a'][0]` <br>`$['a'][1]` <br> `$['a'][2]` <br> `$['a'][3]` <br> `$['a'][4]` <br> `$['a'][5]` | Comparison of paths with no values |
+| `$.a[?(@.b == $.x)]`| `3` <br> `5` <br> `1` <br> `2` <br> `4` <br> `6` | `$['a'][0]` <br>`$['a'][1]` <br> `$['a'][2]` <br> `$['a'][3]` <br> `$['a'][4]` <br> `$['a'][5]` | Comparison of queries with no values |
 | `$.a[?(@ == @)]` | `3` <br> `5` <br> `1` <br> `2` <br> `4` <br> `6` <br> `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": {}}` <br> `{"b": "kilo"}` | `$['a'][0]` <br> `$['a'][1]` <br>`$['a'][2]` <br>`$['a'][3]` <br>`$['a'][4]` <br>`$['a'][5]` <br>`$['a'][6]` <br>`$['a'][7]` <br>`$['a'][8]` <br>`$['a'][9]` | Comparisons of primitive and of structured values |
 {: title="Filter selector examples"}
 
@@ -1446,13 +1445,13 @@ LCALPHA             = %x61-7A  ; "a".."z"
 function-expr       = function-name "(" S [function-argument
                          *(S "," S function-argument)] S ")"
 function-argument   = literal /
-                      filter-path / ; (includes singular-path)
+                      filter-query / ; (includes singular-query)
                       function-expr
 ~~~
 
-A function argument is a `filter-path` or a `comparable`.
+A function argument is a `filter-query` or a `comparable`.
 
-According to {{filter-selector}}, a `function-expr` is valid as a `filter-path`
+According to {{filter-selector}}, a `function-expr` is valid as a `filter-query`
 or a `comparable`.
 
 Any function expressions in a query must be well-formed (by conforming to the above ABNF)
@@ -1486,7 +1485,7 @@ Notes:
 * `LogicalType` is an abstraction of the result of a `logical-expr`.
   Its two instances, `LogicalTrue` and `LogicalFalse`, are not related to
   the JSON literals `true` and `false` and have no direct syntactical representation in JSONPath.
-* `NodesType` is an abstraction of a `filter-path` (which appears
+* `NodesType` is an abstraction of a `filter-query` (which appears
   in a test expression or as a function argument).
   Members of `NodesType` have no direct syntactical representation in JSONPath.
 
@@ -1495,8 +1494,8 @@ The abstract instances above can be obtained from the concrete representations i
 | Abstract Instance | Concrete Representations                                           |
 | :---------------: | :----------------------:                                           |
 | `Value(v)`        | JSON value `v`                                                     |
-| `Nothing`         | A representation of the absence of a JSON value, distinct from the JSON literal `null`, e.g., from a Singular Path or `filter-path` resulting in an empty nodelist   |
-| `Nodes(nl)`       | A list of zero or more nodes, e.g., from a `filter-path` resulting in the nodelist `nl`, which may or may not be empty  |
+| `Nothing`         | A representation of the absence of a JSON value, distinct from the JSON literal `null`, e.g., from a Singular Query or `filter-query` resulting in an empty nodelist   |
+| `Nodes(nl)`       | A list of zero or more nodes, e.g., from a `filter-query` resulting in the nodelist `nl`, which may or may not be empty  |
 {: #tbl-typerep title="Concrete representations of abstract instances"}
 
 ### Type Conversion {#type-conv}
@@ -1530,8 +1529,8 @@ A function expression is well-typed if all of the following are true:
   parameter according to one of the following rules:
    * The argument is a function expression with declared result type that is the same as the declared type of the parameter.
    * The argument is a literal primitive value and the defined type of the parameter is `ValueType`.
-   * The argument is a Singular Path or `filter-path` (which includes
-     Singular Paths), or a function expression with declared result
+   * The argument is a Singular Query or `filter-query` (which includes
+     Singular Queries), or a function expression with declared result
      type `NodesType` and the defined type of the parameter is `NodesType`.
      Where the declared type of the parameter is
      not `NodesType`, a conversion applies.
@@ -1553,7 +1552,7 @@ $[?length(@.authors) >= 5]
 ~~~
 
 Its only argument is an instance of `ValueType` (possibly taken from a
-singular path as in the example above).  The result also is an
+singular query as in the example above).  The result also is an
 instance of `ValueType`: an unsigned integer or `Nothing`.
 
 * If the argument value is a string, the result is the number of
@@ -1655,7 +1654,7 @@ $[?value(@..color) == "red"]
 ~~~
 
 Its only argument is an instance of `NodesType` (possibly taken from a
-`filter-path` as in the example above).  The result is an
+`filter-query` as in the example above).  The result is an
 instance of `ValueType`.
 
 * If the argument contains a single node, the result is
@@ -1670,9 +1669,9 @@ instance of `ValueType`.
 | Query | Comment |
 | :---: | ------- |
 | `$[?length(@) < 3]` | well-typed |
-| `$[?length(@.*) < 3]` | not well-typed since `@.*` is a non-singular path |
+| `$[?length(@.*) < 3]` | not well-typed since `@.*` is a non-singular query |
 | `$[?count(@.*) == 1]` | well-typed |
-| `$[?count(1) == 1]` | not well-typed since `1` is not a path  |
+| `$[?count(1) == 1]` | not well-typed since `1` is not a query or function expression |
 | `$[?count(foo(@.*)) == 1]` | well-typed, where `foo` is a function extension with a parameter of type `NodesType` and result type `NodesType` |
 | `$[?match(@.timezone, 'Europe/.*')]`         | well-typed |
 | `$[?match(@.timezone, 'Europe/.*') == true]` | not well-typed as `LogicalType` may not be used in comparisons |
@@ -1932,8 +1931,8 @@ need escaping when Normalized Paths appear in double quote delimited strings, e.
 
 Certain characters are escaped, in one and only one way; all other characters are unescaped.
 
-Note: Normalized Paths are Singular Paths, but not all Singular Paths are Normalized Paths.
-For example, `$[-3]` is a Singular Path, but is not a Normalized Path.
+Note: Normalized Paths are Singular Queries, but not all Singular Queries are Normalized Paths.
+For example, `$[-3]` is a Singular Query, but is not a Normalized Path.
 The Normalized Path equivalent to `$[-3]` would have an index equal to the array length minus `3`.
 (The array length must be at least `3` if `$[-3]` is to identify a node.)
 
