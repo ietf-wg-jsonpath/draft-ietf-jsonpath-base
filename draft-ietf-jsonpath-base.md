@@ -1519,10 +1519,10 @@ The well-typedness of function expressions can now be defined in terms of this t
 A function expression is well-typed if all of the following are true:
 
 * If it occurs directly in a test expression, the function is declared
-  to have a result type of `LogicalType`.
+  to have a result type of `LogicalType`, or (conversion applies)
+  `NodesType`.
 * If it occurs directly as a `comparable` in a comparison, the
-  function is declared to have a result type of `ValueType`, or
-  (conversion applies) `NodesType`.
+  function is declared to have a result type of `ValueType`.
 * Otherwise, it occurs as an argument in another function
   expression, and the following rules for function arguments apply to
   its declared result type.
