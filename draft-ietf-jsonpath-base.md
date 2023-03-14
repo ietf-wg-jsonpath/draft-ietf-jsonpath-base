@@ -326,6 +326,9 @@ go with a "consensus" between implementations even if it is rough, as
 long as that does not jeopardize the objective of obtaining a usable,
 stable JSON query language.
 
+The term _JSONPath_ was chosen because of the XPath inspiration and also because
+the outcome of a query consists of _paths_ identifying nodes in the JSON argument.
+
 ## JSON Values
 
 The JSON value a JSONPath query is applied to is, by definition, a
