@@ -1192,8 +1192,7 @@ Comparison expressions are available for comparisons between primitive
 values (that is, numbers, strings, `true`, `false`, and `null`).
 These can be obtained via literal values; Singular Queries, each of
 which selects at most one node the value of which is then used; and
-function expressions (see {{fnex}}) of type `ValueType` or
-`NodesType` (see {{type-conv}}).
+function expressions (see {{fnex}}) of type `ValueType`.
 
 ~~~~ abnf
 comparison-expr     = comparable S comparison-op S comparable
@@ -1523,8 +1522,7 @@ A function expression is well-typed if all of the following are true:
   to have a result type of `LogicalType`, or (conversion applies)
   `NodesType`.
 * If it occurs directly as a `comparable` in a comparison, the
-  function is declared to have a result type of `ValueType`, or
-  (conversion applies) `NodesType`.
+  function is declared to have a result type of `ValueType`.
 * Otherwise, it occurs as an argument in another function
   expression, and the following rules for function arguments apply to
   its declared result type.
