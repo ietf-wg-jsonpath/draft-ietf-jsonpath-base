@@ -931,7 +931,7 @@ S                   = *B        ; optional blank space
 ~~~~
 
 The slice selector consists of three optional decimal integers separated by colons.
-The second colon is omitted when the third integer is.
+The second colon can be omitted when the third integer is.
 
 To be valid, the integers provided MUST be in the I-JSON
 range of exact values, see {{synsem-overview}}.
