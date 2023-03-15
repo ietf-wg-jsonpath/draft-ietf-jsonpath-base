@@ -1933,7 +1933,7 @@ Single quotes are used in Normalized Paths to delimit string member names. This 
 number of characters that need escaping when Normalized Paths appear in double quote-delimited
 strings, e.g., in JSON texts.
 
-Certain characters are escaped in Noramlized Paths, in one and only one way; all other
+Certain characters are escaped in Normalized Paths, in one and only one way; all other
 characters are unescaped.
 
 Note: Normalized Paths are Singular Queries, but not all Singular Queries are Normalized Paths.
