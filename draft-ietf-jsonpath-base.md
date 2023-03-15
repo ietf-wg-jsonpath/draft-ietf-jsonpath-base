@@ -1253,7 +1253,7 @@ Applied to primitive values, it selects nothing.
 
 The order in which the children of an object appear in the resultant nodelist is not stipulated,
 since JSON objects are unordered.
-Children of an array are ordered by their array index in the resultant nodelist.
+In the resultant nodelist, children of an array are ordered by their position in the array.
 
 ##### Existence Tests {#extest}
 {: unnumbered}
