@@ -371,7 +371,7 @@ The root node identifier `$` refers to the root node of the argument,
 i.e., to the argument as a whole.
 
 The current node identifier `@` refers to the current node in the context
-of the evaluation of a filter expression (described below).
+of the evaluation of a filter expression ({{filter-selector}}).
 
 ### Segments
 
