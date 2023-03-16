@@ -256,7 +256,8 @@ Nodelist:
   does not require or assume any particular representation.
 
 Parameter:
-: Formal parameter (of a function) that can take function arguments (actual parameters) in a function-expression.
+: Formal parameter (of a function) that can take a function argument
+  (an actual parameter) in a function-expression.
 
 Normalized Path:
 : A form of JSONPath expression that identifies a node in a value by
