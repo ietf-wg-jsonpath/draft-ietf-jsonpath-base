@@ -208,25 +208,25 @@ Index:
 Query:
 : Short name for a JSONPath expression.
 
-Argument:
+Query Argument:
 : Short name for the value a JSONPath expression is applied to.
   (Also used for actual parameters of function-expressions.)
 
 Location:
-: the position of a value within the argument. This can be thought of
+: the position of a value within the query argument. This can be thought of
   as a sequence of names and indexes navigating to the value through
-  the objects and arrays in the argument, with the empty sequence
-  indicating the argument itself.
+  the objects and arrays in the query argument, with the empty sequence
+  indicating the query argument itself.
   A location can be represented as a Normalized Path (defined below).
 
 Node:
-: The pair of a value along with its location within the argument.
+: The pair of a value along with its location within the query argument.
 
 Root Node:
-: The unique node whose value is the entire argument.
+: The unique node whose value is the entire query argument.
 
 Root Node Identifier:
-: The expression `$` which refers to the root node of the argument.
+: The expression `$` which refers to the root node of the query argument.
 
 Current Node Identifier:
 : The expression `@` which refers to the current node in the context
@@ -256,7 +256,7 @@ Nodelist:
   does not require or assume any particular representation.
 
 Parameter:
-: Formal parameter that can take Arguments (actual parameters) in a function-expression.
+: Formal parameter (of a function) that can take function arguments (actual parameters) in a function-expression.
 
 Normalized Path:
 : A form of JSONPath expression that identifies a node in a value by
@@ -266,6 +266,8 @@ Normalized Path:
   Path for a specific argument, the Normalized Path needs to identify
   exactly one node. Similar
   to, but syntactically different from, a JSON Pointer {{-pointer}}.
+  Each node in a query argument is identified by exactly one normalized path (we say, the normalized path is "unique" for that node),
+  and, to be a normalized path for a specific query argument, the normalized path needs to identify exactly one node.
 
 Unicode Scalar Value:
 : Any Unicode {{UNICODE}} code point except high-surrogate and low-surrogate code points.
@@ -285,14 +287,14 @@ Selector:
 
 ### JSON Values as Trees of Nodes
 
-This document models the argument as a tree of JSON values, each
+This document models the query argument as a tree of JSON values, each
 with its own node.
 A node is either the root node or one of its descendants.
 
 This document models the result of applying a query to the
-argument as a nodelist (a list of nodes).
+query argument as a nodelist (a list of nodes).
 
-Nodes are the selectable parts of the argument.
+Nodes are the selectable parts of the query argument.
 The only parts of an object that can be selected by a query are the
 member values. Member names and members (name/value pairs) cannot be
 selected.
@@ -331,7 +333,8 @@ long as that does not jeopardize the objective of obtaining a usable,
 stable JSON query language.
 
 The term _JSONPath_ was chosen because of the XPath inspiration and also because
-the outcome of a query consists of _paths_ identifying nodes in the JSON argument.
+the outcome of a query consists of _paths_ identifying nodes in the
+JSON query argument.
 
 ## JSON Values
 
@@ -363,7 +366,7 @@ if they are not ({{Section 8.2 of -json}}).
 
 This section is informative.
 
-A JSONPath expression is applied to a JSON value, known as the argument.
+A JSONPath expression is applied to a JSON value, known as the query argument.
 The output is a nodelist.
 
 A JSONPath expression consists of an identifier followed by a series
@@ -371,7 +374,7 @@ of zero or more segments each of which contains one or more selectors.
 
 ### Identifiers {#ids}
 
-The root node identifier `$` refers to the root node of the argument,
+The root node identifier `$` refers to the root node of the query argument,
 i.e., to the argument as a whole.
 
 The current node identifier `@` refers to the current node in the context
@@ -503,7 +506,7 @@ The examples are based on the simple JSON value shown in
 ## Overview {#synsem-overview}
 
 A JSONPath *expression* is a string which, when applied to a JSON value,
-the *argument*, selects zero or more nodes of the argument and outputs
+the *query argument*, selects zero or more nodes of the argument and outputs
 these nodes as a nodelist.
 
 A query MUST be encoded using UTF-8.
@@ -549,7 +552,7 @@ errors.)
 ## Syntax
 
 Syntactically, a JSONPath query consists of a root identifier (`$`), which
-stands for a nodelist that contains the root node of the argument,
+stands for a nodelist that contains the root node of the query argument,
 followed by a possibly empty sequence of *segments*.
 
 ~~~~ abnf
@@ -567,7 +570,7 @@ implementation.  This document may describe semantics in a procedural
 step-by-step fashion, but such descriptions are normative only in the sense that any implementation MUST produce an identical result, but not in the sense that implementors are required to use the same algorithms.
 
 The semantics are that a valid query is executed against a value,
-the *argument*, and produces a nodelist (i.e., a list of zero or more nodes of the value).
+the *query argument*, and produces a nodelist (i.e., a list of zero or more nodes of the value).
 
 The query is a root identifier followed by a sequence of zero or more segments, each of
 which is applied to the result of the previous root identifier or segment and provides
@@ -575,7 +578,7 @@ input to the next segment.
 These results and inputs take the form of nodelists.
 
 The nodelist resulting from the root identifier contains a single node,
-the argument.
+the query argument.
 The nodelist resulting from the last segment is presented as the
 result of the query. Depending on the specific API, it might be
 presented as an array of the JSON values at the nodes, an array of
@@ -603,13 +606,13 @@ may also produce distinct orderings in successive runs of the query.
 
 ### Worked Example
 
-Consider this example. With the argument `{"a":[{"b":0},{"b":1},{"c":2}]}`, the
+Consider this example. With the query argument `{"a":[{"b":0},{"b":1},{"c":2}]}`, the
 query `$.a[*].b` selects the following list of nodes: `0`, `1`
 (denoted here by their value).
 
 The query consists of `$` followed by three segments: `.a`, `[*]`, and `.b`.
 
-Firstly, `$` produces a nodelist consisting of just the argument.
+Firstly, `$` produces a nodelist consisting of just the query argument.
 
 Next, `.a` selects from any object input node and selects the
 node of any
@@ -642,7 +645,7 @@ root-identifier     = "$"
 ### Semantics
 {: unnumbered}
 
-The root identifier `$` represents the root node of the argument
+The root identifier `$` represents the root node of the query argument
 and produces a nodelist consisting of that root node.
 
 ### Examples
@@ -1473,7 +1476,7 @@ Each parameter as well as the result of a function extension must have a declare
 
 A type is a set of instances.
 Declared types enable checking a JSONPath query for well-typedness
-independent of any argument the JSONPath query is applied to.
+independent of any query argument the JSONPath query is applied to.
 
 {{tbl-types}} defines the available types in terms of abstract instances, where `v` denotes a value, and `nl` denotes
 a nodelist.
@@ -2151,7 +2154,7 @@ and {{Section 8 of -iregexp}} for performance issues in regular
 expression implementations.)
 Implementers need to be aware that good average performance is not
 sufficient as long as an attacker can choose to submit specially
-crafted JSONPath queries or arguments that trigger surprisingly high, possibly
+crafted JSONPath queries or query arguments that trigger surprisingly high, possibly
 exponential, CPU usage or, for example via a naive recursive implementation of the descendant segment,
 stack overflow. Implementations need to have appropriate resource management
 to mitigate these attacks.
@@ -2179,10 +2182,10 @@ Where JSONPath is used as a part of a security mechanism, attackers
 can attempt to provoke unexpected or unpredictable behavior, or
 take advantage of differences in behavior between JSONPath implementations.
 
-Unexpected or unpredictable behavior can arise from an argument with certain
+Unexpected or unpredictable behavior can arise from a query argument with certain
 constructs described as unpredictable by {{-json}}.
 Predictable behavior can be expected, except in relation to the ordering
-of objects, for any argument conforming with {{-i-json}}.
+of objects, for any query argument conforming with {{-i-json}}.
 
 Other attacks can target the behavior of underlying technologies such as UTF-8 (see
 {{Section 10 of -utf8}}) and the Unicode character set.
@@ -2235,7 +2238,7 @@ or, in bracket notation,
 x['store']['book'][0]['title']
 ~~~~
 
-with the variable x holding the argument.
+with the variable x holding the query argument.
 
 The JSONPath language was designed to:
 
@@ -2248,7 +2251,7 @@ The JSONPath language was designed to:
 
 JSONPath expressions apply to JSON values in the same way
 as XPath expressions are used in combination with an XML document.
-JSONPath uses `$` to refer to the root node of the argument, similar
+JSONPath uses `$` to refer to the root node of the query argument, similar
 to XPath's `/` at the front.
 
 JSONPath expressions move further down the hierarchy using *dot notation*
