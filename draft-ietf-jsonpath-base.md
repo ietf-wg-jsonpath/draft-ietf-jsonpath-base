@@ -1523,7 +1523,7 @@ A function expression is well-typed if all of the following are true:
    * The argument is a function expression with declared result type that is the same as the declared type of the parameter.
    * The argument is a function expression with declared result type `NodesType` and the declared type of the parameter is
      `LogicalType`. In this case the argument is converted to `LogicalType`.
-   * The argument is a primitive value expressed as a literal and the defined type of the parameter is `ValueType`.
+   * The argument is a value expressed as a literal and the defined type of the parameter is `ValueType`.
    * The argument is a query and the declared type of the parameter is `NodesType`.
    * The argument is a query and the declared type of the parameter is `LogicalType`. In this case the argument is converted to `LogicalType`.
 
