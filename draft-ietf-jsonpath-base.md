@@ -1432,8 +1432,7 @@ specification.
 
 A function extension defines a registered name (see {{iana-fnex}}) that
 can be applied to a sequence of zero or more arguments, producing a
-result. Each registered function name is unique; functions cannot be
-overloaded.
+result. Each registered function name is unique.
 
 A function extension MUST be defined such that its evaluation is
 side-effect free, i.e., all possible orders of evaluation and choices
