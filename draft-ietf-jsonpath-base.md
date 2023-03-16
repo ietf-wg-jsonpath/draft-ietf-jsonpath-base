@@ -259,7 +259,7 @@ Parameter:
 : Formal parameter that can take Arguments (actual parameters) in a function-expression.
 
 Normalized Path:
-: A minimal form of JSONPath expression that identifies a node in a value by
+: A form of JSONPath expression that identifies a node in a value by
   providing a query that results in exactly that node.  Each node in an argument is identified by exactly one Normalized Path (we say, the Normalized Path is "unique" for that node), and, to be a Normalized Path for a specific argument, the Normalized Path needs to identify exactly one node. Similar
   to, but syntactically different from, a JSON Pointer {{-pointer}}.
 
