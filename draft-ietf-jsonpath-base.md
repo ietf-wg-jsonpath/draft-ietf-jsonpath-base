@@ -398,7 +398,7 @@ of bracket notation. Examples and descriptions use shorthands where convenient.
 
 A name selector, e.g. `'name'`, selects a named child of an object.
 
-An index selector, e.g. `3`, selects an indexed child in an array.
+An index selector, e.g. `3`, selects an indexed child of an array.
 
 A wildcard `*` ({{wildcard-selector}}) in the expression `[*]` selects all children of a
 node and in the expression `..[*]` selects all descendants of a node.
