@@ -1432,7 +1432,8 @@ specification.
 
 A function extension defines a registered name (see {{iana-fnex}}) that
 can be applied to a sequence of zero or more arguments, producing a
-result.
+result. Each registered function name is unique; functions cannot be
+overloaded.
 
 A function extension MUST be defined such that its evaluation is
 side-effect free, i.e., all possible orders of evaluation and choices
@@ -2084,13 +2085,14 @@ in use, they may also initiate a registration on their own if
 they deem such a registration can avert potential future collisions.
 {: #de-instructions}
 
-Each entry in the registry must include:
+Each entry in the sub-registry must include:
 
 {:vspace}
 Function Name:
 : a lower case ASCII {{-ascii}} string that starts with a letter and can
   contain letters, digits and underscore characters afterwards
-  (`[a-z][_a-z0-9]*`).
+  (`[a-z][_a-z0-9]*`). No other entry in the sub-registry can have the
+  same function name.
 
 Brief description:
 : a brief description
