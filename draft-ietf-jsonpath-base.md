@@ -1472,44 +1472,30 @@ a type system is first introduced.
 
 Each parameter as well as the result of a function extension must have a declared type.
 
-A type is a set of instances.
 Declared types enable checking a JSONPath query for well-typedness
 independent of any query argument the JSONPath query is applied to.
 
-{{tbl-types}} defines the available types in terms of abstract instances, where `v` denotes a value, and `nl` denotes
-a nodelist.
+{{tbl-types}} defines the available types in terms of the instances they contain.
 
-| Type                 | Abstract Instances                       |
-| :--                  | :----------------                        |
-| `ValueType`          | `Value(v)`, `Nothing`                    |
-| `LogicalType`        | `LogicalTrue`, `LogicalFalse`            |
-| `NodesType`       | `Nodes(nl)`                              |
+| Type                 | Instances                       |
+| :--                  | :------------------------------ |
+| `ValueType`          | JSON values or `Nothing`        |
+| `LogicalType`        | `LogicalTrue` or `LogicalFalse` |
+| `NodesType`          | Nodelists                       |
 {: #tbl-types title="Function extension type system"}
 
 Notes:
 
-* `ValueType` is an abstraction of a JSON value or `Nothing`.
-* `LogicalType` is an abstraction of the result of a `logical-expr`.
-  Its two instances, `LogicalTrue` and `LogicalFalse`, are not related to
-  the JSON literals `true` and `false` and have no direct syntactical representation in JSONPath.
-* `NodesType` is an abstraction of a `filter-query` (which appears
-  in a test expression or as a function argument).
-  Members of `NodesType` have no direct syntactical representation in JSONPath.
-
-The abstract instances above can be obtained from the concrete representations in {{tbl-typerep}}.
-
-| Abstract Instance | Concrete Representations                                           |
-| :---------------: | :----------------------:                                           |
-| `Value(v)`        | JSON value `v`                                                     |
-| `Nothing`         | A representation of the absence of a JSON value, distinct from the JSON literal `null`, e.g., from a Singular Query or `filter-query` resulting in an empty nodelist   |
-| `Nodes(nl)`       | A list of zero or more nodes, e.g., from a `filter-query` resulting in the nodelist `nl`, which may or may not be empty  |
-{: #tbl-typerep title="Concrete representations of abstract instances"}
+* The only instances that can be directly represented in JSONPath syntax are the literal
+  primitive values of `ValueType`.
+* `Nothing` represents the absence of a JSON value and is distinct from any JSON value, including `null`.
+* `LogicalTrue` and `LogicalFalse` are unrelated to the JSON literals `true` and `false`.
 
 ### Type Conversion {#type-conv}
 
 The following implicit type conversion may occur:
 
-* Where a member of `NodesType` needs to be converted to a
+* Where an instance of `NodesType` needs to be converted to a
   `LogicalType`, the conversion proceeds as follows:
   * If the nodelist contains one or more nodes, the conversion result
     is `LogicalTrue`.
@@ -1533,13 +1519,10 @@ A function expression is well-typed if all of the following are true:
   its declared result type.
 * Each argument of the function can be used for the declared type of the corresponding declared
   parameter according to one of the following rules:
-   * The argument is a function expression with declared result type that is the same as the declared type of the parameter.
+   * The argument is a function expression with declared result type that is the same as the declared type of the parameter or
+     with declared result type `NodesType` and the declared type of the parameter is `LogicalType` and a conversion applies.
    * The argument is a literal primitive value and the defined type of the parameter is `ValueType`.
-   * The argument is a Singular Query or `filter-query` (which includes
-     Singular Queries), or a function expression with declared result
-     type `NodesType` and the defined type of the parameter is `NodesType`.
-     Where the declared type of the parameter is
-     not `NodesType`, a conversion applies.
+   * The argument is a query and the declared type of the parameter is `NodesType` or `LogicalType` and a conversion applies.
 
 ### `length` Function Extension {#length}
 
@@ -1683,6 +1666,7 @@ instance of `ValueType`.
 | `$[?match(@.timezone, 'Europe/.*') == true]` | not well-typed as `LogicalType` may not be used in comparisons |
 | `$[?value(@..color) == "red"]` | well-typed |
 | `$[?value(@..color)]` | not well-typed as `ValueType` may not be used in a test expression |
+| `$[?bar(1==1)]` | not well-typed, where `bar` is a function with a parameter of type `LogicalType` and result type `LogicalType`, as `1==1` is neither a query nor a function expression with a suitable result type
 {: title="Function expression examples"}
 
 ## Segments  {#segments-details}
