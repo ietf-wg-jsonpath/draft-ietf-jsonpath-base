@@ -1912,7 +1912,7 @@ Queries:
 
 ## Normalized Paths
 
-A Normalized Path is a minimal representation of the location of a node in a value which
+A Normalized Path is a unique representation of the location of a node in a value which
 uniquely identifies the node in the value.
 Specifically, a Normalized Path is a JSONPath query with restricted syntax (defined below),
 e.g., `$['book'][3]`, which when applied to the value results in a nodelist consisting
