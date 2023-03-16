@@ -259,8 +259,12 @@ Parameter:
 : Formal parameter that can take Arguments (actual parameters) in a function-expression.
 
 Normalized Path:
-: A simple form of JSONPath expression that identifies a node in a value by
-  providing a query that results in exactly that node.  Similar
+: A form of JSONPath expression that identifies a node in a value by
+  providing a query that results in exactly that node.  Each node in an
+  argument is identified by exactly one Normalized Path (we say, the
+  Normalized Path is "unique" for that node), and, to be a Normalized
+  Path for a specific argument, the Normalized Path needs to identify
+  exactly one node. Similar
   to, but syntactically different from, a JSON Pointer {{-pointer}}.
 
 Unicode Scalar Value:
@@ -300,7 +304,7 @@ member names are not.
 
 This section is informative.
 
-This document picks up {{{Stefan Gössner}}}'s popular JSONPath proposal
+This document is based on {{{Stefan Gössner}}}'s popular JSONPath proposal
 dated 2007-02-21 {{JSONPath-orig}}, builds on the experience from the widespread
 deployment of its implementations, and provides a normative specification for it.
 
@@ -371,7 +375,7 @@ The root node identifier `$` refers to the root node of the argument,
 i.e., to the argument as a whole.
 
 The current node identifier `@` refers to the current node in the context
-of the evaluation of a filter expression (described later).
+of the evaluation of a filter expression ({{filter-selector}}).
 
 ### Segments
 
@@ -525,7 +529,7 @@ as described in {{fnex}}.
 A JSONPath implementation MUST raise an error for any query which is not
 well-formed and valid.
 The well-formedness and the validity of JSONPath queries are independent of
-the JSON value the query is applied to; no further errors relating to the
+the JSON value the query is applied to. No further errors relating to the
 well-formedness and the validity of a JSONPath query can be
 raised during application of the query to a value.
 
@@ -568,9 +572,7 @@ the *argument*, and produces a nodelist (i.e., a list of zero or more nodes of t
 The query is a root identifier followed by a sequence of zero or more segments, each of
 which is applied to the result of the previous root identifier or segment and provides
 input to the next segment.
-These results and inputs take the form of a nodelist.
-
-Segments can be added to a query to drill further into the structure of the input value.
+These results and inputs take the form of nodelists.
 
 The nodelist resulting from the root identifier contains a single node,
 the argument.
@@ -933,6 +935,7 @@ S                   = *B        ; optional blank space
 ~~~~
 
 The slice selector consists of three optional decimal integers separated by colons.
+The second colon can be omitted when the third integer is.
 
 To be valid, the integers provided MUST be in the I-JSON
 range of exact values, see {{synsem-overview}}.
@@ -1074,6 +1077,7 @@ The following examples show the array slice selector in use by a child segment.
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
 | `$[1:3]` | `"b"` <br> `"c"` | `$[1]` <br> `$[2]` | Slice with default step |
+| `$[5:]` | `"f"` <br> `"g"` | `$[5]` <br> `$[6]` | Slice with no end index |
 | `$[1:5:2]` | `"b"` <br> `"d"` | `$[1]` <br> `$[3]` | Slice with step 2 |
 | `$[5:1:-2]` | `"f"` <br> `"d"` | `$[5]` <br> `$[3]` | Slice with negative step |
 | `$[::-1]` | `"g"` <br> `"f"` <br> `"e"` <br> `"d"` <br> `"c"` <br> `"b"` <br> `"a"` | `$[6]` <br> `$[5]` <br> `$[4]` <br> `$[3]` <br> `$[2]` <br> `$[1]` <br> `$[0]` | Slice in reverse order |
@@ -1191,7 +1195,7 @@ current-node-identifier = "@"
 Comparison expressions are available for comparisons between primitive
 values (that is, numbers, strings, `true`, `false`, and `null`).
 These can be obtained via literal values; Singular Queries, each of
-which selects at most one node the value of which is then used; and
+which selects at most one node the value of which is then used; or
 function expressions (see {{fnex}}) of type `ValueType`.
 
 ~~~~ abnf
@@ -1252,7 +1256,7 @@ Applied to primitive values, it selects nothing.
 
 The order in which the children of an object appear in the resultant nodelist is not stipulated,
 since JSON objects are unordered.
-Children of an array appear in array order in the resultant nodelist.
+In the resultant nodelist, children of an array are ordered by their position in the array.
 
 ##### Existence Tests {#extest}
 {: unnumbered}
@@ -1910,7 +1914,7 @@ Queries:
 
 ## Normalized Paths
 
-A Normalized Path is a canonical representation of the location of a node in a value and
+A Normalized Path is a unique representation of the location of a node in a value which
 uniquely identifies the node in the value.
 Specifically, a Normalized Path is a JSONPath query with restricted syntax (defined below),
 e.g., `$['book'][3]`, which when applied to the value results in a nodelist consisting
@@ -1918,7 +1922,7 @@ of just the node identified by the Normalized Path.
 Note that a Normalized Path represents the identity of a node _in a specific value_.
 There is precisely one Normalized Path identifying any particular node in a value.
 
-A canonical representation of a nodelist is as a JSON arrays of strings, where the strings are
+A nodelist may be represented compactly in JSON as an array of strings, where the strings are
 Normalized Paths.
 
 Normalized Paths provide a predictable format that simplifies testing and post-processing
@@ -1927,10 +1931,12 @@ Normalized Paths are used in this document as result paths in examples.
 
 Normalized Paths use the canonical bracket notation, rather than dot notation.
 
-Single quotes are used to delimit string member names. This reduces the number of characters that
-need escaping when Normalized Paths appear in double quote delimited strings, e.g., in JSON texts.
+Single quotes are used in Normalized Paths to delimit string member names. This reduces the
+number of characters that need escaping when Normalized Paths appear in double quote-delimited
+strings, e.g., in JSON texts.
 
-Certain characters are escaped, in one and only one way; all other characters are unescaped.
+Certain characters are escaped in Normalized Paths, in one and only one way; all other
+characters are unescaped.
 
 Note: Normalized Paths are Singular Queries, but not all Singular Queries are Normalized Paths.
 For example, `$[-3]` is a Singular Query, but is not a Normalized Path.
