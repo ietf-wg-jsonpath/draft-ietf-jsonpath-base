@@ -396,7 +396,7 @@ of bracket notation. Examples and descriptions use shorthands where convenient.
 
 ### Selectors
 
-A name selector, e.g. `'name'`, selects a named child in an object.
+A name selector, e.g. `'name'`, selects a named child of an object.
 
 An index selector, e.g. `3`, selects an indexed child in an array.
 
