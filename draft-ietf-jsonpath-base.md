@@ -266,8 +266,6 @@ Normalized Path:
   Path for a specific argument, the Normalized Path needs to identify
   exactly one node. Similar
   to, but syntactically different from, a JSON Pointer {{-pointer}}.
-  Each node in a query argument is identified by exactly one normalized path (we say, the normalized path is "unique" for that node),
-  and, to be a normalized path for a specific query argument, the normalized path needs to identify exactly one node.
 
 Unicode Scalar Value:
 : Any Unicode {{UNICODE}} code point except high-surrogate and low-surrogate code points.
