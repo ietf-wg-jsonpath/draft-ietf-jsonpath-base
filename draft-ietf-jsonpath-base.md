@@ -1486,7 +1486,7 @@ independent of any query argument the JSONPath query is applied to.
 
 Notes:
 
-* The only instances that can be directly represented in JSONPath syntax are the literal
+* The only instances that can be directly represented in JSONPath syntax are the literal and
   primitive values of `ValueType`.
 * `Nothing` represents the absence of a JSON value and is distinct from any JSON value, including `null`.
 * `LogicalTrue` and `LogicalFalse` are unrelated to the JSON literals `true` and `false`.
@@ -1521,7 +1521,7 @@ A function expression is well-typed if all of the following are true:
   parameter according to one of the following rules:
    * The argument is a function expression with declared result type that is the same as the declared type of the parameter or
      with declared result type `NodesType` and the declared type of the parameter is `LogicalType` and a conversion applies.
-   * The argument is a literal primitive value and the defined type of the parameter is `ValueType`.
+   * The argument is a literal or primitive value and the defined type of the parameter is `ValueType`.
    * The argument is a query and the declared type of the parameter is `NodesType` or `LogicalType` and a conversion applies.
 
 ### `length` Function Extension {#length}
