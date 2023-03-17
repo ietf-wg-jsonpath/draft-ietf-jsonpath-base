@@ -1540,7 +1540,7 @@ parameter according to one of the following rules:
    * The argument is a value expressed as a literal and the declared type of the parameter is `ValueType`.
    * The argument is a singular query and the declared type of the parameter is `ValueType`.
    * The argument is a query (including singular query) and the declared type of the parameter is `NodesType`.
-   * The argument is a logical-expr and the declared type of the parameter is `LogicalType`.
+   * The argument is a `logical-expr` and the declared type of the parameter is `LogicalType`.
 
 Note that the last bullet item includes the case that the argument is
 a query (including singular query) and the declared type of the
