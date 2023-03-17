@@ -1455,11 +1455,9 @@ function-expr       = function-name "(" S [function-argument
 function-argument   = literal /
                       singular-query /
                       filter-query / ; (includes singular-query)
-                      logical-expr / ; NEW, NOT PART OF FIX
+                      logical-expr /
                       function-expr
 ~~~
-
-A function argument is a `filter-query` or a `comparable`.
 
 According to {{filter-selector}}, a `function-expr` is valid as a `filter-query`
 or a `comparable`.
@@ -1539,6 +1537,9 @@ parameter according to one of the following rules:
      `LogicalType` as per {{type-conv}}.
    * The argument is a value expressed as a literal and the declared type of the parameter is `ValueType`.
    * The argument is a singular query and the declared type of the parameter is `ValueType`.
+     In this case:
+      * If the query results in a nodelist consisting of a single  node, the argument is the value of the node.
+      * If the query results in an empty nodelist, the argument is `Nothing`.
    * The argument is a query (including singular query) and the declared type of the parameter is `NodesType`.
    * The argument is a `logical-expr` and the declared type of the parameter is `LogicalType`.
 
@@ -1616,7 +1617,8 @@ string matches a given regular expression, which is in {{-iregexp}} form.
 $[?match(@.date, "1974-05-..")]
 ~~~
 
-Its arguments are instances of `ValueType`.
+Its arguments are instances of `ValueType` (possibly taken from a
+singular query, as for the first argument in the example above).
 If the first argument is not a string or the second argument is not a
 string conforming to {{-iregexp}}, the result is `LogicalFalse`.
 Otherwise, the string that is the first argument is matched against
@@ -1642,7 +1644,8 @@ expression, which is in {{-iregexp}} form.
 $[?search(@.author, "[BR]ob")]
 ~~~
 
-Its arguments are instances of `ValueType`.
+Its arguments are instances of `ValueType` (possibly taken from a
+singular query, as for the first argument in the example above).
 If the first argument is not a string or the second argument is not a
 string conforming to {{-iregexp}}, the result is `LogicalFalse`.
 Otherwise, the string that is the first argument is searched for at
@@ -1675,6 +1678,8 @@ instance of `ValueType`.
 * If the argument is `Nothing` or contains multiple nodes, the
   result is `Nothing`.
 
+Note: a Singular Query may be used anywhere where a ValueType is expected,
+so there is no need to use the "value" function extension with a Singular Query.
 
 ### Examples
 {: unnumbered}
@@ -1690,7 +1695,9 @@ instance of `ValueType`.
 | `$[?match(@.timezone, 'Europe/.*') == true]` | not well-typed as `LogicalType` may not be used in comparisons |
 | `$[?value(@..color) == "red"]` | well-typed |
 | `$[?value(@..color)]` | not well-typed as `ValueType` may not be used in a test expression |
-| `$[?bar(1==1)]` | not well-typed, where `bar` is a function with a parameter of type `LogicalType` and result type `LogicalType`, as `1==1` is neither a query nor a function expression with a suitable result type
+| `$[?bar(@.*)]` | well-typed, where `bar` is a function with a parameter of any type and result type `LogicalType`  |
+| `$[?bar(1==1)]` | well-typed, where `bar` is a function with a parameter of type `LogicalType` and result type `LogicalType` |
+| `$[?bar(1)]` | not well-typed, where `bar` is a function with a parameter of type `LogicalType` and result type `LogicalType`, as `1` is not a query, `logical-expr`, or function expression |
 {: title="Function expression examples"}
 
 ## Segments  {#segments-details}
