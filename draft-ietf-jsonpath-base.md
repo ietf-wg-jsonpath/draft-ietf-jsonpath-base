@@ -1511,22 +1511,27 @@ The well-typedness of function expressions can now be defined in terms of this t
 
 A function expression is well-typed if all of the following are true:
 
-* If it occurs directly in a test expression, the function is declared
-  to have a result type of `LogicalType`, or (conversion applies)
+* If the function expression occurs directly in a test expression, the function is declared
+  to have a result type of `LogicalType`, or (conversion applies as
+  per {{type-conv}})
   `NodesType`.
-* If it occurs directly as a `comparable` in a comparison, the
+* If the function expression occurs directly as a `comparable` in a comparison, the
   function is declared to have a result type of `ValueType`.
-* Otherwise, it occurs as an argument in another function
-  expression, and the following rules for function arguments apply to
+* Otherwise (the function expression occurs as an argument in another function
+  expression), the following rules for function arguments apply to
   its declared result type.
 * Each argument of the function can be used for the declared type of the corresponding declared
   parameter according to one of the following rules:
    * The argument is a function expression with declared result type that is the same as the declared type of the parameter.
    * The argument is a function expression with declared result type `NodesType` and the declared type of the parameter is
-     `LogicalType`. In this case the argument is converted to `LogicalType`.
+     `LogicalType`. In this case the argument is converted to
+     `LogicalType` as per {{type-conv}}.
    * The argument is a value expressed as a literal and the defined type of the parameter is `ValueType`.
-   * The argument is a query and the declared type of the parameter is `NodesType`.
-   * The argument is a query and the declared type of the parameter is `LogicalType`. In this case the argument is converted to `LogicalType`.
+   * The argument is a singular query and the declared type of the parameter is `ValueType`.
+   * The argument is a query (including singular query) and the declared type of the parameter is `NodesType`.
+   * The argument is a query (including singular query) and the declared type of the parameter is
+     `LogicalType`. In this case the argument is converted to
+     `LogicalType` as per {{type-conv}}.
 
 ### `length` Function Extension {#length}
 
