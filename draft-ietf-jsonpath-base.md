@@ -1459,9 +1459,6 @@ function-argument   = literal /
                       function-expr
 ~~~
 
-According to {{filter-selector}}, a `function-expr` is valid as a `filter-query`
-or a `comparable`.
-
 Any function expressions in a query must be well-formed (by conforming to the above ABNF)
 and well-typed,
 otherwise the JSONPath implementation MUST raise an error
