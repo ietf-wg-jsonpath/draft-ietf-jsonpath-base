@@ -1425,7 +1425,7 @@ Beyond the filter expression functionality defined in the preceding
 subsections, JSONPath defines an extension point that can be used to
 add filter expression functionality: "Function Extensions".
 
-This section defines the extension point as well as four function
+This section defines the extension point as well as some function
 extensions that use this extension point.
 While these mechanisms are designed to use the extension point,
 they are an integral part of the JSONPath specification and are
@@ -1453,7 +1453,9 @@ LCALPHA             = %x61-7A  ; "a".."z"
 function-expr       = function-name "(" S [function-argument
                          *(S "," S function-argument)] S ")"
 function-argument   = literal /
+                      singular-query /
                       filter-query / ; (includes singular-query)
+                      logical-expr / ; NEW, NOT PART OF FIX
                       function-expr
 ~~~
 
@@ -1495,15 +1497,21 @@ Notes:
 
 ### Type Conversion {#type-conv}
 
-The following implicit type conversion may occur:
+Just as queries can be used in logical expressions by testing for the
+existence of at least one node ({{extest}}), a function expression of
+declared type `NodesType` can be used as a function argument for a
+parameter of declared type `LogicalType`, with the equivalent conversion rule:
 
-* Where an instance of `NodesType` needs to be converted to a
-  `LogicalType`, the conversion proceeds as follows:
-  * If the nodelist contains one or more nodes, the conversion result
-    is `LogicalTrue`.
+  * If the nodelist contains one or more nodes, the conversion result is `LogicalTrue`.
   * If the nodelist is empty, the conversion result is `LogicalFalse`.
 
-Given an expression with a declared type of `NodesType`, a `ValueType` can be obtained using a function such as `value()` (see {{value}}).
+Extraction of a value from a nodelist can be performed in several
+ways, so an implicit conversion may be surprising and has therefore
+not been defined.
+A function expression with a declared type of `NodesType` can
+indirectly be used as an argument for a parameter of declared type
+`ValueType` by interspersing a function such as `value()` (see
+{{value}}).
 
 The well-typedness of function expressions can now be defined in terms of this type system.
 
@@ -1520,18 +1528,25 @@ A function expression is well-typed if all of the following are true:
 * Otherwise (the function expression occurs as an argument in another function
   expression), the following rules for function arguments apply to
   its declared result type.
-* Each argument of the function can be used for the declared type of the corresponding declared
-  parameter according to one of the following rules:
+* The arguments of the function expression are well-typed, as follows.
+
+Each argument of the function can be used for the declared type of the corresponding declared
+parameter according to one of the following rules:
+
    * The argument is a function expression with declared result type that is the same as the declared type of the parameter.
    * The argument is a function expression with declared result type `NodesType` and the declared type of the parameter is
      `LogicalType`. In this case the argument is converted to
      `LogicalType` as per {{type-conv}}.
-   * The argument is a value expressed as a literal and the defined type of the parameter is `ValueType`.
+   * The argument is a value expressed as a literal and the declared type of the parameter is `ValueType`.
    * The argument is a singular query and the declared type of the parameter is `ValueType`.
    * The argument is a query (including singular query) and the declared type of the parameter is `NodesType`.
-   * The argument is a query (including singular query) and the declared type of the parameter is
-     `LogicalType`. In this case the argument is converted to
-     `LogicalType` as per {{type-conv}}.
+   * The argument is a logical-expr and the declared type of the parameter is `LogicalType`.
+
+Note that the last bullet item includes the case that the argument is
+a query (including singular query) and the declared type of the
+parameter is `LogicalType`. In this case the nodelist resulting
+from the query is interpreted as a logical-expr in the same way
+({{extest}}) it would be converted to `LogicalType` as per {{type-conv}}.
 
 ### `length` Function Extension {#length}
 
@@ -1550,7 +1565,7 @@ $[?length(@.authors) >= 5]
 ~~~
 
 Its only argument is an instance of `ValueType` (possibly taken from a
-singular query as in the example above).  The result also is an
+singular query, as in the example above).  The result also is an
 instance of `ValueType`: an unsigned integer or `Nothing`.
 
 * If the argument value is a string, the result is the number of
@@ -1603,7 +1618,7 @@ $[?match(@.date, "1974-05-..")]
 
 Its arguments are instances of `ValueType`.
 If the first argument is not a string or the second argument is not a
-string conforming to {{-iregexp}}, the result is `LogicalFalse`. <!-- XXX -->
+string conforming to {{-iregexp}}, the result is `LogicalFalse`.
 Otherwise, the string that is the first argument is matched against
 the iregexp contained in the string that is the second argument;
 the result is `LogicalTrue` if the string matches the iregexp and
@@ -1629,7 +1644,7 @@ $[?search(@.author, "[BR]ob")]
 
 Its arguments are instances of `ValueType`.
 If the first argument is not a string or the second argument is not a
-string conforming to {{-iregexp}}, the result is `LogicalFalse`. <!-- XXX -->
+string conforming to {{-iregexp}}, the result is `LogicalFalse`.
 Otherwise, the string that is the first argument is searched for at
 least one substring that matches the iregexp contained in the string
 that is the second argument; the result is `LogicalTrue` if such a
