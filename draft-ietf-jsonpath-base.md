@@ -1670,7 +1670,7 @@ $[?value(@..color) == "red"]
 ~~~
 
 Its only argument is an instance of `NodesType` (possibly taken from a
-`filter-query` as in the example above).  The result is an
+`filter-query`, as in the example above).  The result is an
 instance of `ValueType`.
 
 * If the argument contains a single node, the result is
