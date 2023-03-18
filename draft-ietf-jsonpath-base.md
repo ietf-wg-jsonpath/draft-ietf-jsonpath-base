@@ -1512,39 +1512,61 @@ The well-typedness of function expressions can now be defined in terms of this t
 
 ### Well-Typedness of Function Expressions
 
-A function expression is well-typed if all of the following are true:
+For a function expression to be well typed:
 
-* If the function expression occurs as a `test-expr` in a logical expression, the function is declared
-  to have a result type of `LogicalType`, or (by conversion as
-  per {{type-conv}})
-  `NodesType`.
-* If the function expression occurs directly as a `comparable` in a comparison, the
-  function is declared to have a result type of `ValueType`.
-* Otherwise (the function expression occurs as an argument in another function
-  expression), the following rules for function arguments apply to
-  its declared result type.
-* The arguments of the function expression are well-typed, as follows.
+1. its declared type must be well typed in the context it occurs, and
+2. its arguments must be well typed for the declared type of the corresponding parameters.
 
-Each argument of the function can be used for the declared type of the corresponding declared
-parameter according to one of the following rules:
+(1) As per the grammar, a function expression can occur in three different
+immediate contexts, which lead to the following conditions for well-typedness:
 
-   * The argument is a function expression with declared result type that is the same as the declared type of the parameter.
-   * The argument is a function expression with declared result type `NodesType` and the declared type of the parameter is
-     `LogicalType`. In this case the argument is converted to
-     `LogicalType` as per {{type-conv}}.
-   * The argument is a value expressed as a literal and the declared type of the parameter is `ValueType`.
-   * The argument is a singular query and the declared type of the parameter is `ValueType`.
-     In this case:
-      * If the query results in a nodelist consisting of a single  node, the argument is the value of the node.
-      * If the query results in an empty nodelist, the argument is `Nothing`.
-   * The argument is a query (including singular query) and the declared type of the parameter is `NodesType`.
-   * The argument is a `logical-expr` and the declared type of the parameter is `LogicalType`.
+{:vspace}
+As a `test-expr` in a logical expression:
+: The function is declared to have a result type of `LogicalType`, or
+  (giving rise to conversion as per {{type-conv}}) `NodesType`.
 
-Note that the last bullet item includes the case that the argument is
-a query (including singular query) and the declared type of the
-parameter is `LogicalType`. In this case the nodelist resulting
-from the query is interpreted as a logical-expr in the same way
-({{extest}}) it would be converted to `LogicalType` as per {{type-conv}}.
+As a `comparable` in a comparison:
+: The function is declared to have a result type of `ValueType`.
+
+As a `function-argument` in another function expression:
+: The function's declared result type fulfills the following rules for
+  the corresponding parameter of the enclosing function.
+
+(2) The arguments of the function expression are well-typed when
+each argument of the function can be used for the declared type of the
+corresponding parameter, each according to one of the following
+conditions depending on the way the argument is supplied:
+
+{:vspace}
+As a value expressed as a literal:
+: the declared type of the parameter is `ValueType`.
+
+As a singular query:
+: the declared type of the parameter is `ValueType`.
+  In this case:
+
+  * If the query results in a nodelist consisting of a single node, the argument is the value of the node.
+  * If the query results in an empty nodelist, the argument is `Nothing`.
+
+As a query (including singular query):
+: the declared type of the parameter is `NodesType`.
+
+As a `logical-expr` (including a query):
+: the declared type of the parameter is `LogicalType`.
+  This includes the case that the argument is
+  a query (including singular query).
+  In this case the nodelist resulting
+  from the query is interpreted as a `LogicalType` in the same way
+  that a query in a logical context is interpreted as an existence test
+  ({{extest}}), effecting the conversion as per {{type-conv}}.
+
+As a function expression:
+: 1. the declared result type of the argument is the same as the declared
+     type of the parameter, or
+  2. the declared result type of the argument is `NodesType`, and the
+     declared type of the parameter is `LogicalType`.
+     In this case the argument is converted to `LogicalType` as per
+     {{type-conv}}.
 
 ### `length` Function Extension {#length}
 
