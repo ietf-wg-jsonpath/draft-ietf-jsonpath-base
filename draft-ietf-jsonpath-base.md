@@ -1193,7 +1193,7 @@ current-node-identifier = "@"
 
 Comparison expressions are available for comparisons between primitive
 values (that is, numbers, strings, `true`, `false`, and `null`).
-These can be obtained via literal values; Singular Queries, each of
+These can be obtained via literal values; singular queries, each of
 which selects at most one node the value of which is then used; or
 function expressions (see {{fnex}}) of type `ValueType`.
 
@@ -1264,7 +1264,7 @@ A query by itself in a logical context is an existence test which yields true if
 
 Existence tests differ from comparisons in that:
 
-* they work with arbitrary relative or absolute queries (not just Singular Queries).
+* they work with arbitrary relative or absolute queries (not just singular queries).
 * they work with queries that select structured values.
 
 To examine the value of a node selected by a query, an explicit comparison is necessary.
@@ -1972,7 +1972,7 @@ strings, e.g., in JSON texts.
 Certain characters are escaped in Normalized Paths, in one and only one way; all other
 characters are unescaped.
 
-Note: Normalized Paths are Singular Queries, but not all Singular Queries are Normalized Paths.
+Note: Normalized Paths are singular queries, but not all singular queries are Normalized Paths.
 For example, `$[-3]` is a singular query, but is not a Normalized Path.
 The Normalized Path equivalent to `$[-3]` would have an index equal to the array length minus `3`.
 (The array length must be at least `3` if `$[-3]` is to identify a node.)
