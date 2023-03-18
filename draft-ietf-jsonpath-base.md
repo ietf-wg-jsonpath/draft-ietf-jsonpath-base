@@ -1681,7 +1681,6 @@ Note: a singular query may be used anywhere where a ValueType is expected,
 so there is no need to use the "value" function extension with a singular query.
 
 ### Examples
-{: unnumbered}
 
 | Query | Comment |
 | :---: | ------- |
@@ -2359,7 +2358,7 @@ For conversion to a JSONPath query, knowledge of the structure of the JSON value
 needed to distinguish these cases.
 
 # Acknowledgements
-{: unnumbered}
+{: numbered="false"}
 
 This document is based on {{{Stefan Gössner}}}'s
 original online article defining JSONPath {{JSONPath-orig}}.
