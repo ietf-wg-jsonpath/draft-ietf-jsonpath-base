@@ -273,12 +273,9 @@ Unicode Scalar Value:
   In other words, integers in either of the inclusive base 16 ranges 0 to D7FF and
   E000 to 10FFFF. JSON string values are sequences of Unicode scalar values.
 
-Singular Nodelist:
-: A nodelist containing at most one node.
-
 Singular Query:
 : A JSONPath expression built from segments each of which, regardless of the input value,
-  produces a Singular Nodelist.
+  produces a nodelist containing at most one node.
 
 Selector:
 : A single item within a segment that takes the input value and produces a nodelist
@@ -514,10 +511,10 @@ Unicode code points as described
 in {{RFC3629}}; implementation approaches that lead to an equivalent
 result are possible.
 
-A string to be used as a JSONPath query needs to be *well-formed* and
+A string to be used as a JSONPath query needs to be *well formed* and
 *valid*.
-A string is a well-formed JSONPath query if it conforms to the ABNF syntax in this document.
-A well-formed JSONPath query is valid if it also fulfills all semantic
+A string is a well formed JSONPath query if it conforms to the ABNF syntax in this document.
+A well formed JSONPath query is valid if it also fulfills all semantic
 requirements posed by this document, which are:
 
 1. Integer numbers in the JSONPath query that are relevant
@@ -525,11 +522,11 @@ to the JSONPath processing (e.g., index values and steps) MUST be
 within the range of exact values defined in I-JSON {{-i-json}}, namely
 within the interval \[-(2<sup>53</sup>)+1, (2<sup>53</sup>)-1].
 
-2. Uses of function extensions must be *well-typed*,
+2. Uses of function extensions must be *well typed*,
 as described in {{fnex}}.
 
 A JSONPath implementation MUST raise an error for any query which is not
-well-formed and valid.
+well formed and valid.
 The well-formedness and the validity of JSONPath queries are independent of
 the JSON value the query is applied to. No further errors relating to the
 well-formedness and the validity of a JSONPath query can be
@@ -1180,7 +1177,7 @@ In the latter case, if the function's declared result type is
 is `LogicalTrue`; if the function's declared result type is
 `NodesType`, it tests whether the result is non-empty.
 If the function's declared result type is `ValueType`, its use in a
-test expression is not well-typed.
+test expression is not well typed.
 
 ~~~ abnf
 
@@ -1205,7 +1202,7 @@ comparison-expr     = comparable S comparison-op S comparable
 literal             = number / string-literal /
                       true / false / null
 comparable          = literal /
-                      singular-query / ; Singular Query value
+                      singular-query / ; singular query value
                       function-expr    ; ValueType
 comparison-op       = "==" / "!=" /
                       "<=" / ">=" /
@@ -1263,7 +1260,7 @@ In the resultant nodelist, children of an array are ordered by their position in
 ##### Existence Tests {#extest}
 {: unnumbered}
 
-A query by itself in a Logical context is an existence test which yields true if the query selects at least one node and yields false if the query does not select any nodes.
+A query by itself in a logical context is an existence test which yields true if the query selects at least one node and yields false if the query does not select any nodes.
 
 Existence tests differ from comparisons in that:
 
@@ -1459,11 +1456,11 @@ function-argument   = literal /
                       function-expr
 ~~~
 
-Any function expressions in a query must be well-formed (by conforming to the above ABNF)
-and well-typed,
+Any function expressions in a query must be well formed (by conforming to the above ABNF)
+and well typed,
 otherwise the JSONPath implementation MUST raise an error
 (see {{synsem-overview}}).
-To define which function expressions are well-typed,
+To define which function expressions are well typed,
 a type system is first introduced.
 
 ### Type System for Function Expressions {#typesys}
@@ -1697,28 +1694,28 @@ instance of `ValueType`.
 * If the argument is `Nothing` or contains multiple nodes, the
   result is `Nothing`.
 
-Note: a Singular Query may be used anywhere where a ValueType is expected,
-so there is no need to use the "value" function extension with a Singular Query.
+Note: a singular query may be used anywhere where a ValueType is expected,
+so there is no need to use the "value" function extension with a singular query.
 
 ### Examples
 {: unnumbered}
 
 | Query | Comment |
 | :---: | ------- |
-| `$[?length(@) < 3]` | well-typed |
-| `$[?length(@.*) < 3]` | not well-typed since `@.*` is a non-singular query |
-| `$[?count(@.*) == 1]` | well-typed |
-| `$[?count(1) == 1]` | not well-typed since `1` is not a query or function expression |
-| `$[?count(foo(@.*)) == 1]` | well-typed, where `foo` is a function extension with a parameter of type `NodesType` and result type `NodesType` |
-| `$[?match(@.timezone, 'Europe/.*')]`         | well-typed |
-| `$[?match(@.timezone, 'Europe/.*') == true]` | not well-typed as `LogicalType` may not be used in comparisons |
-| `$[?value(@..color) == "red"]` | well-typed |
-| `$[?value(@..color)]` | not well-typed as `ValueType` may not be used in a test expression |
-| `$[?bar(@.a)]`  | well-typed for any function `bar` with a parameter of any declared type and result type `LogicalType`               |
-| `$[?bnl(@.*)]`  | well-typed for any function `bnl` with a parameter of declared type `NodesType` or `LogicalType` and result type `LogicalType` |
-| `$[?blt(1==1)]` | well-typed, where `blt` is a function with a parameter of declared type `LogicalType` and result type `LogicalType` |
-| `$[?blt(1)]`    | not well-typed for the same function `blt`, as `1` is not a query, `logical-expr`, or function expression           |
-| `$[?bal(1)]`    | well-typed, where `bal` is a function with a parameter of declared type `ValueType` and result type `LogicalType`   |
+| `$[?length(@) < 3]` | well typed |
+| `$[?length(@.*) < 3]` | not well typed since `@.*` is a non-singular query |
+| `$[?count(@.*) == 1]` | well typed |
+| `$[?count(1) == 1]` | not well typed since `1` is not a query or function expression |
+| `$[?count(foo(@.*)) == 1]` | well typed, where `foo` is a function extension with a parameter of type `NodesType` and result type `NodesType` |
+| `$[?match(@.timezone, 'Europe/.*')]`         | well typed |
+| `$[?match(@.timezone, 'Europe/.*') == true]` | not well typed as `LogicalType` may not be used in comparisons |
+| `$[?value(@..color) == "red"]` | well typed |
+| `$[?value(@..color)]` | not well typed as `ValueType` may not be used in a test expression |
+| `$[?bar(@.a)]`  | well typed for any function `bar` with a parameter of any declared type and result type `LogicalType`               |
+| `$[?bnl(@.*)]`  | well typed for any function `bnl` with a parameter of declared type `NodesType` or `LogicalType` and result type `LogicalType` |
+| `$[?blt(1==1)]` | well typed, where `blt` is a function with a parameter of declared type `LogicalType` and result type `LogicalType` |
+| `$[?blt(1)]`    | not well typed for the same function `blt`, as `1` is not a query, `logical-expr`, or function expression           |
+| `$[?bal(1)]`    | well typed, where `bal` is a function with a parameter of declared type `ValueType` and result type `LogicalType`   |
 {: title="Function expression examples"}
 
 ## Segments  {#segments-details}
@@ -1976,7 +1973,7 @@ Certain characters are escaped in Normalized Paths, in one and only one way; all
 characters are unescaped.
 
 Note: Normalized Paths are Singular Queries, but not all Singular Queries are Normalized Paths.
-For example, `$[-3]` is a Singular Query, but is not a Normalized Path.
+For example, `$[-3]` is a singular query, but is not a Normalized Path.
 The Normalized Path equivalent to `$[-3]` would have an index equal to the array length minus `3`.
 (The array length must be at least `3` if `$[-3]` is to identify a node.)
 
