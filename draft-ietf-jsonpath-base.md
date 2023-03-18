@@ -1548,13 +1548,13 @@ As a singular query:
   * If the query results in a nodelist consisting of a single node, the argument is the value of the node.
   * If the query results in an empty nodelist, the argument is `Nothing`.
 
-As a query (including singular query):
+As a general query (`filter-query`, which includes singular query):
 : the declared type of the parameter is `NodesType`.
 
-As a `logical-expr` (including a query):
+As a `logical-expr` (which includes `filter-query`):
 : the declared type of the parameter is `LogicalType`.
   This includes the case that the argument is
-  a query (including singular query).
+  a query (which includes singular query).
   In this case the nodelist resulting
   from the query is interpreted as a `LogicalType` in the same way
   that a query in a logical context is interpreted as an existence test
