@@ -545,7 +545,7 @@ type errors when pondering well-formedness and validity, while
 resource depletion and related errors are comparable to 500 type
 errors.)
 
-## Syntax
+### Syntax
 
 Syntactically, a JSONPath query consists of a root identifier (`$`), which
 stands for a nodelist that contains the root node of the query argument,
@@ -558,7 +558,7 @@ segments            = *(S segment)
 
 The syntax and semantics of segments are defined in {{segments-details}}.
 
-## Semantics
+### Semantics
 
 In this document, the semantics of a JSONPath query define the
 required results and do not prescribe the internal workings of an
@@ -600,7 +600,7 @@ then the whole query produces an empty nodelist.
 If a query may produce a nodelist with more than one possible ordering, a particular implementation
 may also produce distinct orderings in successive runs of the query.
 
-### Worked Example
+### Example
 
 Consider this example. With the query argument `{"a":[{"b":0},{"b":1},{"c":2}]}`, the
 query `$.a[*].b` selects the following list of nodes: `0`, `1`
