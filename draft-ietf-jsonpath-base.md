@@ -1514,7 +1514,7 @@ The well-typedness of function expressions can now be defined in terms of this t
 
 For a function expression to be well typed:
 
-1. its declared type must be well typed in the context it occurs, and
+1. its declared type must be well typed in the context in which it occurs, and
 2. its arguments must be well typed for the declared type of the corresponding parameters.
 
 (1) As per the grammar, a function expression can occur in three different
