@@ -854,7 +854,6 @@ members (but not when it is applied to object nodes with fewer than two members 
 ### Index Selector {#index-selector}
 
 #### Syntax {#syntax-index}
-{: unnumbered}
 
 An index selector `<index>` matches at most one array element value.
 
@@ -877,7 +876,6 @@ Notes:
 2. As in JSON numbers, the syntax does not allow octal-like integers with leading zeros such as `01` or `-01`.
 
 #### Semantics {#index-semantics}
-{: unnumbered}
 
 A non-negative `index-selector` applied to an array selects an array element using a zero-based index.
 For example, the selector `0` selects the first and the selector `4` selects the fifth element of a sufficiently long array.
@@ -889,7 +887,6 @@ As with non-negative indexes, it is not an error if such an element does
 not exist; this simply means that no element is selected.
 
 #### Examples
-{: unnumbered}
 
 <!-- EDITING NOTE: There are non-breaking spaces here between j and j -->
 <!-- i.e., j j and not j j -->
@@ -912,7 +909,6 @@ The following examples show the index selector in use by a child segment.
 ### Array Slice selector {#slice}
 
 #### Syntax
-{: unnumbered}
 
 The array slice selector has the form `<start>:<end>:<step>`.
 It matches elements from arrays starting at index `<start>`, ending at — but
@@ -940,7 +936,6 @@ To be valid, the integers provided MUST be in the I-JSON
 range of exact values, see {{synsem-overview}}.
 
 #### Semantics
-{: unnumbered}
 
 The slice selector was inspired by the slice operator of ECMAScript
 4 (ES4), which was deprecated in 2014, and that of Python.
@@ -1062,7 +1057,6 @@ END IF
 When `step = 0`, no elements are selected and the result array is empty.
 
 #### Examples
-{: unnumbered}
 
 JSON:
 
@@ -1108,6 +1102,7 @@ result of the query, for obtaining a specific JSON value resulting
 from that query that can then be used in a comparison, or as a
 *function argument*.
 
+Filter selectors may use function extensions, which are covered in {{fnex}}.
 Within the logical expression for a filter selector, function
 expressions can be used to operate on nodelists and values.
 The set of available functions is extensible, with a number of
@@ -1123,7 +1118,6 @@ way different kinds of expressions are handled in the grammar when
 function expressions are not in use.
 
 #### Syntax
-{: unnumbered}
 
 The filter selector has the form `?<logical-expr>`.
 
@@ -1148,6 +1142,8 @@ enclosing the identifier).
 
 Logical expressions offer the usual Boolean operators (`||` for OR,
 `&&` for AND, and `!` for NOT).
+They have the normal semantics of Boolean algebra and obey its laws
+(see, for example, {{BOOLEAN-LAWS}}).
 Parentheses MAY be used within `logical-expr` for grouping.
 
 ~~~~ abnf
@@ -1248,17 +1244,16 @@ The following table lists filter expression operators in order of precedence fro
 {: title="Filter expression operator precedence" }
 
 #### Semantics
-{: unnumbered}
 
 The filter selector works with arrays and objects exclusively. Its result is a list of *zero*, *one*, *multiple* or *all* of their array elements or member values, respectively.
 Applied to primitive values, it selects nothing.
 
-The order in which the children of an object appear in the resultant nodelist is not stipulated,
-since JSON objects are unordered.
 In the resultant nodelist, children of an array are ordered by their position in the array.
+The order in which the children of an object (as opposed to an array)
+appear in the resultant nodelist is not stipulated,
+since JSON objects are unordered.
 
 ##### Existence Tests {#extest}
-{: unnumbered}
 
 A query by itself in a logical context is an existence test which yields true if the query selects at least one node and yields false if the query does not select any nodes.
 
@@ -1272,7 +1267,6 @@ For example, to test whether the node selected by the query `@.foo` has the valu
 rather than the negated existence test `!@.foo` (which yields false if `@.foo` selects a node, regardless of the node's value).
 
 ##### Comparisons
-{: unnumbered}
 
 The comparison operators `==` and `<` are defined first and then these are used to define `!=`, `<=`, `>`, and `>=`.
 
@@ -1316,19 +1310,8 @@ compared is an object, array, boolean, or `null`.
 * The comparison `a > b` yields true if and only if `b < a` yields true.
 * The comparison `a >= b` yields true if and only if `b < a` yields true or `a == b` yields true.
 
-##### Logical Operators
-{: unnumbered}
-
-The logical AND, OR, and NOT operators have the normal semantics of Boolean algebra and
-obey its laws (see, for example, {{BOOLEAN-LAWS}}).
-
-##### Function Extensions
-{: unnumbered}
-
-Filter selectors may use function extensions, which are covered in {{fnex}}.
 
 #### Examples
-{: unnumbered}
 
 The first set of examples shows some comparison expressions and their
 result with a given JSON value as input.
