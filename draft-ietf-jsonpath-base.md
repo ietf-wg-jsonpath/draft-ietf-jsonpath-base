@@ -1425,7 +1425,7 @@ Beyond the filter expression functionality defined in the preceding
 subsections, JSONPath defines an extension point that can be used to
 add filter expression functionality: "Function Extensions".
 
-This section defines the extension point as well as four function
+This section defines the extension point as well as some function
 extensions that use this extension point.
 While these mechanisms are designed to use the extension point,
 they are an integral part of the JSONPath specification and are
@@ -1453,14 +1453,11 @@ LCALPHA             = %x61-7A  ; "a".."z"
 function-expr       = function-name "(" S [function-argument
                          *(S "," S function-argument)] S ")"
 function-argument   = literal /
+                      singular-query /
                       filter-query / ; (includes singular-query)
+                      logical-expr /
                       function-expr
 ~~~
-
-A function argument is a `filter-query` or a `comparable`.
-
-According to {{filter-selector}}, a `function-expr` is valid as a `filter-query`
-or a `comparable`.
 
 Any function expressions in a query must be well-formed (by conforming to the above ABNF)
 and well-typed,
@@ -1495,15 +1492,21 @@ Notes:
 
 ### Type Conversion {#type-conv}
 
-The following implicit type conversion may occur:
+Just as queries can be used in logical expressions by testing for the
+existence of at least one node ({{extest}}), a function expression of
+declared type `NodesType` can be used as a function argument for a
+parameter of declared type `LogicalType`, with the equivalent conversion rule:
 
-* Where an instance of `NodesType` needs to be converted to a
-  `LogicalType`, the conversion proceeds as follows:
-  * If the nodelist contains one or more nodes, the conversion result
-    is `LogicalTrue`.
+  * If the nodelist contains one or more nodes, the conversion result is `LogicalTrue`.
   * If the nodelist is empty, the conversion result is `LogicalFalse`.
 
-Given an expression with a declared type of `NodesType`, a `ValueType` can be obtained using a function such as `value()` (see {{value}}).
+Extraction of a value from a nodelist can be performed in several
+ways, so an implicit conversion from `NodesType` to `ValueType`
+may be surprising and has therefore not been defined.
+A function expression with a declared type of `NodesType` can
+indirectly be used as an argument for a parameter of declared type
+`ValueType` by wrapping the expression in a call to a function
+extension such as "value" (see {{value}}).
 
 The well-typedness of function expressions can now be defined in terms of this type system.
 
@@ -1511,22 +1514,37 @@ The well-typedness of function expressions can now be defined in terms of this t
 
 A function expression is well-typed if all of the following are true:
 
-* If it occurs directly in a test expression, the function is declared
-  to have a result type of `LogicalType`, or (conversion applies)
+* If the function expression occurs as a `test-expr` in a logical expression, the function is declared
+  to have a result type of `LogicalType`, or (by conversion as
+  per {{type-conv}})
   `NodesType`.
-* If it occurs directly as a `comparable` in a comparison, the
+* If the function expression occurs directly as a `comparable` in a comparison, the
   function is declared to have a result type of `ValueType`.
-* Otherwise, it occurs as an argument in another function
-  expression, and the following rules for function arguments apply to
+* Otherwise (the function expression occurs as an argument in another function
+  expression), the following rules for function arguments apply to
   its declared result type.
-* Each argument of the function can be used for the declared type of the corresponding declared
-  parameter according to one of the following rules:
+* The arguments of the function expression are well-typed, as follows.
+
+Each argument of the function can be used for the declared type of the corresponding declared
+parameter according to one of the following rules:
+
    * The argument is a function expression with declared result type that is the same as the declared type of the parameter.
    * The argument is a function expression with declared result type `NodesType` and the declared type of the parameter is
-     `LogicalType`. In this case the argument is converted to `LogicalType`.
-   * The argument is a value expressed as a literal and the defined type of the parameter is `ValueType`.
-   * The argument is a query and the declared type of the parameter is `NodesType`.
-   * The argument is a query and the declared type of the parameter is `LogicalType`. In this case the argument is converted to `LogicalType`.
+     `LogicalType`. In this case the argument is converted to
+     `LogicalType` as per {{type-conv}}.
+   * The argument is a value expressed as a literal and the declared type of the parameter is `ValueType`.
+   * The argument is a singular query and the declared type of the parameter is `ValueType`.
+     In this case:
+      * If the query results in a nodelist consisting of a single  node, the argument is the value of the node.
+      * If the query results in an empty nodelist, the argument is `Nothing`.
+   * The argument is a query (including singular query) and the declared type of the parameter is `NodesType`.
+   * The argument is a `logical-expr` and the declared type of the parameter is `LogicalType`.
+
+Note that the last bullet item includes the case that the argument is
+a query (including singular query) and the declared type of the
+parameter is `LogicalType`. In this case the nodelist resulting
+from the query is interpreted as a logical-expr in the same way
+({{extest}}) it would be converted to `LogicalType` as per {{type-conv}}.
 
 ### `length` Function Extension {#length}
 
@@ -1545,7 +1563,7 @@ $[?length(@.authors) >= 5]
 ~~~
 
 Its only argument is an instance of `ValueType` (possibly taken from a
-singular query as in the example above).  The result also is an
+singular query, as in the example above).  The result also is an
 instance of `ValueType`: an unsigned integer or `Nothing`.
 
 * If the argument value is a string, the result is the number of
@@ -1596,9 +1614,10 @@ string matches a given regular expression, which is in {{-iregexp}} form.
 $[?match(@.date, "1974-05-..")]
 ~~~
 
-Its arguments are instances of `ValueType`.
+Its arguments are instances of `ValueType` (possibly taken from a
+singular query, as for the first argument in the example above).
 If the first argument is not a string or the second argument is not a
-string conforming to {{-iregexp}}, the result is `LogicalFalse`. <!-- XXX -->
+string conforming to {{-iregexp}}, the result is `LogicalFalse`.
 Otherwise, the string that is the first argument is matched against
 the iregexp contained in the string that is the second argument;
 the result is `LogicalTrue` if the string matches the iregexp and
@@ -1622,9 +1641,10 @@ expression, which is in {{-iregexp}} form.
 $[?search(@.author, "[BR]ob")]
 ~~~
 
-Its arguments are instances of `ValueType`.
+Its arguments are instances of `ValueType` (possibly taken from a
+singular query, as for the first argument in the example above).
 If the first argument is not a string or the second argument is not a
-string conforming to {{-iregexp}}, the result is `LogicalFalse`. <!-- XXX -->
+string conforming to {{-iregexp}}, the result is `LogicalFalse`.
 Otherwise, the string that is the first argument is searched for at
 least one substring that matches the iregexp contained in the string
 that is the second argument; the result is `LogicalTrue` if such a
@@ -1647,7 +1667,7 @@ $[?value(@..color) == "red"]
 ~~~
 
 Its only argument is an instance of `NodesType` (possibly taken from a
-`filter-query` as in the example above).  The result is an
+`filter-query`, as in the example above).  The result is an
 instance of `ValueType`.
 
 * If the argument contains a single node, the result is
@@ -1655,6 +1675,8 @@ instance of `ValueType`.
 * If the argument is `Nothing` or contains multiple nodes, the
   result is `Nothing`.
 
+Note: a Singular Query may be used anywhere where a ValueType is expected,
+so there is no need to use the "value" function extension with a Singular Query.
 
 ### Examples
 {: unnumbered}
@@ -1670,7 +1692,11 @@ instance of `ValueType`.
 | `$[?match(@.timezone, 'Europe/.*') == true]` | not well-typed as `LogicalType` may not be used in comparisons |
 | `$[?value(@..color) == "red"]` | well-typed |
 | `$[?value(@..color)]` | not well-typed as `ValueType` may not be used in a test expression |
-| `$[?bar(1==1)]` | not well-typed, where `bar` is a function with a parameter of type `LogicalType` and result type `LogicalType`, as `1==1` is neither a query nor a function expression with a suitable result type
+| `$[?bar(@.a)]`  | well-typed for any function `bar` with a parameter of any declared type and result type `LogicalType`               |
+| `$[?bnl(@.*)]`  | well-typed for any function `bnl` with a parameter of declared type `NodesType` or `LogicalType` and result type `LogicalType` |
+| `$[?blt(1==1)]` | well-typed, where `blt` is a function with a parameter of declared type `LogicalType` and result type `LogicalType` |
+| `$[?blt(1)]`    | not well-typed for the same function `blt`, as `1` is not a query, `logical-expr`, or function expression           |
+| `$[?bal(1)]`    | well-typed, where `bal` is a function with a parameter of declared type `ValueType` and result type `LogicalType`   |
 {: title="Function expression examples"}
 
 ## Segments  {#segments-details}
