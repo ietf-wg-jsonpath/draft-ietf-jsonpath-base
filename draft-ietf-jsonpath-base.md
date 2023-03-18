@@ -1694,8 +1694,8 @@ so there is no need to use the "value" function extension with a Singular Query.
 | `$[?value(@..color)]` | not well-typed as `ValueType` may not be used in a test expression |
 | `$[?bar(@.a)]`  | well-typed for any function `bar` with a parameter of any declared type and result type `LogicalType`               |
 | `$[?bnl(@.*)]`  | well-typed for any function `bnl` with a parameter of declared type `NodesType` or `LogicalType` and result type `LogicalType` |
-| `$[?bog(1==1)]` | well-typed, where `bog` is a function with a parameter of declared type `LogicalType` and result type `LogicalType` |
-| `$[?bog(1)]`    | not well-typed for the same function `bog`, as `1` is not a query, `logical-expr`, or function expression           |
+| `$[?blt(1==1)]` | well-typed, where `blt` is a function with a parameter of declared type `LogicalType` and result type `LogicalType` |
+| `$[?blt(1)]`    | not well-typed for the same function `blt`, as `1` is not a query, `logical-expr`, or function expression           |
 | `$[?bal(1)]`    | well-typed, where `bal` is a function with a parameter of declared type `ValueType` and result type `LogicalType`   |
 {: title="Function expression examples"}
 
