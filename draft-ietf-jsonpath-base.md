@@ -1501,8 +1501,8 @@ parameter of declared type `LogicalType`, with the equivalent conversion rule:
   * If the nodelist is empty, the conversion result is `LogicalFalse`.
 
 Extraction of a value from a nodelist can be performed in several
-ways, so an implicit conversion may be surprising and has therefore
-not been defined.
+ways, so an implicit conversion from `NodesType` to `ValueType`
+may be surprising and has therefore not been defined.
 A function expression with a declared type of `NodesType` can
 indirectly be used as an argument for a parameter of declared type
 `ValueType` by interspersing a function such as `value()` (see
