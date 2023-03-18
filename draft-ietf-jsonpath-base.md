@@ -513,8 +513,8 @@ result are possible.
 
 A string to be used as a JSONPath query needs to be *well formed* and
 *valid*.
-A string is a well formed JSONPath query if it conforms to the ABNF syntax in this document.
-A well formed JSONPath query is valid if it also fulfills all semantic
+A string is a well-formed JSONPath query if it conforms to the ABNF syntax in this document.
+A well-formed JSONPath query is valid if it also fulfills all semantic
 requirements posed by this document, which are:
 
 1. Integer numbers in the JSONPath query that are relevant
