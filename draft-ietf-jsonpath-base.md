@@ -1175,11 +1175,11 @@ A test expression
 either tests the existence of a node
 designated by an embedded query (see {{extest}}) or tests the
 result of a function expression (see {{fnex}}).
-In the latter case, if the function result type is declared as
+In the latter case, if the function's declared result type is
 `LogicalType` (see {{typesys}}), it tests whether the result
-is `LogicalTrue`; if the function result type is declared as
+is `LogicalTrue`; if the function's declared result type is
 `NodesType`, it tests whether the result is non-empty.
-If the declared function result type is `ValueType`, its use in a
+If the function's declared result type is `ValueType`, its use in a
 test expression is not well-typed.
 
 ~~~ abnf
@@ -1522,11 +1522,11 @@ immediate contexts, which lead to the following conditions for well-typedness:
 
 {:vspace}
 As a `test-expr` in a logical expression:
-: The function is declared to have a result type of `LogicalType`, or
+: The function's declared result type is `LogicalType`, or
   (giving rise to conversion as per {{type-conv}}) `NodesType`.
 
 As a `comparable` in a comparison:
-: The function is declared to have a result type of `ValueType`.
+: The function's declared result type is `ValueType`.
 
 As a `function-argument` in another function expression:
 : The function's declared result type fulfills the following rules for
