@@ -545,7 +545,7 @@ type errors when pondering well-formedness and validity, while
 resource depletion and related errors are comparable to 500 type
 errors.)
 
-## Syntax
+### Syntax
 
 Syntactically, a JSONPath query consists of a root identifier (`$`), which
 stands for a nodelist that contains the root node of the query argument,
@@ -558,7 +558,7 @@ segments            = *(S segment)
 
 The syntax and semantics of segments are defined in {{segments-details}}.
 
-## Semantics
+### Semantics
 
 In this document, the semantics of a JSONPath query define the
 required results and do not prescribe the internal workings of an
@@ -600,7 +600,7 @@ then the whole query produces an empty nodelist.
 If a query may produce a nodelist with more than one possible ordering, a particular implementation
 may also produce distinct orderings in successive runs of the query.
 
-### Worked Example
+### Example
 
 Consider this example. With the query argument `{"a":[{"b":0},{"b":1},{"c":2}]}`, the
 query `$.a[*].b` selects the following list of nodes: `0`, `1`
@@ -657,7 +657,7 @@ Queries:
 | Query | Result | Result Path | Comment |
 | :---: | ------ | :----------: | ------- |
 | `$` | `{"k": "v"}` | `$` | Root node |
-{: title="Root identifier examples"}
+{: #tbl-root title="Root identifier examples"}
 
 ## Selectors
 
@@ -748,21 +748,21 @@ by a pair of surrogate escapes (`"\uD83E\uDD14"` in this case).
 A `name-selector` string MUST be converted to a
 member name `M` by removing the surrounding quotes and
 replacing each escape sequence with its equivalent Unicode character, as
-in the table below:
+shown in {{tbl-esc}}:
 
-| Escape Sequence    | Unicode Character   |  Description                |
-| :----------------: | :-----------------: |:--------------------------- |
-| \\b                | U+0008              | BS backspace                |
-| \\t                | U+0009              | HT horizontal tab           |
-| \\n                | U+000A              | LF line feed                |
-| \\f                | U+000C              | FF form feed                |
-| \\r                | U+000D              | CR carriage return          |
-| \\"                | U+0022              | quotation mark              |
-| \\'                | U+0027              | apostrophe                  |
-| \\/                | U+002F              | slash (solidus)             |
-| \\\\               | U+005C              | backslash (reverse solidus) |
-| \\uXXXX            | U+XXXX              | unicode character           |
-{: title="Escape Sequence Replacements" cols="c c"}
+| Escape Sequence    | Unicode Character   | Description                 |
+| :----------------: | :-----------------: | :---------------------      |
+| `\b`               | U+0008              | BS backspace                |
+| `\t`               | U+0009              | HT horizontal tab           |
+| `\n`               | U+000A              | LF line feed                |
+| `\f`               | U+000C              | FF form feed                |
+| `\r`               | U+000D              | CR carriage return          |
+| `\"`               | U+0022              | quotation mark              |
+| `\'`               | U+0027              | apostrophe                  |
+| `\/`               | U+002F              | slash (solidus)             |
+| `\\`               | U+005C              | backslash (reverse solidus) |
+| `\uXXXX`           | U+XXXX              | unicode character           |
+{: #tbl-esc title="Escape Sequence Replacements" cols="c c"}
 
 Applying the `name-selector` to an object node
 selects a member value whose name equals the member name `M`,
@@ -792,14 +792,14 @@ JSON:
 
 Queries:
 
-The following examples show the name selector in use by child segments.
+The examples in {{tbl-name}} show the name selector in use by child segments:
 
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
 | `$.o['j j']['k.k']`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
 | `$.o["j j"]["k.k"]`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
 | `$["'"]["@"]` | `2` | `$['\'']['@']` | Unusual member names
-{: title="Name selector examples"}
+{: #tbl-name title="Name selector examples"}
 
 ### Wildcard Selector {#wildcard-selector}
 
@@ -836,7 +836,7 @@ JSON:
 
 Queries:
 
-The following examples show the `wildcard` selector in use by a child segment.
+The examples in {{tbl-wild}} show the `wildcard` selector in use by a child segment:
 
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
@@ -845,7 +845,7 @@ The following examples show the `wildcard` selector in use by a child segment.
 | `$.o[*]` | `2` <br> `1` | `$['o']['k']` <br> `$['o']['j']` | Alternative result |
 | `$.o[*, *]` | `1` <br> `2` <br> `2` <br> `1` | `$['o']['j']` <br> `$['o']['k']` <br> `$['o']['k']` <br> `$['o']['j']` | Non-deterministic ordering |
 | `$.a[*]` | `5` <br> `3` | `$['a'][0]` <br> `$['a'][1]`     | Array members      |
-{: title="Wildcard selector examples"}
+{: #tbl-wild title="Wildcard selector examples"}
 
 The example above with the query `$.o[*, *]` shows that the wildcard selector may produce nodelists in distinct
 orders each time it appears in the child segment, when it is applied to an object node with two or more
@@ -854,7 +854,6 @@ members (but not when it is applied to object nodes with fewer than two members 
 ### Index Selector {#index-selector}
 
 #### Syntax {#syntax-index}
-{: unnumbered}
 
 An index selector `<index>` matches at most one array element value.
 
@@ -877,7 +876,6 @@ Notes:
 2. As in JSON numbers, the syntax does not allow octal-like integers with leading zeros such as `01` or `-01`.
 
 #### Semantics {#index-semantics}
-{: unnumbered}
 
 A non-negative `index-selector` applied to an array selects an array element using a zero-based index.
 For example, the selector `0` selects the first and the selector `4` selects the fifth element of a sufficiently long array.
@@ -889,7 +887,6 @@ As with non-negative indexes, it is not an error if such an element does
 not exist; this simply means that no element is selected.
 
 #### Examples
-{: unnumbered}
 
 <!-- EDITING NOTE: There are non-breaking spaces here between j and j -->
 <!-- i.e., j j and not j j -->
@@ -901,18 +898,17 @@ JSON:
 
 Queries:
 
-The following examples show the index selector in use by a child segment.
+The examples in {{tbl-index}} show the index selector in use by a child segment.
 
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
 | `$[1]`   | `"b"` | `$[1]`      | Element of array      |
 | `$[-2]`  | `"a"` | `$[0]`      | Element of array, from the end      |
-{: title="Index selector examples"}
+{: #tbl-index title="Index selector examples"}
 
 ### Array Slice selector {#slice}
 
 #### Syntax
-{: unnumbered}
 
 The array slice selector has the form `<start>:<end>:<step>`.
 It matches elements from arrays starting at index `<start>`, ending at — but
@@ -940,7 +936,6 @@ To be valid, the integers provided MUST be in the I-JSON
 range of exact values, see {{synsem-overview}}.
 
 #### Semantics
-{: unnumbered}
 
 The slice selector was inspired by the slice operator of ECMAScript
 4 (ES4), which was deprecated in 2014, and that of Python.
@@ -988,13 +983,13 @@ optional. In the rest of this section, `len` denotes the length of the input arr
 
 The default value for `step` is `1`.
 The default values for `start` and `end` depend on the sign of `step`,
-as follows:
+as shown in {{tbl-slice-start-end}}:
 
 | Condition    | start   | end      |
 |--------------|---------|----------|
 | step >= 0    | 0       | len      |
 | step < 0     | len - 1 | -len - 1 |
-{: title="Default array slice start and end values"}
+{: #tbl-slice-start-end title="Default array slice start and end values"}
 
 Slice expression parameters `start` and `end` are not directly usable
 as slice bounds and must first be normalized.
@@ -1062,7 +1057,6 @@ END IF
 When `step = 0`, no elements are selected and the result array is empty.
 
 #### Examples
-{: unnumbered}
 
 JSON:
 
@@ -1071,7 +1065,7 @@ JSON:
 
 Queries:
 
-The following examples show the array slice selector in use by a child segment.
+The examples in {{tbl-slice}} show the array slice selector in use by a child segment:
 
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
@@ -1080,7 +1074,7 @@ The following examples show the array slice selector in use by a child segment.
 | `$[1:5:2]` | `"b"` <br> `"d"` | `$[1]` <br> `$[3]` | Slice with step 2 |
 | `$[5:1:-2]` | `"f"` <br> `"d"` | `$[5]` <br> `$[3]` | Slice with negative step |
 | `$[::-1]` | `"g"` <br> `"f"` <br> `"e"` <br> `"d"` <br> `"c"` <br> `"b"` <br> `"a"` | `$[6]` <br> `$[5]` <br> `$[4]` <br> `$[3]` <br> `$[2]` <br> `$[1]` <br> `$[0]` | Slice in reverse order |
-{: title="Array slice selector examples"}
+{: #tbl-slice title="Array slice selector examples"}
 
 ### Filter selector {#filter-selector}
 
@@ -1108,6 +1102,7 @@ result of the query, for obtaining a specific JSON value resulting
 from that query that can then be used in a comparison, or as a
 *function argument*.
 
+Filter selectors may use function extensions, which are covered in {{fnex}}.
 Within the logical expression for a filter selector, function
 expressions can be used to operate on nodelists and values.
 The set of available functions is extensible, with a number of
@@ -1123,7 +1118,6 @@ way different kinds of expressions are handled in the grammar when
 function expressions are not in use.
 
 #### Syntax
-{: unnumbered}
 
 The filter selector has the form `?<logical-expr>`.
 
@@ -1148,6 +1142,8 @@ enclosing the identifier).
 
 Logical expressions offer the usual Boolean operators (`||` for OR,
 `&&` for AND, and `!` for NOT).
+They have the normal semantics of Boolean algebra and obey its laws
+(see, for example, {{BOOLEAN-LAWS}}).
 Parentheses MAY be used within `logical-expr` for grouping.
 
 ~~~~ abnf
@@ -1234,7 +1230,7 @@ false               = %x66.61.6c.73.65             ; false
 null                = %x6e.75.6c.6c                ; null
 ~~~~
 
-The following table lists filter expression operators in order of precedence from highest (binds most tightly) to lowest (binds least tightly).
+{{tbl-prec}} lists filter expression operators in order of precedence from highest (binds most tightly) to lowest (binds least tightly).
 
 <!-- FIXME: Should the syntax column be split between unary and binary operators? -->
 
@@ -1245,20 +1241,19 @@ The following table lists filter expression operators in order of precedence fro
 |  3  | Relations | `==`&nbsp;`!=`<br>`<`&nbsp;`<=`&nbsp;`>`&nbsp;`>=` |
 |  2  | Logical AND | `&&` |
 |  1  | Logical OR | `¦¦`   |
-{: title="Filter expression operator precedence" }
+{: #tbl-prec title="Filter expression operator precedence" }
 
 #### Semantics
-{: unnumbered}
 
 The filter selector works with arrays and objects exclusively. Its result is a list of *zero*, *one*, *multiple* or *all* of their array elements or member values, respectively.
 Applied to primitive values, it selects nothing.
 
-The order in which the children of an object appear in the resultant nodelist is not stipulated,
-since JSON objects are unordered.
 In the resultant nodelist, children of an array are ordered by their position in the array.
+The order in which the children of an object (as opposed to an array)
+appear in the resultant nodelist is not stipulated,
+since JSON objects are unordered.
 
 ##### Existence Tests {#extest}
-{: unnumbered}
 
 A query by itself in a logical context is an existence test which yields true if the query selects at least one node and yields false if the query does not select any nodes.
 
@@ -1272,7 +1267,6 @@ For example, to test whether the node selected by the query `@.foo` has the valu
 rather than the negated existence test `!@.foo` (which yields false if `@.foo` selects a node, regardless of the node's value).
 
 ##### Comparisons
-{: unnumbered}
 
 The comparison operators `==` and `<` are defined first and then these are used to define `!=`, `<=`, `>`, and `>=`.
 
@@ -1316,19 +1310,8 @@ compared is an object, array, boolean, or `null`.
 * The comparison `a > b` yields true if and only if `b < a` yields true.
 * The comparison `a >= b` yields true if and only if `b < a` yields true or `a == b` yields true.
 
-##### Logical Operators
-{: unnumbered}
-
-The logical AND, OR, and NOT operators have the normal semantics of Boolean algebra and
-obey its laws (see, for example, {{BOOLEAN-LAWS}}).
-
-##### Function Extensions
-{: unnumbered}
-
-Filter selectors may use function extensions, which are covered in {{fnex}}.
 
 #### Examples
-{: unnumbered}
 
 The first set of examples shows some comparison expressions and their
 result with a given JSON value as input.
@@ -1373,7 +1356,7 @@ Comparisons:
 | `1 < $.arr` | false | Arrays are not ordered |
 | `true <= true` | true | `==` implies `<=` |
 | `true > true` | false | Booleans are not ordered |
-{: title="Comparison examples" }
+{: #tbl-comparison title="Comparison examples" }
 
 The second set of examples shows some complete JSONPath queries that make use
 of filter selectors, and the results of evaluating these queries on a
@@ -1393,7 +1376,7 @@ JSON:
 
 Queries:
 
-The following examples show the filter selector in use by a child segment.
+The examples in {{tbl-filter}} show the filter selector in use by a child segment:
 
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
@@ -1411,7 +1394,7 @@ The following examples show the filter selector in use by a child segment.
 | `$.o[?@.u || @.x]` | `{"u": 6}` | `$['o']['t']` | Object value logical OR |
 | `$.a[?(@.b == $.x)]`| `3` <br> `5` <br> `1` <br> `2` <br> `4` <br> `6` | `$['a'][0]` <br>`$['a'][1]` <br> `$['a'][2]` <br> `$['a'][3]` <br> `$['a'][4]` <br> `$['a'][5]` | Comparison of queries with no values |
 | `$.a[?(@ == @)]` | `3` <br> `5` <br> `1` <br> `2` <br> `4` <br> `6` <br> `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": {}}` <br> `{"b": "kilo"}` | `$['a'][0]` <br> `$['a'][1]` <br>`$['a'][2]` <br>`$['a'][3]` <br>`$['a'][4]` <br>`$['a'][5]` <br>`$['a'][6]` <br>`$['a'][7]` <br>`$['a'][8]` <br>`$['a'][9]` | Comparisons of primitive and of structured values |
-{: title="Filter selector examples"}
+{: #tbl-filter title="Filter selector examples"}
 
 The example above with the query `$.o[?@<3, ?@<3]` shows that a filter selector may produce nodelists in distinct
 orders each time it appears in the child segment.
@@ -1698,7 +1681,6 @@ Note: a singular query may be used anywhere where a ValueType is expected,
 so there is no need to use the "value" function extension with a singular query.
 
 ### Examples
-{: unnumbered}
 
 | Query | Comment |
 | :---: | ------- |
@@ -1716,7 +1698,7 @@ so there is no need to use the "value" function extension with a singular query.
 | `$[?blt(1==1)]` | well typed, where `blt` is a function with a parameter of declared type `LogicalType` and result type `LogicalType` |
 | `$[?blt(1)]`    | not well typed for the same function `blt`, as `1` is not a query, `logical-expr`, or function expression           |
 | `$[?bal(1)]`    | well typed, where `bal` is a function with a parameter of declared type `ValueType` and result type `LogicalType`   |
-{: title="Function expression examples"}
+{: #tbl-function-expr title="Function expression examples"}
 
 ## Segments  {#segments-details}
 
@@ -1817,7 +1799,7 @@ Queries:
 | `$[0, 3]` | `"a"` <br> `"d"` | `$[0]` <br> `$[3]` | Indices |
 | `$[0:2, 5]` | `"a"` <br> `"b"` <br> `"f"` | `$[0]` <br> `$[1]` <br> `$[5]` | Slice and index |
 | `$[0, 0]` | `"a"` <br> `"a"` | `$[0]` <br> `$[0]` | Duplicated entries |
-{: title="Child segment examples"}
+{: #tbl-child-segment title="Child segment examples"}
 
 ### Descendant Segment
 
@@ -1899,7 +1881,7 @@ Queries:
 | `$..o`   | `{"j": 1, "k": 2}` | `$['o']` | Input value is visited |
 | `$.o..[*, *]` | `1` <br> `2` <br> `2` <br> `1` | `$['o']['j']` <br> `$['o']['k']` <br> `$['o']['k']` <br> `$['o']['j']` | Non-deterministic ordering |
 | `$.a..[0, 1]`| `5` <br> `3` <br> `{"j": 4}` <br> `{"k": 6}` | `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2][0]` <br> `$['a'][2][1]`       | Multiple segments |
-{: title="Descendant segment examples"}
+{: #tbl-descendant-segment title="Descendant segment examples"}
 
 Note: The ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that:
 
@@ -1944,7 +1926,7 @@ Queries:
 | `$.b[?@==null]` | `null` | `$['b'][0]` | Comparison |
 | `$.c[?(@.d==null)]` | | | Comparison with "missing" value |
 | `$.null` | `1` | `$['null']` | Not JSON null at all, just a member name string |
-{: title="Examples involving (or not involving) null"}
+{: #tbl-null-examples title="Examples involving (or not involving) null"}
 
 ## Normalized Paths
 
@@ -2030,7 +2012,7 @@ for which no standard JSON escape, such as `\n`, is available.
 | `$.a.b[1:2]` | `$['a']['b'][1]` | Nested structure |
 | `$["\u000B"]`| `$['\u000b']` | Unicode escape |
 | `$["\u0061"]`| `$['a']` | Unicode character |
-{: title="Normalized Path examples"}
+{: #tbl-normalized-path-examples title="Normalized Path examples"}
 
 # IANA Considerations {#IANA}
 
@@ -2376,7 +2358,7 @@ For conversion to a JSONPath query, knowledge of the structure of the JSON value
 needed to distinguish these cases.
 
 # Acknowledgements
-{: numbered="no"}
+{: numbered="false"}
 
 This document is based on {{{Stefan Gössner}}}'s
 original online article defining JSONPath {{JSONPath-orig}}.
