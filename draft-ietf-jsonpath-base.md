@@ -1515,7 +1515,7 @@ The well-typedness of function expressions can now be defined in terms of this t
 A function expression is well-typed if all of the following are true:
 
 * If the function expression occurs as a `test-expr` in a logical expression, the function is declared
-  to have a result type of `LogicalType`, or (conversion applies as
+  to have a result type of `LogicalType`, or (by conversion as
   per {{type-conv}})
   `NodesType`.
 * If the function expression occurs directly as a `comparable` in a comparison, the
