@@ -1512,9 +1512,9 @@ As a `function-argument` in another function expression:
 : The function's declared result type fulfills the following rules for
   the corresponding parameter of the enclosing function.
 
-(2) The arguments of the function expression are well-typed when
+(2) The arguments of the function expression are well typed when
 each argument of the function can be used for the declared type of the
-corresponding parameter, each according to one of the following
+corresponding parameter, according to one of the following
 conditions depending on the way the argument is supplied:
 
 {:vspace}
