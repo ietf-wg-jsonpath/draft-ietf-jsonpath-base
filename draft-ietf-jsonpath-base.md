@@ -1515,38 +1515,29 @@ As a `function-argument` in another function expression:
 (2) The arguments of the function expression are well typed when
 each argument of the function can be used for the declared type of the
 corresponding parameter, according to one of the following
-conditions depending on the way the argument is supplied:
+conditions:
 
-{:vspace}
-As a value expressed as a literal:
-: the declared type of the parameter is `ValueType`.
+* When the argument is a function expression with declared result type the same as the
+  declared type of the parameter.
 
-As a singular query:
-: the declared type of the parameter is `ValueType`.
-  In this case:
+* When the declared type of the parameter is `ValueType` and the argument is one of the following:
+    * A value expressed as a literal.
+    * A singular query. In this case:
+        * If the query results in a nodelist consisting of a single node, the
+          argument is the value of the node.
+        * If the query results in an empty nodelist, the argument is Nothing.
 
-  * If the query results in a nodelist consisting of a single node, the argument is the value of the node.
-  * If the query results in an empty nodelist, the argument is `Nothing`.
-
-As a general query (`filter-query`, which includes singular query):
-: the declared type of the parameter is `NodesType`.
-
-As a `logical-expr` (which includes `filter-query`):
-: the declared type of the parameter is `LogicalType`.
-  This includes the case that the argument is
-  a query (which includes singular query).
+* When the declared type of the parameter is `LogicalType` and the argument is a `logical-expr`.
+  This includes the case where the argument is
+  a query (which includes singular query and a function expression with declared result
+  type `NodesType`).
   In this case the nodelist resulting
   from the query is interpreted as a `LogicalType` in the same way
   that a query in a logical context is interpreted as an existence test
   ({{extest}}), effecting the conversion as per {{type-conv}}.
 
-As a function expression:
-: 1. the declared result type of the argument is the same as the declared
-     type of the parameter, or
-  2. the declared result type of the argument is `NodesType`, and the
-     declared type of the parameter is `LogicalType`.
-     In this case the argument is converted to `LogicalType` as per
-     {{type-conv}}.
+* When the declared type of the parameter is `NodesType` and the argument is one of the following:
+    * A general query (`filter-query`, which includes singular query).
 
 ### `length` Function Extension {#length}
 
