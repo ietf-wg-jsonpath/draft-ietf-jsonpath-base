@@ -1528,13 +1528,14 @@ conditions:
         * If the query results in an empty nodelist, the argument is Nothing.
 
 * When the declared type of the parameter is `LogicalType` and the argument is a `logical-expr`.
-  This includes the case where the argument is
-  a query (which includes singular query and a function expression with declared result
-  type `NodesType`).
-  In this case the nodelist resulting
-  from the query is interpreted as a `LogicalType` in the same way
-  that a query in a logical context is interpreted as an existence test
-  ({{extest}}), effecting the conversion as per {{type-conv}}.
+  This includes the following cases:
+    * The argument is a query (which includes singular query).
+      In this case the nodelist resulting
+      from the query is interpreted as a `LogicalType` in the same way
+      that a query in a logical context is interpreted as an existence test
+      ({{extest}}), effecting the conversion as per {{type-conv}}.
+    * The argument is a function expression with declared result type `NodesType`.
+      In this case the argument is converted to LogicalType as per {{type-conv}}.
 
 * When the declared type of the parameter is `NodesType` and the argument is a general query
   (`filter-query`, which includes singular query).
