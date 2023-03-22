@@ -1536,8 +1536,8 @@ conditions:
   that a query in a logical context is interpreted as an existence test
   ({{extest}}), effecting the conversion as per {{type-conv}}.
 
-* When the declared type of the parameter is `NodesType` and the argument is one of the following:
-    * A general query (`filter-query`, which includes singular query).
+* When the declared type of the parameter is `NodesType` and the argument is a general query
+  (`filter-query`, which includes singular query).
 
 ### `length` Function Extension {#length}
 
