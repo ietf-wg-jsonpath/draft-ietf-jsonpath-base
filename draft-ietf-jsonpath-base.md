@@ -1537,8 +1537,8 @@ conditions:
     * The argument is a function expression with declared result type `NodesType`.
       In this case the argument is converted to LogicalType as per {{type-conv}}.
 
-* When the declared type of the parameter is `NodesType` and the argument is a general query
-  (`filter-query`, which includes singular query).
+* When the declared type of the parameter is `NodesType` and the argument is a query
+  (which includes singular query).
 
 ### `length` Function Extension {#length}
 
