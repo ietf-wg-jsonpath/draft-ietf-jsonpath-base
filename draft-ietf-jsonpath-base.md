@@ -255,6 +255,11 @@ Nodelist:
   While a nodelist can be represented in JSON, e.g. as an array, this document
   does not require or assume any particular representation.
 
+Singular Nodelist:
+: A list of at most one node.
+  While a singular nodelist can be represented in JSON, e.g. as an array, this document
+  does not require or assume any particular representation.
+
 Parameter:
 : Formal parameter (of a function) that can take a function argument
   (an actual parameter) in a function-expression.
@@ -1171,7 +1176,7 @@ result of a function expression (see {{fnex}}).
 In the latter case, if the function's declared result type is
 `LogicalType` (see {{typesys}}), it tests whether the result
 is `LogicalTrue`; if the function's declared result type is
-`NodesType`, it tests whether the result is non-empty.
+`NodesType` or `SingleNodeType`, it tests whether the result is non-empty.
 If the function's declared result type is `ValueType`, its use in a
 test expression is not well typed (see {{well-typedness}}).
 
@@ -1180,7 +1185,8 @@ test expression is not well typed (see {{well-typedness}}).
 test-expr           = [logical-not-op S]
                      (filter-query / ; existence/non-existence
                       function-expr) ; LogicalType or
-                                     ; NodesType
+                                     ; NodesType or
+                                     ; SingleNodeType
 filter-query        = rel-query / jsonpath-query
 rel-query           = current-node-identifier segments
 current-node-identifier = "@"
@@ -1191,7 +1197,7 @@ Comparison expressions are available for comparisons between primitive
 values (that is, numbers, strings, `true`, `false`, and `null`).
 These can be obtained via literal values; singular queries, each of
 which selects at most one node the value of which is then used; or
-function expressions (see {{fnex}}) of type `ValueType`.
+function expressions (see {{fnex}}) of type `ValueType` or `SingleNodeType`.
 
 ~~~~ abnf
 comparison-expr     = comparable S comparison-op S comparable
@@ -1199,7 +1205,8 @@ literal             = number / string-literal /
                       true / false / null
 comparable          = literal /
                       singular-query / ; singular query value
-                      function-expr    ; ValueType
+                      function-expr    ; ValueType or
+                                       ; SingleNodeType
 comparison-op       = "==" / "!=" /
                       "<=" / ">=" /
                       "<"  / ">"
@@ -1457,6 +1464,7 @@ independent of any query argument the JSONPath query is applied to.
 | Type                 | Instances                       |
 | :--                  | :------------------------------ |
 | `ValueType`          | JSON values or `Nothing`        |
+| `SingleNodeType`     | Singular nodelists              |
 | `LogicalType`        | `LogicalTrue` or `LogicalFalse` |
 | `NodesType`          | Nodelists                       |
 {: #tbl-types title="Function extension type system"}
@@ -1473,19 +1481,29 @@ Notes:
 
 Just as queries can be used in logical expressions by testing for the
 existence of at least one node ({{extest}}), a function expression of
-declared type `NodesType` can be used as a function argument for a
+declared type `NodesType` or `SingleNodeType` can be used as a function argument for a
 parameter of declared type `LogicalType`, with the equivalent conversion rule:
 
   * If the nodelist contains one or more nodes, the conversion result is `LogicalTrue`.
   * If the nodelist is empty, the conversion result is `LogicalFalse`.
+
+A function expression of declared type `SingleNodeType` can be used as a function
+argument for a parameter of declared type `ValueType` with the coversion rule:
+
+  * If the nodelist contains one node, the conversion result is the value of that node.
+  * If the nodelist is empty, the conversion result is `Nothing`.
+
+A function expression of declared type `SingleNodeType` can be used as a function
+argument for a parameter of declared type `NodesType` since a singular nodelist is
+a nodelist.
 
 Extraction of a value from a nodelist can be performed in several
 ways, so an implicit conversion from `NodesType` to `ValueType`
 may be surprising and has therefore not been defined.
 A function expression with a declared type of `NodesType` can
 indirectly be used as an argument for a parameter of declared type
-`ValueType` by wrapping the expression in a call to a function
-extension such as "value" (see {{value}}).
+`SingleNodeType` by wrapping the expression in a call to a function
+extension such as "single" (see {{single}}).
 
 The well-typedness of function expressions can now be defined in terms of this type system.
 
@@ -1502,10 +1520,11 @@ immediate contexts, which lead to the following conditions for well-typedness:
 {:vspace}
 As a `test-expr` in a logical expression:
 : The function's declared result type is `LogicalType`, or
-  (giving rise to conversion as per {{type-conv}}) `NodesType`.
+  (giving rise to conversion as per {{type-conv}}) `NodesType` or `SingleNodeType`.
 
 As a `comparable` in a comparison:
-: The function's declared result type is `ValueType`.
+: The function's declared result type is `ValueType` or
+  (giving rise to conversion as per {{type-conv}}) `SingleNodeType`.
 
 As a `function-argument` in another function expression:
 : The function's declared result type fulfills the following rules for
@@ -1520,12 +1539,12 @@ conditions:
   declared type of the parameter.
 
 * When the declared type of the parameter is `LogicalType` and the argument is one of the following:
-    * A function expression with declared result type `NodesType`.
-      In this case the argument is converted to LogicalType as per {{type-conv}}.
+    * A function expression with declared result type `NodesType` or `SingleNodeType`.
+      In this case the argument is converted to `LogicalType` as per {{type-conv}}.
     * A `logical-expr` that is not a function expression.
 
 * When the declared type of the parameter is `NodesType` and the argument is a query
-  (which includes singular query).
+  (which includes singular query) or a function expression with declared result type `SingleNodeType`.
 
 * When the declared type of the parameter is `ValueType` and the argument is one of the following:
     * A value expressed as a literal.
@@ -1533,6 +1552,8 @@ conditions:
         * If the query results in a nodelist consisting of a single node, the
           argument is the value of the node.
         * If the query results in an empty nodelist, the argument is Nothing.
+    * A function expresion with declared result type `SingleNodeType`.
+      In this case the argument is converted to `ValueType` as per {{type-conv}}.
 
 ### `length` Function Extension {#length}
 
@@ -1639,32 +1660,23 @@ that is the second argument; the result is `LogicalTrue` if such a
 substring exists and `LogicalFalse` otherwise.
 
 
-### `value` Function Extension {#value}
+### `single` Function Extension {#single}
 
 Parameters:
 : 1. `NodesType`
 
 Result:
-: `ValueType`
+: `SingleNodeType`
 
-The "value" function extension provides a way to convert an instance of `NodesType` to a value and
-make that available for further processing in the filter expression:
+The "single" function extension provides a way to obtain a node in a nodelist and make that available for further processing in the filter expression:
 
 ~~~ JSONPath
-$[?value(@..color) == "red"]
+$[?single(@.*.price) >= 7.99]
 ~~~
 
-Its only argument is an instance of `NodesType` (possibly taken from a
-`filter-query`, as in the example above).  The result is an
-instance of `ValueType`.
-
-* If the argument contains a single node, the result is
-  the value of the node.
-* If the argument is `Nothing` or contains multiple nodes, the
-  result is `Nothing`.
-
-Note: a singular query may be used anywhere where a ValueType is expected,
-so there is no need to use the "value" function extension with a singular query.
+Its only argument is a nodelist. If the nodelist contains a single node, the result is a nodelist
+consisting of just that node. If the nodelist is empty or contains multiple nodes, the result is
+the empty nodelist.
 
 ### Examples
 
@@ -1677,8 +1689,8 @@ so there is no need to use the "value" function extension with a singular query.
 | `$[?count(foo(@.*)) == 1]` | well typed, where `foo` is a function extension with a parameter of type `NodesType` and result type `NodesType` |
 | `$[?match(@.timezone, 'Europe/.*')]`         | well typed |
 | `$[?match(@.timezone, 'Europe/.*') == true]` | not well typed as `LogicalType` may not be used in comparisons |
-| `$[?value(@..color) == "red"]` | well typed |
-| `$[?value(@..color)]` | not well typed as `ValueType` may not be used in a test expression |
+| `$[?single(@..color) == "red"]` | well typed |
+| `$[?single(@..color)]` | well typed |
 | `$[?bar(@.a)]`  | well typed for any function `bar` with a parameter of any declared type and result type `LogicalType`               |
 | `$[?bnl(@.*)]`  | well typed for any function `bnl` with a parameter of declared type `NodesType` or `LogicalType` and result type `LogicalType` |
 | `$[?blt(1==1)]` | well typed, where `blt` is a function with a parameter of declared type `LogicalType` and result type `LogicalType` |
