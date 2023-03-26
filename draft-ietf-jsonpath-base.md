@@ -1520,20 +1520,20 @@ conditions:
 * When the argument is a function expression with declared result type the same as the
   declared type of the parameter.
 
+* When the declared type of the parameter is `LogicalType` and the argument is one of the following:
+    * A function expression with declared result type `NodesType`.
+      In this case the argument is converted to LogicalType as per {{type-conv}}.
+    * A `logical-expr` that is not a function expression.
+
+* When the declared type of the parameter is `NodesType` and the argument is a query
+  (which includes singular query).
+
 * When the declared type of the parameter is `ValueType` and the argument is one of the following:
     * A value expressed as a literal.
     * A singular query. In this case:
         * If the query results in a nodelist consisting of a single node, the
           argument is the value of the node.
         * If the query results in an empty nodelist, the argument is Nothing.
-
-* When the declared type of the parameter is `LogicalType` and the argument is one of the following:
-    * A `logical-expr` that is not a function expression.
-    * A function expression with declared result type `NodesType`.
-      In this case the argument is converted to LogicalType as per {{type-conv}}.
-
-* When the declared type of the parameter is `NodesType` and the argument is a query
-  (which includes singular query).
 
 ### `length` Function Extension {#length}
 
