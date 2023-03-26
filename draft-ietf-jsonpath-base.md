@@ -1433,7 +1433,6 @@ LCALPHA             = %x61-7A  ; "a".."z"
 function-expr       = function-name "(" S [function-argument
                          *(S "," S function-argument)] S ")"
 function-argument   = literal /
-                      singular-query /
                       filter-query / ; (includes singular-query)
                       logical-expr /
                       function-expr
