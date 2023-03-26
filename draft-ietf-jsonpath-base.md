@@ -1173,7 +1173,7 @@ In the latter case, if the function's declared result type is
 is `LogicalTrue`; if the function's declared result type is
 `NodesType`, it tests whether the result is non-empty.
 If the function's declared result type is `ValueType`, its use in a
-test expression is not well typed.
+test expression is not well typed (see {{well-typedness}}).
 
 ~~~ abnf
 
@@ -1433,7 +1433,6 @@ LCALPHA             = %x61-7A  ; "a".."z"
 function-expr       = function-name "(" S [function-argument
                          *(S "," S function-argument)] S ")"
 function-argument   = literal /
-                      singular-query /
                       filter-query / ; (includes singular-query)
                       logical-expr /
                       function-expr
@@ -1490,7 +1489,7 @@ extension such as "value" (see {{value}}).
 
 The well-typedness of function expressions can now be defined in terms of this type system.
 
-### Well-Typedness of Function Expressions
+### Well-Typedness of Function Expressions {#well-typedness}
 
 For a function expression to be well typed:
 
@@ -1515,38 +1514,25 @@ As a `function-argument` in another function expression:
 (2) The arguments of the function expression are well typed when
 each argument of the function can be used for the declared type of the
 corresponding parameter, according to one of the following
-conditions depending on the way the argument is supplied:
+conditions:
 
-{:vspace}
-As a value expressed as a literal:
-: the declared type of the parameter is `ValueType`.
+* When the argument is a function expression with declared result type the same as the
+  declared type of the parameter.
 
-As a singular query:
-: the declared type of the parameter is `ValueType`.
-  In this case:
+* When the declared type of the parameter is `LogicalType` and the argument is one of the following:
+    * A function expression with declared result type `NodesType`.
+      In this case the argument is converted to LogicalType as per {{type-conv}}.
+    * A `logical-expr` that is not a function expression.
 
-  * If the query results in a nodelist consisting of a single node, the argument is the value of the node.
-  * If the query results in an empty nodelist, the argument is `Nothing`.
+* When the declared type of the parameter is `NodesType` and the argument is a query
+  (which includes singular query).
 
-As a general query (`filter-query`, which includes singular query):
-: the declared type of the parameter is `NodesType`.
-
-As a `logical-expr` (which includes `filter-query`):
-: the declared type of the parameter is `LogicalType`.
-  This includes the case that the argument is
-  a query (which includes singular query).
-  In this case the nodelist resulting
-  from the query is interpreted as a `LogicalType` in the same way
-  that a query in a logical context is interpreted as an existence test
-  ({{extest}}), effecting the conversion as per {{type-conv}}.
-
-As a function expression:
-: 1. the declared result type of the argument is the same as the declared
-     type of the parameter, or
-  2. the declared result type of the argument is `NodesType`, and the
-     declared type of the parameter is `LogicalType`.
-     In this case the argument is converted to `LogicalType` as per
-     {{type-conv}}.
+* When the declared type of the parameter is `ValueType` and the argument is one of the following:
+    * A value expressed as a literal.
+    * A singular query. In this case:
+        * If the query results in a nodelist consisting of a single node, the
+          argument is the value of the node.
+        * If the query results in an empty nodelist, the argument is Nothing.
 
 ### `length` Function Extension {#length}
 
