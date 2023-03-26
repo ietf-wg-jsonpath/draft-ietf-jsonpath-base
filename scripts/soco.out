@@ -74,9 +74,8 @@ k: v
 
 
 
-=== no JSON for <table>
-              <name>Escape Sequence Replacements</name>
-       .
+=== no JSON for <table anchor='tbl-esc'>
+              <name>Escape Sequence Replacemen.
 
 ---
 o:
@@ -115,8 +114,8 @@ a:
 ["a","b"]
 
 
-=== no JSON for <table>
-                <name>Default array slice start and end values<.
+=== no JSON for <table anchor='tbl-slice-start-end'>
+                <name>Default arra.
 
 
 
@@ -138,8 +137,8 @@ a:
 
 
 
-=== no JSON for <table>
-              <name>Filter expression operator precedence</name.
+=== no JSON for <table anchor='tbl-prec'>
+              <name>Filter expression operato.
 
 ---
 obj:
@@ -178,7 +177,7 @@ e: f
 --- Checking values against normalized paths in: 
 {
   "a": [3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"},
-       {"b": {}}, {"b": "kilo"}],
+        {"b": {}}, {"b": "kilo"}],
   "o": {"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}},
   "e": "f"
 }
@@ -187,16 +186,13 @@ e: f
 === no JSON for <table anchor='tbl-types'>
             <name>Function extension type sy.
 
-=== no JSON for <table anchor='tbl-typerep'>
-            <name>Concrete representations.
 
 
 
 
 
-=== no JSON for <table>
-            <name>Function expression examples</name>
-         .
+=== no JSON for <table anchor='tbl-function-expr'>
+            <name>Function expressio.
 
 
 
@@ -241,9 +237,8 @@ c:
 {"a": null, "b": [null], "c": [{}], "null": 1}
 
 
-=== no JSON for <table>
-            <name>Normalized Path examples</name>
-            <.
+=== no JSON for <table anchor='tbl-normalized-path-examples'>
+            <name>Normali.
 
 === no JSON for <table anchor='pre-reg'>
           <name>Initial Entries in the Functio.
