@@ -1173,7 +1173,7 @@ In the latter case, if the function's declared result type is
 is `LogicalTrue`; if the function's declared result type is
 `NodesType`, it tests whether the result is non-empty.
 If the function's declared result type is `ValueType`, its use in a
-test expression is not well typed.
+test expression is not well typed (see {{well-typedness}}).
 
 ~~~ abnf
 
@@ -1490,7 +1490,7 @@ extension such as "value" (see {{value}}).
 
 The well-typedness of function expressions can now be defined in terms of this type system.
 
-### Well-Typedness of Function Expressions
+### Well-Typedness of Function Expressions {#well-typedness}
 
 For a function expression to be well typed:
 
@@ -1527,14 +1527,9 @@ conditions:
           argument is the value of the node.
         * If the query results in an empty nodelist, the argument is Nothing.
 
-* When the declared type of the parameter is `LogicalType` and the argument is a `logical-expr`.
-  This includes the following cases:
-    * The argument is a query (which includes singular query).
-      In this case the nodelist resulting
-      from the query is interpreted as a `LogicalType` in the same way
-      that a query in a logical context is interpreted as an existence test
-      ({{extest}}), effecting the conversion as per {{type-conv}}.
-    * The argument is a function expression with declared result type `NodesType`.
+* When the declared type of the parameter is `LogicalType` and the argument is one of the following:
+    * A `logical-expr` that is not a function expression.
+    * A function expression with declared result type `NodesType`.
       In this case the argument is converted to LogicalType as per {{type-conv}}.
 
 * When the declared type of the parameter is `NodesType` and the argument is a query
