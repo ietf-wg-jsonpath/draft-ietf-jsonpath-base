@@ -1301,7 +1301,7 @@ the comparison is between values which are both numbers or both strings and whic
       the remainder of the first string compares less than the remainder of the second string.
 
 Note that comparisons using the operator `<` yield false if either value being
-compared is an object, array, boolean, or `null`.
+compared is an object, array, boolean, `null`, or (see below) `Nothing`.
 
 `!=`, `<=`, `>`, and `>=` are defined in terms of the other comparison operators. For any `a` and `b`:
 
@@ -1367,8 +1367,12 @@ Sections {{<match}} and {{<search}} below for details about these.)
 JSON:
 
     {
-      "a": [3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"},
-            {"b": {}}, {"b": "kilo"}],
+      "a": [3, 5, 1, 2, 4, 6,
+            {"b": "j"},
+            {"b": "k"},
+            {"b": {}},
+            {"b": "kilo"}
+           ],
       "o": {"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}},
       "e": "f"
     }
@@ -1479,9 +1483,9 @@ parameter of declared type `LogicalType`, with the equivalent conversion rule:
   * If the nodelist contains one or more nodes, the conversion result is `LogicalTrue`.
   * If the nodelist is empty, the conversion result is `LogicalFalse`.
 
-Extraction of a value from a nodelist can be performed in several
-ways, so an implicit conversion from `NodesType` to `ValueType`
-may be surprising and has therefore not been defined.
+Thus, in the following discussion of well-typedness, it may be assumed that whenever
+a LogicalType is required, a nodelist is allowed and will be converted as described here.
+
 A function expression with a declared type of `NodesType` can
 indirectly be used as an argument for a parameter of declared type
 `ValueType` by wrapping the expression in a call to a function
@@ -1501,8 +1505,7 @@ immediate contexts, which lead to the following conditions for well-typedness:
 
 {:vspace}
 As a `test-expr` in a logical expression:
-: The function's declared result type is `LogicalType`, or
-  (giving rise to conversion as per {{type-conv}}) `NodesType`.
+: The function's declared result type is `LogicalType`.
 
 As a `comparable` in a comparison:
 : The function's declared result type is `ValueType`.
@@ -1517,12 +1520,8 @@ corresponding parameter, according to one of the following
 conditions:
 
 * When the argument is a function expression with declared result type the same as the
-  declared type of the parameter.
-
-* When the declared type of the parameter is `LogicalType` and the argument is one of the following:
-    * A function expression with declared result type `NodesType`.
-      In this case the argument is converted to LogicalType as per {{type-conv}}.
-    * A `logical-expr` that is not a function expression.
+  declared type of the parameter. (Note that if the declared type of the parameter is
+  `LogicalType`, `NodesType` is also acceptable.
 
 * When the declared type of the parameter is `NodesType` and the argument is a query
   (which includes singular query).
