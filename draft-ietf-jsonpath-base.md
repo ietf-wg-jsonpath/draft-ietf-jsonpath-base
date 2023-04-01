@@ -1485,8 +1485,8 @@ ways, so an implicit conversion from `NodesType` to `ValueType`
 may be surprising and has therefore not been defined.
 A function expression with a declared type of `NodesType` can
 indirectly be used as an argument for a parameter of declared type
-`ValueType` by wrapping the expression in a call to a function
-extension such as "value" (see {{value}}).
+`ValueType` by wrapping the expression in a call to the
+`value()` function extension (see {{value}}).
 
 The well-typedness of function expressions can now be defined in terms of this type system.
 
@@ -1535,7 +1535,7 @@ conditions:
           argument is the value of the node.
         * If the query results in an empty nodelist, the argument is Nothing.
 
-### `length` Function Extension {#length}
+### `length()` Function Extension {#length}
 
 Parameters:
 : 1. `ValueType`
@@ -1543,7 +1543,7 @@ Parameters:
 Result:
 : `ValueType` (unsigned integer or `Nothing`)
 
-The "length" function extension provides a way to compute the length
+The `length()` function extension provides a way to compute the length
 of a value and make that available for further processing in the
 filter expression:
 
@@ -1564,7 +1564,7 @@ instance of `ValueType`: an unsigned integer or `Nothing`.
 * For any other argument value, the result is `Nothing`.
 
 
-### `count` Function Extension {#count}
+### `count()` Function Extension {#count}
 
 Parameters:
 : 1. `NodesType`
@@ -1572,7 +1572,7 @@ Parameters:
 Result:
 : `ValueType` (unsigned integer)
 
-The "count" function extension provides a way to obtain the number of
+The `count()` function extension provides a way to obtain the number of
 nodes in a nodelist and make that available for further processing in
 the filter expression:
 
@@ -1586,7 +1586,7 @@ nodes in the nodelist.
 Note that there is no deduplication of the nodelist.
 
 
-### `match` Function Extension {#match}
+### `match()` Function Extension {#match}
 
 Parameters:
 : 1. `ValueType` (string)
@@ -1595,7 +1595,7 @@ Parameters:
 Result:
 : `LogicalType`
 
-The "match" function extension provides a way to check whether (the
+The `match()` function extension provides a way to check whether (the
 entirety of, see {{search}} below) a given
 string matches a given regular expression, which is in {{-iregexp}} form.
 
@@ -1613,7 +1613,7 @@ the result is `LogicalTrue` if the string matches the iregexp and
 `LogicalFalse` otherwise.
 
 
-### `search` Function Extension {#search}
+### `search()` Function Extension {#search}
 
 Parameters:
 : 1. `ValueType` (string)
@@ -1622,7 +1622,7 @@ Parameters:
 Result:
 : `LogicalType`
 
-The "search" function extension provides a way to check whether a
+The `search()` function extension provides a way to check whether a
 given string contains a substring that matches a given regular
 expression, which is in {{-iregexp}} form.
 
@@ -1640,7 +1640,7 @@ that is the second argument; the result is `LogicalTrue` if such a
 substring exists and `LogicalFalse` otherwise.
 
 
-### `value` Function Extension {#value}
+### `value()` Function Extension {#value}
 
 Parameters:
 : 1. `NodesType`
@@ -1648,7 +1648,7 @@ Parameters:
 Result:
 : `ValueType`
 
-The "value" function extension provides a way to convert an instance of `NodesType` to a value and
+The `value()` function extension provides a way to convert an instance of `NodesType` to a value and
 make that available for further processing in the filter expression:
 
 ~~~ JSONPath
@@ -1665,7 +1665,7 @@ instance of `ValueType`.
   result is `Nothing`.
 
 Note: a singular query may be used anywhere where a ValueType is expected,
-so there is no need to use the "value" function extension with a singular query.
+so there is no need to use the `value()` function extension with a singular query.
 
 ### Examples
 
@@ -1675,7 +1675,7 @@ so there is no need to use the "value" function extension with a singular query.
 | `$[?length(@.*) < 3]` | not well typed since `@.*` is a non-singular query |
 | `$[?count(@.*) == 1]` | well typed |
 | `$[?count(1) == 1]` | not well typed since `1` is not a query or function expression |
-| `$[?count(foo(@.*)) == 1]` | well typed, where `foo` is a function extension with a parameter of type `NodesType` and result type `NodesType` |
+| `$[?count(foo(@.*)) == 1]` | well typed, where `foo()` is a function extension with a parameter of type `NodesType` and result type `NodesType` |
 | `$[?match(@.timezone, 'Europe/.*')]`         | well typed |
 | `$[?match(@.timezone, 'Europe/.*') == true]` | not well typed as `LogicalType` may not be used in comparisons |
 | `$[?value(@..color) == "red"]` | well typed |
