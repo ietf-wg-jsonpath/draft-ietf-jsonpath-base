@@ -1367,8 +1367,12 @@ Sections {{<match}} and {{<search}} below for details about these.)
 JSON:
 
     {
-      "a": [3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"},
-            {"b": {}}, {"b": "kilo"}],
+      "a": [3, 5, 1, 2, 4, 6,
+            {"b": "j"},
+            {"b": "k"},
+            {"b": {}},
+            {"b": "kilo"}
+           ],
       "o": {"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}},
       "e": "f"
     }
