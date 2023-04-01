@@ -1302,7 +1302,7 @@ the comparison is between values which are both numbers or both strings and whic
 
 Note that comparisons using the operator `<` yield false if either side of the
 comparison results in an empty nodelist or `Nothing` or if either side is a value that
-is an object, array, boolean, or `null`.
+is an object, array, `true`, `false`, or `null`.
 
 `!=`, `<=`, `>`, and `>=` are defined in terms of the other comparison operators. For any `a` and `b`:
 
