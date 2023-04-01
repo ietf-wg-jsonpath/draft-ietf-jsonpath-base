@@ -1483,12 +1483,7 @@ parameter of declared type `LogicalType`, with the equivalent conversion rule:
   * If the nodelist contains one or more nodes, the conversion result is `LogicalTrue`.
   * If the nodelist is empty, the conversion result is `LogicalFalse`.
 
-Notes:
-
-* Extraction of a value from a nodelist can be performed in several
-ways, so an implicit conversion from `NodesType` to `ValueType`
-may be surprising and has therefore not been defined.
-* A function expression with a declared type of `NodesType` can
+Note that a function expression with a declared type of `NodesType` can
 indirectly be used as an argument for a parameter of declared type
 `ValueType` by wrapping the expression in a call to a function extension,
 such as `value()` (see {{value}}),
