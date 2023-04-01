@@ -1300,10 +1300,6 @@ the comparison is between values which are both numbers or both strings and whic
       lower Unicode scalar value than the second string or if both strings start with the same Unicode scalar value and
       the remainder of the first string compares less than the remainder of the second string.
 
-Note that comparisons using the operator `<` yield false if either side of the
-comparison results in an empty nodelist or `Nothing` or if either side is a value that
-is an object, array, `true`, `false`, or `null`.
-
 `!=`, `<=`, `>`, and `>=` are defined in terms of the other comparison operators. For any `a` and `b`:
 
 * The comparison `a != b` yields true if and only if `a == b` yields false.
