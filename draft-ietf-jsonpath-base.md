@@ -1487,8 +1487,8 @@ ways, so an implicit conversion from `NodesType` to `ValueType`
 may be surprising and has therefore not been defined.
 * A function expression with a declared type of `NodesType` can
 indirectly be used as an argument for a parameter of declared type
-`ValueType` by wrapping the expression in a call to
-any function extension, such as `value()` (see {{value}}),
+`ValueType` by wrapping the expression in a call to a function extension,
+such as `value()` (see {{value}}),
 that takes a parameter of type `NodesType` and returns a
 result of type `ValueType`.
 
