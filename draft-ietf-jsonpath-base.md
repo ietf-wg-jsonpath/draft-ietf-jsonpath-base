@@ -1486,7 +1486,9 @@ may be surprising and has therefore not been defined.
 A function expression with a declared type of `NodesType` can
 indirectly be used as an argument for a parameter of declared type
 `ValueType` by wrapping the expression in a call to the
-`value()` function extension (see {{value}}).
+`value()` function extension (see {{value}}) or any other function extension
+(defined in the future) that takes a parameter of type `NodesType` and returns a
+result of type `ValueType`.
 
 The well-typedness of function expressions can now be defined in terms of this type system.
 
