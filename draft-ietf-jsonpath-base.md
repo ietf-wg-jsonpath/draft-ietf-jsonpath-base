@@ -1270,7 +1270,7 @@ rather than the negated existence test `!@.foo` (which yields false if `@.foo` s
 
 The comparison operators `==` and `<` are defined first and then these are used to define `!=`, `<=`, `>`, and `>=`.
 
-When either side of a comparison results in an empty nodelist or `Nothing`:
+When either side of a comparison results in an empty nodelist or `Nothing` (see {{typesys}}):
 
 * a comparison using the operator `==` yields true if and only the other side also results in an empty nodelist or `Nothing`.
 
@@ -1299,9 +1299,6 @@ the comparison is between values which are both numbers or both strings and whic
     * a non-empty string compares less than another non-empty string if and only if the first string starts with a
       lower Unicode scalar value than the second string or if both strings start with the same Unicode scalar value and
       the remainder of the first string compares less than the remainder of the second string.
-
-Note that comparisons using the operator `<` yield false if either value being
-compared is an object, array, boolean, or `null`.
 
 `!=`, `<=`, `>`, and `>=` are defined in terms of the other comparison operators. For any `a` and `b`:
 
