@@ -171,6 +171,9 @@ their UTF-8 encoding.
 For example, the Unicode PLACE OF INTEREST SIGN (U+2318) would be defined
 in ABNF as `%x2318`.
 
+Functions are referred to using the function name followed by a pair
+of parentheses, as in `fname()`.
+
 The terminology of {{-json}} applies except where clarified below.
 The terms "Primitive" and "Structured" are used to group
 different kinds of values as in {{Section 1 of -json}}; JSON Objects and Arrays are
@@ -815,12 +818,12 @@ wildcard-selector   = "*"
 #### Semantics
 {: unnumbered}
 
-A `wildcard` selector selects the nodes of all children of an object or array.
+A wildcard selector selects the nodes of all children of an object or array.
 The order in which the children of an object appear in the resultant nodelist is not stipulated,
 since JSON objects are unordered.
 Children of an array appear in array order in the resultant nodelist.
 
-The `wildcard` selector selects nothing from a primitive JSON value (that is,
+The wildcard selector selects nothing from a primitive JSON value (that is,
 a number, a string, `true`, `false`, or `null`).
 
 #### Examples
@@ -836,7 +839,7 @@ JSON:
 
 Queries:
 
-The examples in {{tbl-wild}} show the `wildcard` selector in use by a child segment:
+The examples in {{tbl-wild}} show the wildcard selector in use by a child segment:
 
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
@@ -1684,11 +1687,11 @@ so there is no need to use the `value()` function extension with a singular quer
 | `$[?match(@.timezone, 'Europe/.*') == true]` | not well typed as `LogicalType` may not be used in comparisons |
 | `$[?value(@..color) == "red"]` | well typed |
 | `$[?value(@..color)]` | not well typed as `ValueType` may not be used in a test expression |
-| `$[?bar(@.a)]`  | well typed for any function `bar` with a parameter of any declared type and result type `LogicalType`               |
-| `$[?bnl(@.*)]`  | well typed for any function `bnl` with a parameter of declared type `NodesType` or `LogicalType` and result type `LogicalType` |
-| `$[?blt(1==1)]` | well typed, where `blt` is a function with a parameter of declared type `LogicalType` and result type `LogicalType` |
-| `$[?blt(1)]`    | not well typed for the same function `blt`, as `1` is not a query, `logical-expr`, or function expression           |
-| `$[?bal(1)]`    | well typed, where `bal` is a function with a parameter of declared type `ValueType` and result type `LogicalType`   |
+| `$[?bar(@.a)]`  | well typed for any function `bar()` with a parameter of any declared type and result type `LogicalType`               |
+| `$[?bnl(@.*)]`  | well typed for any function `bnl()` with a parameter of declared type `NodesType` or `LogicalType` and result type `LogicalType` |
+| `$[?blt(1==1)]` | well typed, where `blt()` is a function with a parameter of declared type `LogicalType` and result type `LogicalType` |
+| `$[?blt(1)]`    | not well typed for the same function `blt()`, as `1` is not a query, `logical-expr`, or function expression           |
+| `$[?bal(1)]`    | well typed, where `bal()` is a function with a parameter of declared type `ValueType` and result type `LogicalType`   |
 {: #tbl-function-expr title="Function expression examples"}
 
 ## Segments  {#segments-details}
