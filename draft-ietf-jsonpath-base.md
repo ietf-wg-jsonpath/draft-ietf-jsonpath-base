@@ -171,6 +171,9 @@ their UTF-8 encoding.
 For example, the Unicode PLACE OF INTEREST SIGN (U+2318) would be defined
 in ABNF as `%x2318`.
 
+Functions are referred to using the function name followed by a pair
+of parentheses, as in `fname()`.
+
 The terminology of {{-json}} applies except where clarified below.
 The terms "Primitive" and "Structured" are used to group
 different kinds of values as in {{Section 1 of -json}}; JSON Objects and Arrays are
@@ -815,12 +818,12 @@ wildcard-selector   = "*"
 #### Semantics
 {: unnumbered}
 
-A `wildcard` selector selects the nodes of all children of an object or array.
+A wildcard selector selects the nodes of all children of an object or array.
 The order in which the children of an object appear in the resultant nodelist is not stipulated,
 since JSON objects are unordered.
 Children of an array appear in array order in the resultant nodelist.
 
-The `wildcard` selector selects nothing from a primitive JSON value (that is,
+The wildcard selector selects nothing from a primitive JSON value (that is,
 a number, a string, `true`, `false`, or `null`).
 
 #### Examples
@@ -836,7 +839,7 @@ JSON:
 
 Queries:
 
-The examples in {{tbl-wild}} show the `wildcard` selector in use by a child segment:
+The examples in {{tbl-wild}} show the wildcard selector in use by a child segment:
 
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
@@ -1480,13 +1483,17 @@ parameter of declared type `LogicalType`, with the equivalent conversion rule:
   * If the nodelist contains one or more nodes, the conversion result is `LogicalTrue`.
   * If the nodelist is empty, the conversion result is `LogicalFalse`.
 
-Extraction of a value from a nodelist can be performed in several
+Notes:
+
+* Extraction of a value from a nodelist can be performed in several
 ways, so an implicit conversion from `NodesType` to `ValueType`
 may be surprising and has therefore not been defined.
-A function expression with a declared type of `NodesType` can
+* A function expression with a declared type of `NodesType` can
 indirectly be used as an argument for a parameter of declared type
-`ValueType` by wrapping the expression in a call to a function
-extension such as "value" (see {{value}}).
+`ValueType` by wrapping the expression in a call to a function extension,
+such as `value()` (see {{value}}),
+that takes a parameter of type `NodesType` and returns a
+result of type `ValueType`.
 
 The well-typedness of function expressions can now be defined in terms of this type system.
 
@@ -1535,7 +1542,7 @@ conditions:
           argument is the value of the node.
         * If the query results in an empty nodelist, the argument is Nothing.
 
-### `length` Function Extension {#length}
+### `length()` Function Extension {#length}
 
 Parameters:
 : 1. `ValueType`
@@ -1543,7 +1550,7 @@ Parameters:
 Result:
 : `ValueType` (unsigned integer or `Nothing`)
 
-The "length" function extension provides a way to compute the length
+The `length()` function extension provides a way to compute the length
 of a value and make that available for further processing in the
 filter expression:
 
@@ -1564,7 +1571,7 @@ instance of `ValueType`: an unsigned integer or `Nothing`.
 * For any other argument value, the result is `Nothing`.
 
 
-### `count` Function Extension {#count}
+### `count()` Function Extension {#count}
 
 Parameters:
 : 1. `NodesType`
@@ -1572,7 +1579,7 @@ Parameters:
 Result:
 : `ValueType` (unsigned integer)
 
-The "count" function extension provides a way to obtain the number of
+The `count()` function extension provides a way to obtain the number of
 nodes in a nodelist and make that available for further processing in
 the filter expression:
 
@@ -1586,7 +1593,7 @@ nodes in the nodelist.
 Note that there is no deduplication of the nodelist.
 
 
-### `match` Function Extension {#match}
+### `match()` Function Extension {#match}
 
 Parameters:
 : 1. `ValueType` (string)
@@ -1595,7 +1602,7 @@ Parameters:
 Result:
 : `LogicalType`
 
-The "match" function extension provides a way to check whether (the
+The `match()` function extension provides a way to check whether (the
 entirety of, see {{search}} below) a given
 string matches a given regular expression, which is in {{-iregexp}} form.
 
@@ -1613,7 +1620,7 @@ the result is `LogicalTrue` if the string matches the iregexp and
 `LogicalFalse` otherwise.
 
 
-### `search` Function Extension {#search}
+### `search()` Function Extension {#search}
 
 Parameters:
 : 1. `ValueType` (string)
@@ -1622,7 +1629,7 @@ Parameters:
 Result:
 : `LogicalType`
 
-The "search" function extension provides a way to check whether a
+The `search()` function extension provides a way to check whether a
 given string contains a substring that matches a given regular
 expression, which is in {{-iregexp}} form.
 
@@ -1640,7 +1647,7 @@ that is the second argument; the result is `LogicalTrue` if such a
 substring exists and `LogicalFalse` otherwise.
 
 
-### `value` Function Extension {#value}
+### `value()` Function Extension {#value}
 
 Parameters:
 : 1. `NodesType`
@@ -1648,7 +1655,7 @@ Parameters:
 Result:
 : `ValueType`
 
-The "value" function extension provides a way to convert an instance of `NodesType` to a value and
+The `value()` function extension provides a way to convert an instance of `NodesType` to a value and
 make that available for further processing in the filter expression:
 
 ~~~ JSONPath
@@ -1665,7 +1672,7 @@ instance of `ValueType`.
   result is `Nothing`.
 
 Note: a singular query may be used anywhere where a ValueType is expected,
-so there is no need to use the "value" function extension with a singular query.
+so there is no need to use the `value()` function extension with a singular query.
 
 ### Examples
 
@@ -1675,16 +1682,16 @@ so there is no need to use the "value" function extension with a singular query.
 | `$[?length(@.*) < 3]` | not well typed since `@.*` is a non-singular query |
 | `$[?count(@.*) == 1]` | well typed |
 | `$[?count(1) == 1]` | not well typed since `1` is not a query or function expression |
-| `$[?count(foo(@.*)) == 1]` | well typed, where `foo` is a function extension with a parameter of type `NodesType` and result type `NodesType` |
+| `$[?count(foo(@.*)) == 1]` | well typed, where `foo()` is a function extension with a parameter of type `NodesType` and result type `NodesType` |
 | `$[?match(@.timezone, 'Europe/.*')]`         | well typed |
 | `$[?match(@.timezone, 'Europe/.*') == true]` | not well typed as `LogicalType` may not be used in comparisons |
 | `$[?value(@..color) == "red"]` | well typed |
 | `$[?value(@..color)]` | not well typed as `ValueType` may not be used in a test expression |
-| `$[?bar(@.a)]`  | well typed for any function `bar` with a parameter of any declared type and result type `LogicalType`               |
-| `$[?bnl(@.*)]`  | well typed for any function `bnl` with a parameter of declared type `NodesType` or `LogicalType` and result type `LogicalType` |
-| `$[?blt(1==1)]` | well typed, where `blt` is a function with a parameter of declared type `LogicalType` and result type `LogicalType` |
-| `$[?blt(1)]`    | not well typed for the same function `blt`, as `1` is not a query, `logical-expr`, or function expression           |
-| `$[?bal(1)]`    | well typed, where `bal` is a function with a parameter of declared type `ValueType` and result type `LogicalType`   |
+| `$[?bar(@.a)]`  | well typed for any function `bar()` with a parameter of any declared type and result type `LogicalType`               |
+| `$[?bnl(@.*)]`  | well typed for any function `bnl()` with a parameter of declared type `NodesType` or `LogicalType` and result type `LogicalType` |
+| `$[?blt(1==1)]` | well typed, where `blt()` is a function with a parameter of declared type `LogicalType` and result type `LogicalType` |
+| `$[?blt(1)]`    | not well typed for the same function `blt()`, as `1` is not a query, `logical-expr`, or function expression           |
+| `$[?bal(1)]`    | well typed, where `bal()` is a function with a parameter of declared type `ValueType` and result type `LogicalType`   |
 {: #tbl-function-expr title="Function expression examples"}
 
 ## Segments  {#segments-details}
