@@ -741,7 +741,7 @@ Note: `double-quoted` strings follow the JSON string syntax ({{Section 7 of RFC8
 `single-quoted` strings follow an analogous pattern ({{syntax-index}}).
 No attempt was made to improve on this syntax, so if it is desired to
 escape characters with
-scalar values above 0x10000, such as <u format="num-lit-name">🤔</u>,
+scalar values above 0xFFFF, such as <u format="num-lit-name">🤔</u>,
 they need to be represented
 by a pair of surrogate escapes (`"\uD83E\uDD14"` in this case).
 
