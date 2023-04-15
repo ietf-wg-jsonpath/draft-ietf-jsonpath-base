@@ -583,7 +583,7 @@ result of the query. Depending on the specific API, it might be
 presented as an array of the JSON values at the nodes, an array of
 Normalized Paths referencing the nodes, or both — or some other
 representation as desired by the implementation.
-Note that an empty nodelist is a valid query result.
+Note: an empty nodelist is a valid query result.
 
 A segment operates on each of the nodes in its input nodelist in turn,
 and the resultant nodelists are concatenated in the order of the input
@@ -772,7 +772,7 @@ selects a member value whose name equals the member name `M`,
 or selects nothing if there is no such member value.
 Nothing is selected from a value that is not an object.
 
-Note that processing the name selector requires comparing the member name string `M`
+Note: processing the name selector requires comparing the member name string `M`
 with member name strings in the JSON to which the selector is being applied.
 Two strings MUST be considered equal if and only if they are identical
 sequences of Unicode scalar values. In other words, normalization operations
@@ -782,7 +782,7 @@ the member name strings in the JSON prior to comparison.
 #### Examples
 {: unnumbered}
 
-<!-- EDITING NOTE: There are non-breaking spaces here between j and j -->
+<!-- EDITING NOTE: there are non-breaking spaces here between j and j -->
 <!-- i.e., j j and not j j -->
 
 JSON:
@@ -875,8 +875,9 @@ To be valid, the index selector value MUST be in the I-JSON
 range of exact values, see {{synsem-overview}}.
 
 Notes:
-1. An `index-selector` is an integer (in base 10, as in JSON numbers).
-2. As in JSON numbers, the syntax does not allow octal-like integers with leading zeros such as `01` or `-01`.
+
+* An `index-selector` is an integer (in base 10, as in JSON numbers).
+* As in JSON numbers, the syntax does not allow octal-like integers with leading zeros such as `01` or `-01`.
 
 #### Semantics {#index-semantics}
 
@@ -891,7 +892,7 @@ not exist; this simply means that no element is selected.
 
 #### Examples
 
-<!-- EDITING NOTE: There are non-breaking spaces here between j and j -->
+<!-- EDITING NOTE: there are non-breaking spaces here between j and j -->
 <!-- i.e., j j and not j j -->
 
 JSON:
@@ -1137,7 +1138,7 @@ strategies are therefore valid.
 
 The current node is accessible via the current node identifier `@`.
 This identifier addresses the current node of the filter-selector that
-is directly enclosing the identifier; note that within nested
+is directly enclosing the identifier. Note: within nested
 filter-selectors, there is no syntax to address the current node of
 any other than the directly enclosing filter-selector (i.e., of
 filter-selectors enclosing the filter-selector that is directly
@@ -1361,7 +1362,7 @@ Comparisons:
 The second set of examples shows some complete JSONPath queries that make use
 of filter selectors, and the results of evaluating these queries on a
 given JSON value as input.
-(Note that two of the queries employ function extensions; please see
+(Note: two of the queries employ function extensions; please see
 Sections {{<match}} and {{<search}} below for details about these.)
 
 JSON:
@@ -1424,7 +1425,7 @@ A function extension MUST be defined such that its evaluation is
 side-effect free, i.e., all possible orders of evaluation and choices
 of short-circuiting or full evaluation of an expression containing it
 must lead to the same result.
-(Note that memoization or logging are not side effects in this sense
+(Note: memoization or logging are not side effects in this sense
 as they are visible at the implementation level only — they do not
 influence the result of the evaluation.)
 
@@ -1590,7 +1591,7 @@ $[?count(@.*.author) >= 5]
 Its only argument is a nodelist.
 The result is a value, an unsigned integer, that gives the number of
 nodes in the nodelist.
-Note that there is no deduplication of the nodelist.
+Note: there is no deduplication of the nodelist.
 
 
 ### `match()` Function Extension {#match}
@@ -1753,7 +1754,7 @@ shorthand for `[*]`.
 
  `.<member-name>`, a `child-segment` built from a
  `member-name-shorthand`, is shorthand for `['<member-name>']`.
-Note that this can only be used with member names that are composed of certain
+Note: this can only be used with member names that are composed of certain
 characters, as specified in the ABNF rule `member-name-shorthand`.
 Thus, for example, `$.foo.bar` is shorthand for `$['foo']['bar']` (but not for `$['foo.bar']`).
 
@@ -1769,7 +1770,7 @@ For each node in the input nodelist,
 the resulting nodelist of a child segment is the concatenation of
 the nodelists from each of its selectors in the order that the selectors
 appear in the list.
-Note that any node matched by more than one selector is kept
+Note: any node matched by more than one selector is kept
 as many times in the nodelist.
 
 Where a selector can produce a nodelist in more than one possible order,
@@ -1816,11 +1817,11 @@ descendant-segment  = ".." (bracketed-selection /
 
 `..<member-name>`, a `descendant-segment` built from a
 `member-name-shorthand`, is shorthand for `..['<member-name>']`.
-As with the similar shorthand of a `child-segment`, note that this can
+Note: as with the similar shorthand of a `child-segment`, this can
 only be used with member names that are composed of certain
 characters, as specified in the ABNF rule `member-name-shorthand`.
 
-Note that `..` on its own is not a valid segment.
+Note: `..` on its own is not a valid segment.
 
 #### Semantics
 {: unnumbered}
@@ -1840,7 +1841,7 @@ JSON objects are unordered.
 Suppose the descendant segment is of the form `..[<selectors>]` (after converting any shorthand
 form to bracket notation)
 and the nodes, in the order visited, are `D1`, ..., `Dn` (where `n >= 1`).
-Note that `D1` is the input value.
+Note: `D1` is the input value.
 
 For each `i` such that `1 <= i <= n`, the nodelist `Ri` is defined to be a result of applying
 the child segment `[<selectors>]` to the node `Di`.
@@ -1877,7 +1878,7 @@ Queries:
 | `$.a..[0, 1]`| `5` <br> `3` <br> `{"j": 4}` <br> `{"k": 6}` | `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2][0]` <br> `$['a'][2][1]`       | Multiple segments |
 {: #tbl-descendant-segment title="Descendant segment examples"}
 
-Note: The ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that:
+Note: the ordering of the results for the `$..[*]` and `$..*` examples above is not guaranteed, except that:
 
 * `{"j": 1, "k": 2}` must appear before `1` and `2`,
 * `[5, 3, [{"j": 4}, {"k": 6}]]` must appear before `5`, `3`, and `[{"j": 4}, {"k": 6}]`,
@@ -1897,7 +1898,7 @@ that do not conform to this specification).
 
 ## Semantics of `null` {#null-semantics}
 
-Note that JSON `null` is treated the same as any other JSON value: it is not taken to mean "undefined" or "missing".
+Note: JSON `null` is treated the same as any other JSON value: it is not taken to mean "undefined" or "missing".
 
 ### Examples
 {: unnumbered}
@@ -1929,7 +1930,7 @@ uniquely identifies the node in the value.
 Specifically, a Normalized Path is a JSONPath query with restricted syntax (defined below),
 e.g., `$['book'][3]`, which when applied to the value results in a nodelist consisting
 of just the node identified by the Normalized Path.
-Note that a Normalized Path represents the identity of a node _in a specific value_.
+Note: a Normalized Path represents the identity of a node _in a specific value_.
 There is precisely one Normalized Path identifying any particular node in a value.
 
 A nodelist may be represented compactly in JSON as an array of strings, where the strings are
@@ -2217,7 +2218,7 @@ the emerging JSON community became apparent, specifically for:
   client, so the server can reduce the amount of data in its response,
   minimizing bandwidth usage.
 
-(Note that XPath has evolved since 2007, and recent versions even
+(Note: XPath has evolved since 2007, and recent versions even
 nominally support operating inside JSON values.
 This appendix only discusses the more widely used version of XPath
 that was available in 2007.)
@@ -2298,7 +2299,7 @@ with similar XPath concepts.
 | `()`  | n/a                | grouping                                                                                                                     |
 {: #tbl-xpath-overview title="XPath syntax compared to JSONPath"}
 
-<!-- note that the weirdness about the vertical bar above is intentional -->
+<!-- Note: the weirdness about the vertical bar above is intentional -->
 
 For further illustration, {{tbl-xpath-equivalents}} shows some XPath expressions
 and their JSONPath equivalents.
