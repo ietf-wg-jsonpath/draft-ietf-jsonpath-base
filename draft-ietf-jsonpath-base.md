@@ -1182,12 +1182,14 @@ test expression is not well typed (see {{well-typedness}}).
 ~~~ abnf
 
 test-expr           = [logical-not-op S]
-                     (filter-query / ; existence/non-existence
-                      function-expr) ; LogicalType or
-                                     ; NodesType
+                     (filter-query          / ; existence/non-existence
+                      logical-function-expr /
+                      nodes-function-expr)
 filter-query        = rel-query / jsonpath-query
 rel-query           = current-node-identifier segments
 current-node-identifier = "@"
+logical-function-expr = function-expr
+nodes-function-expr = function-expr
 ~~~~
 
 
@@ -1203,10 +1205,11 @@ literal             = number / string-literal /
                       true / false / null
 comparable          = literal /
                       singular-query / ; singular query value
-                      function-expr    ; ValueType
+                      value-function-expr
 comparison-op       = "==" / "!=" /
                       "<=" / ">=" /
                       "<"  / ">"
+value-function-expr = function-expr
 
 singular-query      = rel-singular-query / abs-singular-query
 rel-singular-query  = current-node-identifier singular-query-segments
@@ -1466,6 +1469,12 @@ independent of any query argument the JSONPath query is applied to.
 | `NodesType`          | Nodelists                       |
 {: #tbl-types title="Function extension type system"}
 
+A function is typed in accordance with its result.
+
+* Functions which return `ValueType` are `value-function-expr`
+* Functions which return `LogicalType` are `logical-function-expr`
+* Functions which return `NodesType` are `nodes-function-expr`
+
 Notes:
 
 * The only instances that can be directly represented in JSONPath syntax are certain JSON values
@@ -1477,8 +1486,8 @@ Notes:
 ### Type Conversion {#type-conv}
 
 Just as queries can be used in logical expressions by testing for the
-existence of at least one node ({{extest}}), a function expression of
-declared type `NodesType` can be used as a function argument for a
+existence of at least one node ({{extest}}), a `nodes-function-expr`
+can be used as a function argument for a
 parameter of declared type `LogicalType`, with the equivalent conversion rule:
 
   * If the nodelist contains one or more nodes, the conversion result is `LogicalTrue`.
@@ -1510,11 +1519,11 @@ immediate contexts, which lead to the following conditions for well-typedness:
 
 {:vspace}
 As a `test-expr` in a logical expression:
-: The function's declared result type is `LogicalType`, or
-  (giving rise to conversion as per {{type-conv}}) `NodesType`.
+: The function must be either `logical-function-expr`
+  or `nodes-function-expr`.
 
 As a `comparable` in a comparison:
-: The function's declared result type is `ValueType`.
+: The function must be `value-function-expr`.
 
 As a `function-argument` in another function expression:
 : The function's declared result type fulfills the following rules for
