@@ -1509,13 +1509,15 @@ For a function expression to be well typed:
 (1) The registered set of function extensions is the source of knowledge regarding the declared return and
 parameter types of a function extension.
 
-Although a function expression being treated as well typed implies its function name is registered,
-an implementation need not treat all registered functions as well typed.
+If a function expression is treated as well typed, the function extensions involved in the expression belong
+to the registered set.
+However, an implementation may treat a function expression as not well typed even if all the function extensions
+involved in the expression are registered.
 Implementations MUST support the function extensions defined
 in this document, but are free to support or not support other registered function extensions.
 
-If an implementation does not support a function extension used in a query, it MUST treat the
-function extension as not well typed.
+If an implementation does not support a function extension used in a query, it MUST treat
+any function expression involving the function extension as not well typed.
 
 (2) As per the grammar, a function expression can occur in three different
 immediate contexts, which lead to the following conditions for well-typedness:
