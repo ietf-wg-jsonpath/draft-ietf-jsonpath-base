@@ -1506,7 +1506,17 @@ For a function expression to be well typed:
 2. its declared type must be well typed in the context in which it occurs, and
 3. its arguments must be well typed for the declared type of the corresponding parameters.
 
-(1) As per the grammar, a function expression can occur in three different
+(1) The registered set of function extensions is the source of knowledge regarding the return and
+parameter types of a function extension.
+
+Although a function expression being treated as well typed implies its function name is registered,
+the reverse is not necessarily true. Implementations must support the function extensions defined
+in this document, but are free to support or not support other registered function extensions.
+
+If an implementation does not support a function extension used in a query, it should treat the
+function extension as not well typed.
+
+(2) As per the grammar, a function expression can occur in three different
 immediate contexts, which lead to the following conditions for well-typedness:
 
 {:vspace}
@@ -1521,7 +1531,7 @@ As a `function-argument` in another function expression:
 : The function's declared result type fulfills the following rules for
   the corresponding parameter of the enclosing function.
 
-(2) The arguments of the function expression are well typed when
+(3) The arguments of the function expression are well typed when
 each argument of the function can be used for the declared type of the
 corresponding parameter, according to one of the following
 conditions:
