@@ -1506,7 +1506,7 @@ For a function expression to be well typed:
 2. its declared type must be well typed in the context in which it occurs, and
 3. its arguments must be well typed for the declared type of the corresponding parameters.
 
-(1) The registered set of function extensions is the source of knowledge regarding the return and
+(1) The registered set of function extensions is the source of knowledge regarding the declared return and
 parameter types of a function extension.
 
 Although a function expression being treated as well typed implies its function name is registered,
