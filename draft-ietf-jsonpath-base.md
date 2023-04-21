@@ -1510,7 +1510,8 @@ For a function expression to be well typed:
 parameter types of a function extension.
 
 Although a function expression being treated as well typed implies its function name is registered,
-the reverse is not necessarily true. Implementations must support the function extensions defined
+an implementation need not treat all registered functions as well typed.
+Implementations must support the function extensions defined
 in this document, but are free to support or not support other registered function extensions.
 
 If an implementation does not support a function extension used in a query, it should treat the
