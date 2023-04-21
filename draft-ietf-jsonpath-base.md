@@ -1502,7 +1502,7 @@ The well-typedness of function expressions can now be defined in terms of this t
 
 For a function expression to be well typed:
 
-1. its function name must be registered (see {{iana-fnex}}),
+1. its function name MUST be registered (see {{iana-fnex}}),
 2. its declared type must be well typed in the context in which it occurs, and
 3. its arguments must be well typed for the declared type of the corresponding parameters.
 
@@ -1511,10 +1511,10 @@ parameter types of a function extension.
 
 Although a function expression being treated as well typed implies its function name is registered,
 an implementation need not treat all registered functions as well typed.
-Implementations must support the function extensions defined
+Implementations MUST support the function extensions defined
 in this document, but are free to support or not support other registered function extensions.
 
-If an implementation does not support a function extension used in a query, it should treat the
+If an implementation does not support a function extension used in a query, it MUST treat the
 function extension as not well typed.
 
 (2) As per the grammar, a function expression can occur in three different
