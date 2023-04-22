@@ -525,7 +525,7 @@ to the JSONPath processing (e.g., index values and steps) MUST be
 within the range of exact values defined in I-JSON {{-i-json}}, namely
 within the interval \[-(2<sup>53</sup>)+1, (2<sup>53</sup>)-1].
 
-2. Uses of function extensions must be *well typed*,
+2. Uses of function extensions must be *supported* and *well typed*,
 as described in {{fnex}}.
 
 A JSONPath implementation MUST raise an error for any query which is not
@@ -1443,16 +1443,25 @@ function-argument   = literal /
                       function-expr
 ~~~
 
-Any function expressions in a query must be well formed (by conforming to the above ABNF)
-and well typed,
+Any function expressions in a query must be well formed (by conforming to the above ABNF),
+supported, and well typed,
 otherwise the JSONPath implementation MUST raise an error
 (see {{synsem-overview}}).
-To define which function expressions are well typed,
+
+For a function expression to be supported, each function name in the expression
+MUST be registered (see {{iana-fnex}}).
+Implementations MUST support the function extensions defined
+in this document, but are free to support or not support other registered function extensions.
+
+To define which supported function expressions are well typed,
 a type system is first introduced.
 
 ### Type System for Function Expressions {#typesys}
 
 Each parameter as well as the result of a function extension must have a declared type.
+
+The registered set of function extensions (see {{iana-fnex}}) is the source of knowledge
+regarding the declared return and parameter types of a function extension.
 
 Declared types enable checking a JSONPath query for well-typedness
 independent of any query argument the JSONPath query is applied to.
@@ -1502,24 +1511,10 @@ The well-typedness of function expressions can now be defined in terms of this t
 
 For a function expression to be well typed:
 
-1. its function name MUST be registered (see {{iana-fnex}}),
-2. its declared type must be well typed in the context in which it occurs, and
-3. its arguments must be well typed for the declared type of the corresponding parameters.
+1. its declared type must be well typed in the context in which it occurs, and
+2. its arguments must be well typed for the declared type of the corresponding parameters.
 
-(1) The registered set of function extensions is the source of knowledge regarding the declared return and
-parameter types of a function extension.
-
-If a function expression is treated as well typed, the function extensions involved in the expression belong
-to the registered set.
-However, an implementation may treat a function expression as not well typed even if all the function extensions
-involved in the expression are registered.
-Implementations MUST support the function extensions defined
-in this document, but are free to support or not support other registered function extensions.
-
-If an implementation does not support a function extension used in a query, it MUST treat
-any function expression involving the function extension as not well typed.
-
-(2) As per the grammar, a function expression can occur in three different
+(1) As per the grammar, a function expression can occur in three different
 immediate contexts, which lead to the following conditions for well-typedness:
 
 {:vspace}
@@ -1534,7 +1529,7 @@ As a `function-argument` in another function expression:
 : The function's declared result type fulfills the following rules for
   the corresponding parameter of the enclosing function.
 
-(3) The arguments of the function expression are well typed when
+(2) The arguments of the function expression are well typed when
 each argument of the function can be used for the declared type of the
 corresponding parameter, according to one of the following
 conditions:
