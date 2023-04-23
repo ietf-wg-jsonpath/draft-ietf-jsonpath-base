@@ -1449,11 +1449,11 @@ otherwise the JSONPath implementation MUST raise an error
 (see {{synsem-overview}}).
 
 For a function expression to be supported, each function name in the expression
-MUST be registered (see {{iana-fnex}}).
+must be supported.
 Implementations MUST support the function extensions defined
 in this document, but are free to support or not support other registered function extensions.
 
-To define which supported function expressions are well typed,
+To define which function expressions are well typed,
 a type system is first introduced.
 
 ### Type System for Function Expressions {#typesys}
