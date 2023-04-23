@@ -1451,7 +1451,7 @@ otherwise the JSONPath implementation MUST raise an error
 For a function expression to be supported, each function extension involved in the expression
 must be supported.
 Implementations MUST support the function extensions defined
-in this document and SHOULD support all other registered function extensions.
+in this document, but are free to support or not support other registered function extensions.
 
 To define which function expressions are well typed,
 a type system is first introduced.
