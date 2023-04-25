@@ -1453,6 +1453,19 @@ must be supported.
 Implementations MUST support the function extensions defined
 in this document, but are free to support or not support other registered function extensions.
 
+Implementations MUST NOT support function extensions that are not registered.
+Note: if an implementation supports a function extension that is not registered,
+the implementation will not conform to this specification until the function extension is
+registered.
+To support a new function extension in an implementation, it is recommended that
+the implementation behaves by default in a "strict" mode that conforms to this specification and
+provides some way of behaving in a "non-strict" mode that supports the new function extension.
+This ensures that the default behaviour of the implementation does not mislead users into
+thinking that the function extension is interoperable.
+To use the function extension successfully, users have to consciously choose to use non-strict mode.
+If the function extension is later registered, the implementation can then support the
+function extension in the default, strict mode.
+
 To define which function expressions are well typed,
 a type system is first introduced.
 
