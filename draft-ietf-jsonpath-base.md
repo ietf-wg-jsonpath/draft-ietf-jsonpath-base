@@ -1455,12 +1455,7 @@ in this document, but are free to support or not support other registered functi
 
 Implementations MUST NOT support function extensions that are not registered.
 
-Notes:
-
-* If an implementation supports a function extension that is not registered,
-the implementation will not conform to this specification unless or until the function extension is
-registered.
-* An implementation may behave by default in a "strict" mode that conforms to this specification
+Note: an implementation may behave by default in a "strict" mode that conforms to this specification
 and offer some way of behaving in a "non-strict" mode that supports unregistered function extensions.
 This ensures that the default behaviour of the implementation does not mislead users into
 thinking that uregistered function extensions can be used interoperably.
