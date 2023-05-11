@@ -1,7 +1,7 @@
 ---
 v: 3
 
-docname: draft-ietf-jsonpath-base-14
+docname: draft-ietf-jsonpath-base-latest
 cat: std
 consensus: 'true'
 submissiontype: IETF
