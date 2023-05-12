@@ -396,7 +396,7 @@ $.store.book[0].title
 ~~~~
 
 Bracket notation contains a comma separated list of one or more selectors of any kind.
-Selectors are detailed in the next section. 
+Selectors are detailed in the next section.
 
 A JSONPath expression may use a combination of bracket and dot notations.
 
