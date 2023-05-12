@@ -249,10 +249,6 @@ Depth (of a descendant node within a value):
 : The number of ancestors of the node within the value. The root node of the value has depth zero,
 the children of the root node have depth one, their children have depth two, and so forth.
 
-Segment:
-: One of the constructs which select children (`[]`)
-  or descendants (`..[]`) of an input value.
-
 Nodelist:
 : A list of nodes.
   While a nodelist can be represented in JSON, e.g. as an array, this document
@@ -276,13 +272,17 @@ Unicode Scalar Value:
   In other words, integers in either of the inclusive base 16 ranges 0 to D7FF and
   E000 to 10FFFF.  Both JSON string values and JSONPath queries are sequences of Unicode scalar values.
 
-Singular Query:
-: A JSONPath expression built from segments each of which, regardless of the input value,
-  produces a nodelist containing at most one node.
+Segment:
+: One of the constructs which select children (`[<selectors>]`)
+  or descendants (`..[<selectors>]`) of an input value.
 
 Selector:
 : A single item within a segment that takes the input value and produces a nodelist
   consisting of child nodes of the input value.
+
+Singular Query:
+: A JSONPath expression built from segments each of which, regardless of the input value,
+  produces a nodelist containing at most one node.
 
 ### JSON Values as Trees of Nodes
 
@@ -381,7 +381,7 @@ of the evaluation of a filter expression ({{filter-selector}}).
 
 ### Segments
 
-Segments select children (`[]`) or descendants (`..[]`) of an input value.
+Segments select children (`[<selectors>]`) or descendants (`..[<selectors>]`) of an input value.
 
 Segments can use *bracket notation*, for example:
 
@@ -394,6 +394,9 @@ or the more compact *dot notation*, for example:
 ~~~~ JSONPath
 $.store.book[0].title
 ~~~~
+
+Bracket notation contains a comma separated list of one or more selectors of any kind.
+Selectors are detailed in the next section.
 
 A JSONPath expression may use a combination of bracket and dot notations.
 
