@@ -1594,7 +1594,12 @@ $[?count(@.*.author) >= 5]
 Its only argument is a nodelist.
 The result is a value, an unsigned integer, that gives the number of
 nodes in the nodelist.
-Note: there is no deduplication of the nodelist.
+
+Notes:
+
+* There is no deduplication of the nodelist.
+* There is one node in a nodelist consisting of a single node, even if that node is an array or an object
+with multiple children. For example, `count(@)` always equals 1, as does `count($)`. 
 
 
 ### `match()` Function Extension {#match}
