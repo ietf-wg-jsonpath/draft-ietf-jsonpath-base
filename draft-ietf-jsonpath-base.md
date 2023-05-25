@@ -1599,7 +1599,7 @@ Notes:
 
 * There is no deduplication of the nodelist.
 * There is one node in a nodelist consisting of a single node, even if that node is an array or an object
-with multiple children. For example, `count(@)` always equals 1, as does `count($)`. 
+with multiple children. For example, `count(@)` always equals 1, as does `count($)`.
 
 
 ### `match()` Function Extension {#match}
