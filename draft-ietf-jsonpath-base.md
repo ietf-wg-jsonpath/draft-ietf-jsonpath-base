@@ -1598,8 +1598,8 @@ Notes:
 
 * There is no deduplication of the nodelist.
 * The number of nodes in the nodelist is counted independent of their
-  values or any children they may have; e.g., the count of a singular
-  nodelist such as `count(@)` is always 1.
+  values or any children they may have; e.g., the count of a non-empty
+  singular nodelist such as `count(@)` is always 1.
 
 ### `match()` Function Extension {#match}
 
