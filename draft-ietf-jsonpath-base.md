@@ -270,7 +270,7 @@ Normalized Path:
 Unicode Scalar Value:
 : Any Unicode {{UNICODE}} code point except high-surrogate and low-surrogate code points.
   In other words, integers in either of the inclusive base 16 ranges 0 to D7FF and
-  E000 to 10FFFF.  Both JSON string values and JSONPath queries are sequences of Unicode scalar values.
+  E000 to 10FFFF. JSONPath queries are sequences of Unicode scalar values.
 
 Segment:
 : One of the constructs which select children (`[<selectors>]`)
