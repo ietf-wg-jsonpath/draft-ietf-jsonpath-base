@@ -266,6 +266,7 @@ Normalized Path:
   Path for a specific query argument, the Normalized Path needs to identify
   exactly one node. Similar
   to, but syntactically different from, a JSON Pointer {{-pointer}}.
+  Note: This definition is based on the syntactical definition in {{normalized-paths}}; JSONPath expressions that identify a node in a value but do not conform to that syntax are not Normalized Paths.
 
 Unicode Scalar Value:
 : Any Unicode {{UNICODE}} code point except high-surrogate and low-surrogate code points.
@@ -283,6 +284,7 @@ Selector:
 Singular Query:
 : A JSONPath expression built from segments each of which, regardless of the input value,
   produces a nodelist containing at most one node.
+  Note: This definition is based on the syntactical definition in {{filter-selector-syntax}}; JSONPath expressions that always produce a singular nodelist but do not conform to that syntax are not Singular Queries.
 
 ### JSON Values as Trees of Nodes
 
@@ -1124,7 +1126,7 @@ The type system also guides conversions ({{type-conv}}) that mimic the
 way different kinds of expressions are handled in the grammar when
 function expressions are not in use.
 
-#### Syntax
+#### Syntax {#filter-selector-syntax}
 
 The filter selector has the form `?<logical-expr>`.
 
@@ -1930,7 +1932,7 @@ Queries:
 | `$.null` | `1` | `$['null']` | Not JSON null at all, just a member name string |
 {: #tbl-null-examples title="Examples involving (or not involving) null"}
 
-## Normalized Paths
+## Normalized Paths {#normalized-paths}
 
 A Normalized Path is a unique representation of the location of a node in a value which
 uniquely identifies the node in the value.
