@@ -266,7 +266,9 @@ Normalized Path:
   Path for a specific query argument, the Normalized Path needs to identify
   exactly one node. Similar
   to, but syntactically different from, a JSON Pointer {{-pointer}}.
-  Note: This definition is based on the syntactical definition in {{normalized-paths}}; JSONPath expressions that identify a node in a value but do not conform to that syntax are not Normalized Paths.
+  Note: This definition is based on the syntactical definition in {{normalized-paths}};
+  JSONPath expressions that identify a node in a value but do not conform to that
+  syntax are not Normalized Paths.
 
 Unicode Scalar Value:
 : Any Unicode {{UNICODE}} code point except high-surrogate and low-surrogate code points.
@@ -282,9 +284,11 @@ Selector:
   consisting of child nodes of the input value.
 
 Singular Query:
-: A JSONPath expression built from segments each of which, regardless of the input value,
-  produces a nodelist containing at most one node.
-  Note: This definition is based on the syntactical definition in {{filter-selector-syntax}}; JSONPath expressions that always produce a singular nodelist but do not conform to that syntax are not Singular Queries.
+: A JSONPath expression built from segments that have been syntactically restricted in
+  a certain way ({{filter-selector-syntax}}) each of which, regardless of the input
+  value, produces a nodelist containing at most one node.
+  Note: JSONPath expressions that always produce a singular nodelist but do not
+  conform to the syntax in {{filter-selector-syntax}} are not Singular Queries.
 
 ### JSON Values as Trees of Nodes
 
