@@ -285,8 +285,8 @@ Selector:
 
 Singular Query:
 : A JSONPath expression built from segments that have been syntactically restricted in
-  a certain way ({{filter-selector-syntax}}) each of which, regardless of the input
-  value, produces a nodelist containing at most one node.
+  a certain way ({{filter-selector-syntax}}) so that, regardless of the input
+  value, the expression produces a nodelist containing at most one node.
   Note: JSONPath expressions that always produce a singular nodelist but do not
   conform to the syntax in {{filter-selector-syntax}} are not Singular Queries.
 
