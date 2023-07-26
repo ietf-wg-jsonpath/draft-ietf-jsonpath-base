@@ -502,6 +502,8 @@ The examples are based on the simple JSON value shown in
 | `$.store.*`                               | all things in store, which are some books and a red bicycle  |
 | `$.store..price`                          | the prices of everything in the store                        |
 | `$..book[2]`                              | the third book                                               |
+| `$..book[2].author`                       | the third book's author                                      |
+| `$..book[2].publisher`                    | empty result: there is no "publisher" member on third book   |
 | `$..book[-1]`                             | the last book in order                                       |
 | `$..book[0,1]`<br>`$..book[:2]`           | the first two books                                          |
 | `$..book[?(@.isbn)]`                      | all books with an ISBN number                                |
