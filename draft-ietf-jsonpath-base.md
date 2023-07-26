@@ -2006,7 +2006,7 @@ normal-index-selector = "0" / (DIGIT1 *DIGIT)
 Since there can only be one Normalized Path identifying a given node, the syntax
 stipulates which characters are escaped and which are not.
 So the definition of `normal-hexchar` is designed for hex escaping of characters
-which are not straightforwardly-printable, for example U+000B LINE TABULATION, but
+which are not straightforwardly printable, for example U+000B LINE TABULATION, but
 for which no standard JSON escape, such as `\n`, is available.
 
 ### Examples
