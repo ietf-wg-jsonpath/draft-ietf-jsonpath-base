@@ -545,8 +545,8 @@ This clearly separates well-formedness/validity errors in the query
 from mismatches that may actually stem from flaws in the data (see
 also {{data-attack}}).
 
-Often, mismatches between the structure expected by a valid query
-and the structure found in the data will lead to empty query results,
+Mismatches between the structure expected by a valid query
+and the structure found in the data can lead to empty query results,
 which may be unexpected and indicate bugs in either.
 JSONPath implementations might therefore want to provide diagnostics
 to the application developer that aid in finding the cause of empty
