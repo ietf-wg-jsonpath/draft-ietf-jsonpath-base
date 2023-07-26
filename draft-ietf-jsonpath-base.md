@@ -542,7 +542,8 @@ the JSON value the query is applied to. No further errors relating to the
 well-formedness and the validity of a JSONPath query can be
 raised during application of the query to a value.
 This clearly separates well-formedness/validity errors in the query
-from mismatches that may actually stem from flaws in the data.
+from mismatches that may actually stem from flaws in the data (see
+also {{data-attack}}).
 
 Mismatches between the structure expected by a valid query
 and the structure found in the data can lead to empty query results,
@@ -613,7 +614,7 @@ operations that might be considered erroneous, such as using an index
 lying outside the range of an array,
 simply result in fewer nodes being selected.
 (Additional discussion of this property can be found in the
-introduction to {{synsem-overview}}.)
+introduction to {{synsem-overview}} and in {{data-attack}}.)
 
 As a consequence of this approach, if any of the segments produces an empty nodelist,
 then the whole query produces an empty nodelist.
@@ -2178,7 +2179,8 @@ and the entries in the column
 Security considerations for JSONPath can stem from
 
 * attack vectors on JSONPath implementations,
-* attack vectors on how JSONPath queries are formed, and
+* attack vectors on how JSONPath queries are formed,
+* attack vectors on the data examined by JSONPath queries, and
 * the way JSONPath is used in security-relevant mechanisms.
 
 ## Attack Vectors on JSONPath Implementations
@@ -2222,6 +2224,20 @@ values (e.g., by entering them into a Web form).
 The resulting class of attacks, *injections* (e.g., SQL injections),
 is consistently found among the top causes of application security
 vulnerabilities and requires particular attention.
+
+## Attack Vectors on the Data Examined by JSONPath Queries {#data-attack}
+
+In many cases where the JSONPath queries are not under control of the
+attacker, the data may be.
+Attackers may try to cause failures in the application employing
+JSONPath by crafting data that leads to failures.
+JSONPath has therefore been designed to provide for failures based on
+malformed queries, but not based on the data then fed into the query;
+see {{synsem-overview}}.
+(However, the application needs to be able to handle unexpected, such
+as empty, query results.
+Also, situations in which an implementation's resources overflow still
+can provide an attack vector.)
 
 ## Attacks on Security Mechanisms that Employ JSONPath
 
