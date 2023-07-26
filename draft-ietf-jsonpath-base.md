@@ -309,8 +309,6 @@ member names are not.
 
 ## History
 
-This section is informative.
-
 This document is based on {{{Stefan Gössner}}}'s popular JSONPath proposal
 dated 2007-02-21 {{JSONPath-orig}}, builds on the experience from the widespread
 deployment of its implementations, and provides a normative specification for it.
@@ -368,8 +366,6 @@ strings are sequences of Unicode scalar values, becoming unpredictable
 if they are not ({{Section 8.2 of -json}}).
 
 ## Overview of JSONPath Expressions {#overview}
-
-This section is informative.
 
 A JSONPath expression is applied to a JSON value, known as the query argument.
 The output is a nodelist.
