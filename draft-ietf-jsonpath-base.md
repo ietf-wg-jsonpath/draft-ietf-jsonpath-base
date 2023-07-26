@@ -541,6 +541,15 @@ The well-formedness and the validity of JSONPath queries are independent of
 the JSON value the query is applied to. No further errors relating to the
 well-formedness and the validity of a JSONPath query can be
 raised during application of the query to a value.
+This clearly separates well-formedness/validity errors in the query
+from mismatches that may actually stem from flaws in the data.
+
+Mismatches between the structure expected by a valid query
+and the structure found in the data can lead to empty query results,
+which may be unexpected and indicate bugs in either.
+JSONPath implementations might therefore want to provide diagnostics
+to the application developer that aid in finding the cause of empty
+results.
 
 Obviously, an implementation can still fail when executing a JSONPath
 query, e.g., because of resource depletion, but this is not modeled in
@@ -603,6 +612,8 @@ This means that some
 operations that might be considered erroneous, such as using an index
 lying outside the range of an array,
 simply result in fewer nodes being selected.
+(Additional discussion of this property can be found in the
+introduction to {{synsem-overview}}.)
 
 As a consequence of this approach, if any of the segments produces an empty nodelist,
 then the whole query produces an empty nodelist.
