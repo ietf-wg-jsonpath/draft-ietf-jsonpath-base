@@ -1438,7 +1438,7 @@ result. Each registered function name is unique.
 A function extension MUST be defined such that its evaluation is
 side-effect free, i.e., all possible orders of evaluation and choices
 of short-circuiting or full evaluation of an expression containing it
-must lead to the same result.
+MUST lead to the same result.
 (Note: memoization or logging are not side effects in this sense
 as they are visible at the implementation level only — they do not
 influence the result of the evaluation.)
