@@ -1286,9 +1286,11 @@ rather than the negated existence test `!@.foo` (which yields false if `@.foo` s
 
 The comparison operators `==` and `<` are defined first and then these are used to define `!=`, `<=`, `>`, and `>=`.
 
-When either side of a comparison results in an empty nodelist or `Nothing` (see {{typesys}}):
+When either side of a comparison results in an empty nodelist or the
+special result `Nothing` (see {{typesys}}):
 
-* a comparison using the operator `==` yields true if and only the other side also results in an empty nodelist or `Nothing`.
+* a comparison using the operator `==` yields true if and only the
+  other side also results in an empty nodelist or the special result `Nothing`.
 
 * a comparison using the operator `<` yields false.
 
@@ -1482,7 +1484,7 @@ Notes:
 
 * The only instances that can be directly represented in JSONPath syntax are certain JSON values
   in `ValueType` expressed as literals (which, in JSONPath, are limited to primitive values).
-* `Nothing` represents the absence of a JSON value and is distinct from any JSON value, including `null`.
+* The special result `Nothing` represents the absence of a JSON value and is distinct from any JSON value, including `null`.
 * `LogicalTrue` and `LogicalFalse` are unrelated to the JSON values expressed by the
   literals `true` and `false`.
 
@@ -1553,7 +1555,8 @@ conditions:
     * A singular query. In this case:
         * If the query results in a nodelist consisting of a single node, the
           argument is the value of the node.
-        * If the query results in an empty nodelist, the argument is Nothing.
+        * If the query results in an empty nodelist, the argument is
+          the special result `Nothing`.
 
 ### `length()` Function Extension {#length}
 
@@ -1573,7 +1576,7 @@ $[?length(@.authors) >= 5]
 
 Its only argument is an instance of `ValueType` (possibly taken from a
 singular query, as in the example above).  The result also is an
-instance of `ValueType`: an unsigned integer or `Nothing`.
+instance of `ValueType`: an unsigned integer or the special result `Nothing`.
 
 * If the argument value is a string, the result is the number of
   Unicode scalar values in the string.
@@ -1581,7 +1584,7 @@ instance of `ValueType`: an unsigned integer or `Nothing`.
   elements in the array.
 * If the argument value is an object, the result is the number of
   members in the object.
-* For any other argument value, the result is `Nothing`.
+* For any other argument value, the result is the special result `Nothing`.
 
 
 ### `count()` Function Extension {#count}
@@ -1685,7 +1688,7 @@ instance of `ValueType`.
 
 * If the argument contains a single node, the result is
   the value of the node.
-* If the argument is `Nothing` or contains multiple nodes, the
+* If the argument is the special result `Nothing` or contains multiple nodes, the
   result is `Nothing`.
 
 Note: a singular query may be used anywhere where a ValueType is expected,
