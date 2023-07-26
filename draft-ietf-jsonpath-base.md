@@ -309,8 +309,6 @@ member names are not.
 
 ## History
 
-This section is informative.
-
 This document is based on {{{Stefan Gössner}}}'s popular JSONPath proposal
 dated 2007-02-21 {{JSONPath-orig}}, builds on the experience from the widespread
 deployment of its implementations, and provides a normative specification for it.
@@ -368,8 +366,6 @@ strings are sequences of Unicode scalar values, becoming unpredictable
 if they are not ({{Section 8.2 of -json}}).
 
 ## Overview of JSONPath Expressions {#overview}
-
-This section is informative.
 
 A JSONPath expression is applied to a JSON value, known as the query argument.
 The output is a nodelist.
@@ -746,13 +742,19 @@ low-surrogate       = "D" ("C"/"D"/"E"/"F") 2HEXDIG
 HEXDIG              = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
 ~~~~
 
-Note: `double-quoted` strings follow the JSON string syntax ({{Section 7 of RFC8259}});
+Notes:
+
+* `double-quoted` strings follow the JSON string syntax ({{Section 7 of RFC8259}});
 `single-quoted` strings follow an analogous pattern ({{syntax-index}}).
 No attempt was made to improve on this syntax, so if it is desired to
 escape characters with
 scalar values above 0xFFFF, such as <u format="num-lit-name">🤔</u>,
 they need to be represented
 by a pair of surrogate escapes (`"\uD83E\uDD14"` in this case).
+* Alphabetic characters in ABNF quoted strings are case-insensitive,
+  so each of the hexadecimal digits within `\u` escapes (as specified in rules
+  referenced by `hexchar`) can be either lower case or upper case,
+  while the `u` in `\u` needs to be lower case (indicated as `%x75`).
 
 #### Semantics
 {: unnumbered}
@@ -1228,8 +1230,9 @@ index-segment       = "[" index-selector "]"
 
 Literals can be notated in the way that is usual for JSON (with the
 extension that strings can use single-quote delimiters).
-Alphabetic characters in ABNF are case-insensitive, so within a
-floating point number the ABNF expression "e" can be either the value
+
+Note: Alphabetic characters in ABNF quoted strings are case-insensitive, so within a
+floating point number the ABNF expression "e" can be either the character
 'e' or 'E'.
 
 `true`, `false`, and `null` are lower-case only (case-sensitive).
@@ -1283,9 +1286,11 @@ rather than the negated existence test `!@.foo` (which yields false if `@.foo` s
 
 The comparison operators `==` and `<` are defined first and then these are used to define `!=`, `<=`, `>`, and `>=`.
 
-When either side of a comparison results in an empty nodelist or `Nothing` (see {{typesys}}):
+When either side of a comparison results in an empty nodelist or the
+special result `Nothing` (see {{typesys}}):
 
-* a comparison using the operator `==` yields true if and only the other side also results in an empty nodelist or `Nothing`.
+* a comparison using the operator `==` yields true if and only the
+  other side also results in an empty nodelist or the special result `Nothing`.
 
 * a comparison using the operator `<` yields false.
 
@@ -1479,7 +1484,7 @@ Notes:
 
 * The only instances that can be directly represented in JSONPath syntax are certain JSON values
   in `ValueType` expressed as literals (which, in JSONPath, are limited to primitive values).
-* `Nothing` represents the absence of a JSON value and is distinct from any JSON value, including `null`.
+* The special result `Nothing` represents the absence of a JSON value and is distinct from any JSON value, including `null`.
 * `LogicalTrue` and `LogicalFalse` are unrelated to the JSON values expressed by the
   literals `true` and `false`.
 
@@ -1550,7 +1555,8 @@ conditions:
     * A singular query. In this case:
         * If the query results in a nodelist consisting of a single node, the
           argument is the value of the node.
-        * If the query results in an empty nodelist, the argument is Nothing.
+        * If the query results in an empty nodelist, the argument is
+          the special result `Nothing`.
 
 ### `length()` Function Extension {#length}
 
@@ -1570,7 +1576,7 @@ $[?length(@.authors) >= 5]
 
 Its only argument is an instance of `ValueType` (possibly taken from a
 singular query, as in the example above).  The result also is an
-instance of `ValueType`: an unsigned integer or `Nothing`.
+instance of `ValueType`: an unsigned integer or the special result `Nothing`.
 
 * If the argument value is a string, the result is the number of
   Unicode scalar values in the string.
@@ -1578,7 +1584,7 @@ instance of `ValueType`: an unsigned integer or `Nothing`.
   elements in the array.
 * If the argument value is an object, the result is the number of
   members in the object.
-* For any other argument value, the result is `Nothing`.
+* For any other argument value, the result is the special result `Nothing`.
 
 
 ### `count()` Function Extension {#count}
@@ -1682,7 +1688,7 @@ instance of `ValueType`.
 
 * If the argument contains a single node, the result is
   the value of the node.
-* If the argument is `Nothing` or contains multiple nodes, the
+* If the argument is the special result `Nothing` or contains multiple nodes, the
   result is `Nothing`.
 
 Note: a singular query may be used anywhere where a ValueType is expected,
@@ -2006,7 +2012,7 @@ normal-index-selector = "0" / (DIGIT1 *DIGIT)
 Since there can only be one Normalized Path identifying a given node, the syntax
 stipulates which characters are escaped and which are not.
 So the definition of `normal-hexchar` is designed for hex escaping of characters
-which are not straightforwardly-printable, for example U+000B LINE TABULATION, but
+which are not straightforwardly printable, for example U+000B LINE TABULATION, but
 for which no standard JSON escape, such as `\n`, is available.
 
 ### Examples
@@ -2023,6 +2029,12 @@ for which no standard JSON escape, such as `\n`, is available.
 {: #tbl-normalized-path-examples title="Normalized Path examples"}
 
 # IANA Considerations {#IANA}
+
+[^replace-xxxx]: RFC Ed.: throughout this section, please replace
+    RFCXXXX with the RFC number of this specification and remove this
+    note.
+
+[^replace-xxxx]
 
 ##  Registration of Media Type application/jsonpath
 
@@ -2135,8 +2147,9 @@ Reference:
   extension
 
 Initial entries in this sub-registry are as listed in {{pre-reg}}; the
-Column "Change Controller" always has the value "IESG" and the column
-"Reference" always has the value "{{fnex}} of RFCthis":
+entries in the Column "Change Controller" all have the value "IETF"
+and the entries in the column
+"Reference" all have the value "{{fnex}} of RFCXXXX":
 
 | Function Name | Brief description                  | Parameters               | Result        |
 | length        | length of string, array, object    | `ValueType`              | `ValueType`   |
