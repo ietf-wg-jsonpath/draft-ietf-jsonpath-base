@@ -2024,6 +2024,12 @@ for which no standard JSON escape, such as `\n`, is available.
 
 # IANA Considerations {#IANA}
 
+[^replace-xxxx]: RFC Ed.: throughout this section, please replace
+    RFCXXXX with the RFC number of this specification and remove this
+    note.
+
+[^replace-xxxx]
+
 ##  Registration of Media Type application/jsonpath
 
 IANA is requested to register the following media type {{RFC6838}}:
@@ -2135,8 +2141,9 @@ Reference:
   extension
 
 Initial entries in this sub-registry are as listed in {{pre-reg}}; the
-Column "Change Controller" always has the value "IESG" and the column
-"Reference" always has the value "{{fnex}} of RFCthis":
+entries in the Column "Change Controller" all have the value "IETF"
+and the entries in the column
+"Reference" all have the value "{{fnex}} of RFCXXXX":
 
 | Function Name | Brief description                  | Parameters               | Result        |
 | length        | length of string, array, object    | `ValueType`              | `ValueType`   |
