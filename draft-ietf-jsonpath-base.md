@@ -746,13 +746,19 @@ low-surrogate       = "D" ("C"/"D"/"E"/"F") 2HEXDIG
 HEXDIG              = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
 ~~~~
 
-Note: `double-quoted` strings follow the JSON string syntax ({{Section 7 of RFC8259}});
+Notes:
+
+* `double-quoted` strings follow the JSON string syntax ({{Section 7 of RFC8259}});
 `single-quoted` strings follow an analogous pattern ({{syntax-index}}).
 No attempt was made to improve on this syntax, so if it is desired to
 escape characters with
 scalar values above 0xFFFF, such as <u format="num-lit-name">🤔</u>,
 they need to be represented
 by a pair of surrogate escapes (`"\uD83E\uDD14"` in this case).
+* Alphabetic characters in ABNF quoted strings are case-insensitive,
+  so each of the hexadecimal digits within `\u` escapes (as specified in rules
+  referenced by `hexchar`) can be either lower case or upper case,
+  while the `u` in `\u` needs to be lower case (indicated as `%x75`).
 
 #### Semantics
 {: unnumbered}
@@ -1228,8 +1234,9 @@ index-segment       = "[" index-selector "]"
 
 Literals can be notated in the way that is usual for JSON (with the
 extension that strings can use single-quote delimiters).
-Alphabetic characters in ABNF are case-insensitive, so within a
-floating point number the ABNF expression "e" can be either the value
+
+Note: Alphabetic characters in ABNF quoted strings are case-insensitive, so within a
+floating point number the ABNF expression "e" can be either the character
 'e' or 'E'.
 
 `true`, `false`, and `null` are lower-case only (case-sensitive).
