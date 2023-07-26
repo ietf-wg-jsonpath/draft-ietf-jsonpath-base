@@ -2179,7 +2179,7 @@ and the entries in the column
 Security considerations for JSONPath can stem from
 
 * attack vectors on JSONPath implementations,
-* attack vectors on how JSONPath queries are formed
+* attack vectors on how JSONPath queries are formed,
 * attack vectors on the data examined by JSONPath queries, and
 * the way JSONPath is used in security-relevant mechanisms.
 
