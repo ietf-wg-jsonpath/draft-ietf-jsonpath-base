@@ -651,7 +651,6 @@ This is the concatenation of three lists, two of length one containing
 ## Root Identifier
 
 ### Syntax
-{: unnumbered}
 
 Every JSONPath query (except those inside filter expressions, see {{filter-selector}}) MUST begin with the root identifier `$`.
 
@@ -660,13 +659,11 @@ root-identifier     = "$"
 ~~~~
 
 ### Semantics
-{: unnumbered}
 
 The root identifier `$` represents the root node of the query argument
 and produces a nodelist consisting of that root node.
 
 ### Examples
-{: unnumbered}
 
 JSON:
 
@@ -703,7 +700,6 @@ The syntax and semantics of each kind of selector are defined below.
 ### Name Selector {#name-selector}
 
 #### Syntax {#syntax-name}
-{: unnumbered}
 
 A name selector `'<name>'` selects at most one object member value.
 
@@ -770,7 +766,6 @@ by a pair of surrogate escapes (`"\uD83E\uDD14"` in this case).
   while the `u` in `\u` needs to be lower case (indicated as `%x75`).
 
 #### Semantics
-{: unnumbered}
 
 A `name-selector` string MUST be converted to a
 member name `M` by removing the surrounding quotes and
@@ -804,7 +799,6 @@ MUST NOT be applied to either the member name string `M` from the JSONPath or to
 the member name strings in the JSON prior to comparison.
 
 #### Examples
-{: unnumbered}
 
 <!-- EDITING NOTE: there are non-breaking spaces here between j and j -->
 <!-- i.e., j j and not j j -->
@@ -831,7 +825,6 @@ The examples in {{tbl-name}} show the name selector in use by child segments:
 ### Wildcard Selector {#wildcard-selector}
 
 #### Syntax
-{: unnumbered}
 
 The wildcard selector consists of an asterisk.
 
@@ -840,7 +833,6 @@ wildcard-selector   = "*"
 ~~~~
 
 #### Semantics
-{: unnumbered}
 
 A wildcard selector selects the nodes of all children of an object or array.
 The order in which the children of an object appear in the resultant nodelist is not stipulated,
@@ -851,7 +843,6 @@ The wildcard selector selects nothing from a primitive JSON value (that is,
 a number, a string, `true`, `false`, or `null`).
 
 #### Examples
-{: unnumbered}
 
 JSON:
 
@@ -970,7 +961,6 @@ The slice selector was inspired by the slice operator of ECMAScript
 
 
 ##### Informal Introduction
-{: unnumbered}
 
 This section is informative.
 
@@ -997,7 +987,6 @@ The following section specifies the behavior fully, without depending on
 JavaScript or Python behavior.
 
 ##### Normative Semantics
-{: unnumbered}
 
 A slice expression selects a subset of the elements of the input array, in
 the same order
@@ -1755,7 +1744,6 @@ The syntax and semantics of each kind of segment are defined below.
 ### Child Segment
 
 #### Syntax
-{: unnumbered}
 
 The child segment consists of a non-empty, comma-separated
 sequence of selectors enclosed in square brackets.
@@ -1791,7 +1779,6 @@ characters, as specified in the ABNF rule `member-name-shorthand`.
 Thus, for example, `$.foo.bar` is shorthand for `$['foo']['bar']` (but not for `$['foo.bar']`).
 
 #### Semantics
-{: unnumbered}
 
 A child segment contains a sequence of selectors, each of which
 selects zero or more children of the input value.
@@ -1812,7 +1799,6 @@ may evaluate to produce a nodelist in a distinct order.
 So a child segment drills down one more level into the structure of the input value.
 
 #### Examples
-{: unnumbered}
 
 JSON:
 
@@ -1831,7 +1817,6 @@ Queries:
 ### Descendant Segment
 
 #### Syntax
-{: unnumbered}
 
 The descendant segment consists of a double dot `..`
 followed by a child segment (using bracket notation).
@@ -1856,7 +1841,6 @@ characters, as specified in the ABNF rule `member-name-shorthand`.
 Note: `..` on its own is not a valid segment.
 
 #### Semantics
-{: unnumbered}
 
 A descendant segment produces zero or more descendants of an input value.
 
@@ -1887,7 +1871,6 @@ the result of the segment.
 So a descendant segment drills down one or more levels into the structure of each input value.
 
 #### Examples
-{: unnumbered}
 
 JSON:
 
@@ -1933,7 +1916,6 @@ that do not conform to this specification).
 Note: JSON `null` is treated the same as any other JSON value: it is not taken to mean "undefined" or "missing".
 
 ### Examples
-{: unnumbered}
 
 JSON:
 
@@ -2029,7 +2011,6 @@ which are not straightforwardly printable, for example U+000B LINE TABULATION, b
 for which no standard JSON escape, such as `\n`, is available.
 
 ### Examples
-{: unnumbered}
 
 | Path | Normalized Path | Comment |
 | :---: | :---: | ------- |
