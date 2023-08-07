@@ -573,6 +573,12 @@ followed by a possibly empty sequence of *segments*.
 ~~~~ abnf
 jsonpath-query      = root-identifier segments
 segments            = *(S segment)
+
+B                   = %x20 /    ; Space
+                      %x09 /    ; Horizontal tab
+                      %x0A /    ; Line feed or New line
+                      %x0D      ; Carriage return
+S                   = *B        ; optional blank space
 ~~~~
 
 The syntax and semantics of segments are defined in {{segments-details}}.
@@ -948,13 +954,6 @@ slice-selector      = [start S] ":" S [end S] [":" [S step ]]
 start               = int       ; included in selection
 end                 = int       ; not included in selection
 step                = int       ; default: 1
-
-B                   = %x20 /    ; Space
-                      %x09 /    ; Horizontal tab
-                      %x0A /    ; Line feed or New line
-                      %x0D      ; Carriage return
-S                   = *B        ; optional blank space
-
 ~~~~
 
 The slice selector consists of three optional decimal integers separated by colons.
