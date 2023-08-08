@@ -2278,7 +2278,7 @@ syntax of a JSONPath query.
 {: #jsonpath-abnf title="Collected ABNF of JSONPath queries"}
 
 {{normalized-path-abnf}} contains the collected ABNF grammar that
-defines the syntax of a JSONPath normalized path, while also using the rules
+defines the syntax of a JSONPath Normalized Path, while also using the rules
 `root-identifier`, `ESC`, `DIGIT`, and `DIGIT1` from {{jsonpath-abnf}}.
 
 ~~~ abnf
