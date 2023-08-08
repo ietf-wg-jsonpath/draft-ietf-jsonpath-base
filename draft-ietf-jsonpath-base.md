@@ -1175,7 +1175,7 @@ Parentheses MAY be used within `logical-expr` for grouping.
 
 It is not required that `logical-expr` consist of
 a parenthesized expression (which was required in {{JSONPath-orig}}),
-although it can be and the semantics are the same
+although it can be, and the semantics are the same
 as without the parentheses.
 
 ~~~~ abnf
