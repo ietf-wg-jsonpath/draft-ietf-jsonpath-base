@@ -2284,7 +2284,7 @@ defines the syntax of a JSONPath Normalized Path, while also using the rules
 ~~~ abnf
 {::include sourcecode/abnf/normalized_path_collected_abnf}
 ~~~
-{: #normalized-path-abnf title="Collected ABNF of JSONPath normalized paths"}
+{: #normalized-path-abnf title="Collected ABNF of JSONPath Normalized Paths"}
 
 
 # Inspired by XPath
