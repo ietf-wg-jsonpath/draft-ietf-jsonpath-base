@@ -147,8 +147,8 @@ from a JSON value.
 {:unnumbered: numbered="false" toc="exclude"}
 <!-- use as {: unnumbered} -->
 
-{:abnf: sourcecode-name="jsonpath-collected-abnf"}
-{:abnfnp: sourcecode-name="normalized-path-collected-abnf"}
+{:abnf: sourcecode-name="jsonpath-collected.abnf"}
+{:abnfnp: sourcecode-name="normalized-path-collected.abnf"}
 
 <!-- editorial issue: lots of complicated nesting of quotes, as in -->
 <!-- `"13 == '13'"` or `$`.  We probably should find a simpler style -->
