@@ -13,4 +13,5 @@ endif
 
 
 sourcecode: draft-ietf-jsonpath-base.xml
+	rm -rf sourcecode.ba?
 	kramdown-rfc-extract-sourcecode -tfiles draft-ietf-jsonpath-base.xml
