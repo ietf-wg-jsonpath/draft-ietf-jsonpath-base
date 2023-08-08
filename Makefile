@@ -10,3 +10,7 @@ else
 	git clone -q --depth 10 $(CLONE_ARGS) \
 	    -b main https://github.com/martinthomson/i-d-template $(LIBDIR)
 endif
+
+
+sourcecode: draft-ietf-jsonpath-base.xml
+	kramdown-rfc-extract-sourcecode -tfiles draft-ietf-jsonpath-base.xml

@@ -147,6 +147,9 @@ from a JSON value.
 {:unnumbered: numbered="false" toc="exclude"}
 <!-- use as {: unnumbered} -->
 
+{:abnf: sourcecode-name="jsonpath-collected-abnf"}
+{:abnfnp: sourcecode-name="normalized-path-collected-abnf"}
+
 <!-- editorial issue: lots of complicated nesting of quotes, as in -->
 <!-- `"13 == '13'"` or `$`.  We probably should find a simpler style -->
 
@@ -574,6 +577,7 @@ followed by a possibly empty sequence of *segments*.
 jsonpath-query      = root-identifier segments
 segments            = *(S segment)
 ~~~~
+{:abnf}
 
 The syntax and semantics of segments are defined in {{segments-details}}.
 
@@ -658,6 +662,7 @@ Every JSONPath query (except those inside filter expressions, see {{filter-selec
 ~~~~ abnf
 root-identifier     = "$"
 ~~~~
+{:abnf}
 
 ### Semantics
 {: unnumbered}
@@ -697,6 +702,7 @@ selector            = name-selector  /
                       index-selector /
                       filter-selector
 ~~~~
+{:abnf}
 
 The syntax and semantics of each kind of selector are defined below.
 
@@ -754,6 +760,7 @@ low-surrogate       = "D" ("C"/"D"/"E"/"F") 2HEXDIG
 
 HEXDIG              = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
 ~~~~
+{:abnf}
 
 Notes:
 
@@ -838,6 +845,7 @@ The wildcard selector consists of an asterisk.
 ~~~~ abnf
 wildcard-selector   = "*"
 ~~~~
+{:abnf}
 
 #### Semantics
 {: unnumbered}
@@ -891,6 +899,7 @@ int                 = "0" /
                       (["-"] DIGIT1 *DIGIT)      ; - optional
 DIGIT1              = %x31-39                    ; 1-9 non-zero digit
 ~~~~
+{:abnf}
 
 Applying the numerical `index-selector` selects the corresponding
 element. JSONPath allows it to be negative (see {{index-semantics}}).
@@ -956,6 +965,7 @@ B                   = %x20 /    ; Space
 S                   = *B        ; optional blank space
 
 ~~~~
+{:abnf}
 
 The slice selector consists of three optional decimal integers separated by colons.
 The second colon can be omitted when the third integer is.
@@ -1152,6 +1162,7 @@ The filter selector has the form `?<logical-expr>`.
 ~~~~ abnf
 filter-selector     = "?" S logical-expr
 ~~~~
+{:abnf}
 
 As the filter expression is composed of side-effect free constituents,
 the order of evaluation does not need to be (and is not) defined.
@@ -1191,6 +1202,7 @@ paren-expr          = [logical-not-op S] "(" S logical-expr S ")"
                                         ; parenthesized expression
 logical-not-op      = "!"               ; logical NOT operator
 ~~~~
+{:abnf}
 
 A test expression
 either tests the existence of a node
@@ -1213,6 +1225,7 @@ filter-query        = rel-query / jsonpath-query
 rel-query           = current-node-identifier segments
 current-node-identifier = "@"
 ~~~~
+{:abnf}
 
 
 Comparison expressions are available for comparisons between primitive
@@ -1240,6 +1253,7 @@ name-segment        = ("[" name-selector "]") /
                       ("." member-name-shorthand)
 index-segment       = "[" index-selector "]"
 ~~~~
+{:abnf}
 
 Literals can be notated in the way that is usual for JSON (with the
 extension that strings can use single-quote delimiters).
@@ -1258,6 +1272,7 @@ true                = %x74.72.75.65                ; true
 false               = %x66.61.6c.73.65             ; false
 null                = %x6e.75.6c.6c                ; null
 ~~~~
+{:abnf}
 
 {{tbl-prec}} lists filter expression operators in order of precedence from highest (binds most tightly) to lowest (binds least tightly).
 
@@ -1469,6 +1484,7 @@ function-argument   = literal /
                       logical-expr /
                       function-expr
 ~~~
+{:abnf}
 
 Any function expressions in a query must be well formed (by conforming to the above ABNF)
 and well typed,
@@ -1749,6 +1765,7 @@ There are two kinds of segment: child segments and descendant segments.
 ~~~~ abnf
 segment             = child-segment / descendant-segment
 ~~~~
+{:abnf}
 
 The syntax and semantics of each kind of segment are defined below.
 
@@ -1780,6 +1797,7 @@ name-char           = DIGIT / name-first
 DIGIT               = %x30-39              ; 0-9
 ALPHA               = %x41-5A / %x61-7A    ; A-Z / a-z
 ~~~~
+{:abnf}
 
 `.*`, a `child-segment` directly built from a `wildcard-selector`, is
 shorthand for `[*]`.
@@ -1843,6 +1861,7 @@ descendant-segment  = ".." (bracketed-selection /
                             wildcard-selector /
                             member-name-shorthand)
 ~~~~
+{:abnf}
 
 `..*`, the `descendant-segment` directly built from a
 `wildcard-selector`, is shorthand for `..[*]`.
@@ -2021,6 +2040,7 @@ normal-HEXDIG        = DIGIT / %x61-66    ; "0"-"9", "a"-"f"
 normal-index-selector = "0" / (DIGIT1 *DIGIT)
                         ; non-negative decimal integer
 ~~~~
+{:abnfnp}
 
 Since there can only be one Normalized Path identifying a given node, the syntax
 stipulates which characters are escaped and which are not.
@@ -2238,6 +2258,34 @@ Other attacks can target the behavior of underlying technologies such as UTF-8 (
 {{Section 10 of -utf8}}) and the Unicode character set.
 
 --- back
+
+# Collected ABNF grammars
+
+This appendix collects the ABNF grammar from the ABNF passages used
+throughout the document.
+
+<!-- Update the collected grammar files using `make sourcecode`, which -->
+<!-- is currently manual as it creates a little circular dependency. -->
+<!-- The filenames of the ::includes are likely to change when -->
+<!-- kramdown-rfc-extract-sourcecode handles filenames better. -->
+
+{{jsonpath-abnf}} contains the collected ABNF grammar that defines the
+syntax of a JSONPath query.
+
+~~~ abnf
+{::include sourcecode/abnf/jsonpath_collected_abnf}
+~~~
+{: #jsonpath-abnf title="Collected ABNF of JSONPath queries"}
+
+{{normalized-path-abnf}} contains the collected ABNF grammar that
+defines the syntax of a JSONPath normalized path, while also using the rules
+`root-identifier`, `ESC`, `DIGIT`, and `DIGIT1` from {{jsonpath-abnf}}.
+
+~~~ abnf
+{::include sourcecode/abnf/normalized_path_collected_abnf}
+~~~
+{: #normalized-path-abnf title="Collected ABNF of JSONPath normalized paths"}
+
 
 # Inspired by XPath
 
