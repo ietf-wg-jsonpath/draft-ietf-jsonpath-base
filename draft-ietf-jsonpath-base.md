@@ -78,6 +78,7 @@ informative:
     title: JSONPath Comparison
     author:
       name: Christoph Burgmer
+      org: Thoughtworks
 #  RFC3552: seccons
   RFC6901: pointer
   RFC6901: pointer
