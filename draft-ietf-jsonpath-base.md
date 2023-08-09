@@ -77,8 +77,7 @@ informative:
     target: https://cburgmer.github.io/json-path-comparison/
     title: JSONPath Comparison
     author:
-    - name: Christoph Burgmer
-    - org: Thoughtworks
+      name: Christoph Burgmer
 #  RFC3552: seccons
   RFC6901: pointer
   RFC6901: pointer
