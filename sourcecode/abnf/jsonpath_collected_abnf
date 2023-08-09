@@ -1,5 +1,11 @@
 jsonpath-query      = root-identifier segments
 segments            = *(S segment)
+
+B                   = %x20 /    ; Space
+                      %x09 /    ; Horizontal tab
+                      %x0A /    ; Line feed or New line
+                      %x0D      ; Carriage return
+S                   = *B        ; optional blank space
 root-identifier     = "$"
 selector            = name-selector  /
                       wildcard-selector /
@@ -59,12 +65,6 @@ slice-selector      = [start S] ":" S [end S] [":" [S step ]]
 start               = int       ; included in selection
 end                 = int       ; not included in selection
 step                = int       ; default: 1
-
-B                   = %x20 /    ; Space
-                      %x09 /    ; Horizontal tab
-                      %x0A /    ; Line feed or New line
-                      %x0D      ; Carriage return
-S                   = *B        ; optional blank space
 filter-selector     = "?" S logical-expr
 logical-expr        = logical-or-expr
 logical-or-expr     = logical-and-expr *(S "||" S logical-and-expr)
