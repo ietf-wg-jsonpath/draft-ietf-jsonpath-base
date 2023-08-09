@@ -505,8 +505,8 @@ The examples are based on the simple JSON value shown in
 | `$..book[2].publisher`                    | empty result: the third book does not have a "publisher" member |
 | `$..book[-1]`                             | the last book in order                                       |
 | `$..book[0,1]`<br>`$..book[:2]`           | the first two books                                          |
-| `$..book[?(@.isbn)]`                      | all books with an ISBN number                                |
-| `$..book[?(@.price<10)]`                  | all books cheaper than 10                                    |
+| `$..book[?@.isbn]`                        | all books with an ISBN number                                |
+| `$..book[?@.price<10]`                    | all books cheaper than 10                                    |
 | `$..*`                                    | all member values and array elements contained in the input value |
 {: #tbl-example title="Example JSONPath expressions and their intended results when applied to the example JSON value"}
 
@@ -1173,6 +1173,11 @@ They have the normal semantics of Boolean algebra and obey its laws
 (see, for example, {{BOOLEAN-LAWS}}).
 Parentheses MAY be used within `logical-expr` for grouping.
 
+It is not required that `logical-expr` consist of
+a parenthesized expression (which was required in {{JSONPath-orig}}),
+although it can be, and the semantics are the same
+as without the parentheses.
+
 ~~~~ abnf
 logical-expr        = logical-or-expr
 logical-or-expr     = logical-and-expr *(S "||" S logical-and-expr)
@@ -1416,6 +1421,7 @@ The examples in {{tbl-filter}} show the filter selector in use by a child segmen
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
 | `$.a[?@.b == 'kilo']` | `{"b": "kilo"}` | `$['a'][9]` | Member value comparison |
+| `$.a[?(@.b == 'kilo')]` | `{"b": "kilo"}` | `$['a'][9]` | Equivalent query with enclosing parentheses |
 | `$.a[?@>3.5]` | `5` <br> `4` <br> `6` | `$['a'][1]` <br> `$['a'][4]` <br> `$['a'][5]` | Array value comparison |
 | `$.a[?@.b]` | `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": {}}` <br> `{"b": "kilo"}` | `$['a'][6]` <br> `$['a'][7]` <br> `$['a'][8]` <br> `$['a'][9]` | Array value existence |
 | `$[?@.*]` | `[3, 5, 1, 2, 4, 6, {"b": "j"}, {"b": "k"}, {"b": {}}, {"b": "kilo"}]` <br> `{"p": 1, "q": 2, "r": 3, "s": 5, "t": {"u": 6}}` | `$['a']` <br> `$['o']` | Existence of non-singular queries |
@@ -1427,8 +1433,8 @@ The examples in {{tbl-filter}} show the filter selector in use by a child segmen
 | `$.o[?@>1 && @<4]` | `2` <br> `3` | `$['o']['q']` <br> `$['o']['r']` | Object value logical AND |
 | `$.o[?@>1 && @<4]` | `3` <br> `2` | `$['o']['r']` <br> `$['o']['q']` | Alternative result |
 | `$.o[?@.u || @.x]` | `{"u": 6}` | `$['o']['t']` | Object value logical OR |
-| `$.a[?(@.b == $.x)]`| `3` <br> `5` <br> `1` <br> `2` <br> `4` <br> `6` | `$['a'][0]` <br>`$['a'][1]` <br> `$['a'][2]` <br> `$['a'][3]` <br> `$['a'][4]` <br> `$['a'][5]` | Comparison of queries with no values |
-| `$.a[?(@ == @)]` | `3` <br> `5` <br> `1` <br> `2` <br> `4` <br> `6` <br> `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": {}}` <br> `{"b": "kilo"}` | `$['a'][0]` <br> `$['a'][1]` <br>`$['a'][2]` <br>`$['a'][3]` <br>`$['a'][4]` <br>`$['a'][5]` <br>`$['a'][6]` <br>`$['a'][7]` <br>`$['a'][8]` <br>`$['a'][9]` | Comparisons of primitive and of structured values |
+| `$.a[?@.b == $.x]`| `3` <br> `5` <br> `1` <br> `2` <br> `4` <br> `6` | `$['a'][0]` <br>`$['a'][1]` <br> `$['a'][2]` <br> `$['a'][3]` <br> `$['a'][4]` <br> `$['a'][5]` | Comparison of queries with no values |
+| `$.a[?@ == @]` | `3` <br> `5` <br> `1` <br> `2` <br> `4` <br> `6` <br> `{"b": "j"}` <br> `{"b": "k"}` <br> `{"b": {}}` <br> `{"b": "kilo"}` | `$['a'][0]` <br> `$['a'][1]` <br>`$['a'][2]` <br>`$['a'][3]` <br>`$['a'][4]` <br>`$['a'][5]` <br>`$['a'][6]` <br>`$['a'][7]` <br>`$['a'][8]` <br>`$['a'][9]` | Comparisons of primitive and of structured values |
 {: #tbl-filter title="Filter selector examples"}
 
 The example above with the query `$.o[?@<3, ?@<3]` shows that a filter selector may produce nodelists in distinct
@@ -1951,7 +1957,7 @@ Queries:
 | `$.b[*]` | `null` | `$['b'][0]` | Array value |
 | `$.b[?@]` | `null` | `$['b'][0]` | Existence |
 | `$.b[?@==null]` | `null` | `$['b'][0]` | Comparison |
-| `$.c[?(@.d==null)]` | | | Comparison with "missing" value |
+| `$.c[?@.d==null]` | | | Comparison with "missing" value |
 | `$.null` | `1` | `$['null']` | Not JSON null at all, just a member name string |
 {: #tbl-null-examples title="Examples involving (or not involving) null"}
 
