@@ -73,6 +73,12 @@ contributor:
   uri: https://github.com/gregsdennis
 
 informative:
+  COMPARISON:
+    target: https://cburgmer.github.io/json-path-comparison/
+    title: JSONPath Comparison
+    author:
+      name: Christoph Burgmer
+      org: Thoughtworks
 #  RFC3552: seccons
   RFC6901: pointer
   RFC6901: pointer
@@ -2434,6 +2440,10 @@ original online article defining JSONPath {{JSONPath-orig}}.
 The books example was taken from
 http://coli.lili.uni-bielefeld.de/~andreas/Seminare/sommer02/books.xml
 — a dead link now.
+
+This work is indebted to Christoph Burgmer for the superb
+JSONPath comparison project {{COMPARISON}} detailing the behavior of over forty JSONPath
+implementations applied to numerous queries.
 
 <!--  LocalWords:  JSONPath XPath nodelist memoization
  -->
