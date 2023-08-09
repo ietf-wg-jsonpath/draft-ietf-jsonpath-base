@@ -86,8 +86,8 @@ informative:
     target: https://goessner.net/articles/JsonPath/
     title: JSONPath — XPath for JSON
     author:
-      name: Stefan Gössner
-      org: Fachhochschule Dortmund
+    - name: Stefan Gössner
+    - org: Fachhochschule Dortmund
     date: 2007-02-21
   XPath: W3C.REC-xpath20-20101214
   E4X:
