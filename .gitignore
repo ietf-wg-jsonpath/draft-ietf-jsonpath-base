@@ -15,3 +15,9 @@ report.xml
 venv/
 lib
 draft-ietf-jsonpath-base.xml
+sourcecode.bak/
+sourcecode/JSONPath/
+sourcecode/json/
+sourcecode/pseudocode/
+sourcecode/xpath/
+sourcecode/abnf/unnamed_*
