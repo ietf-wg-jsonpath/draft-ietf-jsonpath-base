@@ -2121,7 +2121,7 @@ Author:
 : JSONPath WG
 
 Change controller:
-: IESG
+: IETF
 
 Provisional registration? (standards tree only):
 : no
