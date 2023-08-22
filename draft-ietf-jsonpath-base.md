@@ -159,6 +159,10 @@ from a JSON value.
 <!-- editorial issue: lots of complicated nesting of quotes, as in -->
 <!-- `"13 == '13'"` or `$`.  We probably should find a simpler style -->
 
+<!-- workaround for vertical bar in table -->
+[^bar1-]: `|`
+[^bar2-]: `||`
+
 # Introduction
 
 JSON {{-json}} is a popular representation
@@ -1283,7 +1287,7 @@ null                = %x6e.75.6c.6c                ; null
 |  4  | Logical NOT | `!` |
 |  3  | Relations | `==`&nbsp;`!=`<br>`<`&nbsp;`<=`&nbsp;`>`&nbsp;`>=` |
 |  2  | Logical AND | `&&` |
-|  1  | Logical OR | `¦¦`   |
+|  1  | Logical OR | [^bar2-] |
 {: #tbl-prec title="Filter expression operator precedence" }
 
 #### Semantics
@@ -2371,7 +2375,7 @@ with similar XPath concepts.
 | `*`   | `*`                | wildcard: All XML elements regardless of their names                                                                                  |
 | `@`   | n/a                | attribute access: JSON values do not have attributes                                                                                  |
 | `[]`  | `[]`               | subscript operator used to iterate over XML element collections and for predicates                                                    |
-| `¦`   | `[,]`              | Union operator (results in a combination of node sets); called list operator in JSONPath, allows combining member names, array indices, and slices |
+| [^bar1-] | `[,]`              | Union operator (results in a combination of node sets); called list operator in JSONPath, allows combining member names, array indices, and slices |
 | n/a   | `[start:end:step]` | array slice operator borrowed from ES4                                                                                                |
 | `[]`  | `?`                | applies a filter (script) expression                                                                                                  |
 | seamless   | n/a                | expression engine                                                                                                                     |
