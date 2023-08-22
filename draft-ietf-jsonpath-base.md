@@ -102,7 +102,7 @@ informative:
     target: https://github.com/tc39/proposal-slice-notation
     title: Slice notation
   ECMA-262:
-    target: http://www.ecma-international.org/publications/files/ECMA-ST-ARCH/ECMA-262,%203rd%20edition,%20December%201999.pdf
+    target: https://www.ecma-international.org/wp-content/uploads/ECMA-262_3rd_edition_december_1999.pdf
     title: ECMAScript Language Specification, Standard ECMA-262, Third Edition
     author:
     - org: Ecma International
@@ -251,8 +251,7 @@ Children (of a node):
 
 Descendants (of a node):
 : The children of the node, together with the children of its children, and so forth
-  recursively. More formally, the descendants relation between nodes is the transitive
-  closure of the children relation.
+  recursively.
 
 Depth (of a descendant node within a value):
 : The number of ancestors of the node within the value. The root node of the value has depth zero,
