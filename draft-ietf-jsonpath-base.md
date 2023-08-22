@@ -251,7 +251,8 @@ Children (of a node):
 
 Descendants (of a node):
 : The children of the node, together with the children of its children, and so forth
-  recursively.
+  recursively. More formally, the "descendants" relation between nodes is the transitive
+  closure of the "children" relation.
 
 Depth (of a descendant node within a value):
 : The number of ancestors of the node within the value. The root node of the value has depth zero,
