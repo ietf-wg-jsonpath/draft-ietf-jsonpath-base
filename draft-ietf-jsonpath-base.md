@@ -102,7 +102,7 @@ informative:
     target: https://github.com/tc39/proposal-slice-notation
     title: Slice notation
   ECMA-262:
-    target: http://www.ecma-international.org/publications/files/ECMA-ST-ARCH/ECMA-262,%203rd%20edition,%20December%201999.pdf
+    target: https://www.ecma-international.org/wp-content/uploads/ECMA-262_3rd_edition_december_1999.pdf
     title: ECMAScript Language Specification, Standard ECMA-262, Third Edition
     author:
     - org: Ecma International
@@ -251,8 +251,8 @@ Children (of a node):
 
 Descendants (of a node):
 : The children of the node, together with the children of its children, and so forth
-  recursively. More formally, the descendants relation between nodes is the transitive
-  closure of the children relation.
+  recursively. More formally, the "descendants" relation between nodes is the transitive
+  closure of the "children" relation.
 
 Depth (of a descendant node within a value):
 : The number of ancestors of the node within the value. The root node of the value has depth zero,
@@ -530,7 +530,7 @@ Unicode code points as described
 in {{RFC3629}}; implementation approaches that lead to an equivalent
 result are possible.
 
-A string to be used as a JSONPath query needs to be *well formed* and
+A string to be used as a JSONPath query needs to be *well-formed* and
 *valid*.
 A string is a well-formed JSONPath query if it conforms to the ABNF syntax in this document.
 A well-formed JSONPath query is valid if it also fulfills all semantic
@@ -541,11 +541,11 @@ to the JSONPath processing (e.g., index values and steps) MUST be
 within the range of exact values defined in I-JSON {{-i-json}}, namely
 within the interval \[-(2<sup>53</sup>)+1, (2<sup>53</sup>)-1].
 
-2. Uses of function extensions must be *well typed*,
+2. Uses of function extensions must be *well-typed*,
 as described in {{fnex}}.
 
 A JSONPath implementation MUST raise an error for any query which is not
-well formed and valid.
+well-formed and valid.
 The well-formedness and the validity of JSONPath queries are independent of
 the JSON value the query is applied to. No further errors relating to the
 well-formedness and the validity of a JSONPath query can be
@@ -1212,7 +1212,7 @@ In the latter case, if the function's declared result type is
 is `LogicalTrue`; if the function's declared result type is
 `NodesType`, it tests whether the result is non-empty.
 If the function's declared result type is `ValueType`, its use in a
-test expression is not well typed (see {{well-typedness}}).
+test expression is not well-typed (see {{well-typedness}}).
 
 ~~~ abnf
 
@@ -1486,11 +1486,11 @@ function-argument   = literal /
 ~~~
 {:abnf}
 
-Any function expressions in a query must be well formed (by conforming to the above ABNF)
-and well typed,
+Any function expressions in a query must be well-formed (by conforming to the above ABNF)
+and well-typed,
 otherwise the JSONPath implementation MUST raise an error
 (see {{synsem-overview}}).
-To define which function expressions are well typed,
+To define which function expressions are well-typed,
 a type system is first introduced.
 
 ### Type System for Function Expressions {#typesys}
@@ -1543,10 +1543,10 @@ The well-typedness of function expressions can now be defined in terms of this t
 
 ### Well-Typedness of Function Expressions {#well-typedness}
 
-For a function expression to be well typed:
+For a function expression to be well-typed:
 
-1. its declared type must be well typed in the context in which it occurs, and
-2. its arguments must be well typed for the declared type of the corresponding parameters.
+1. its declared type must be well-typed in the context in which it occurs, and
+2. its arguments must be well-typed for the declared type of the corresponding parameters.
 
 (1) As per the grammar, a function expression can occur in three different
 immediate contexts, which lead to the following conditions for well-typedness:
@@ -1563,7 +1563,7 @@ As a `function-argument` in another function expression:
 : The function's declared result type fulfills the following rules for
   the corresponding parameter of the enclosing function.
 
-(2) The arguments of the function expression are well typed when
+(2) The arguments of the function expression are well-typed when
 each argument of the function can be used for the declared type of the
 corresponding parameter, according to one of the following
 conditions:
@@ -1727,20 +1727,20 @@ so there is no need to use the `value()` function extension with a singular quer
 
 | Query | Comment |
 | :---: | ------- |
-| `$[?length(@) < 3]` | well typed |
-| `$[?length(@.*) < 3]` | not well typed since `@.*` is a non-singular query |
-| `$[?count(@.*) == 1]` | well typed |
-| `$[?count(1) == 1]` | not well typed since `1` is not a query or function expression |
-| `$[?count(foo(@.*)) == 1]` | well typed, where `foo()` is a function extension with a parameter of type `NodesType` and result type `NodesType` |
-| `$[?match(@.timezone, 'Europe/.*')]`         | well typed |
-| `$[?match(@.timezone, 'Europe/.*') == true]` | not well typed as `LogicalType` may not be used in comparisons |
-| `$[?value(@..color) == "red"]` | well typed |
-| `$[?value(@..color)]` | not well typed as `ValueType` may not be used in a test expression |
-| `$[?bar(@.a)]`  | well typed for any function `bar()` with a parameter of any declared type and result type `LogicalType`               |
-| `$[?bnl(@.*)]`  | well typed for any function `bnl()` with a parameter of declared type `NodesType` or `LogicalType` and result type `LogicalType` |
-| `$[?blt(1==1)]` | well typed, where `blt()` is a function with a parameter of declared type `LogicalType` and result type `LogicalType` |
-| `$[?blt(1)]`    | not well typed for the same function `blt()`, as `1` is not a query, `logical-expr`, or function expression           |
-| `$[?bal(1)]`    | well typed, where `bal()` is a function with a parameter of declared type `ValueType` and result type `LogicalType`   |
+| `$[?length(@) < 3]` | well-typed |
+| `$[?length(@.*) < 3]` | not well-typed since `@.*` is a non-singular query |
+| `$[?count(@.*) == 1]` | well-typed |
+| `$[?count(1) == 1]` | not well-typed since `1` is not a query or function expression |
+| `$[?count(foo(@.*)) == 1]` | well-typed, where `foo()` is a function extension with a parameter of type `NodesType` and result type `NodesType` |
+| `$[?match(@.timezone, 'Europe/.*')]`         | well-typed |
+| `$[?match(@.timezone, 'Europe/.*') == true]` | not well-typed as `LogicalType` may not be used in comparisons |
+| `$[?value(@..color) == "red"]` | well-typed |
+| `$[?value(@..color)]` | not well-typed as `ValueType` may not be used in a test expression |
+| `$[?bar(@.a)]`  | well-typed for any function `bar()` with a parameter of any declared type and result type `LogicalType`               |
+| `$[?bnl(@.*)]`  | well-typed for any function `bnl()` with a parameter of declared type `NodesType` or `LogicalType` and result type `LogicalType` |
+| `$[?blt(1==1)]` | well-typed, where `blt()` is a function with a parameter of declared type `LogicalType` and result type `LogicalType` |
+| `$[?blt(1)]`    | not well-typed for the same function `blt()`, as `1` is not a query, `logical-expr`, or function expression           |
+| `$[?bal(1)]`    | well-typed, where `bal()` is a function with a parameter of declared type `ValueType` and result type `LogicalType`   |
 {: #tbl-function-expr title="Function expression examples"}
 
 ## Segments  {#segments-details}
