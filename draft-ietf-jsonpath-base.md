@@ -2223,11 +2223,10 @@ to mitigate these attacks.
 JSONPath queries are often not static, but formed from variables that
 provide index values, member names, or values to compare with in a
 filter expression.
-These variables need to be translated into the form they take in a
-JSONPath query, e.g., by escaping string delimiters, or by only
-allowing specific constructs such as `.name` to be formed when the
-given values allow that.
-Failure to perform these translations correctly can lead to unexpected
+These variables need to be validated (e.g., only allowing specific constructs
+such as .name to be formed when the given values allow that) and translated
+(e.g., by escaping string delimiters).
+Not performing these validations and translations correctly can lead to unexpected
 failures, which can lead to Availability, Confidentiality, and
 Integrity breaches, in particular if an adversary has control over the
 values (e.g., by entering them into a Web form).
