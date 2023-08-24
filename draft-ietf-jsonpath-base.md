@@ -935,7 +935,9 @@ A non-negative `index-selector` applied to an array selects an array element usi
 For example, the selector `0` selects the first and the selector `4` selects the fifth element of a sufficiently long array.
 Nothing is selected, and it is not an error, if the index lies outside the range of the array. Nothing is selected from a value that is not an array.
 
-A negative `index-selector` counts from the array end.
+A negative `index-selector` counts from the array end backwards,
+obtaining an equivalent non-negative `index-selector` by summing the
+length of the array with the negative index.
 For example, the selector `-1` selects the last and the selector `-2` selects the penultimate element of an array with at least two elements.
 As with non-negative indexes, it is not an error if such an element does
 not exist; this simply means that no element is selected.
