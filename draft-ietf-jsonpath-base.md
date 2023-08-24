@@ -541,7 +541,7 @@ to the JSONPath processing (e.g., index values and steps) MUST be
 within the range of exact values defined in I-JSON {{-i-json}}, namely
 within the interval \[-(2<sup>53</sup>)+1, (2<sup>53</sup>)-1].
 
-2. Uses of function extensions must be *well-typed*,
+2. Uses of function extensions MUST be *well-typed*,
 as described in {{fnex}}.
 
 A JSONPath implementation MUST raise an error for any query which is not
