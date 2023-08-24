@@ -1305,7 +1305,8 @@ null                = %x6e.75.6c.6c                ; null
 #### Semantics
 
 The filter selector works with arrays and objects exclusively. Its result is a list of *zero*, *one*, *multiple* or *all* of their array elements or member values, respectively.
-Applied to primitive values, it selects nothing.
+Applied to a primitive value, it selects nothing (and therefore does
+not contribute to the result of the filter selector).
 
 In the resultant nodelist, children of an array are ordered by their position in the array.
 The order in which the children of an object (as opposed to an array)
