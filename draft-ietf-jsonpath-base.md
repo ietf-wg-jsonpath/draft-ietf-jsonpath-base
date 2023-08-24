@@ -1279,7 +1279,7 @@ null                = %x6e.75.6c.6c                ; null
 
 | Precedence | Operator type | Syntax |
 |:--:|:--:|:--:|
-|  5  | Grouping | `(...)` |
+|  5  | Grouping <br> Function Expressions | `(...)` <br> *name*`(...)` |
 |  4  | Logical NOT | `!` |
 |  3  | Relations | `==`&nbsp;`!=`<br>`<`&nbsp;`<=`&nbsp;`>`&nbsp;`>=` |
 |  2  | Logical AND | `&&` |
