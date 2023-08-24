@@ -834,11 +834,12 @@ Queries:
 
 The examples in {{tbl-name}} show the name selector in use by child segments:
 
-| Query | Result | Result Paths | Comment |
-| :---: | ------ | :----------: | ------- |
-| `$.o['j j']['k.k']`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
-| `$.o["j j"]["k.k"]`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
-| `$["'"]["@"]` | `2` | `$['\'']['@']` | Unusual member names
+| Query                | Result       | Result Paths            | Comment                      |
+| :---:                | ------       | :----------:            | -------                      |
+| `$.o['j j']`        | `{"k.k": 3}` | `$['o']['j j']`        | Named value in nested object |
+| `$.o['j j']['k.k']` | `3`          | `$['o']['j j']['k.k']` | Named value in nested object |
+| `$.o["j j"]["k.k"]` | `3`          | `$['o']['j j']['k.k']` | Named value in nested object |
+| `$["'"]["@"]`        | `2`          | `$['\'']['@']`          | Unusual member names         |
 {: #tbl-name title="Name selector examples"}
 
 ### Wildcard Selector {#wildcard-selector}
