@@ -682,6 +682,19 @@ and produces a nodelist consisting of that root node.
 
 ### Examples
 
+<aside markdown="1">
+In this and the following examples in Sections {{<root-identifier}} and
+{{<selector-details}} except for {{tbl-comparison}}, we will present a
+JSON text to show the JSON value used as the query argument to the
+queries in the examples, and then a table with the columns:
+
+* Query: an example query to be applied to the query argument
+* Result: the query result as a list of JSON values that were located in the query argument
+* Result Path: the query result as a list of (normalized) paths into
+  the query argument, giving locations in parallel to the previous column
+* Comment: descriptive information
+</aside>
+
 JSON:
 
     {"k": "v"}
@@ -694,7 +707,7 @@ Queries:
 | `$` | `{"k": "v"}` | `$` | Root node |
 {: #tbl-root title="Root identifier examples"}
 
-## Selectors
+## Selectors {#selector-details}
 
 Selectors appear only inside [child segments](#child-segment) and
 [descendant segments](#descendant-segment).
