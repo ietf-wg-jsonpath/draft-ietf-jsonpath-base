@@ -691,7 +691,7 @@ queries in the examples, and then a table with the columns:
 * Query: an example query to be applied to the query argument
 * Result: the query result as a list of JSON values that were located in the query argument
 * Result Path: the query result as a list of (normalized) paths into
-  the query argument, giving locations in parallel to the previous column
+  the query argument, giving locations of the JSON values in the previous column
 * Comment: descriptive information
 </aside>
 
