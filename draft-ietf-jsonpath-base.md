@@ -1405,16 +1405,16 @@ Comparisons:
 | `$.arr != $.arr` | false | Array comparison |
 | `$.obj == 17` | false | Type mismatch |
 | `$.obj != 17` | true | Type mismatch |
-| `$.obj <= $.arr` | false | Objects and arrays are not ordered |
-| `$.obj < $.arr` | false | Objects and arrays are not ordered |
+| `$.obj <= $.arr` | false | Objects and arrays do not offer `<` comparison |
+| `$.obj < $.arr`  | false | Objects and arrays do not offer `<` comparison |
 | `$.obj <= $.obj` | true | `==` implies `<=` |
 | `$.arr <= $.arr` | true | `==` implies `<=` |
-| `1 <= $.arr` | false | Arrays are not ordered |
-| `1 >= $.arr` | false | Arrays are not ordered |
-| `1 > $.arr` | false | Arrays are not ordered |
-| `1 < $.arr` | false | Arrays are not ordered |
+| `1 <= $.arr` | false | Arrays do not offer `<` comparison |
+| `1 >= $.arr` | false | Arrays do not offer `<` comparison |
+| `1 > $.arr` | false | Arrays do not offer `<` comparison |
+| `1 < $.arr` | false | Arrays do not offer `<` comparison |
 | `true <= true` | true | `==` implies `<=` |
-| `true > true` | false | Booleans are not ordered |
+| `true > true` | false | Booleans do not offer `<` comparison |
 {: #tbl-comparison title="Comparison examples" }
 
 The second set of examples shows some complete JSONPath queries that make use
