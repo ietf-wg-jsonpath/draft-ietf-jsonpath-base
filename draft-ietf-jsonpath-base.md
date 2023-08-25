@@ -564,9 +564,10 @@ Obviously, an implementation can still fail when executing a JSONPath
 query, e.g., because of resource depletion, but this is not modeled in
 this document.  However, the implementation MUST NOT
 silently malfunction.  Specifically, if a valid JSONPath query is
-evaluated against a structured value whose size does not fit in the
-range of exact values, interfering with the correct interpretation of
-the query, the implementation MUST provide an indication of overflow.
+evaluated against a structured value whose size is too large to
+process the query correctly (for instance requiring the processing of
+numbers that fall outside the range of exact values), the implementation
+MUST provide an indication of overflow.
 
 (Readers familiar with the HTTP error model may be reminded of 400
 type errors when pondering well-formedness and validity, while
