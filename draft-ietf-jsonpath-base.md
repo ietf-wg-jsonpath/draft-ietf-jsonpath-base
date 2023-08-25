@@ -541,7 +541,7 @@ to the JSONPath processing (e.g., index values and steps) MUST be
 within the range of exact values defined in I-JSON {{-i-json}}, namely
 within the interval \[-(2<sup>53</sup>)+1, (2<sup>53</sup>)-1].
 
-2. Uses of function extensions must be *well-typed*,
+2. Uses of function extensions MUST be *well-typed*,
 as described in {{fnex}}.
 
 A JSONPath implementation MUST raise an error for any query which is not
@@ -683,6 +683,19 @@ and produces a nodelist consisting of that root node.
 
 ### Examples
 
+<aside markdown="1">
+In this and the following examples in Sections {{<root-identifier}} and
+{{<selector-details}} except for {{tbl-comparison}}, we will present a
+JSON text to show the JSON value used as the query argument to the
+queries in the examples, and then a table with the columns:
+
+* Query: an example query to be applied to the query argument
+* Result: the query result as a list of JSON values that were located in the query argument
+* Result Path: the query result as a list of (normalized) paths into
+  the query argument, giving locations of the JSON values in the previous column
+* Comment: descriptive information
+</aside>
+
 JSON:
 
     {"k": "v"}
@@ -695,7 +708,7 @@ Queries:
 | `$` | `{"k": "v"}` | `$` | Root node |
 {: #tbl-root title="Root identifier examples"}
 
-## Selectors
+## Selectors {#selector-details}
 
 Selectors appear only inside [child segments](#child-segment) and
 [descendant segments](#descendant-segment).
@@ -835,11 +848,12 @@ Queries:
 
 The examples in {{tbl-name}} show the name selector in use by child segments:
 
-| Query | Result | Result Paths | Comment |
-| :---: | ------ | :----------: | ------- |
-| `$.o['j j']['k.k']`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
-| `$.o["j j"]["k.k"]`   | `3` | `$['o']['j j']['k.k']`      | Named value in nested object      |
-| `$["'"]["@"]` | `2` | `$['\'']['@']` | Unusual member names
+| Query                | Result       | Result Paths            | Comment                      |
+| :---:                | ------       | :----------:            | -------                      |
+| `$.o['j j']`        | `{"k.k": 3}` | `$['o']['j j']`        | Named value in nested object |
+| `$.o['j j']['k.k']` | `3`          | `$['o']['j j']['k.k']` | Nesting further down |
+| `$.o["j j"]["k.k"]` | `3`          | `$['o']['j j']['k.k']` | Different delimiter in query, unchanged normalized path |
+| `$["'"]["@"]`        | `2`          | `$['\'']['@']`          | Unusual member names         |
 {: #tbl-name title="Name selector examples"}
 
 ### Wildcard Selector {#wildcard-selector}
@@ -922,7 +936,9 @@ A non-negative `index-selector` applied to an array selects an array element usi
 For example, the selector `0` selects the first and the selector `4` selects the fifth element of a sufficiently long array.
 Nothing is selected, and it is not an error, if the index lies outside the range of the array. Nothing is selected from a value that is not an array.
 
-A negative `index-selector` counts from the array end.
+A negative `index-selector` counts from the array end backwards,
+obtaining an equivalent non-negative `index-selector` by summing the
+length of the array with the negative index.
 For example, the selector `-1` selects the last and the selector `-2` selects the penultimate element of an array with at least two elements.
 As with non-negative indexes, it is not an error if such an element does
 not exist; this simply means that no element is selected.
@@ -1280,7 +1296,7 @@ null                = %x6e.75.6c.6c                ; null
 
 | Precedence | Operator type | Syntax |
 |:--:|:--:|:--:|
-|  5  | Grouping | `(...)` |
+|  5  | Grouping <br> Function Expressions | `(...)` <br> *name*`(...)` |
 |  4  | Logical NOT | `!` |
 |  3  | Relations | `==`&nbsp;`!=`<br>`<`&nbsp;`<=`&nbsp;`>`&nbsp;`>=` |
 |  2  | Logical AND | `&&` |
@@ -1290,7 +1306,8 @@ null                = %x6e.75.6c.6c                ; null
 #### Semantics
 
 The filter selector works with arrays and objects exclusively. Its result is a list of *zero*, *one*, *multiple* or *all* of their array elements or member values, respectively.
-Applied to primitive values, it selects nothing.
+Applied to a primitive value, it selects nothing (and therefore does
+not contribute to the result of the filter selector).
 
 In the resultant nodelist, children of an array are ordered by their position in the array.
 The order in which the children of an object (as opposed to an array)
@@ -1389,16 +1406,16 @@ Comparisons:
 | `$.arr != $.arr` | false | Array comparison |
 | `$.obj == 17` | false | Type mismatch |
 | `$.obj != 17` | true | Type mismatch |
-| `$.obj <= $.arr` | false | Objects and arrays are not ordered |
-| `$.obj < $.arr` | false | Objects and arrays are not ordered |
+| `$.obj <= $.arr` | false | Objects and arrays do not offer `<` comparison |
+| `$.obj < $.arr`  | false | Objects and arrays do not offer `<` comparison |
 | `$.obj <= $.obj` | true | `==` implies `<=` |
 | `$.arr <= $.arr` | true | `==` implies `<=` |
-| `1 <= $.arr` | false | Arrays are not ordered |
-| `1 >= $.arr` | false | Arrays are not ordered |
-| `1 > $.arr` | false | Arrays are not ordered |
-| `1 < $.arr` | false | Arrays are not ordered |
+| `1 <= $.arr` | false | Arrays do not offer `<` comparison |
+| `1 >= $.arr` | false | Arrays do not offer `<` comparison |
+| `1 > $.arr` | false | Arrays do not offer `<` comparison |
+| `1 < $.arr` | false | Arrays do not offer `<` comparison |
 | `true <= true` | true | `==` implies `<=` |
-| `true > true` | false | Booleans are not ordered |
+| `true > true` | false | Booleans do not offer `<` comparison |
 {: #tbl-comparison title="Comparison examples" }
 
 The second set of examples shows some complete JSONPath queries that make use
@@ -1913,12 +1930,15 @@ JSON:
 
 Queries:
 
+(Note that the fourth example can be expressed in two equivalent
+queries, shown here in one table row instead of two almost identical rows.)
+
 | Query | Result | Result Paths | Comment |
 | :---: | ------ | :----------: | ------- |
 | `$..j`   | `1` <br> `4` | `$['o']['j']` <br> `$['a'][2][0]['j']` | Object values      |
 | `$..j`   | `4` <br> `1` | `$['a'][2][0]['j']` <br> `$['o']['j']` | Alternative result |
 | `$..[0]` | `5` <br> `{"j": 4}` | `$['a'][0]` <br> `$['a'][2][0]` | Array values       |
-| `$..[*]` <br> `$..*` | `{"j": 1, "k" : 2}` <br> `[5, 3, [{"j": 4}, {"k": 6}]]` <br> `1` <br> `2` <br> `5` <br> `3` <br> `[{"j": 4}, {"k": 6}]` <br> `{"j": 4}` <br> `{"k": 6}` <br> `4` <br> `6` | `$['o']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][1]` <br> `$['a'][2][0]['j']` <br> `$['a'][2][1]['k']` | All values    |
+| `$..[*]` <br>or<br> `$..*` | `{"j": 1, "k": 2}` <br> `[5, 3, [{"j": 4}, {"k": 6}]]` <br> `1` <br> `2` <br> `5` <br> `3` <br> `[{"j": 4}, {"k": 6}]` <br> `{"j": 4}` <br> `{"k": 6}` <br> `4` <br> `6`  | `$['o']` <br> `$['a']` <br> `$['o']['j']` <br> `$['o']['k']` <br> `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2]` <br> `$['a'][2][0]` <br> `$['a'][2][1]` <br> `$['a'][2][0]['j']` <br> `$['a'][2][1]['k']` | All values    |
 | `$..o`   | `{"j": 1, "k": 2}` | `$['o']` | Input value is visited |
 | `$.o..[*, *]` | `1` <br> `2` <br> `2` <br> `1` | `$['o']['j']` <br> `$['o']['k']` <br> `$['o']['k']` <br> `$['o']['j']` | Non-deterministic ordering |
 | `$.a..[0, 1]`| `5` <br> `3` <br> `{"j": 4}` <br> `{"k": 6}` | `$['a'][0]` <br> `$['a'][1]` <br> `$['a'][2][0]` <br> `$['a'][2][1]`       | Multiple segments |
@@ -2224,11 +2244,10 @@ to mitigate these attacks.
 JSONPath queries are often not static, but formed from variables that
 provide index values, member names, or values to compare with in a
 filter expression.
-These variables need to be translated into the form they take in a
-JSONPath query, e.g., by escaping string delimiters, or by only
-allowing specific constructs such as `.name` to be formed when the
-given values allow that.
-Failure to perform these translations correctly can lead to unexpected
+These variables need to be validated (e.g., only allowing specific constructs
+such as .name to be formed when the given values allow that) and translated
+(e.g., by escaping string delimiters).
+Not performing these validations and translations correctly can lead to unexpected
 failures, which can lead to Availability, Confidentiality, and
 Integrity breaches, in particular if an adversary has control over the
 values (e.g., by entering them into a Web form).
