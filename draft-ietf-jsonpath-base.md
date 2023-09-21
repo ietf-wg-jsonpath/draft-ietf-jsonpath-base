@@ -817,7 +817,7 @@ shown in {{tbl-esc}}:
 | `\'`               | U+0027              | apostrophe                  |
 | `\/`               | U+002F              | slash (solidus)             |
 | `\\`               | U+005C              | backslash (reverse solidus) |
-| `\uXXXX`           | U+XXXX              | unicode character           |
+| `\uXXXX`           | see {{syntax-name}} | hexadecimal escape          |
 {: #tbl-esc title="Escape Sequence Replacements" cols="c c"}
 
 Applying the `name-selector` to an object node
