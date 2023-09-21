@@ -1326,6 +1326,8 @@ Existence tests differ from comparisons in that:
 To examine the value of a node selected by a query, an explicit comparison is necessary.
 For example, to test whether the node selected by the query `@.foo` has the value `null`, use `@.foo == null` (see {{null-semantics}})
 rather than the negated existence test `!@.foo` (which yields false if `@.foo` selects a node, regardless of the node's value).
+Similarly, `@.foo == false` yields true only if `@.foo` selects a node and
+the value of that node is `false`.
 
 ##### Comparisons
 
