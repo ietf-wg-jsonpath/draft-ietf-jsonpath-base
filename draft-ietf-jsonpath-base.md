@@ -526,7 +526,7 @@ these nodes as a nodelist.
 
 A query MUST be encoded using UTF-8.
 The grammar for queries given in this document assumes that its UTF-8 form is first decoded into
-Unicode scalar valuess as described
+Unicode scalar values as described
 in {{RFC3629}}; implementation approaches that lead to an equivalent
 result are possible.
 
@@ -830,12 +830,6 @@ Two strings MUST be considered equal if and only if they are identical
 sequences of Unicode scalar values. In other words, normalization operations
 MUST NOT be applied to either the member name string `M` from the JSONPath or to
 the member name strings in the JSON prior to comparison.
-
-Note that the "\u" Unicode character escape is dissimilar from the
-same escape mechanism in JSON. In JSON, Unicode scalar values greater than
-U+FFFF are given in two \u escapes, each carrying one UTF-16 surrogate
-code point.  In JSON, U+1F609 WINKING FACE EMOJI would be represented
-as \uD83D\uDE09, but in JSONPath it would just be be \u1F609.
 
 #### Examples
 
