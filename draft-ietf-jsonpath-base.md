@@ -538,8 +538,9 @@ requirements posed by this document, which are:
 
 1. Integer numbers in the JSONPath query that are relevant
 to the JSONPath processing (e.g., index values and steps) MUST be
-within the range of exact values defined in I-JSON {{-i-json}}, namely
-within the interval \[-(2<sup>53</sup>)+1, (2<sup>53</sup>)-1].
+within the range of exact integer values defined in I-JSON (see {{Section
+2.2 of -i-json}}), namely within the interval \[−(2<sup>53</sup>)+1,
+(2<sup>53</sup>)−1].
 
 2. Uses of function extensions MUST be *well-typed*,
 as described in {{fnex}}.
@@ -1327,6 +1328,8 @@ Existence tests differ from comparisons in that:
 To examine the value of a node selected by a query, an explicit comparison is necessary.
 For example, to test whether the node selected by the query `@.foo` has the value `null`, use `@.foo == null` (see {{null-semantics}})
 rather than the negated existence test `!@.foo` (which yields false if `@.foo` selects a node, regardless of the node's value).
+Similarly, `@.foo == false` yields true only if `@.foo` selects a node and
+the value of that node is `false`.
 
 ##### Comparisons
 
