@@ -762,7 +762,8 @@ unescaped           = %x20-21 /                      ; see RFC 8259
                          ; omit 0x27 '
                       %x28-5B /
                          ; omit 0x5C \
-                      %x5D-10FFFF
+                      %x5D-D7FF /   ; skip surrogate code points
+                      %xE000-10FFFF
 
 escapable           = %x62 / ; b BS backspace U+0008
                       %x66 / ; f FF form feed U+000C
@@ -2032,7 +2033,9 @@ normal-unescaped     =    ; omit %x0-1F control codes
                           ; omit 0x27 '
                        %x28-5B /
                           ; omit 0x5C \
-                       %x5D-10FFFF
+                       %x5D-D7FF /   ; skip surrogate code points
+                       %xE000-10FFFF
+
 normal-escapable     = %x62 / ; b BS backspace U+0008
                        %x66 / ; f FF form feed U+000C
                        %x6E / ; n LF line feed U+000A
