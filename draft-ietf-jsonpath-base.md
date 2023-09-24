@@ -175,7 +175,7 @@ companion to, JSON Pointer {{RFC6901}}. See {{json-pointer}}.
 
 The grammatical rules in this document are to be interpreted as ABNF,
 as described in {{-abnf}}.
-ABNF terminal values in this document define Unicode code points rather than
+ABNF terminal values in this document define Unicode scalar values rather than
 their UTF-8 encoding.
 For example, the Unicode PLACE OF INTEREST SIGN (U+2318) would be defined
 in ABNF as `%x2318`.
@@ -526,7 +526,7 @@ these nodes as a nodelist.
 
 A query MUST be encoded using UTF-8.
 The grammar for queries given in this document assumes that its UTF-8 form is first decoded into
-Unicode code points as described
+Unicode scalar values as described
 in {{RFC3629}}; implementation approaches that lead to an equivalent
 result are possible.
 
@@ -763,7 +763,8 @@ unescaped           = %x20-21 /                      ; see RFC 8259
                          ; omit 0x27 '
                       %x28-5B /
                          ; omit 0x5C \
-                      %x5D-10FFFF
+                      %x5D-D7FF /   ; skip surrogate code points
+                      %xE000-10FFFF
 
 escapable           = %x62 / ; b BS backspace U+0008
                       %x66 / ; f FF form feed U+000C
@@ -817,7 +818,7 @@ shown in {{tbl-esc}}:
 | `\'`               | U+0027              | apostrophe                  |
 | `\/`               | U+002F              | slash (solidus)             |
 | `\\`               | U+005C              | backslash (reverse solidus) |
-| `\uXXXX`           | U+XXXX              | unicode character           |
+| `\uXXXX`           | see {{syntax-name}} | hexadecimal escape          |
 {: #tbl-esc title="Escape Sequence Replacements" cols="c c"}
 
 Applying the `name-selector` to an object node
@@ -1236,8 +1237,7 @@ test expression is not well-typed (see {{well-typedness}}).
 
 test-expr           = [logical-not-op S]
                      (filter-query / ; existence/non-existence
-                      function-expr) ; LogicalType or
-                                     ; NodesType
+                      function-expr) ; LogicalType or NodesType
 filter-query        = rel-query / jsonpath-query
 rel-query           = current-node-identifier segments
 current-node-identifier = "@"
@@ -1811,7 +1811,8 @@ bracketed-selection = "[" S selector *(S "," S selector) S "]"
 member-name-shorthand = name-first *name-char
 name-first          = ALPHA /
                       "_"   /
-                      %x80-10FFFF   ; any non-ASCII Unicode character
+                      %x80-D7FF /   ; skip surrogate code points
+                      %xE000-10FFFF
 name-char           = DIGIT / name-first
 
 DIGIT               = %x30-39              ; 0-9
@@ -2034,7 +2035,9 @@ normal-unescaped     =    ; omit %x0-1F control codes
                           ; omit 0x27 '
                        %x28-5B /
                           ; omit 0x5C \
-                       %x5D-10FFFF
+                       %x5D-D7FF /   ; skip surrogate code points
+                       %xE000-10FFFF
+
 normal-escapable     = %x62 / ; b BS backspace U+0008
                        %x66 / ; f FF form feed U+000C
                        %x6E / ; n LF line feed U+000A
