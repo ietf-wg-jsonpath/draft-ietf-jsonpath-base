@@ -1237,8 +1237,7 @@ test expression is not well-typed (see {{well-typedness}}).
 
 test-expr           = [logical-not-op S]
                      (filter-query / ; existence/non-existence
-                      function-expr) ; LogicalType or
-                                     ; NodesType
+                      function-expr) ; LogicalType or NodesType
 filter-query        = rel-query / jsonpath-query
 rel-query           = current-node-identifier segments
 current-node-identifier = "@"
