@@ -134,7 +134,7 @@ bracketed-selection = "[" S selector *(S "," S selector) S "]"
 member-name-shorthand = name-first *name-char
 name-first          = ALPHA /
                       "_"   /
-                      %x7E-D7FF /   ; skip surrogate code points
+                      %x80-D7FF /   ; skip surrogate code points
                       %xE000-10FFFF
 name-char           = DIGIT / name-first
 
