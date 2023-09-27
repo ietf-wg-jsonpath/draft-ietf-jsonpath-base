@@ -2291,7 +2291,7 @@ throughout the document.
 syntax of a JSONPath query.
 
 ~~~ abnf
-{::include sourcecode/abnf/jsonpath_collected_abnf}
+{::include sourcecode/abnf/jsonpath-collected.abnf}
 ~~~
 {: #jsonpath-abnf title="Collected ABNF of JSONPath queries"}
 
@@ -2300,7 +2300,7 @@ defines the syntax of a JSONPath Normalized Path, while also using the rules
 `root-identifier`, `ESC`, `DIGIT`, and `DIGIT1` from {{jsonpath-abnf}}.
 
 ~~~ abnf
-{::include sourcecode/abnf/normalized_path_collected_abnf}
+{::include sourcecode/abnf/normalized-path-collected.abnf}
 ~~~
 {: #normalized-path-abnf title="Collected ABNF of JSONPath Normalized Paths"}
 
