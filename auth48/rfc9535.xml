@@ -2269,10 +2269,10 @@ $[?search(@.author, "[BR]ob")]
 singular query, as for the first argument in the example above).
 If the first argument is not a string or the second argument is not a
 string conforming to <xref target="RFC9485"/>, the result is <tt>LogicalFalse</tt>.
-Otherwise, the string that is the first argument is searched for at
-least one substring that matches the I-Regexp contained in the string
-that is the second argument; the result is <tt>LogicalTrue</tt> if such a
-substring exists and is <tt>LogicalFalse</tt> otherwise.</t>
+Otherwise, the string that is the first argument is searched for a
+substring that matches the I-Regexp contained in the string
+that is the second argument; the result is <tt>LogicalTrue</tt> if at
+least one such substring exists and is <tt>LogicalFalse</tt> otherwise.</t>
         </section>
         <section anchor="value">
           <name><tt>value()</tt> Function Extension</name>
