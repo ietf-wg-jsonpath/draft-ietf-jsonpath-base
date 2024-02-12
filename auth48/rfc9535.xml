@@ -747,7 +747,7 @@ the query argument, giving locations of the JSON values in the previous column</
         <t>There are various kinds of selectors that produce children of objects, children of arrays,
 or children of either objects or arrays.</t>
         <sourcecode type="abnf" name="jsonpath-collected.abnf"><![CDATA[
-selector            = name-selector  /
+selector            = name-selector /
                       wildcard-selector /
                       slice-selector /
                       index-selector /
@@ -777,7 +777,7 @@ single-quoted       = unescaped /
                       ESC %x27  /                    ; \'
                       ESC escapable
 
-ESC                 = %x5C                           ; \  backslash
+ESC                 = %x5C                           ; \ backslash
 
 unescaped           = %x20-21 /                      ; see RFC 8259
                          ; omit 0x22 "
@@ -796,7 +796,7 @@ escapable           = %x62 / ; b BS backspace U+0008
                       %x74 / ; t HT horizontal tab U+0009
                       "/"  / ; / slash (solidus) U+002F
                       "\"  / ; \ backslash (reverse solidus) U+005C
-                      (%x75 hexchar) ;  uXXXX      U+XXXX
+                      (%x75 hexchar) ;  uXXXX U+XXXX
 
 hexchar             = non-surrogate /
                       (high-surrogate "\" %x75 low-surrogate)
@@ -3301,7 +3301,7 @@ B                   = %x20 /    ; Space
                       %x0D      ; Carriage return
 S                   = *B        ; optional blank space
 root-identifier     = "$"
-selector            = name-selector  /
+selector            = name-selector /
                       wildcard-selector /
                       slice-selector /
                       index-selector /
@@ -3321,7 +3321,7 @@ single-quoted       = unescaped /
                       ESC %x27  /                    ; \'
                       ESC escapable
 
-ESC                 = %x5C                           ; \  backslash
+ESC                 = %x5C                           ; \ backslash
 
 unescaped           = %x20-21 /                      ; see RFC 8259
                          ; omit 0x22 "
@@ -3340,7 +3340,7 @@ escapable           = %x62 / ; b BS backspace U+0008
                       %x74 / ; t HT horizontal tab U+0009
                       "/"  / ; / slash (solidus) U+002F
                       "\"  / ; \ backslash (reverse solidus) U+005C
-                      (%x75 hexchar) ;  uXXXX      U+XXXX
+                      (%x75 hexchar) ;  uXXXX U+XXXX
 
 hexchar             = non-surrogate /
                       (high-surrogate "\" %x75 low-surrogate)
