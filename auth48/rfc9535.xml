@@ -785,7 +785,8 @@ unescaped           = %x20-21 /                      ; see RFC 8259
                          ; omit 0x27 '
                       %x28-5B /
                          ; omit 0x5C \
-                      %x5D-D7FF /   ; skip surrogate code points
+                      %x5D-D7FF /
+                         ; skip surrogate code points
                       %xE000-10FFFF
 
 escapable           = %x62 / ; b BS backspace U+0008
@@ -2427,7 +2428,8 @@ bracketed-selection = "[" S selector *(S "," S selector) S "]"
 member-name-shorthand = name-first *name-char
 name-first          = ALPHA /
                       "_"   /
-                      %x80-D7FF /   ; skip surrogate code points
+                      %x80-D7FF /
+                         ; skip surrogate code points
                       %xE000-10FFFF
 name-char           = DIGIT / name-first
 
@@ -2808,7 +2810,8 @@ normal-unescaped     =    ; omit %x0-1F control codes
                           ; omit 0x27 '
                        %x28-5B /
                           ; omit 0x5C \
-                       %x5D-D7FF /   ; skip surrogate code points
+                       %x5D-D7FF /
+                          ; skip surrogate code points
                        %xE000-10FFFF
 
 normal-escapable     = %x62 / ; b BS backspace U+0008
@@ -3326,7 +3329,8 @@ unescaped           = %x20-21 /                      ; see RFC 8259
                          ; omit 0x27 '
                       %x28-5B /
                          ; omit 0x5C \
-                      %x5D-D7FF /   ; skip surrogate code points
+                      %x5D-D7FF /
+                         ; skip surrogate code points
                       %xE000-10FFFF
 
 escapable           = %x62 / ; b BS backspace U+0008
@@ -3424,7 +3428,8 @@ bracketed-selection = "[" S selector *(S "," S selector) S "]"
 member-name-shorthand = name-first *name-char
 name-first          = ALPHA /
                       "_"   /
-                      %x80-D7FF /   ; skip surrogate code points
+                      %x80-D7FF /
+                         ; skip surrogate code points
                       %xE000-10FFFF
 name-char           = DIGIT / name-first
 
@@ -3452,7 +3457,8 @@ normal-unescaped     =    ; omit %x0-1F control codes
                           ; omit 0x27 '
                        %x28-5B /
                           ; omit 0x5C \
-                       %x5D-D7FF /   ; skip surrogate code points
+                       %x5D-D7FF /
+                          ; skip surrogate code points
                        %xE000-10FFFF
 
 normal-escapable     = %x62 / ; b BS backspace U+0008
