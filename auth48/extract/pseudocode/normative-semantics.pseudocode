@@ -1,0 +1,6 @@
+FUNCTION Normalize(i, len):
+  IF i >= 0 THEN
+    RETURN i
+  ELSE
+    RETURN len + i
+  END IF

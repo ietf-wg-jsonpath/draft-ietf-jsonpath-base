@@ -1,0 +1,9 @@
+kramdown-rfc-extract-sourcecode -tfiles -dextract rfc9535.xml
+# check consistency of collected ABNF
+diff extract/abnf/collected-abnf-of-jsonpath-.abnf extract/abnf/jsonpath-collected.abnf
+diff extract/abnf/collected-abnf-of-jsonpath-n.abnf extract/abnf/normalized-path-collected.abnf
+# check whether there was any substantive change with I-D ABNF
+bap extract/abnf/jsonpath-collected.abnf >/tmp/jc.abnf
+bap ../sourcecode/abnf/jsonpath-collected.abnf | diff - /tmp/jc.abnf
+bap extract/abnf/normalized-path-collected.abnf >/tmp/njc.abnf
+bap ../sourcecode/abnf/normalized-path-collected.abnf | diff - /tmp/njc.abnf
