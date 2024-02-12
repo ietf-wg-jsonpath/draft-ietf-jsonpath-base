@@ -12,24 +12,24 @@
        JSONPath defines a string syntax for selecting and extracting JSON (RFC 8259) values
 from a JSON value. 
     " name="description">
-<meta content="xml2rfc 3.18.0" name="generator">
+<meta content="xml2rfc 3.19.2" name="generator">
 <meta content="JSON" name="keyword">
 <meta content="draft-ietf-jsonpath-base-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.18.0
-    Python 3.11.5
-    ConfigArgParse 1.5.3
+  xml2rfc 3.19.2
+    Python 3.11.6
+    ConfigArgParse 1.7
     google-i18n-address 3.1.0
     intervaltree 3.1.0
     Jinja2 3.1.2
     lxml 4.9.3
-    platformdirs 3.10.0
+    platformdirs 4.2.0
     pycountry 22.3.5
-    PyYAML 6.0
+    PyYAML 6.0.1
     requests 2.31.0
-    setuptools 67.7.2
+    setuptools 68.2.2
     six 1.16.0
-    wcwidth 0.2.6
+    wcwidth 0.2.13
 -->
 <link href="draft-ietf-jsonpath-base.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -652,7 +652,7 @@ sub, sup {
 }
 #toc nav li {
   line-height: 1.3em;
-  margin: 0.75em 0;
+  margin: 2px 0;
   padding-left: 1.2em;
   text-indent: -1.2em;
 }
@@ -745,7 +745,7 @@ hr.addr {
     z-index: 2;
     top: 0;
     right: 0;
-    padding: 0;
+    padding: 1px 0 0 0;
     margin: 0;
     border-bottom: 1px solid #ccc;
     opacity: 0.6;
@@ -869,16 +869,13 @@ hr.addr {
     border-top: none;
     padding-top: 0;
   }
-  figure, pre {
+  figure, pre, .vcard {
     page-break-inside: avoid;
-  }
-  figure {
-    overflow: scroll;
   }
   h1, h2, h3, h4, h5, h6 {
     page-break-after: avoid;
   }
-  h2+*, h3+*, h4+*, h5+*, h6+* {
+  :is(h2, h3, h4, h5, h6)+*, dd {
     page-break-before: avoid;
   }
   pre {
@@ -891,6 +888,9 @@ hr.addr {
   }
   td {
     border-top: 1px solid #ddd;
+  }
+  .toplink {
+    display: none;
   }
 }
 
@@ -992,28 +992,6 @@ address div.right {
   text-align: right;
 }
 
-/* Give the table caption label the same styling as the figcaption */
-
-@media print {
-  .toplink {
-    display: none;
-  }
-
-  /* avoid overwriting the top border line with the ToC header */
-  #toc {
-    padding-top: 1px;
-  }
-
-  /* Avoid page breaks inside dl and author address entries */
-  dd {
-    page-break-before: avoid;
-  }
-  .vcard {
-    page-break-inside: avoid;
-  }
-
-}
-
 /* Dark mode. */
 @media (prefers-color-scheme: dark) {
 :root {
@@ -1050,11 +1028,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">JSONPath</td>
-<td class="right">September 2023</td>
+<td class="right">February 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Gössner, et al.</td>
-<td class="center">Expires 24 March 2024</td>
+<td class="center">Expires 15 August 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1067,12 +1045,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-jsonpath-base-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2023-09-21" class="published">21 September 2023</time>
+<time datetime="2024-02-12" class="published">12 February 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-03-24">24 March 2024</time></dd>
+<dd class="expires"><time datetime="2024-08-15">15 August 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1132,7 +1110,7 @@ from a JSON value.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 24 March 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 15 August 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1141,7 +1119,7 @@ from a JSON value.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 <a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
         </h2>
 <p id="section-boilerplate.2-1">
-            Copyright (c) 2023 IETF Trust and the persons identified as the
+            Copyright (c) 2024 IETF Trust and the persons identified as the
             document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.2-2">
             This document is subject to BCP 78 and the IETF Trust's Legal
@@ -1474,7 +1452,7 @@ described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</s
 appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
 <p id="section-1.1-2">The grammatical rules in this document are to be interpreted as ABNF,
 as described in <span>[<a href="#RFC5234" class="cite xref">RFC5234</a>]</span>.
-ABNF terminal values in this document define Unicode code points rather than
+ABNF terminal values in this document define Unicode scalar values rather than
 their UTF-8 encoding.
 For example, the Unicode PLACE OF INTEREST SIGN (U+2318) would be defined
 in ABNF as <code>%x2318</code>.<a href="#section-1.1-2" class="pilcrow">¶</a></p>
@@ -1875,7 +1853,7 @@ $.store.book[?@.price &lt; 10].title
                   <code>*</code>
 </td>
                 <td class="text-left" rowspan="1" colspan="1">
-                  <span><a href="#name-selector" class="internal xref">wildcard selector</a> (<a href="#name-selector" class="auto internal xref">Section 2.3.1</a>)</span>: selects all children of a node</td>
+                  <span><a href="#wildcard-selector" class="internal xref">wildcard selector</a> (<a href="#wildcard-selector" class="auto internal xref">Section 2.3.2</a>)</span>: selects all children of a node</td>
               </tr>
               <tr>
                 <td class="text-left" rowspan="1" colspan="1">
@@ -2069,7 +2047,7 @@ the <em>query argument</em>, selects zero or more nodes of the argument and outp
 these nodes as a nodelist.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
 <p id="section-2.1-2">A query <span class="bcp14">MUST</span> be encoded using UTF-8.
 The grammar for queries given in this document assumes that its UTF-8 form is first decoded into
-Unicode code points as described
+Unicode scalar values as described
 in <span>[<a href="#RFC3629" class="cite xref">RFC3629</a>]</span>; implementation approaches that lead to an equivalent
 result are possible.<a href="#section-2.1-2" class="pilcrow">¶</a></p>
 <p id="section-2.1-3">A string to be used as a JSONPath query needs to be <em>well-formed</em> and
@@ -2078,13 +2056,15 @@ A string is a well-formed JSONPath query if it conforms to the ABNF syntax in th
 A well-formed JSONPath query is valid if it also fulfills all semantic
 requirements posed by this document, which are:<a href="#section-2.1-3" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-2.1-4">
-<li id="section-2.1-4.1">Integer numbers in the JSONPath query that are relevant
+<li id="section-2.1-4.1">
+            <p id="section-2.1-4.1.1">Integer numbers in the JSONPath query that are relevant
 to the JSONPath processing (e.g., index values and steps) <span class="bcp14">MUST</span> be
-within the range of exact values defined in I-JSON <span>[<a href="#RFC7493" class="cite xref">RFC7493</a>]</span>, namely
-within the interval [-(2<sup>53</sup>)+1, (2<sup>53</sup>)-1].<a href="#section-2.1-4.1" class="pilcrow">¶</a>
+within the range of exact integer values defined in I-JSON (see <span><a href="https://rfc-editor.org/rfc/rfc7493#section-2.2" class="relref">Section 2.2</a> of [<a href="#RFC7493" class="cite xref">RFC7493</a>]</span>), namely within the interval [−(2<sup>53</sup>)+1,
+(2<sup>53</sup>)−1].<a href="#section-2.1-4.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li id="section-2.1-4.2">Uses of function extensions <span class="bcp14">MUST</span> be <em>well-typed</em>,
-as described in <a href="#fnex" class="auto internal xref">Section 2.4</a>.<a href="#section-2.1-4.2" class="pilcrow">¶</a>
+          <li id="section-2.1-4.2">
+            <p id="section-2.1-4.2.1">Uses of function extensions <span class="bcp14">MUST</span> be <em>well-typed</em>,
+as described in <a href="#fnex" class="auto internal xref">Section 2.4</a>.<a href="#section-2.1-4.2.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
 <p id="section-2.1-5">A JSONPath implementation <span class="bcp14">MUST</span> raise an error for any query which is not
@@ -2243,14 +2223,18 @@ and produces a nodelist consisting of that root node.<a href="#section-2.2.2-1" 
 JSON text to show the JSON value used as the query argument to the
 queries in the examples, and then a table with the columns:<a href="#section-2.2.3-1.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.2.3-1.2.1">Query: an example query to be applied to the query argument<a href="#section-2.2.3-1.2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-2.2.3-1.2.1">
+                <p id="section-2.2.3-1.2.1.1">Query: an example query to be applied to the query argument<a href="#section-2.2.3-1.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-2.2.3-1.2.2">Result: the query result as a list of JSON values that were located in the query argument<a href="#section-2.2.3-1.2.2" class="pilcrow">¶</a>
+              <li class="normal" id="section-2.2.3-1.2.2">
+                <p id="section-2.2.3-1.2.2.1">Result: the query result as a list of JSON values that were located in the query argument<a href="#section-2.2.3-1.2.2.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-2.2.3-1.2.3">Result Path: the query result as a list of (normalized) paths into
-the query argument, giving locations of the JSON values in the previous column<a href="#section-2.2.3-1.2.3" class="pilcrow">¶</a>
+              <li class="normal" id="section-2.2.3-1.2.3">
+                <p id="section-2.2.3-1.2.3.1">Result Path: the query result as a list of (normalized) paths into
+the query argument, giving locations of the JSON values in the previous column<a href="#section-2.2.3-1.2.3.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-2.2.3-1.2.4">Comment: descriptive information<a href="#section-2.2.3-1.2.4" class="pilcrow">¶</a>
+              <li class="normal" id="section-2.2.3-1.2.4">
+                <p id="section-2.2.3-1.2.4.1">Comment: descriptive information<a href="#section-2.2.3-1.2.4.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </aside>
@@ -2353,7 +2337,8 @@ unescaped           = %x20-21 /                      ; see RFC 8259
                          ; omit 0x27 '
                       %x28-5B /
                          ; omit 0x5C \
-                      %x5D-10FFFF
+                      %x5D-D7FF /   ; skip surrogate code points
+                      %xE000-10FFFF
 
 escapable           = %x62 / ; b BS backspace U+0008
                       %x66 / ; f FF form feed U+000C
@@ -2377,18 +2362,19 @@ HEXDIG              = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
 <p id="section-2.3.1.1-4">Notes:<a href="#section-2.3.1.1-4" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-2.3.1.1-5.1">
-                <code>double-quoted</code> strings follow the JSON string syntax (<span><a href="https://rfc-editor.org/rfc/rfc8259#section-7" class="relref">Section 7</a> of [<a href="#RFC8259" class="cite xref">RFC8259</a>]</span>);
+                <p id="section-2.3.1.1-5.1.1"><code>double-quoted</code> strings follow the JSON string syntax (<span><a href="https://rfc-editor.org/rfc/rfc8259#section-7" class="relref">Section 7</a> of [<a href="#RFC8259" class="cite xref">RFC8259</a>]</span>);
 <code>single-quoted</code> strings follow an analogous pattern (<a href="#syntax-index" class="auto internal xref">Section 2.3.3.1</a>).
 No attempt was made to improve on this syntax, so if it is desired to
 escape characters with
 scalar values above 0xFFFF, such as <span class="unicode">U+1F914 ("🤔", THINKING FACE)</span>,
 they need to be represented
-by a pair of surrogate escapes (<code>"\uD83E\uDD14"</code> in this case).<a href="#section-2.3.1.1-5.1" class="pilcrow">¶</a>
+by a pair of surrogate escapes (<code>"\uD83E\uDD14"</code> in this case).<a href="#section-2.3.1.1-5.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-2.3.1.1-5.2">Alphabetic characters in ABNF quoted strings are case-insensitive,
+              <li class="normal" id="section-2.3.1.1-5.2">
+                <p id="section-2.3.1.1-5.2.1">Alphabetic characters in ABNF quoted strings are case-insensitive,
 so each of the hexadecimal digits within <code>\u</code> escapes (as specified in rules
 referenced by <code>hexchar</code>) can be either lower case or upper case,
-while the <code>u</code> in <code>\u</code> needs to be lower case (indicated as <code>%x75</code>).<a href="#section-2.3.1.1-5.2" class="pilcrow">¶</a>
+while the <code>u</code> in <code>\u</code> needs to be lower case (indicated as <code>%x75</code>).<a href="#section-2.3.1.1-5.2.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </section>
@@ -2483,8 +2469,9 @@ shown in <a href="#tbl-esc" class="auto internal xref">Table 4</a>:<a href="#sec
                   <td class="text-center" rowspan="1" colspan="1">
                     <code>\uXXXX</code>
 </td>
-                  <td class="text-center" rowspan="1" colspan="1">U+XXXX</td>
-                  <td class="text-left" rowspan="1" colspan="1">unicode character</td>
+                  <td class="text-center" rowspan="1" colspan="1">see <a href="#syntax-name" class="auto internal xref">Section 2.3.1.1</a>
+</td>
+                  <td class="text-left" rowspan="1" colspan="1">hexadecimal escape</td>
                 </tr>
               </tbody>
             </table>
@@ -2745,9 +2732,11 @@ element. JSONPath allows it to be negative (see <a href="#index-semantics" class
 range of exact values, see <a href="#synsem-overview" class="auto internal xref">Section 2.1</a>.<a href="#section-2.3.3.1-4" class="pilcrow">¶</a></p>
 <p id="section-2.3.3.1-5">Notes:<a href="#section-2.3.3.1-5" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.3.3.1-6.1">An <code>index-selector</code> is an integer (in base 10, as in JSON numbers).<a href="#section-2.3.3.1-6.1" class="pilcrow">¶</a>
+<li class="normal" id="section-2.3.3.1-6.1">
+                <p id="section-2.3.3.1-6.1.1">An <code>index-selector</code> is an integer (in base 10, as in JSON numbers).<a href="#section-2.3.3.1-6.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-2.3.3.1-6.2">As in JSON numbers, the syntax does not allow octal-like integers with leading zeros such as <code>01</code> or <code>-01</code>.<a href="#section-2.3.3.1-6.2" class="pilcrow">¶</a>
+              <li class="normal" id="section-2.3.3.1-6.2">
+                <p id="section-2.3.3.1-6.2.1">As in JSON numbers, the syntax does not allow octal-like integers with leading zeros such as <code>01</code> or <code>-01</code>.<a href="#section-2.3.3.1-6.2.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </section>
@@ -3197,8 +3186,7 @@ test expression is not well-typed (see <a href="#well-typedness" class="auto int
 <pre>
 test-expr           = [logical-not-op S]
                      (filter-query / ; existence/non-existence
-                      function-expr) ; LogicalType or
-                                     ; NodesType
+                      function-expr) ; LogicalType or NodesType
 filter-query        = rel-query / jsonpath-query
 rel-query           = current-node-identifier segments
 current-node-identifier = "@"
@@ -3321,9 +3309,11 @@ since JSON objects are unordered.<a href="#section-2.3.5.2-2" class="pilcrow">¶
 <p id="section-2.3.5.2.1-1">A query by itself in a logical context is an existence test which yields true if the query selects at least one node and yields false if the query does not select any nodes.<a href="#section-2.3.5.2.1-1" class="pilcrow">¶</a></p>
 <p id="section-2.3.5.2.1-2">Existence tests differ from comparisons in that:<a href="#section-2.3.5.2.1-2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.3.5.2.1-3.1">they work with arbitrary relative or absolute queries (not just singular queries).<a href="#section-2.3.5.2.1-3.1" class="pilcrow">¶</a>
+<li class="normal" id="section-2.3.5.2.1-3.1">
+                  <p id="section-2.3.5.2.1-3.1.1">they work with arbitrary relative or absolute queries (not just singular queries).<a href="#section-2.3.5.2.1-3.1.1" class="pilcrow">¶</a></p>
 </li>
-                <li class="normal" id="section-2.3.5.2.1-3.2">they work with queries that select structured values.<a href="#section-2.3.5.2.1-3.2" class="pilcrow">¶</a>
+                <li class="normal" id="section-2.3.5.2.1-3.2">
+                  <p id="section-2.3.5.2.1-3.2.1">they work with queries that select structured values.<a href="#section-2.3.5.2.1-3.2.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 <p id="section-2.3.5.2.1-4">To examine the value of a node selected by a query, an explicit comparison is necessary.
@@ -3342,10 +3332,12 @@ the value of that node is <code>false</code>.<a href="#section-2.3.5.2.1-4" clas
 <p id="section-2.3.5.2.2-2">When either side of a comparison results in an empty nodelist or the
 special result <code>Nothing</code> (see <a href="#typesys" class="auto internal xref">Section 2.4.1</a>):<a href="#section-2.3.5.2.2-2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.3.5.2.2-3.1">a comparison using the operator <code>==</code> yields true if and only the
-other side also results in an empty nodelist or the special result <code>Nothing</code>.<a href="#section-2.3.5.2.2-3.1" class="pilcrow">¶</a>
+<li class="normal" id="section-2.3.5.2.2-3.1">
+                  <p id="section-2.3.5.2.2-3.1.1">a comparison using the operator <code>==</code> yields true if and only the
+other side also results in an empty nodelist or the special result <code>Nothing</code>.<a href="#section-2.3.5.2.2-3.1.1" class="pilcrow">¶</a></p>
 </li>
-                <li class="normal" id="section-2.3.5.2.2-3.2">a comparison using the operator <code>&lt;</code> yields false.<a href="#section-2.3.5.2.2-3.2" class="pilcrow">¶</a>
+                <li class="normal" id="section-2.3.5.2.2-3.2">
+                  <p id="section-2.3.5.2.2-3.2.1">a comparison using the operator <code>&lt;</code> yields false.<a href="#section-2.3.5.2.2-3.2.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 <p id="section-2.3.5.2.2-4">When any query or function expression on either side of a comparison results in a nodelist consisting of a single node, that side is
@@ -3355,21 +3347,27 @@ replaced by the value of its node and then:<a href="#section-2.3.5.2.2-4" class=
                   <p id="section-2.3.5.2.2-5.1.1">a comparison using the operator <code>==</code> yields true if and only if the comparison
 is between:<a href="#section-2.3.5.2.2-5.1.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.3.5.2.2-5.1.2.1">numbers expected to interoperate as per <span><a href="https://rfc-editor.org/rfc/rfc7493#section-2.2" class="relref">Section 2.2</a> of I-JSON [<a href="#RFC7493" class="cite xref">RFC7493</a>]</span> that compare equal using normal mathematical equality,<a href="#section-2.3.5.2.2-5.1.2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-2.3.5.2.2-5.1.2.1">
+                      <p id="section-2.3.5.2.2-5.1.2.1.1">numbers expected to interoperate as per <span><a href="https://rfc-editor.org/rfc/rfc7493#section-2.2" class="relref">Section 2.2</a> of I-JSON [<a href="#RFC7493" class="cite xref">RFC7493</a>]</span> that compare equal using normal mathematical equality,<a href="#section-2.3.5.2.2-5.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                    <li class="normal" id="section-2.3.5.2.2-5.1.2.2">numbers at least one of which is not expected to interoperate as per I-JSON, where the numbers compare equal using an implementation specific equality,<a href="#section-2.3.5.2.2-5.1.2.2" class="pilcrow">¶</a>
+                    <li class="normal" id="section-2.3.5.2.2-5.1.2.2">
+                      <p id="section-2.3.5.2.2-5.1.2.2.1">numbers at least one of which is not expected to interoperate as per I-JSON, where the numbers compare equal using an implementation specific equality,<a href="#section-2.3.5.2.2-5.1.2.2.1" class="pilcrow">¶</a></p>
 </li>
-                    <li class="normal" id="section-2.3.5.2.2-5.1.2.3">equal primitive values which are not numbers,<a href="#section-2.3.5.2.2-5.1.2.3" class="pilcrow">¶</a>
+                    <li class="normal" id="section-2.3.5.2.2-5.1.2.3">
+                      <p id="section-2.3.5.2.2-5.1.2.3.1">equal primitive values which are not numbers,<a href="#section-2.3.5.2.2-5.1.2.3.1" class="pilcrow">¶</a></p>
 </li>
-                    <li class="normal" id="section-2.3.5.2.2-5.1.2.4">equal arrays, that is arrays of the same length where each element of the first array is equal to the corresponding
-element of the second array, or<a href="#section-2.3.5.2.2-5.1.2.4" class="pilcrow">¶</a>
+                    <li class="normal" id="section-2.3.5.2.2-5.1.2.4">
+                      <p id="section-2.3.5.2.2-5.1.2.4.1">equal arrays, that is arrays of the same length where each element of the first array is equal to the corresponding
+element of the second array, or<a href="#section-2.3.5.2.2-5.1.2.4.1" class="pilcrow">¶</a></p>
 </li>
                     <li class="normal" id="section-2.3.5.2.2-5.1.2.5">
                       <p id="section-2.3.5.2.2-5.1.2.5.1">equal objects with no duplicate names, that is where:<a href="#section-2.3.5.2.2-5.1.2.5.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.3.5.2.2-5.1.2.5.2.1">both objects have the same collection of names (with no duplicates), and<a href="#section-2.3.5.2.2-5.1.2.5.2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-2.3.5.2.2-5.1.2.5.2.1">
+                          <p id="section-2.3.5.2.2-5.1.2.5.2.1.1">both objects have the same collection of names (with no duplicates), and<a href="#section-2.3.5.2.2-5.1.2.5.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                        <li class="normal" id="section-2.3.5.2.2-5.1.2.5.2.2">for each of those names, the values associated with the name by the objects are equal.<a href="#section-2.3.5.2.2-5.1.2.5.2.2" class="pilcrow">¶</a>
+                        <li class="normal" id="section-2.3.5.2.2-5.1.2.5.2.2">
+                          <p id="section-2.3.5.2.2-5.1.2.5.2.2.1">for each of those names, the values associated with the name by the objects are equal.<a href="#section-2.3.5.2.2-5.1.2.5.2.2.1" class="pilcrow">¶</a></p>
 </li>
                       </ul>
 </li>
@@ -3379,27 +3377,34 @@ element of the second array, or<a href="#section-2.3.5.2.2-5.1.2.4" class="pilcr
                   <p id="section-2.3.5.2.2-5.2.1">a comparison using the operator <code>&lt;</code> yields true if and only if
 the comparison is between values which are both numbers or both strings and which satisfy the comparison:<a href="#section-2.3.5.2.2-5.2.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.3.5.2.2-5.2.2.1">numbers expected to interoperate as per <span><a href="https://rfc-editor.org/rfc/rfc7493#section-2.2" class="relref">Section 2.2</a> of I-JSON [<a href="#RFC7493" class="cite xref">RFC7493</a>]</span> <span class="bcp14">MUST</span> compare using the normal mathematical ordering;
-numbers not expected to interoperate as per I-JSON <span class="bcp14">MAY</span> compare using an implementation specific ordering<a href="#section-2.3.5.2.2-5.2.2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-2.3.5.2.2-5.2.2.1">
+                      <p id="section-2.3.5.2.2-5.2.2.1.1">numbers expected to interoperate as per <span><a href="https://rfc-editor.org/rfc/rfc7493#section-2.2" class="relref">Section 2.2</a> of I-JSON [<a href="#RFC7493" class="cite xref">RFC7493</a>]</span> <span class="bcp14">MUST</span> compare using the normal mathematical ordering;
+numbers not expected to interoperate as per I-JSON <span class="bcp14">MAY</span> compare using an implementation specific ordering<a href="#section-2.3.5.2.2-5.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                    <li class="normal" id="section-2.3.5.2.2-5.2.2.2">the empty string compares less than any non-empty string<a href="#section-2.3.5.2.2-5.2.2.2" class="pilcrow">¶</a>
+                    <li class="normal" id="section-2.3.5.2.2-5.2.2.2">
+                      <p id="section-2.3.5.2.2-5.2.2.2.1">the empty string compares less than any non-empty string<a href="#section-2.3.5.2.2-5.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
-                    <li class="normal" id="section-2.3.5.2.2-5.2.2.3">a non-empty string compares less than another non-empty string if and only if the first string starts with a
+                    <li class="normal" id="section-2.3.5.2.2-5.2.2.3">
+                      <p id="section-2.3.5.2.2-5.2.2.3.1">a non-empty string compares less than another non-empty string if and only if the first string starts with a
 lower Unicode scalar value than the second string or if both strings start with the same Unicode scalar value and
-the remainder of the first string compares less than the remainder of the second string.<a href="#section-2.3.5.2.2-5.2.2.3" class="pilcrow">¶</a>
+the remainder of the first string compares less than the remainder of the second string.<a href="#section-2.3.5.2.2-5.2.2.3.1" class="pilcrow">¶</a></p>
 </li>
                   </ul>
 </li>
               </ul>
 <p id="section-2.3.5.2.2-6"><code>!=</code>, <code>&lt;=</code>, <code>&gt;</code>, and <code>&gt;=</code> are defined in terms of the other comparison operators. For any <code>a</code> and <code>b</code>:<a href="#section-2.3.5.2.2-6" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.3.5.2.2-7.1">The comparison <code>a != b</code> yields true if and only if <code>a == b</code> yields false.<a href="#section-2.3.5.2.2-7.1" class="pilcrow">¶</a>
+<li class="normal" id="section-2.3.5.2.2-7.1">
+                  <p id="section-2.3.5.2.2-7.1.1">The comparison <code>a != b</code> yields true if and only if <code>a == b</code> yields false.<a href="#section-2.3.5.2.2-7.1.1" class="pilcrow">¶</a></p>
 </li>
-                <li class="normal" id="section-2.3.5.2.2-7.2">The comparison <code>a &lt;= b</code> yields true if and only if <code>a &lt; b</code> yields true or <code>a == b</code> yields true.<a href="#section-2.3.5.2.2-7.2" class="pilcrow">¶</a>
+                <li class="normal" id="section-2.3.5.2.2-7.2">
+                  <p id="section-2.3.5.2.2-7.2.1">The comparison <code>a &lt;= b</code> yields true if and only if <code>a &lt; b</code> yields true or <code>a == b</code> yields true.<a href="#section-2.3.5.2.2-7.2.1" class="pilcrow">¶</a></p>
 </li>
-                <li class="normal" id="section-2.3.5.2.2-7.3">The comparison <code>a &gt; b</code> yields true if and only if <code>b &lt; a</code> yields true.<a href="#section-2.3.5.2.2-7.3" class="pilcrow">¶</a>
+                <li class="normal" id="section-2.3.5.2.2-7.3">
+                  <p id="section-2.3.5.2.2-7.3.1">The comparison <code>a &gt; b</code> yields true if and only if <code>b &lt; a</code> yields true.<a href="#section-2.3.5.2.2-7.3.1" class="pilcrow">¶</a></p>
 </li>
-                <li class="normal" id="section-2.3.5.2.2-7.4">The comparison <code>a &gt;= b</code> yields true if and only if <code>b &lt; a</code> yields true or <code>a == b</code> yields true.<a href="#section-2.3.5.2.2-7.4" class="pilcrow">¶</a>
+                <li class="normal" id="section-2.3.5.2.2-7.4">
+                  <p id="section-2.3.5.2.2-7.4.1">The comparison <code>a &gt;= b</code> yields true if and only if <code>b &lt; a</code> yields true or <code>a == b</code> yields true.<a href="#section-2.3.5.2.2-7.4.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 </section>
@@ -3965,14 +3970,16 @@ independent of any query argument the JSONPath query is applied to.<a href="#sec
 </div>
 <p id="section-2.4.1-5">Notes:<a href="#section-2.4.1-5" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.4.1-6.1">The only instances that can be directly represented in JSONPath syntax are certain JSON values
-in <code>ValueType</code> expressed as literals (which, in JSONPath, are limited to primitive values).<a href="#section-2.4.1-6.1" class="pilcrow">¶</a>
+<li class="normal" id="section-2.4.1-6.1">
+              <p id="section-2.4.1-6.1.1">The only instances that can be directly represented in JSONPath syntax are certain JSON values
+in <code>ValueType</code> expressed as literals (which, in JSONPath, are limited to primitive values).<a href="#section-2.4.1-6.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-2.4.1-6.2">The special result <code>Nothing</code> represents the absence of a JSON value and is distinct from any JSON value, including <code>null</code>.<a href="#section-2.4.1-6.2" class="pilcrow">¶</a>
+            <li class="normal" id="section-2.4.1-6.2">
+              <p id="section-2.4.1-6.2.1">The special result <code>Nothing</code> represents the absence of a JSON value and is distinct from any JSON value, including <code>null</code>.<a href="#section-2.4.1-6.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2.4.1-6.3">
-              <code>LogicalTrue</code> and <code>LogicalFalse</code> are unrelated to the JSON values expressed by the
-literals <code>true</code> and <code>false</code>.<a href="#section-2.4.1-6.3" class="pilcrow">¶</a>
+              <p id="section-2.4.1-6.3.1"><code>LogicalTrue</code> and <code>LogicalFalse</code> are unrelated to the JSON values expressed by the
+literals <code>true</code> and <code>false</code>.<a href="#section-2.4.1-6.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
@@ -3987,23 +3994,27 @@ existence of at least one node (<a href="#extest" class="auto internal xref">Sec
 declared type <code>NodesType</code> can be used as a function argument for a
 parameter of declared type <code>LogicalType</code>, with the equivalent conversion rule:<a href="#section-2.4.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.4.2-2.1">If the nodelist contains one or more nodes, the conversion result is <code>LogicalTrue</code>.<a href="#section-2.4.2-2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-2.4.2-2.1">
+              <p id="section-2.4.2-2.1.1">If the nodelist contains one or more nodes, the conversion result is <code>LogicalTrue</code>.<a href="#section-2.4.2-2.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-2.4.2-2.2">If the nodelist is empty, the conversion result is <code>LogicalFalse</code>.<a href="#section-2.4.2-2.2" class="pilcrow">¶</a>
+            <li class="normal" id="section-2.4.2-2.2">
+              <p id="section-2.4.2-2.2.1">If the nodelist is empty, the conversion result is <code>LogicalFalse</code>.<a href="#section-2.4.2-2.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <p id="section-2.4.2-3">Notes:<a href="#section-2.4.2-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.4.2-4.1">Extraction of a value from a nodelist can be performed in several
+<li class="normal" id="section-2.4.2-4.1">
+              <p id="section-2.4.2-4.1.1">Extraction of a value from a nodelist can be performed in several
 ways, so an implicit conversion from <code>NodesType</code> to <code>ValueType</code>
-may be surprising and has therefore not been defined.<a href="#section-2.4.2-4.1" class="pilcrow">¶</a>
+may be surprising and has therefore not been defined.<a href="#section-2.4.2-4.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-2.4.2-4.2">A function expression with a declared type of <code>NodesType</code> can
+            <li class="normal" id="section-2.4.2-4.2">
+              <p id="section-2.4.2-4.2.1">A function expression with a declared type of <code>NodesType</code> can
 indirectly be used as an argument for a parameter of declared type
 <code>ValueType</code> by wrapping the expression in a call to a function extension,
 such as <code>value()</code> (see <a href="#value" class="auto internal xref">Section 2.4.8</a>),
 that takes a parameter of type <code>NodesType</code> and returns a
-result of type <code>ValueType</code>.<a href="#section-2.4.2-4.2" class="pilcrow">¶</a>
+result of type <code>ValueType</code>.<a href="#section-2.4.2-4.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <p id="section-2.4.2-5">The well-typedness of function expressions can now be defined in terms of this type system.<a href="#section-2.4.2-5" class="pilcrow">¶</a></p>
@@ -4016,9 +4027,11 @@ result of type <code>ValueType</code>.<a href="#section-2.4.2-4.2" class="pilcro
           </h4>
 <p id="section-2.4.3-1">For a function expression to be well-typed:<a href="#section-2.4.3-1" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-2.4.3-2">
-<li id="section-2.4.3-2.1">its declared type must be well-typed in the context in which it occurs, and<a href="#section-2.4.3-2.1" class="pilcrow">¶</a>
+<li id="section-2.4.3-2.1">
+              <p id="section-2.4.3-2.1.1">its declared type must be well-typed in the context in which it occurs, and<a href="#section-2.4.3-2.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li id="section-2.4.3-2.2">its arguments must be well-typed for the declared type of the corresponding parameters.<a href="#section-2.4.3-2.2" class="pilcrow">¶</a>
+            <li id="section-2.4.3-2.2">
+              <p id="section-2.4.3-2.2.1">its arguments must be well-typed for the declared type of the corresponding parameters.<a href="#section-2.4.3-2.2.1" class="pilcrow">¶</a></p>
 </li>
           </ol>
 <p id="section-2.4.3-3">(1) As per the grammar, a function expression can occur in three different
@@ -4047,35 +4060,42 @@ each argument of the function can be used for the declared type of the
 corresponding parameter, according to one of the following
 conditions:<a href="#section-2.4.3-5" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.4.3-6.1">When the argument is a function expression with declared result type the same as the
-declared type of the parameter.<a href="#section-2.4.3-6.1" class="pilcrow">¶</a>
+<li class="normal" id="section-2.4.3-6.1">
+              <p id="section-2.4.3-6.1.1">When the argument is a function expression with declared result type the same as the
+declared type of the parameter.<a href="#section-2.4.3-6.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2.4.3-6.2">
               <p id="section-2.4.3-6.2.1">When the declared type of the parameter is <code>LogicalType</code> and the argument is one of the following:<a href="#section-2.4.3-6.2.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.4.3-6.2.2.1">A function expression with declared result type <code>NodesType</code>.
-In this case the argument is converted to LogicalType as per <a href="#type-conv" class="auto internal xref">Section 2.4.2</a>.<a href="#section-2.4.3-6.2.2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-2.4.3-6.2.2.1">
+                  <p id="section-2.4.3-6.2.2.1.1">A function expression with declared result type <code>NodesType</code>.
+In this case the argument is converted to LogicalType as per <a href="#type-conv" class="auto internal xref">Section 2.4.2</a>.<a href="#section-2.4.3-6.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                <li class="normal" id="section-2.4.3-6.2.2.2">A <code>logical-expr</code> that is not a function expression.<a href="#section-2.4.3-6.2.2.2" class="pilcrow">¶</a>
+                <li class="normal" id="section-2.4.3-6.2.2.2">
+                  <p id="section-2.4.3-6.2.2.2.1">A <code>logical-expr</code> that is not a function expression.<a href="#section-2.4.3-6.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 </li>
-            <li class="normal" id="section-2.4.3-6.3">When the declared type of the parameter is <code>NodesType</code> and the argument is a query
-(which includes singular query).<a href="#section-2.4.3-6.3" class="pilcrow">¶</a>
+            <li class="normal" id="section-2.4.3-6.3">
+              <p id="section-2.4.3-6.3.1">When the declared type of the parameter is <code>NodesType</code> and the argument is a query
+(which includes singular query).<a href="#section-2.4.3-6.3.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2.4.3-6.4">
               <p id="section-2.4.3-6.4.1">When the declared type of the parameter is <code>ValueType</code> and the argument is one of the following:<a href="#section-2.4.3-6.4.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.4.3-6.4.2.1">A value expressed as a literal.<a href="#section-2.4.3-6.4.2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-2.4.3-6.4.2.1">
+                  <p id="section-2.4.3-6.4.2.1.1">A value expressed as a literal.<a href="#section-2.4.3-6.4.2.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-2.4.3-6.4.2.2">
                   <p id="section-2.4.3-6.4.2.2.1">A singular query. In this case:<a href="#section-2.4.3-6.4.2.2.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.4.3-6.4.2.2.2.1">If the query results in a nodelist consisting of a single node, the
-argument is the value of the node.<a href="#section-2.4.3-6.4.2.2.2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-2.4.3-6.4.2.2.2.1">
+                      <p id="section-2.4.3-6.4.2.2.2.1.1">If the query results in a nodelist consisting of a single node, the
+argument is the value of the node.<a href="#section-2.4.3-6.4.2.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                    <li class="normal" id="section-2.4.3-6.4.2.2.2.2">If the query results in an empty nodelist, the argument is
-the special result <code>Nothing</code>.<a href="#section-2.4.3-6.4.2.2.2.2" class="pilcrow">¶</a>
+                    <li class="normal" id="section-2.4.3-6.4.2.2.2.2">
+                      <p id="section-2.4.3-6.4.2.2.2.2.1">If the query results in an empty nodelist, the argument is
+the special result <code>Nothing</code>.<a href="#section-2.4.3-6.4.2.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
                   </ul>
 </li>
@@ -4094,7 +4114,7 @@ the special result <code>Nothing</code>.<a href="#section-2.4.3-6.4.2.2.2.2" cla
             <dd style="margin-left: 1.5em" id="section-2.4.4-1.2">
               <ol start="1" type="1" class="normal type-1" id="section-2.4.4-1.2.1">
 <li id="section-2.4.4-1.2.1.1">
-                  <code>ValueType</code><a href="#section-2.4.4-1.2.1.1" class="pilcrow">¶</a>
+                  <p id="section-2.4.4-1.2.1.1.1"><code>ValueType</code><a href="#section-2.4.4-1.2.1.1.1" class="pilcrow">¶</a></p>
 </li>
               </ol>
 </dd>
@@ -4117,16 +4137,20 @@ $[?length(@.authors) &gt;= 5]
 singular query, as in the example above).  The result also is an
 instance of <code>ValueType</code>: an unsigned integer or the special result <code>Nothing</code>.<a href="#section-2.4.4-4" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.4.4-5.1">If the argument value is a string, the result is the number of
-Unicode scalar values in the string.<a href="#section-2.4.4-5.1" class="pilcrow">¶</a>
+<li class="normal" id="section-2.4.4-5.1">
+              <p id="section-2.4.4-5.1.1">If the argument value is a string, the result is the number of
+Unicode scalar values in the string.<a href="#section-2.4.4-5.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-2.4.4-5.2">If the argument value is an array, the result is the number of
-elements in the array.<a href="#section-2.4.4-5.2" class="pilcrow">¶</a>
+            <li class="normal" id="section-2.4.4-5.2">
+              <p id="section-2.4.4-5.2.1">If the argument value is an array, the result is the number of
+elements in the array.<a href="#section-2.4.4-5.2.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-2.4.4-5.3">If the argument value is an object, the result is the number of
-members in the object.<a href="#section-2.4.4-5.3" class="pilcrow">¶</a>
+            <li class="normal" id="section-2.4.4-5.3">
+              <p id="section-2.4.4-5.3.1">If the argument value is an object, the result is the number of
+members in the object.<a href="#section-2.4.4-5.3.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-2.4.4-5.4">For any other argument value, the result is the special result <code>Nothing</code>.<a href="#section-2.4.4-5.4" class="pilcrow">¶</a>
+            <li class="normal" id="section-2.4.4-5.4">
+              <p id="section-2.4.4-5.4.1">For any other argument value, the result is the special result <code>Nothing</code>.<a href="#section-2.4.4-5.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
@@ -4141,7 +4165,7 @@ members in the object.<a href="#section-2.4.4-5.3" class="pilcrow">¶</a>
             <dd style="margin-left: 1.5em" id="section-2.4.5-1.2">
               <ol start="1" type="1" class="normal type-1" id="section-2.4.5-1.2.1">
 <li id="section-2.4.5-1.2.1.1">
-                  <code>NodesType</code><a href="#section-2.4.5-1.2.1.1" class="pilcrow">¶</a>
+                  <p id="section-2.4.5-1.2.1.1.1"><code>NodesType</code><a href="#section-2.4.5-1.2.1.1.1" class="pilcrow">¶</a></p>
 </li>
               </ol>
 </dd>
@@ -4165,11 +4189,13 @@ The result is a value, an unsigned integer, that gives the number of
 nodes in the nodelist.
 Notes:<a href="#section-2.4.5-4" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.4.5-5.1">There is no deduplication of the nodelist.<a href="#section-2.4.5-5.1" class="pilcrow">¶</a>
+<li class="normal" id="section-2.4.5-5.1">
+              <p id="section-2.4.5-5.1.1">There is no deduplication of the nodelist.<a href="#section-2.4.5-5.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-2.4.5-5.2">The number of nodes in the nodelist is counted independent of their
+            <li class="normal" id="section-2.4.5-5.2">
+              <p id="section-2.4.5-5.2.1">The number of nodes in the nodelist is counted independent of their
 values or any children they may have; e.g., the count of a non-empty
-singular nodelist such as <code>count(@)</code> is always 1.<a href="#section-2.4.5-5.2" class="pilcrow">¶</a>
+singular nodelist such as <code>count(@)</code> is always 1.<a href="#section-2.4.5-5.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
@@ -4184,10 +4210,10 @@ singular nodelist such as <code>count(@)</code> is always 1.<a href="#section-2.
             <dd style="margin-left: 1.5em" id="section-2.4.6-1.2">
               <ol start="1" type="1" class="normal type-1" id="section-2.4.6-1.2.1">
 <li id="section-2.4.6-1.2.1.1">
-                  <code>ValueType</code> (string)<a href="#section-2.4.6-1.2.1.1" class="pilcrow">¶</a>
+                  <p id="section-2.4.6-1.2.1.1.1"><code>ValueType</code> (string)<a href="#section-2.4.6-1.2.1.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li id="section-2.4.6-1.2.1.2">
-                  <code>ValueType</code> (string conforming to <span>[<a href="#I-D.draft-ietf-jsonpath-iregexp" class="cite xref">I-D.draft-ietf-jsonpath-iregexp</a>]</span>)<a href="#section-2.4.6-1.2.1.2" class="pilcrow">¶</a>
+                  <p id="section-2.4.6-1.2.1.2.1"><code>ValueType</code> (string conforming to <span>[<a href="#I-D.draft-ietf-jsonpath-iregexp" class="cite xref">I-D.draft-ietf-jsonpath-iregexp</a>]</span>)<a href="#section-2.4.6-1.2.1.2.1" class="pilcrow">¶</a></p>
 </li>
               </ol>
 </dd>
@@ -4226,10 +4252,10 @@ the result is <code>LogicalTrue</code> if the string matches the iregexp and
             <dd style="margin-left: 1.5em" id="section-2.4.7-1.2">
               <ol start="1" type="1" class="normal type-1" id="section-2.4.7-1.2.1">
 <li id="section-2.4.7-1.2.1.1">
-                  <code>ValueType</code> (string)<a href="#section-2.4.7-1.2.1.1" class="pilcrow">¶</a>
+                  <p id="section-2.4.7-1.2.1.1.1"><code>ValueType</code> (string)<a href="#section-2.4.7-1.2.1.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li id="section-2.4.7-1.2.1.2">
-                  <code>ValueType</code> (string conforming to <span>[<a href="#I-D.draft-ietf-jsonpath-iregexp" class="cite xref">I-D.draft-ietf-jsonpath-iregexp</a>]</span>)<a href="#section-2.4.7-1.2.1.2" class="pilcrow">¶</a>
+                  <p id="section-2.4.7-1.2.1.2.1"><code>ValueType</code> (string conforming to <span>[<a href="#I-D.draft-ietf-jsonpath-iregexp" class="cite xref">I-D.draft-ietf-jsonpath-iregexp</a>]</span>)<a href="#section-2.4.7-1.2.1.2.1" class="pilcrow">¶</a></p>
 </li>
               </ol>
 </dd>
@@ -4268,7 +4294,7 @@ substring exists and <code>LogicalFalse</code> otherwise.<a href="#section-2.4.7
             <dd style="margin-left: 1.5em" id="section-2.4.8-1.2">
               <ol start="1" type="1" class="normal type-1" id="section-2.4.8-1.2.1">
 <li id="section-2.4.8-1.2.1.1">
-                  <code>NodesType</code><a href="#section-2.4.8-1.2.1.1" class="pilcrow">¶</a>
+                  <p id="section-2.4.8-1.2.1.1.1"><code>NodesType</code><a href="#section-2.4.8-1.2.1.1.1" class="pilcrow">¶</a></p>
 </li>
               </ol>
 </dd>
@@ -4290,11 +4316,13 @@ $[?value(@..color) == "red"]
 <code>filter-query</code>, as in the example above).  The result is an
 instance of <code>ValueType</code>.<a href="#section-2.4.8-4" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.4.8-5.1">If the argument contains a single node, the result is
-the value of the node.<a href="#section-2.4.8-5.1" class="pilcrow">¶</a>
+<li class="normal" id="section-2.4.8-5.1">
+              <p id="section-2.4.8-5.1.1">If the argument contains a single node, the result is
+the value of the node.<a href="#section-2.4.8-5.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-2.4.8-5.2">If the argument is the special result <code>Nothing</code> or contains multiple nodes, the
-result is <code>Nothing</code>.<a href="#section-2.4.8-5.2" class="pilcrow">¶</a>
+            <li class="normal" id="section-2.4.8-5.2">
+              <p id="section-2.4.8-5.2.1">If the argument is the special result <code>Nothing</code> or contains multiple nodes, the
+result is <code>Nothing</code>.<a href="#section-2.4.8-5.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <p id="section-2.4.8-6">Note: a singular query may be used anywhere where a ValueType is expected,
@@ -4428,11 +4456,13 @@ segment result nodelist.<a href="#section-2.5-1" class="pilcrow">¶</a></p>
 <p id="section-2.5-2">It turns out that the more segments there are in a query, the greater the depth in the input value of the
 nodes of the resultant nodelist:<a href="#section-2.5-2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.5-3.1">A query with N segments, where N &gt;= 0, produces a nodelist
-consisting of nodes at depth in the input value of N or greater.<a href="#section-2.5-3.1" class="pilcrow">¶</a>
+<li class="normal" id="section-2.5-3.1">
+            <p id="section-2.5-3.1.1">A query with N segments, where N &gt;= 0, produces a nodelist
+consisting of nodes at depth in the input value of N or greater.<a href="#section-2.5-3.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-2.5-3.2">A query with N segments, where N &gt;= 0, all of which are <span><a href="#child-segment" class="internal xref">child segments</a> (<a href="#child-segment" class="auto internal xref">Section 2.5.1</a>)</span>,
-produces a nodelist consisting of nodes precisely at depth N in the input value.<a href="#section-2.5-3.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-2.5-3.2">
+            <p id="section-2.5-3.2.1">A query with N segments, where N &gt;= 0, all of which are <span><a href="#child-segment" class="internal xref">child segments</a> (<a href="#child-segment" class="auto internal xref">Section 2.5.1</a>)</span>,
+produces a nodelist consisting of nodes precisely at depth N in the input value.<a href="#section-2.5-3.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-2.5-4">There are two kinds of segment: child segments and descendant segments.<a href="#section-2.5-4" class="pilcrow">¶</a></p>
@@ -4468,7 +4498,8 @@ bracketed-selection = "[" S selector *(S "," S selector) S "]"
 member-name-shorthand = name-first *name-char
 name-first          = ALPHA /
                       "_"   /
-                      %x80-10FFFF   ; any non-ASCII Unicode character
+                      %x80-D7FF /   ; skip surrogate code points
+                      %xE000-10FFFF
 name-char           = DIGIT / name-first
 
 DIGIT               = %x30-39              ; 0-9
@@ -4614,9 +4645,11 @@ characters, as specified in the ABNF rule <code>member-name-shorthand</code>.<a 
 a descendant selector visits the input node and each of
 its descendants such that:<a href="#section-2.5.2.2-2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.5.2.2-3.1">nodes of any array are visited in array order, and<a href="#section-2.5.2.2-3.1" class="pilcrow">¶</a>
+<li class="normal" id="section-2.5.2.2-3.1">
+                <p id="section-2.5.2.2-3.1.1">nodes of any array are visited in array order, and<a href="#section-2.5.2.2-3.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-2.5.2.2-3.2">nodes are visited before their descendants.<a href="#section-2.5.2.2-3.2" class="pilcrow">¶</a>
+              <li class="normal" id="section-2.5.2.2-3.2">
+                <p id="section-2.5.2.2-3.2.1">nodes are visited before their descendants.<a href="#section-2.5.2.2-3.2.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 <p id="section-2.5.2.2-4">The order in which the children of an object are visited is not stipulated, since
@@ -4757,28 +4790,28 @@ queries, shown here in one table row instead of two almost identical rows.)<a hr
 <p id="section-2.5.2.3-6">Note: the ordering of the results for the <code>$..[*]</code> and <code>$..*</code> examples above is not guaranteed, except that:<a href="#section-2.5.2.3-6" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-2.5.2.3-7.1">
-                <code>{"j": 1, "k": 2}</code> must appear before <code>1</code> and <code>2</code>,<a href="#section-2.5.2.3-7.1" class="pilcrow">¶</a>
+                <p id="section-2.5.2.3-7.1.1"><code>{"j": 1, "k": 2}</code> must appear before <code>1</code> and <code>2</code>,<a href="#section-2.5.2.3-7.1.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-2.5.2.3-7.2">
-                <code>[5, 3, [{"j": 4}, {"k": 6}]]</code> must appear before <code>5</code>, <code>3</code>, and <code>[{"j": 4}, {"k": 6}]</code>,<a href="#section-2.5.2.3-7.2" class="pilcrow">¶</a>
+                <p id="section-2.5.2.3-7.2.1"><code>[5, 3, [{"j": 4}, {"k": 6}]]</code> must appear before <code>5</code>, <code>3</code>, and <code>[{"j": 4}, {"k": 6}]</code>,<a href="#section-2.5.2.3-7.2.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-2.5.2.3-7.3">
-                <code>5</code> must appear before <code>3</code> which must appear before <code>[{"j": 4}, {"k": 6}]</code>,<a href="#section-2.5.2.3-7.3" class="pilcrow">¶</a>
+                <p id="section-2.5.2.3-7.3.1"><code>5</code> must appear before <code>3</code> which must appear before <code>[{"j": 4}, {"k": 6}]</code>,<a href="#section-2.5.2.3-7.3.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-2.5.2.3-7.4">
-                <code>5</code> and <code>3</code> must appear before <code>{"j": 4}</code>, <code>4</code>, <code>, {"k": 6}</code>, and <code>6</code>,<a href="#section-2.5.2.3-7.4" class="pilcrow">¶</a>
+                <p id="section-2.5.2.3-7.4.1"><code>5</code> and <code>3</code> must appear before <code>{"j": 4}</code>, <code>4</code>, <code>, {"k": 6}</code>, and <code>6</code>,<a href="#section-2.5.2.3-7.4.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-2.5.2.3-7.5">
-                <code>[{"j": 4}, {"k": 6}]</code> must appear before <code>{"j": 4}</code> and <code>{"k": 6}</code>,<a href="#section-2.5.2.3-7.5" class="pilcrow">¶</a>
+                <p id="section-2.5.2.3-7.5.1"><code>[{"j": 4}, {"k": 6}]</code> must appear before <code>{"j": 4}</code> and <code>{"k": 6}</code>,<a href="#section-2.5.2.3-7.5.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-2.5.2.3-7.6">
-                <code>{"j": 4}</code> must appear before <code>{"k": 6}</code>,<a href="#section-2.5.2.3-7.6" class="pilcrow">¶</a>
+                <p id="section-2.5.2.3-7.6.1"><code>{"j": 4}</code> must appear before <code>{"k": 6}</code>,<a href="#section-2.5.2.3-7.6.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-2.5.2.3-7.7">
-                <code>{"k": 6}</code> must appear before <code>4</code>, and<a href="#section-2.5.2.3-7.7" class="pilcrow">¶</a>
+                <p id="section-2.5.2.3-7.7.1"><code>{"k": 6}</code> must appear before <code>4</code>, and<a href="#section-2.5.2.3-7.7.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-2.5.2.3-7.8">
-                <code>4</code> must appear before <code>6</code>.<a href="#section-2.5.2.3-7.8" class="pilcrow">¶</a>
+                <p id="section-2.5.2.3-7.8.1"><code>4</code> must appear before <code>6</code>.<a href="#section-2.5.2.3-7.8.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 <p id="section-2.5.2.3-8">The example above with the query <code>$.o..[*, *]</code> shows that a selector may produce nodelists in distinct orders
@@ -4970,7 +5003,9 @@ normal-unescaped     =    ; omit %x0-1F control codes
                           ; omit 0x27 '
                        %x28-5B /
                           ; omit 0x5C \
-                       %x5D-10FFFF
+                       %x5D-D7FF /   ; skip surrogate code points
+                       %xE000-10FFFF
+
 normal-escapable     = %x62 / ; b BS backspace U+0008
                        %x66 / ; f FF form feed U+000C
                        %x6E / ; n LF line feed U+000A
@@ -5346,11 +5381,14 @@ and the entries in the column
       </h2>
 <p id="section-4-1">Security considerations for JSONPath can stem from<a href="#section-4-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4-2.1">attack vectors on JSONPath implementations,<a href="#section-4-2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4-2.1">
+          <p id="section-4-2.1.1">attack vectors on JSONPath implementations,<a href="#section-4-2.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-4-2.2">attack vectors on how JSONPath queries are formed, and<a href="#section-4-2.2" class="pilcrow">¶</a>
+        <li class="normal" id="section-4-2.2">
+          <p id="section-4-2.2.1">attack vectors on how JSONPath queries are formed, and<a href="#section-4-2.2.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-4-2.3">the way JSONPath is used in security-relevant mechanisms.<a href="#section-4-2.3" class="pilcrow">¶</a>
+        <li class="normal" id="section-4-2.3">
+          <p id="section-4-2.3.1">the way JSONPath is used in security-relevant mechanisms.<a href="#section-4-2.3.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <div id="attack-vectors-on-jsonpath-implementations">
@@ -5423,6 +5461,7 @@ of objects, for any query argument conforming with <span>[<a href="#RFC7493" cla
       <h2 id="name-references">
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-references" class="section-name selfRef">References</a>
       </h2>
+<div id="sec-normative-references">
 <section id="section-5.1">
         <h3 id="name-normative-references">
 <a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
@@ -5434,7 +5473,7 @@ of objects, for any query argument conforming with <span>[<a href="#RFC7493" cla
 <dd class="break"></dd>
 <dt id="I-D.draft-ietf-jsonpath-iregexp">[I-D.draft-ietf-jsonpath-iregexp]</dt>
         <dd>
-<span class="refAuthor">Bormann, C.</span> and <span class="refAuthor">T. Bray</span>, <span class="refTitle">"I-Regexp: An Interoperable Regexp Format"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-jsonpath-iregexp-08</span>, <time datetime="2023-06-29" class="refDate">29 June 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-jsonpath-iregexp-08">https://datatracker.ietf.org/doc/html/draft-ietf-jsonpath-iregexp-08</a>&gt;</span>. </dd>
+<span class="refAuthor">Bormann, C.</span> and <span class="refAuthor">T. Bray</span>, <span class="refTitle">"I-Regexp: An Interoperable Regular Expression Format"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-jsonpath-iregexp-08</span>, <time datetime="2023-06-29" class="refDate">29 June 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-jsonpath-iregexp-08">https://datatracker.ietf.org/doc/html/draft-ietf-jsonpath-iregexp-08</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
@@ -5474,6 +5513,8 @@ of objects, for any query argument conforming with <span>[<a href="#RFC7493" cla
 <dd class="break"></dd>
 </dl>
 </section>
+</div>
+<div id="sec-informative-references">
 <section id="section-5.2">
         <h3 id="name-informative-references">
 <a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
@@ -5517,6 +5558,7 @@ of objects, for any query argument conforming with <span>[<a href="#RFC7493" cla
 <dd class="break"></dd>
 </dl>
 </section>
+</div>
 </section>
 <div id="collected-abnf-grammars">
 <section id="appendix-A">
@@ -5568,7 +5610,8 @@ unescaped           = %x20-21 /                      ; see RFC 8259
                          ; omit 0x27 '
                       %x28-5B /
                          ; omit 0x5C \
-                      %x5D-10FFFF
+                      %x5D-D7FF /   ; skip surrogate code points
+                      %xE000-10FFFF
 
 escapable           = %x62 / ; b BS backspace U+0008
                       %x66 / ; f FF form feed U+000C
@@ -5616,8 +5659,7 @@ paren-expr          = [logical-not-op S] "(" S logical-expr S ")"
 logical-not-op      = "!"               ; logical NOT operator
 test-expr           = [logical-not-op S]
                      (filter-query / ; existence/non-existence
-                      function-expr) ; LogicalType or
-                                     ; NodesType
+                      function-expr) ; LogicalType or NodesType
 filter-query        = rel-query / jsonpath-query
 rel-query           = current-node-identifier segments
 current-node-identifier = "@"
@@ -5666,7 +5708,8 @@ bracketed-selection = "[" S selector *(S "," S selector) S "]"
 member-name-shorthand = name-first *name-char
 name-first          = ALPHA /
                       "_"   /
-                      %x80-10FFFF   ; any non-ASCII Unicode character
+                      %x80-D7FF /   ; skip surrogate code points
+                      %xE000-10FFFF
 name-char           = DIGIT / name-first
 
 DIGIT               = %x30-39              ; 0-9
@@ -5698,7 +5741,9 @@ normal-unescaped     =    ; omit %x0-1F control codes
                           ; omit 0x27 '
                        %x28-5B /
                           ; omit 0x5C \
-                       %x5D-10FFFF
+                       %x5D-D7FF /   ; skip surrogate code points
+                       %xE000-10FFFF
+
 normal-escapable     = %x62 / ; b BS backspace U+0008
                        %x66 / ; f FF form feed U+000C
                        %x6E / ; n LF line feed U+000A
@@ -5741,12 +5786,14 @@ XML documents.
 <p id="appendix-B-3">In 2007, the need for something solving the same class of problems for
 the emerging JSON community became apparent, specifically for:<a href="#appendix-B-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="appendix-B-4.1">Finding data interactively and extracting them out of <span>[<a href="#RFC8259" class="cite xref">RFC8259</a>]</span>
-JSON values without special scripting.<a href="#appendix-B-4.1" class="pilcrow">¶</a>
+<li class="normal" id="appendix-B-4.1">
+          <p id="appendix-B-4.1.1">Finding data interactively and extracting them out of <span>[<a href="#RFC8259" class="cite xref">RFC8259</a>]</span>
+JSON values without special scripting.<a href="#appendix-B-4.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-4.2">Specifying the relevant parts of the JSON data in a request by a
+        <li class="normal" id="appendix-B-4.2">
+          <p id="appendix-B-4.2.1">Specifying the relevant parts of the JSON data in a request by a
 client, so the server can reduce the amount of data in its response,
-minimizing bandwidth usage.<a href="#appendix-B-4.2" class="pilcrow">¶</a>
+minimizing bandwidth usage.<a href="#appendix-B-4.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-B-5">(Note: XPath has evolved since 2007, and recent versions even
@@ -5778,13 +5825,17 @@ x['store']['book'][0]['title']
 <p id="appendix-B-13">with the variable x holding the query argument.<a href="#appendix-B-13" class="pilcrow">¶</a></p>
 <p id="appendix-B-14">The JSONPath language was designed to:<a href="#appendix-B-14" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="appendix-B-15.1">be naturally based on those language characteristics;<a href="#appendix-B-15.1" class="pilcrow">¶</a>
+<li class="normal" id="appendix-B-15.1">
+          <p id="appendix-B-15.1.1">be naturally based on those language characteristics;<a href="#appendix-B-15.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-15.2">cover only the most essential parts of XPath 1.0;<a href="#appendix-B-15.2" class="pilcrow">¶</a>
+        <li class="normal" id="appendix-B-15.2">
+          <p id="appendix-B-15.2.1">cover only the most essential parts of XPath 1.0;<a href="#appendix-B-15.2.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-15.3">be lightweight in code size and memory consumption;<a href="#appendix-B-15.3" class="pilcrow">¶</a>
+        <li class="normal" id="appendix-B-15.3">
+          <p id="appendix-B-15.3.1">be lightweight in code size and memory consumption;<a href="#appendix-B-15.3.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-15.4">be runtime efficient.<a href="#appendix-B-15.4" class="pilcrow">¶</a>
+        <li class="normal" id="appendix-B-15.4">
+          <p id="appendix-B-15.4.1">be runtime efficient.<a href="#appendix-B-15.4.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <div id="xpath-overview">
@@ -6049,13 +6100,15 @@ operators and functions) than listed in this comparison.  Moreover, there are
 significant differences in how the subscript operator works in XPath and
 JSONPath:<a href="#appendix-B.1-10" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="appendix-B.1-11.1">Square brackets in XPath expressions always operate on the <em>node
+<li class="normal" id="appendix-B.1-11.1">
+            <p id="appendix-B.1-11.1.1">Square brackets in XPath expressions always operate on the <em>node
 set</em> resulting from the previous path fragment. Indices always start
-at 1.<a href="#appendix-B.1-11.1" class="pilcrow">¶</a>
+at 1.<a href="#appendix-B.1-11.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.1-11.2">With JSONPath, square brackets operate on each of the nodes in the <em>nodelist</em>
+          <li class="normal" id="appendix-B.1-11.2">
+            <p id="appendix-B.1-11.2.1">With JSONPath, square brackets operate on each of the nodes in the <em>nodelist</em>
 resulting from the previous query segment. Array indices always start
-at 0.<a href="#appendix-B.1-11.2" class="pilcrow">¶</a>
+at 0.<a href="#appendix-B.1-11.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
