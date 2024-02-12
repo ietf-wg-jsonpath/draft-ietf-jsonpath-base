@@ -101,6 +101,7 @@ Definitions for "object", "array", "number", and "string" remain
 unchanged.
 Importantly, "object" and "array" in particular do not take on a
 generic meaning, such as they would in a general programming context.</t>
+<t>The terminology of <xref target="RFC9485"/> applies.</t>
 <t>Additional terms used in this document are defined below.</t>
         <dl>
           <dt>Value:</dt>
@@ -2238,8 +2239,8 @@ singular query, as for the first argument in the example above).
 If the first argument is not a string or the second argument is not a
 string conforming to <xref target="RFC9485"/>, the result is <tt>LogicalFalse</tt>.
 Otherwise, the string that is the first argument is matched against
-the iregexp contained in the string that is the second argument;
-the result is <tt>LogicalTrue</tt> if the string matches the iregexp and is
+the I-Regexp contained in the string that is the second argument;
+the result is <tt>LogicalTrue</tt> if the string matches the I-Regexp and is
 <tt>LogicalFalse</tt> otherwise.</t>
         </section>
         <section anchor="search">
@@ -2269,7 +2270,7 @@ singular query, as for the first argument in the example above).
 If the first argument is not a string or the second argument is not a
 string conforming to <xref target="RFC9485"/>, the result is <tt>LogicalFalse</tt>.
 Otherwise, the string that is the first argument is searched for at
-least one substring that matches the iregexp contained in the string
+least one substring that matches the I-Regexp contained in the string
 that is the second argument; the result is <tt>LogicalTrue</tt> if such a
 substring exists and is <tt>LogicalFalse</tt> otherwise.</t>
         </section>
