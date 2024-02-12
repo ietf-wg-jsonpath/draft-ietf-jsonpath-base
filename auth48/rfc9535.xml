@@ -800,7 +800,7 @@ escapable           = %x62 / ; b BS backspace U+0008
 hexchar             = non-surrogate /
                       (high-surrogate "\" %x75 low-surrogate)
 non-surrogate       = ((DIGIT / "A"/"B"/"C" / "E"/"F") 3HEXDIG) /
-                       ("D" %x30-37 2HEXDIG )
+                      ("D" %x30-37 2HEXDIG )
 high-surrogate      = "D" ("8"/"9"/"A"/"B") 2HEXDIG
 low-surrogate       = "D" ("C"/"D"/"E"/"F") 2HEXDIG
 
@@ -2828,7 +2828,7 @@ normal-hexchar       = "0" "0"
                              ; omit U+000C-U+000D FF CR
                           ("0" %x65-66) / ; "0e"-"0f"
                           ("1" normal-HEXDIG)
-                        )
+                       )
 normal-HEXDIG        = DIGIT / %x61-66    ; "0"-"9", "a"-"f"
 normal-index-selector = "0" / (DIGIT1 *DIGIT)
                         ; non-negative decimal integer
@@ -3341,7 +3341,7 @@ escapable           = %x62 / ; b BS backspace U+0008
 hexchar             = non-surrogate /
                       (high-surrogate "\" %x75 low-surrogate)
 non-surrogate       = ((DIGIT / "A"/"B"/"C" / "E"/"F") 3HEXDIG) /
-                       ("D" %x30-37 2HEXDIG )
+                      ("D" %x30-37 2HEXDIG )
 high-surrogate      = "D" ("8"/"9"/"A"/"B") 2HEXDIG
 low-surrogate       = "D" ("C"/"D"/"E"/"F") 2HEXDIG
 
@@ -3472,7 +3472,7 @@ normal-hexchar       = "0" "0"
                              ; omit U+000C-U+000D FF CR
                           ("0" %x65-66) / ; "0e"-"0f"
                           ("1" normal-HEXDIG)
-                        )
+                       )
 normal-HEXDIG        = DIGIT / %x61-66    ; "0"-"9", "a"-"f"
 normal-index-selector = "0" / (DIGIT1 *DIGIT)
                         ; non-negative decimal integer
