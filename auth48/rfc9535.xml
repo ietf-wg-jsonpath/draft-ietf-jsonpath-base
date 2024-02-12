@@ -2432,7 +2432,7 @@ name-first          = ALPHA /
                       %x80-D7FF /
                          ; skip surrogate code points
                       %xE000-10FFFF
-name-char           = DIGIT / name-first
+name-char           = name-first / DIGIT
 
 DIGIT               = %x30-39              ; 0-9
 ALPHA               = %x41-5A / %x61-7A    ; A-Z / a-z
@@ -3432,7 +3432,7 @@ name-first          = ALPHA /
                       %x80-D7FF /
                          ; skip surrogate code points
                       %xE000-10FFFF
-name-char           = DIGIT / name-first
+name-char           = name-first / DIGIT
 
 DIGIT               = %x30-39              ; 0-9
 ALPHA               = %x41-5A / %x61-7A    ; A-Z / a-z
