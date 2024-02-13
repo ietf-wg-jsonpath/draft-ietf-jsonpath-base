@@ -3542,7 +3542,7 @@ or the <em>bracket notation</em>
 (<tt>$['store']['book'][0]['title']</tt>); both replace XPath's <tt>/</tt> within query expressions, where <em>dot notation</em> serves as a lightweight but limited syntax while <em>bracket notation</em> is a
 heavyweight but more general syntax.</t>
         <t>Both JSONPath and XPath use <tt>*</tt> for a wildcard.
-The descendant operators, starting with <tt>..</tt>, borrowed from <xref target="E4X"/>, are similar to XPath's <tt>//</tt>.
+JSONPath's descendant segment notation, starting with <tt>..</tt>, borrowed from <xref target="E4X"/>, is similar to XPath's <tt>//</tt>.
 The array slicing construct <tt>[start:end:step]</tt> is unique to JSONPath,
 inspired by <xref target="SLICE"/> from ECMASCRIPT 4.</t>
         <t>Filter expressions are supported via the syntax <tt>?&lt;logical-expr&gt;</tt> as in:</t>
