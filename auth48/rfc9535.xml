@@ -106,10 +106,9 @@ generic meaning, such as they would in a general programming context.</t>
         <dl>
           <dt>Value:</dt>
           <dd>
-            <t>As per <xref target="RFC8259"/>, a structure conforming to the generic data model of JSON, i.e.,
-composed of constituents such as structured values (JSON objects and arrays) and
+            <t>As per <xref target="RFC8259"/>, a data item conforming to the generic data model of JSON, i.e.,
 primitive data (numbers, text strings, and the special
-values null, true, and false).
+values null, true, and false), or structured data (JSON objects and arrays).
 <xref target="RFC8259"/> focuses on the textual representation of JSON values and
 does not fully define the value abstraction assumed here.</t>
           </dd>
