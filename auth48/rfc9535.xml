@@ -139,7 +139,7 @@ It is included here for completeness.</t>
           <dt>Query Argument:</dt>
           <dd>
             <t>Short name for the value a JSONPath expression is applied to.
-(Also used for actual parameters of function expressions.)</t>
+</t>
           </dd>
           <dt>Location:</dt>
           <dd>
