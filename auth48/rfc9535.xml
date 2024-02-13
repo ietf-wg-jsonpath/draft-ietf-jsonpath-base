@@ -812,7 +812,7 @@ HEXDIG              = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
             <ul spacing="normal">
               <li>
                 <tt>Double-quoted</tt> strings follow the JSON string syntax (<xref section="7" sectionFormat="of" target="RFC8259"/>);
-		<tt>single-quoted</tt> strings follow an analogous pattern (<xref target="syntax-index"/>).
+		<tt>single-quoted</tt> strings follow an analogous pattern.
 No attempt was made to improve on this syntax, so if it is desired to
 escape characters with
 scalar values above 0xFFFF, such as <u format="num-lit-name">🎼</u>,
