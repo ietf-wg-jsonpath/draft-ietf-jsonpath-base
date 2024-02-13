@@ -671,7 +671,7 @@ query <tt>$.a[*].b</tt> selects the following list of nodes (denoted here by the
 node of any
 member value of the input
 node corresponding to the member name <tt>"a"</tt>.
-The result is again a list of one node: <tt>[{"b":0},{"b":1},{"c":2}]</tt>.</t>
+The result is again a list containing a single node: <tt>[{"b":0},{"b":1},{"c":2}]</tt>.</t>
           <t>Next, <tt>[*]</tt> selects all the elements
 from the input array node.
 The result is a list of three nodes: <tt>{"b":0}</tt>, <tt>{"b":1}</tt>, and <tt>{"c":2}</tt>.</t>
