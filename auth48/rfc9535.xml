@@ -2990,7 +2990,7 @@ for which no standard JSON escape, such as <tt>\n</tt>, is available.</t>
         </dl>
       </section>
       <section anchor="iana-fnex">
-        <name>Function Extensions</name>
+        <name>Function Extensions Subregistry</name>
         <t>Per this specification, IANA has created a new "Function Extensions" subregistry in
 a new "JSONPath" registry. The "Function Extensions" subregistry has the policy "Expert Review"
 (<xref section="4.5" sectionFormat="of" target="RFC8126"></xref>).</t>
