@@ -578,7 +578,7 @@ to the JSONPath processing (e.g., index values and steps) <bcp14>MUST</bcp14> be
 within the range of exact integer values defined in Internet JSON (I-JSON) (see <xref section="2.2" sectionFormat="of" target="RFC7493"/>), namely within the interval [-(2<sup>53</sup>)+1,
 (2<sup>53</sup>)-1].</li>
           <li>Uses of function extensions <bcp14>MUST</bcp14> be <em>well-typed</em>,
-as described in <xref target="fnex"/>.</li>
+as described in <xref target="well-typedness"/>.</li>
         </ol>
         <t>A JSONPath implementation <bcp14>MUST</bcp14> raise an error for any query that is not
 well-formed and valid.
