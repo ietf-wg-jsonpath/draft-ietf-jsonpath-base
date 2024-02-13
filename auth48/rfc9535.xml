@@ -717,7 +717,7 @@ the query argument, giving locations of the JSON values in the previous column</
 ]]></sourcecode>
           <t>Queries:</t>
           <table anchor="tbl-root">
-            <name>Root Identifier Examples</name>
+            <name>Root Identifier Example</name>
             <thead>
               <tr>
                 <th align="center">Query</th>
