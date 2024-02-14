@@ -1163,8 +1163,9 @@ range of exact values (see <xref target="synsem-overview"/>).</t>
           </section>
           <section anchor="semantics-4">
             <name>Semantics</name>
-            <t>The slice selector was inspired by the slice operator of ECMAScript
-4 (ES4), which was deprecated in 2014, and that of Python.</t>
+            <t>The slice selector was inspired by
+               the slice operator that was proposed for ECMAScript 4 (ES4), which was never released,
+               and that of Python.</t>
             <section anchor="informal-introduction">
               <name>Informal Introduction</name>
               <t>This section is informative.</t>
