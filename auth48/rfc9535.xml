@@ -1671,7 +1671,7 @@ result with a given JSON value as input.</t>
                   <td align="center">
                     <tt>1 &gt; 2</tt></td>
                   <td align="center">false</td>
-                  <td align="center">Strict, numeric comparison</td>
+                  <td align="center">Numeric comparison</td>
                 </tr>
                 <tr>
                   <td align="center">
@@ -1689,7 +1689,7 @@ result with a given JSON value as input.</t>
                   <td align="center">
                     <tt>'a' &gt; 'b'</tt></td>
                   <td align="center">false</td>
-                  <td align="center">Strict, string comparison</td>
+                  <td align="center">String comparison</td>
                 </tr>
                 <tr>
                   <td align="center">
