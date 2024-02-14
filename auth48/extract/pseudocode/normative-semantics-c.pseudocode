@@ -1,0 +1,17 @@
+IF step > 0 THEN
+
+  i = lower
+  WHILE i < upper:
+    SELECT a(i)
+    i = i + step
+  END WHILE
+
+ELSE if step < 0 THEN
+
+  i = upper
+  WHILE lower < i:
+    SELECT a(i)
+    i = i + step
+  END WHILE
+
+END IF
