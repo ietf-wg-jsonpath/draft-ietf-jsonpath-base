@@ -758,7 +758,7 @@ selector            = name-selector /
           <name>Name Selector</name>
           <section anchor="syntax-name">
             <name>Syntax</name>
-            <t>A name selector <tt>'&lt;name&gt;'</tt> selects one object member value at most.</t>
+            <t>A name selector <tt>'&lt;name&gt;'</tt> selects at most one object member value.</t>
             <t>In contrast to JSON,
 the JSONPath syntax allows strings to be enclosed in <em>single</em> or <em>double</em> quotes.</t>
             <sourcecode type="abnf" name="jsonpath-collected.abnf"><![CDATA[
@@ -1071,7 +1071,7 @@ members (but not when it is applied to object nodes with fewer than two members 
           <name>Index Selector</name>
           <section anchor="syntax-index">
             <name>Syntax</name>
-            <t>An index selector <tt>&lt;index&gt;</tt> matches one array element value at most.</t>
+            <t>An index selector <tt>&lt;index&gt;</tt> matches at most one array element value.</t>
             <sourcecode type="abnf" name="jsonpath-collected.abnf"><![CDATA[
 index-selector      = int                        ; decimal integer
 
