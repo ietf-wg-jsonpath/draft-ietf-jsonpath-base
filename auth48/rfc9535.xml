@@ -214,7 +214,7 @@ E000 to 10FFFF). JSONPath queries are sequences of Unicode scalar values.</t>
           <dt>Segment:</dt>
           <dd>
             <t>One of the constructs that selects children (<tt>[&lt;selectors&gt;]</tt>)
-or descendants (<tt>..[&lt;selectors&gt;]</tt>) of an input value.</t>
+or descendants (<tt>..&wj;[&lt;selectors&gt;]</tt>) of an input value.</t>
           </dd>
           <dt>Selector:</dt>
           <dd>
@@ -225,7 +225,7 @@ consisting of child nodes of the input value.</t>
           <dd>
             <t>A JSONPath expression built from segments that have been syntactically restricted in
 a certain way (<xref target="filter-selector-syntax"/>) so that, regardless of the input
-value, the expression produces a nodelist containing one node at most.
+value, the expression produces a nodelist containing at most one node.
 Note: JSONPath expressions that always produce a singular nodelist but do not
 conform to the syntax in <xref target="filter-selector-syntax"/> are not singular queries.</t>
           </dd>
@@ -313,7 +313,7 @@ of the evaluation of a filter expression (<xref target="filter-selector"/>).</t>
         </section>
         <section anchor="segments">
           <name>Segments</name>
-          <t>Segments select children (<tt>[&lt;selectors&gt;]</tt>) or descendants (<tt>..[&lt;selectors&gt;]</tt>) of an input value.</t>
+          <t>Segments select children (<tt>[&lt;selectors&gt;]</tt>) or descendants (<tt>..&wj;[&lt;selectors&gt;]</tt>) of an input value.</t>
           <t>Segments can use <em>bracket notation</em>, for example:</t>
           <sourcecode type="application/jsonpath"><![CDATA[
 $['store']['book'][0]['title']
@@ -385,7 +385,7 @@ $.store.book[?@.price < 10].title
               </tr>
               <tr>
                 <td align="left">
-                  <tt>..[&lt;selectors&gt;]</tt></td>
+                  <tt>..&wj;[&lt;selectors&gt;]</tt></td>
                 <td align="left">
                   <xref target="descendant-segment">descendant segment</xref>: selects zero or more descendants of a node</td>
               </tr>
@@ -1450,7 +1450,7 @@ current-node-identifier = "@"
             <t>Comparison expressions are available for comparisons between primitive
 values (that is, numbers, strings, <tt>true</tt>, <tt>false</tt>, and <tt>null</tt>).
 These can be obtained via literal values; singular queries, each of
-which selects one node at most, the value of which is then used; or
+which selects at most one node, the value of which is then used; or
 function expressions (see <xref target="fnex"/>) of type <tt>ValueType</tt>.</t>
             <sourcecode type="abnf" name="jsonpath-collected.abnf"><![CDATA[
 comparison-expr     = comparable S comparison-op S comparable
@@ -2542,7 +2542,7 @@ its descendants such that:</t>
             </ul>
             <t>The order in which the children of an object are visited is not stipulated, since
 JSON objects are unordered.</t>
-            <t>Suppose the descendant segment is of the form <tt>..[&lt;selectors&gt;]</tt> (after converting any shorthand
+            <t>Suppose the descendant segment is of the form <tt>..&wj;[&lt;selectors&gt;]</tt> (after converting any shorthand
 form to bracket notation),
 and the nodes, in the order visited, are <tt>D1</tt>, ..., <tt>Dn</tt> (where <tt>n &gt;= 1</tt>).
 Note: <tt>D1</tt> is the input value.</t>
@@ -3182,7 +3182,7 @@ of objects, for any query argument conforming with <xref target="RFC7493"/>.</t>
               <organization>The Unicode Consortium</organization>
             </author>
           </front>
-	  <annotation>At the time of writing, &lt;https://www.unicode.org/versions/Unicode15.0.0/UnicodeStandard-15.0.pdf&gt;.</annotation>
+	  <annotation>At the time of writing, <eref target="https://www.unicode.org/versions/Unicode15.0.0/UnicodeStandard-15.0.pdf" brackets="angle"/>.</annotation>
         </reference>
 
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"/>
@@ -3238,7 +3238,7 @@ of objects, for any query argument conforming with <xref target="RFC7493"/>.</t>
           </front>
           <seriesInfo name="ISO/IEC" value="22537:2006"/>
 	  <refcontent>Withdrawn</refcontent>
-	  <annotation>An equivalent specification, also withdrawn, can be obtained from &lt;https://ecma-international.org/publications-and-standards/standards/ecma-357&gt;.</annotation>
+	  <annotation>An equivalent specification, also withdrawn, is available from <eref target="https://ecma-international.org/publications-and-standards/standards/ecma-357" brackets="angle"/>.</annotation>
         </reference>
 
         <reference anchor="SLICE" target="https://github.com/tc39/proposal-slice-notation">
