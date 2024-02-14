@@ -72,7 +72,7 @@
       <name>Introduction</name>
       <t>JSON <xref target="RFC8259"/> is a popular representation
 format for structured data values.
-JSONPath defines a string syntax for selecting and extracting JSON <xref target="RFC8259"/> values
+JSONPath defines a string syntax for selecting and extracting JSON values
 from within a given JSON value.</t>
 <t>In relation to JSON Pointer <xref target="RFC6901"/>, JSONPath is not intended as a replacement but as a more powerful
 companion. See <xref target="json-pointer"/>.</t>
