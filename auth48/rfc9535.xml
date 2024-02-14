@@ -2525,7 +2525,7 @@ descendant-segment  = ".." (bracketed-selection /
             <t><tt>..*</tt>, the <tt>descendant-segment</tt> directly built from a
 <tt>wildcard-selector</tt>, is shorthand for <tt>..[*]</tt>.</t>
             <t><tt>..&lt;member-name&gt;</tt>, a <tt>descendant-segment</tt> built from a
-<tt>member-name-shorthand</tt>, is shorthand for <tt>..['&lt;member-name&gt;']</tt>.
+<tt>member-name-shorthand</tt>, is shorthand for <tt>..&wj;['&lt;member-name&gt;']</tt>.
 Note: As with the similar shorthand of a <tt>child-segment</tt>, this can
 only be used with member names that are composed of certain
 characters, as specified in the ABNF rule <tt>member-name-shorthand</tt>.</t>
@@ -3590,7 +3590,7 @@ with similar XPath concepts.</t>
               <td align="left">
                 <tt>//</tt></td>
               <td align="left">
-                <tt>..name</tt>, <tt>..[index]</tt>, <tt>..*</tt>, or <tt>..[*]</tt></td>
+                <tt>..name</tt>, <tt>..&wj;[index]</tt>, <tt>..*</tt>, or <tt>..[*]</tt></td>
               <td align="left">descendants (JSONPath borrows this syntax from E4X)</td>
             </tr>
             <tr>
@@ -3702,7 +3702,7 @@ and their JSONPath equivalents.</t>
             </tr>
             <tr>
               <td align="left">
-                <tt>//book[position()&lt;3]</tt></td>
+                <tt>//&wj;book[position()&lt;3]</tt></td>
               <td align="left">
                 <tt>$..book[0,1]</tt><br/><tt>$..book[:2]</tt></td>
               <td align="left">the first two books</td>
