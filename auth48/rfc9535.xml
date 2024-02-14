@@ -2906,7 +2906,7 @@ for which no standard JSON escape, such as <tt>\n</tt>, is available.</t>
       <name>IANA Considerations</name>
       <section anchor="registration-of-media-type-applicationjsonpath">
         <name>Registration of Media Type application/jsonpath</name>
-        <t>IANA is requested to register the following media type <xref target="RFC6838"/>:</t>
+        <t>IANA has registered the following media type <xref target="RFC6838"/>:</t>
         <dl>
           <dt>Type name:</dt>
           <dd>
