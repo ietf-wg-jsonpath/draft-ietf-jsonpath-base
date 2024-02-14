@@ -2299,7 +2299,7 @@ instance of <tt>ValueType</tt>.</t>
           <ul spacing="normal">
             <li>If the argument contains a single node, the result is
 the value of the node.</li>
-            <li>If the argument is the special result <tt>Nothing</tt> or contains multiple nodes, the
+            <li>If the argument is the empty nodelist or contains multiple nodes, the
 result is <tt>Nothing</tt>.</li>
           </ul>
           <t>Note: A singular query may be used anywhere where a ValueType is expected,
