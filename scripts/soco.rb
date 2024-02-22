@@ -82,6 +82,6 @@ jsondata = nil
               puts jsondata.to_yaml
             end
           else
-            puts "*** DIDNT EXPECT #{x.name}"
+            puts "*** DIDN'T EXPECT #{x.name}"
           end
         end
