@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-03-14T01:09:46.189999+00:00",
+  "timestamp": "2024-05-02T01:13:09.030834+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -16874,7 +16874,7 @@
       "labels": [],
       "body": "[This question](https://stackoverflow.com/q/78024322/878701) popped up on StackOverflow in which the user wants to select the keys present in the resulting object.  To do this, they're expecting to end the query with `~`.\r\n\r\nSo `$.*~` would select all of the items and then return the keys for those items.\r\n\r\nIn a more complex query, you could have `$[?@.foo == 5]~` to find the property names (or array indices) of every child that meets the condition.\r\n\r\nTo date, I've asked what implementation they're using that supports this syntax, but I've yet to receive a result.\r\n\r\nWe also have #324 that proposed a function extension to do this rather than syntax, but there wasn't much discussion there other than the data is available through the location paths in the query result.  The problem with this is that you can't check that until the query is complete.\r\n\r\nI think a benefit of this is that you could continue querying on the property name set.\r\n\r\nBuilding on the more complex example, with an array of objects, if I wanted the index of the third item where `@.foo == 5`, I could do `$[?@.foo == 5]~[2]`.\r\n\r\nLogging for visibility and discussion.  It seems simple enough.  (This would also be the first functionality that actually _uses_ the location data as part of the query.)",
       "createdAt": "2024-02-21T00:03:05Z",
-      "updatedAt": "2024-02-21T22:12:09Z",
+      "updatedAt": "2024-05-01T20:52:59Z",
       "closedAt": null,
       "comments": [
         {
@@ -16918,6 +16918,83 @@
           "body": "> [Jayway JsonPath](https://github.com/json-path/JsonPath), [JSONPath Plus](https://github.com/JSONPath-Plus/JSONPath) and [Python JSONPath](https://github.com/jg-rp/python-jsonpath) all support using `~` as a keys selector, each with subtly different behaviour.\r\n\r\nJayway supports a `keys()` function as an _alternative_ to the tilde operator, I don't think it supports the tilde operator itself.\r\n\r\nNote that Jayway (and some other implementations) support functions applied to paths, the IETF document restricts them to filter expressions. \r\n\r\n",
           "createdAt": "2024-02-21T22:07:43Z",
           "updatedAt": "2024-02-21T22:12:09Z"
+        },
+        {
+          "author": "He-Pin",
+          "authorAssociation": "NONE",
+          "body": "That's ture, for my case I want to update the json object string to a json object, do some update on it and then translate it back json object string \r\nwith json\r\n```json\r\n{\r\n  \"data\": {\r\n    \"header_1\": {\r\n      \"a\": \"1\",\r\n      \"b\": \"2\",\r\n      \"body\": \"{\\\"c\\\":\\\"3\\\"}\"\r\n    },\r\n    \"header_2\": {\r\n      \"a\": \"1\",\r\n      \"b\": \"2\",\r\n      \"body\": \"{\\\"c\\\":\\\"3\\\"}\"\r\n    }\r\n  }\r\n}\r\n```\r\nthe progress\r\n\r\n```json\r\n//to json\r\n{\"data\":{\"header_1\":{\"a\":\"1\",\"b\":\"2\",\"body\":{\"c\":\"3\"}},\"header_2\":{\"a\":\"1\",\"b\":\"2\",\"body\":{\"c\":\"3\"}}}}\r\n// update `c`\r\n{\"data\":{\"header_1\":{\"a\":\"1\",\"b\":\"2\",\"body\":{\"c\":\"6666\"}},\"header_2\":{\"a\":\"1\",\"b\":\"2\",\"body\":{\"c\":\"6666\"}}}}\r\n//conver back\r\n{\"data\":{\"header_1\":{\"a\":\"1\",\"b\":\"2\",\"body\":\"{\\\"c\\\":\\\"6666\\\"}\"},\"header_2\":{\"a\":\"1\",\"b\":\"2\",\"body\":\"{\\\"c\\\":\\\"6666\\\"}\"}}}\r\n```",
+          "createdAt": "2024-04-30T05:41:04Z",
+          "updatedAt": "2024-04-30T05:42:51Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@He-Pin JSON Path isn't going to do any kind of conversions.  It's a query language, nothing more.  It can get you the values that you want to modify, but you'll need to something custom for your use case.  I don't think JSON Path is the tool you need.",
+          "createdAt": "2024-04-30T06:35:17Z",
+          "updatedAt": "2024-04-30T06:35:17Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@He-Pin I agree with @gregsdennis in that JSONPath _per se_ doesn't solve your problem. However, it would be possible to implement JSONPath to support the use case you describe. Since RFC 9535 doesn't stipulate how a nodelist is implemented, it could be a list of references into a tree representing the argument. That's the approach I took with [yaml-jsonpath](https://github.com/vmware-labs/yaml-jsonpath/blob/6fcd98015d14ab2208d3ffb645a6d7a197d96344/pkg/yamlpath/path.go#L24) (NB. this pre-dates and does not implement RFC 9535). The result can then be used to manipulate the input tree, etc.",
+          "createdAt": "2024-04-30T15:55:32Z",
+          "updatedAt": "2024-04-30T15:55:32Z"
+        },
+        {
+          "author": "He-Pin",
+          "authorAssociation": "NONE",
+          "body": "Thanks for your replay, actually,  the well defined RFC helps me a lot to implement my own parser, I will start implement the interpreter after holiday \n\nThe current RFC is in good shape,  but I think there are some specific user cases as I statemented,  If that jsonpath its self is more extensible or expressive, that would be better.\n\nA good news I want to share is our implementation is based on the current RFC, and thank you very much, I would like to buy you coffee if I can, thanks.\n\n",
+          "createdAt": "2024-04-30T16:18:30Z",
+          "updatedAt": "2024-04-30T16:18:30Z"
+        },
+        {
+          "author": "timbray",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Interesting discussion. @He-Pin - if your implementation becomes public, do please let us know, that would be very interesting.",
+          "createdAt": "2024-04-30T16:27:39Z",
+          "updatedAt": "2024-04-30T16:27:39Z"
+        },
+        {
+          "author": "He-Pin",
+          "authorAssociation": "NONE",
+          "body": "> Interesting discussion. @He-Pin - if your implementation becomes public, do please let us know, that would be very interesting.\n\nI will, it's currently written in Java21 and Scala, as the.RFC is well defined,  implement it ourself is very straightforward. ",
+          "createdAt": "2024-04-30T16:58:23Z",
+          "updatedAt": "2024-04-30T16:58:23Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@He-Pin have you run your implementation against the [test suite](https://github.com/jsonpath-standard/jsonpath-compliance-test-suite)?\r\n\r\n(BTW - To the (former) WG who decided that Slack shouldn't be a part of the JSON Path effort, this conversation about a new implementation would be perfect for Slack instead of off-topic in a GH issue.)",
+          "createdAt": "2024-04-30T18:52:29Z",
+          "updatedAt": "2024-04-30T18:52:29Z"
+        },
+        {
+          "author": "He-Pin",
+          "authorAssociation": "NONE",
+          "body": "> @He-Pin have you run your implementation against the [test suite](https://github.com/jsonpath-standard/jsonpath-compliance-test-suite)?\n> \n> (BTW - To the (former) WG who decided that Slack shouldn't be a part of the JSON Path effort, this conversation about a new implementation would be perfect for Slack instead of off-topic in a GH issue.)\n\nThanks for the pointer, yes, I will make our implementation full pass the tests, it's holiday in China,  will keep you updated once done.",
+          "createdAt": "2024-04-30T19:13:35Z",
+          "updatedAt": "2024-04-30T19:13:35Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": "> (BTW - To the (former) WG who decided that Slack shouldn't be a part of the JSON Path effort, this conversation about a new implementation would be perfect for Slack instead of off-topic in a GH issue.)\r\n\r\nWhy not simply enable github discussions? That's what they're for. I never fully understood why the WG opposed that when it was suggested earlier.",
+          "createdAt": "2024-05-01T12:38:38Z",
+          "updatedAt": "2024-05-01T12:38:38Z"
+        },
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "The jsonpath WG has [completed its chartered work][1].\r\nI think that maintaining a space for discussions is a laudable goal, but we'd need to find people that might want to curate that, as the WG chairs are now out of that job.\r\n\r\n[1]: https://datatracker.ietf.org/wg/jsonpath/about/",
+          "createdAt": "2024-05-01T14:29:18Z",
+          "updatedAt": "2024-05-01T14:29:18Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I'm going to open a new issue for the community building discussion.  See #521.",
+          "createdAt": "2024-05-01T20:17:39Z",
+          "updatedAt": "2024-05-01T20:52:59Z"
         }
       ]
     },
@@ -16942,6 +17019,155 @@
           "body": "> Most frameworks for processing JSON allow the ability to configure the serialization/deserializaiton to account for the fact that the data may be cased differently.\n\nI haven't seen evidence that _specifications_ do this, but rather it's the implementations (operating outside of the related specs) that provide this feature via a setting.",
           "createdAt": "2024-03-12T18:17:08Z",
           "updatedAt": "2024-03-12T18:17:08Z"
+        }
+      ]
+    },
+    {
+      "number": 519,
+      "id": "I_kwDOEIqrgc6HU4j0",
+      "title": "Add a new selector type: regex selector",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/519",
+      "state": "OPEN",
+      "author": "He-Pin",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "We have some fields in object/array , which is generated by backend, with name `header_$id`, I would like to select it with regex.",
+      "createdAt": "2024-04-30T02:52:45Z",
+      "updatedAt": "2024-04-30T05:37:47Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Hey there @He-Pin.  We actually have some support for that in the RFC.  There are two regex functions, `match()` and `search()`.\r\n\r\n[`match()`](https://www.rfc-editor.org/rfc/rfc9535.html#section-2.4.6) is implicitly anchored and will match on the full string.\r\n\r\n[`search()`](https://www.rfc-editor.org/rfc/rfc9535.html#section-2.4.7) is unanchored and will match on substrings.\r\n\r\nBoth use a flavor of regex called [i-regexp](https://www.rfc-editor.org/rfc/rfc9485.html), which was developed to be a compatible subset of most commonly used regex engines.",
+          "createdAt": "2024-04-30T03:13:22Z",
+          "updatedAt": "2024-04-30T03:13:22Z"
+        },
+        {
+          "author": "He-Pin",
+          "authorAssociation": "NONE",
+          "body": "I checked that but seem will not match our usage.\r\n```json\r\n{\r\n  \"data\": {\r\n    \"header_1\": {\r\n      \"a\": \"1\",\r\n      \"b\": \"2\",\r\n      \"body\": \"{\\\"c\\\":\\\"3\\\"}\"\r\n    },\r\n    \"header_2\": {\r\n      \"a\": \"1\",\r\n      \"b\": \"2\",\r\n      \"body\": \"{\\\"c\\\":\\\"3\\\"}\"\r\n    }\r\n  }\r\n}\r\n```\r\n\r\nbackground: we want to select some json fields for translation. tried java jsonpath implementation. as the json above, we want to select the fields `header_1` and `header_2` first, does that supported with the current rfc?\r\n\r\nI was using `$.data[?(@.keys() =~ /header_\\d+/i)]` but doesn't work. so now, I'm implementation one base on the RFC and with the extended grammar:\r\n\r\nregexSelector: `/string-literal/`\r\n\r\nthen I can write `$[data][/header_\\d+/]`\r\n\r\nas you can see, the main point here we are select on object children's property name",
+          "createdAt": "2024-04-30T03:42:33Z",
+          "updatedAt": "2024-04-30T03:43:44Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Oh, you want the property names to be matched, not the values.\r\n\r\nThat, I think is likely going to be covered by #516, which is the piece you're missing.  Once you can access the property names, you should be able to pass them into the functions.",
+          "createdAt": "2024-04-30T04:13:18Z",
+          "updatedAt": "2024-04-30T04:13:18Z"
+        },
+        {
+          "author": "He-Pin",
+          "authorAssociation": "NONE",
+          "body": "I think we need the pointer to the child property name, maybe `key()` not `keys()`.",
+          "createdAt": "2024-04-30T05:37:46Z",
+          "updatedAt": "2024-04-30T05:37:46Z"
+        }
+      ]
+    },
+    {
+      "number": 520,
+      "id": "I_kwDOEIqrgc6HVi_I",
+      "title": "directive support",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/520",
+      "state": "OPEN",
+      "author": "He-Pin",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Backgroud:\r\nI need to do some translation of a dedicated `string` field from Chinese to other languages, but some fields live inside a internal json object string( a json object, but a jsonString type`.\r\n\r\n```\r\n{\r\n  \"data\": {\r\n    \"header_1\": {\r\n      \"a\": \"1\",\r\n      \"b\": \"2\",\r\n      \"body\": \"{\\\"c\\\":\\\"3\\\"}\"\r\n    },\r\n    \"header_2\": {\r\n      \"a\": \"1\",\r\n      \"b\": \"2\",\r\n      \"body\": \"{\\\"c\\\":\\\"3\\\"}\"\r\n    }\r\n  }\r\n}\r\n```\r\n\r\nWith the current java jsonpath:\r\n```json\r\n//to json\r\n{\"data\":{\"header_1\":{\"a\":\"1\",\"b\":\"2\",\"body\":{\"c\":\"3\"}},\"header_2\":{\"a\":\"1\",\"b\":\"2\",\"body\":{\"c\":\"3\"}}}}\r\n// update `c`\r\n{\"data\":{\"header_1\":{\"a\":\"1\",\"b\":\"2\",\"body\":{\"c\":\"6666\"}},\"header_2\":{\"a\":\"1\",\"b\":\"2\",\"body\":{\"c\":\"6666\"}}}}\r\n//conver back\r\n{\"data\":{\"header_1\":{\"a\":\"1\",\"b\":\"2\",\"body\":\"{\\\"c\\\":\\\"6666\\\"}\"},\"header_2\":{\"a\":\"1\",\"b\":\"2\",\"body\":\"{\\\"c\\\":\\\"6666\\\"}\"}}}\r\n```\r\n\r\nI more like to do this in a one run. eg:\r\n\r\n```jsonpath\r\n$.data[/header_\\d+/].body[@toJson()].c[@translate()]\r\n```\r\n\r\nJust like the GraphQL's `directives` https://www.apollographql.com/docs/apollo-server/schema/directives/#custom-directives",
+      "createdAt": "2024-04-30T06:00:13Z",
+      "updatedAt": "2024-04-30T19:26:20Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "As I mentioned in #516, I don't think JSON Path is the right tool for you.\n\nAlso, have a look at the conversation in #514 as to why mutation of data, even internally, isn't likely to happen.",
+          "createdAt": "2024-04-30T06:37:21Z",
+          "updatedAt": "2024-04-30T06:37:21Z"
+        },
+        {
+          "author": "He-Pin",
+          "authorAssociation": "NONE",
+          "body": "I just implemented it internally,  but this would be a nice addition, graphql is a query language so does jsonnet, I think it's pretty valid to extends it with directives, which operates on the selected nodes, and the default behavior is identity function.\n\nI took this from graphql , jaywalking Jason path have a pathfunction which let you do this too.\n\nAnd it has a update and set method.",
+          "createdAt": "2024-04-30T13:10:21Z",
+          "updatedAt": "2024-04-30T13:10:21Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> graphql is a query language so does jsonnet\r\n\r\nI'm quite familiar with both of these.\r\n\r\nThese languages _can_ query, but they can also do a lot more, including mutation.  JSON Path is _only_ a query language.  It does not mutate.  It's read-only.",
+          "createdAt": "2024-04-30T18:48:07Z",
+          "updatedAt": "2024-04-30T18:48:07Z"
+        },
+        {
+          "author": "He-Pin",
+          "authorAssociation": "NONE",
+          "body": "> > graphql is a query language so does jsonnet\n> \n> I'm quite familiar with both of these.\n> \n> These languages _can_ query, but they can also do a lot more, including mutation.  JSON Path is _only_ a query language.  It does not mutate.  It's read-only.\n\nIt's not read only, I implement one and still use it at work, directive can modify the node , as @uppercase",
+          "createdAt": "2024-04-30T19:03:26Z",
+          "updatedAt": "2024-04-30T19:03:26Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "You misunderstand.\r\n\r\nJSON Path, per the original idea _and_ the specification, _is_ definitely read-only.  Any behavior that you might add to your implementation is extension behavior and not compliant with the spec.  As such it should be disabled by default.",
+          "createdAt": "2024-04-30T19:06:36Z",
+          "updatedAt": "2024-04-30T19:06:36Z"
+        },
+        {
+          "author": "He-Pin",
+          "authorAssociation": "NONE",
+          "body": "> You misunderstand.\n> \n> JSON Path, per the original idea _and_ the specification, _is_ definitely read-only.  Any behavior that you might add to your implementation is extension behavior and not compliant with the spec.  As such it should be disabled by default.\n\nYes and no, with the directive, the implementation can achieve me and still fulfill the spec.",
+          "createdAt": "2024-04-30T19:09:37Z",
+          "updatedAt": "2024-04-30T19:09:37Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Part of implementing the specification is failing when it's supposed to.  If you support extra syntax, it won't fail.",
+          "createdAt": "2024-04-30T19:26:19Z",
+          "updatedAt": "2024-04-30T19:26:19Z"
+        }
+      ]
+    },
+    {
+      "number": 521,
+      "id": "I_kwDOEIqrgc6HjUV8",
+      "title": "Building a JSON Path community - an invitation to Slack",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/521",
+      "state": "OPEN",
+      "author": "gregsdennis",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Before the IETF took over the specification effort, Glyn created a [Slack workspace](https://join.slack.com/t/jsonpath-standard/shared_invite/zt-2ib70i0vk-z5YmH18OjXQhrDymHB1HKg) for collaboration and community building.  Once the effort became an IETF project, the Working Group decreed that Slack was an unacceptable place for discussion because it was ephemeral and could not be archived by IETF.  Thus all discussion was confined to the IETF mailing list and GitHub issues.  (GitHub issues were actually only hestitantly included because those updates could be archived via some other IETF process.)\r\n\r\nNow, as a result of that decision, there is no community for JSON Path, and the new RFC 9535 seems to have gone relatively unnoticed, except for the few places where I've advertised it, like with tooling providers and StackOverflow.\r\n\r\nWith the publication, the IETF WG has disbanded, and I think the effort to start building a community around the standard is long overdue.\r\n\r\nMailing lists and Github issues are fine, but email is archaic, and newer developers prefer more real-time communication.  This is my experience of ~10 years working with JSON Schema.\r\n\r\nJSON Schema's community has thrived by using a combination of GitHub issues/discussions and Slack (no mailing lists).  Participants don't care whether their conversations are archived because it's generally:\r\n\r\n- one-off questions\r\n- chat about tangential tech\r\n- chat about completely unrelated things\r\n\r\nDiscussions around actual spec development are redirected to GitHub, where it's a bit more \"official\" and public.  But that's not to say that offline conversations can't also be had, so long as the result is posted back to an issue.\r\n\r\nHowever, building a community around JSON Path isn't about discussing the direction of the spec.  It's about providing help to those trying to use and implement the spec.  This kind of discussion doesn't need to be archived (it's probably better than it's not), and it needs to be more real-time.\r\n\r\nA community needs a space to have these kinds of conversations, and restricting all conversation to email lists and GitHub actively prevents such a space from forming.\r\n\r\nGlyn has left the Slack workspace to me, and I intend to grow the community there.  I invite anyone who wants to join for some conversation.",
+      "createdAt": "2024-05-01T20:52:33Z",
+      "updatedAt": "2024-05-01T23:25:36Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "On 1. May 2024, at 22:52, Greg Dennis ***@***.***> wrote:\r\n> \r\n> Slack was an unacceptable place for discussion because it was ephemeral and could not be archived by IETF. \r\n\r\nN.B.: The \u201cbecause\u2026\u201d was the killer argument, but it is not the only reason Slack is unacceptable for some.\r\n(What you have been describing is typically done in a much better way by stackoverflow.  And by ChatGPT :-)\r\n\r\nGr\u00fc\u00dfe, Carsten\r\n\r\n",
+          "createdAt": "2024-05-01T22:15:52Z",
+          "updatedAt": "2024-05-01T22:15:52Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> The \u201cbecause\u2026\u201d was the killer argument...\r\n\r\nThese are not spec-development topics!  They don't need to be archived.  The argument is saying that _every_ conversation about JSON Path needs to be archived specifically by IETF.  That's simply not true.\r\n\r\nI'm merely providing a communal space for such conversations.\r\n\r\n> What you have been describing is typically done in a much better way by stackoverflow.  And by ChatGPT\r\n\r\nStackOverflow is a question/answer site, yes, but it can't build a community; neither can AI bots, which were just becoming a thing when the topic came up before.\r\n\r\nI'm doing this to provide a space for users and tooling maintainers to have _conversations_, not just post a single question and get a selection of variable-quality answers.\r\n\r\nJSON Schema does this.  OpenAPI does this.  .Net does this (but with Discord).  There are a lot of specifications which have _communities_ built around them, and the WG refused to acknowledge the value that community provides.\r\n\r\nWhat I don't understand is the opposition.  If you don't want to participate, then don't.  But no one has the authority to say that I'm not allowed to do this, not even the IETF or specification authors.",
+          "createdAt": "2024-05-01T23:08:04Z",
+          "updatedAt": "2024-05-01T23:08:04Z"
+        },
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "On 2. May 2024, at 01:08, Greg Dennis ***@***.***> wrote:\r\n> \r\n> What I don't understand is the opposition. If you don't want to participate, then don't. But no one has the authority to say that I'm not allowed to do this, not even the IETF or specification authors.\r\n\r\nI\u2019m not opposing that you are building your Slack channel.\r\nI just wanted to clarify that the IETF requirement for archiving the communication wasn\u2019t the only reason we didn\u2019t go for Slack earlier.\r\nDon\u2019t feel constrained in your personal activities by my 2\u00a2 of information \u2026\r\n\r\nGr\u00fc\u00dfe, Carsten\r\n\r\n",
+          "createdAt": "2024-05-01T23:25:34Z",
+          "updatedAt": "2024-05-01T23:25:34Z"
         }
       ]
     }
