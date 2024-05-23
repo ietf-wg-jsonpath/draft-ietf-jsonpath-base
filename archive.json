@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-05-21T01:15:48.713300+00:00",
+  "timestamp": "2024-05-23T01:15:44.243840+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -17201,7 +17201,7 @@
       "labels": [],
       "body": "Before the IETF took over the specification effort, Glyn created a [Slack workspace](https://join.slack.com/t/jsonpath-standard/shared_invite/zt-2ib70i0vk-z5YmH18OjXQhrDymHB1HKg) for collaboration and community building.  Once the effort became an IETF project, the Working Group decreed that Slack was an unacceptable place for discussion because it was ephemeral and could not be archived by IETF.  Thus all discussion was confined to the IETF mailing list and GitHub issues.  (GitHub issues were actually only hestitantly included because those updates could be archived via some other IETF process.)\r\n\r\nNow, as a result of that decision, there is no community for JSON Path, and the new RFC 9535 seems to have gone relatively unnoticed, except for the few places where I've advertised it, like with tooling providers and StackOverflow.\r\n\r\nWith the publication, the IETF WG has disbanded, and I think the effort to start building a community around the standard is long overdue.\r\n\r\nMailing lists and Github issues are fine, but email is archaic, and newer developers prefer more real-time communication.  This is my experience of ~10 years working with JSON Schema.\r\n\r\nJSON Schema's community has thrived by using a combination of GitHub issues/discussions and Slack (no mailing lists).  Participants don't care whether their conversations are archived because it's generally:\r\n\r\n- one-off questions\r\n- chat about tangential tech\r\n- chat about completely unrelated things\r\n\r\nDiscussions around actual spec development are redirected to GitHub, where it's a bit more \"official\" and public.  But that's not to say that offline conversations can't also be had, so long as the result is posted back to an issue.\r\n\r\nHowever, building a community around JSON Path isn't about discussing the direction of the spec.  It's about providing help to those trying to use and implement the spec.  This kind of discussion doesn't need to be archived (it's probably better than it's not), and it needs to be more real-time.\r\n\r\nA community needs a space to have these kinds of conversations, and restricting all conversation to email lists and GitHub actively prevents such a space from forming.\r\n\r\nGlyn has left the Slack workspace to me, and I intend to grow the community there.  I invite anyone who wants to join for some conversation.",
       "createdAt": "2024-05-01T20:52:33Z",
-      "updatedAt": "2024-05-21T00:21:24Z",
+      "updatedAt": "2024-05-21T03:19:55Z",
       "closedAt": null,
       "comments": [
         {
@@ -17280,6 +17280,20 @@
           "body": "Good callout @glyn.\r\n\r\nRef: https://www.securityweek.com/user-outcry-as-slack-scrapes-customer-data-for-ai-model-training/\r\n\r\nI have requested opt-out for the JSON Path workspace.",
           "createdAt": "2024-05-21T00:21:23Z",
           "updatedAt": "2024-05-21T00:21:23Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Received this in response to my opt-out request: \n\n> Thank you for reaching out to Slack support. Your opt-out request has been completed.\n>\n> For clarity, Slack has platform-level machine learning models for things like channel and emoji recommendations and search results. We do not build or train these models in such a way that they could learn, memorize, or be able to reproduce some part of customer data. Our published policies cover those here (https://slack.com/trust/data-management/privacy-principles), and as shared above your opt out request has been processed.\n>\n> Slack AI is a separately purchased add-on that uses Large Language Models (LLMs) but does not train those LLMs on customer data. Slack AI uses LLMs hosted directly within Slack\u2019s AWS infrastructure, so that customer data remains in-house and is not shared with any LLM provider. This ensures that Customer Data stays in that organization\u2019s control and exclusively for that organization\u2019s use. You can read more about how we\u2019ve built Slack AI to be secure and private here: https://slack.engineering/how-we-built-slack-ai-to-be-secure-and-private/.",
+          "createdAt": "2024-05-21T03:09:23Z",
+          "updatedAt": "2024-05-21T03:09:23Z"
+        },
+        {
+          "author": "He-Pin",
+          "authorAssociation": "NONE",
+          "body": "![image](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/assets/501740/d9b90ce4-b53f-4d32-ae7f-098f518a9bd6)\r\n",
+          "createdAt": "2024-05-21T03:19:54Z",
+          "updatedAt": "2024-05-21T03:19:54Z"
         }
       ]
     }
