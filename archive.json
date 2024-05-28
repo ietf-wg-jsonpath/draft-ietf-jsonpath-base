@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-05-23T01:15:44.243840+00:00",
+  "timestamp": "2024-05-28T01:16:38.935569+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -17294,6 +17294,72 @@
           "body": "![image](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/assets/501740/d9b90ce4-b53f-4d32-ae7f-098f518a9bd6)\r\n",
           "createdAt": "2024-05-21T03:19:54Z",
           "updatedAt": "2024-05-21T03:19:54Z"
+        }
+      ]
+    },
+    {
+      "number": 522,
+      "id": "I_kwDOEIqrgc6KMYPs",
+      "title": "Singular path as selector",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/522",
+      "state": "OPEN",
+      "author": "gregsdennis",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Inspired by a [StackOverflow question](https://stackoverflow.com/q/78537335/878701), I think a singular path could be a viable selector.\n\nThe example given is\n\n```jsonpath\naddresses[productData.products[0].addressRefId].storeName\n```\n\nI see this as taking the value in `productData.products[0].addressRefId` as the selector value. \n\nThis would, for example, allow the data to contain the index of an array (or the key of an object) to select, amongst other similar functionality.\n\nIf we could work out a way to support multi-value paths, that'd be cool, but I think singular paths are simple enough to do.",
+      "createdAt": "2024-05-27T07:57:04Z",
+      "updatedAt": "2024-05-27T15:40:13Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "He-Pin",
+          "authorAssociation": "NONE",
+          "body": "But it can be expressed with the filter with test-expr.",
+          "createdAt": "2024-05-27T08:32:15Z",
+          "updatedAt": "2024-05-27T08:32:15Z"
+        },
+        {
+          "author": "vishalJ16",
+          "authorAssociation": "NONE",
+          "body": "@He-Pin Can you please help with the expression. I tried multiple ways drawing inspiration from here https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/156 but could not come up with a working one, because none of the method could give me the value of inner path `productData.products[0].addressRefId` , to be used as a \"key\" for outer path `addresses[\"inner path evaluated value\"].storeName `",
+          "createdAt": "2024-05-27T12:10:38Z",
+          "updatedAt": "2024-05-27T12:10:38Z"
+        },
+        {
+          "author": "jg-rp",
+          "authorAssociation": "NONE",
+          "body": "I like this syntax.\r\n\r\nEquivalent results could be achieved using a filter selector and a non-standard key/index identifier or function. I've tried to describe such a _current key identifier_ [here](https://jg-rp.github.io/json-p3/guides/jsonpath-extra#current-key-identifier) (`#` is the name or index associated with `@`).\r\n\r\n```\r\naddresses[?# = $.productData.products[0].addressRefId].storeName\r\n``` \r\n\r\nBut a singular path being coerced to a name or index selector looks nicer to me.\r\n",
+          "createdAt": "2024-05-27T12:44:50Z",
+          "updatedAt": "2024-05-27T12:44:50Z"
+        },
+        {
+          "author": "He-Pin",
+          "authorAssociation": "NONE",
+          "body": "@vishalJ16 I think the root cause is current filter selector only works on the member's value, \r\nWe are facing the same problem ,and we are using `[/$regexExp/$flags]` to match the keys (only works on a JSON object)`\r\n\r\nI would like to have a key filter, something like the `@` but point to the member's name or idx.\r\n\r\nUpdated:\r\nI think @jg-rp 's idea is great:\r\n1. `@` refs  to the member value\r\n2. `#` refs to member name / index\r\n\r\nAnother thing we need to address is , how to pass the `#` to the current function definition, maybe we need add something to the type system.",
+          "createdAt": "2024-05-27T14:16:43Z",
+          "updatedAt": "2024-05-27T14:22:13Z"
+        },
+        {
+          "author": "vishalJ16",
+          "authorAssociation": "NONE",
+          "body": "@He-Pin \r\nWhat essentially you meant is @jg-rp expression is something which could have worked, but currently it's not possible, am I correct?\r\nAnd is it right to conclude that my requirement is not possible with the current version of jayway-jsonpath and It requires a code change?",
+          "createdAt": "2024-05-27T14:38:51Z",
+          "updatedAt": "2024-05-27T14:38:51Z"
+        },
+        {
+          "author": "He-Pin",
+          "authorAssociation": "NONE",
+          "body": "> @He-Pin \n> What essentially you meant is @jg-rp expression is something which could have worked, but currently it's not possible, am I correct?\n> And is it right to conclude that my requirement is not possible with the current version of jayway-jsonpath and It requires a code change?\n\nWith jayway, it's possibly,  you need to register a pathfunction with reflection.",
+          "createdAt": "2024-05-27T14:42:57Z",
+          "updatedAt": "2024-05-27T14:42:57Z"
+        },
+        {
+          "author": "jg-rp",
+          "authorAssociation": "NONE",
+          "body": "> how to pass the # to the current function definition, maybe we need add something to the type system.\r\n\r\n@He-Pin I've been treating the result of `#` as a ValueType, so standard functions that accept a ValueType can be used without modification.\r\n\r\n```\r\n$[?match(#, 'ab.*')]\r\n```\r\n\r\nAn alternative might be to allow function extensions to accept a union of types for a parameter. Then, for example, `match()` could be defined to take an argument of `ValueType | KeyType` for  its first parameter, and `ValueType` for the second.",
+          "createdAt": "2024-05-27T15:35:29Z",
+          "updatedAt": "2024-05-27T15:40:13Z"
         }
       ]
     }
