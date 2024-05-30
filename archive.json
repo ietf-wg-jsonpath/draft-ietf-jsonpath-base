@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-05-28T01:16:38.935569+00:00",
+  "timestamp": "2024-05-30T01:17:06.844542+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -17309,7 +17309,7 @@
       "labels": [],
       "body": "Inspired by a [StackOverflow question](https://stackoverflow.com/q/78537335/878701), I think a singular path could be a viable selector.\n\nThe example given is\n\n```jsonpath\naddresses[productData.products[0].addressRefId].storeName\n```\n\nI see this as taking the value in `productData.products[0].addressRefId` as the selector value. \n\nThis would, for example, allow the data to contain the index of an array (or the key of an object) to select, amongst other similar functionality.\n\nIf we could work out a way to support multi-value paths, that'd be cool, but I think singular paths are simple enough to do.",
       "createdAt": "2024-05-27T07:57:04Z",
-      "updatedAt": "2024-05-27T15:40:13Z",
+      "updatedAt": "2024-05-28T10:52:57Z",
       "closedAt": null,
       "comments": [
         {
@@ -17329,9 +17329,9 @@
         {
           "author": "jg-rp",
           "authorAssociation": "NONE",
-          "body": "I like this syntax.\r\n\r\nEquivalent results could be achieved using a filter selector and a non-standard key/index identifier or function. I've tried to describe such a _current key identifier_ [here](https://jg-rp.github.io/json-p3/guides/jsonpath-extra#current-key-identifier) (`#` is the name or index associated with `@`).\r\n\r\n```\r\naddresses[?# = $.productData.products[0].addressRefId].storeName\r\n``` \r\n\r\nBut a singular path being coerced to a name or index selector looks nicer to me.\r\n",
+          "body": "I like this syntax.\r\n\r\nEquivalent results could be achieved using a filter selector and a non-standard key/index identifier or function. I've tried to describe such a _current key identifier_ [here](https://jg-rp.github.io/json-p3/guides/jsonpath-extra#current-key-identifier) (`#` is the name or index associated with `@`).\r\n\r\n```\r\n$.addresses[?# = $.productData.products[0].addressRefId].storeName\r\n``` \r\n\r\nBut a singular path being coerced to a name or index selector looks nicer to me.\r\n",
           "createdAt": "2024-05-27T12:44:50Z",
-          "updatedAt": "2024-05-27T12:44:50Z"
+          "updatedAt": "2024-05-28T06:11:36Z"
         },
         {
           "author": "He-Pin",
@@ -17360,6 +17360,27 @@
           "body": "> how to pass the # to the current function definition, maybe we need add something to the type system.\r\n\r\n@He-Pin I've been treating the result of `#` as a ValueType, so standard functions that accept a ValueType can be used without modification.\r\n\r\n```\r\n$[?match(#, 'ab.*')]\r\n```\r\n\r\nAn alternative might be to allow function extensions to accept a union of types for a parameter. Then, for example, `match()` could be defined to take an argument of `ValueType | KeyType` for  its first parameter, and `ValueType` for the second.",
           "createdAt": "2024-05-27T15:35:29Z",
           "updatedAt": "2024-05-27T15:40:13Z"
+        },
+        {
+          "author": "jg-rp",
+          "authorAssociation": "NONE",
+          "body": "Here's my attempt at describing a singular query selector.\r\n\r\nI'm still undecided as to whether the root identifier should be explicit or implicit for embedded queries. If the embedded query starts with a bracketed selection, the `$` might make it easier to read.\r\n\r\n```\r\n$.a.j[$['c d'].x.y]\r\n``` \r\n\r\nvs\r\n\r\n```\r\n$.a.j[['c d'].x.y]\r\n```\r\n\r\n## Singular Query Selector\r\n\r\nThe singular query selector consist of an embedded absolute singular query, the result of which is used as an object member name or array element index.\r\n\r\nIf the embedded query resolves to a string or int value, at most one object member value or array element value is selected. Otherwise the singular query selector selects nothing.\r\n\r\n### Syntax\r\n\r\n```\r\nselector                = name-selector /\r\n                          wildcard-selector /\r\n                          slice-selector /\r\n                          index-selector /\r\n                          filter-selector /\r\n                          singular-query-selector\r\n\r\nsingular-query-selector = abs-singular-query\r\n```\r\n\r\n### Examples\r\n\r\n```json\r\n{\r\n  \"a\": {\r\n    \"j\": [1, 2, 3],\r\n    \"p\": {\r\n      \"q\": [4, 5, 6]\r\n    }\r\n  },\r\n  \"b\": [\"j\", \"p\", \"q\"],\r\n  \"c d\": {\r\n    \"x\": {\r\n      \"y\": 1\r\n    }\r\n  }\r\n}\r\n```\r\n\r\n| Query                 | Result             | Result Path      | Comment                                                           |\r\n| --------------------- | ------------------ | ---------------- | ----------------------------------------------------------------- |\r\n| `$.a[$.b[1]]`         | `{\"q\": [4, 5, 6]}` | `$['a']['p']`    | Object name from embedded singular query                          |\r\n| `$.a.j[$['c d'].x.y]` | `2`                | `$['a']['j'][1]` | Array index from embedded singular query                          |\r\n| `$.a[$.b]`            |                    |                  | Embedded singular query does not resolve to a string or int value |",
+          "createdAt": "2024-05-28T07:21:10Z",
+          "updatedAt": "2024-05-28T07:29:44Z"
+        },
+        {
+          "author": "vishalJ16",
+          "authorAssociation": "NONE",
+          "body": "> With jayway, it's possibly, you need to register a pathfunction with reflection\r\n\r\nSorry I am a bit confused. To register my custom function to jsonpath, I would required these code changes https://github.com/json-path/JsonPath/pull/286 mentioned here https://github.com/json-path/JsonPath/issues/246, or can it be done without them? These changes still not merged.",
+          "createdAt": "2024-05-28T09:49:08Z",
+          "updatedAt": "2024-05-28T09:49:08Z"
+        },
+        {
+          "author": "He-Pin",
+          "authorAssociation": "NONE",
+          "body": "> > With jayway, it's possibly, you need to register a pathfunction with reflection\n> \n> Sorry I am a bit confused. To register my custom function to jsonpath, I would required these code changes https://github.com/json-path/JsonPath/pull/286 mentioned here https://github.com/json-path/JsonPath/issues/246, or can it be done without them? These changes still not merged.\n\nYou can change it with Java Reflection or MrthodHandles\u3002",
+          "createdAt": "2024-05-28T10:52:56Z",
+          "updatedAt": "2024-05-28T10:52:56Z"
         }
       ]
     }
