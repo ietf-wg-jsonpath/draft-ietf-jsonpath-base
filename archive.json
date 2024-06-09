@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-06-02T01:22:09.566298+00:00",
+  "timestamp": "2024-06-09T01:24:43.983065+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -17409,6 +17409,30 @@
           "body": "@jg-rp you bring up a good point about including the root selector.  I think it should be required.\n\nI wonder if the relative root makes sense to also define. \n\n```\n$..[@.a]\n```\n\nRecursively select the value in objects indicated by the object's `a` property. \n\nOf course this entire feature can also only be defined for keys which are strings (names) or numbers (indices).  It wouldn't select anything if the value ends up being any other JSON value type.",
           "createdAt": "2024-05-31T04:49:03Z",
           "updatedAt": "2024-05-31T04:55:16Z"
+        }
+      ]
+    },
+    {
+      "number": 523,
+      "id": "I_kwDOEIqrgc6LbbFl",
+      "title": "Official documentation",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/523",
+      "state": "OPEN",
+      "author": "gregsdennis",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "In order to foster adoption of the new RFC (9535), we should have a documentation site that describes how JSON Path works in less \"specification-y\" terms.\r\n\r\n@cabo/@timbray what is the typical IETF approach to this sort of thing?",
+      "createdAt": "2024-06-06T22:04:24Z",
+      "updatedAt": "2024-06-06T22:32:39Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "> @cabo/@timbray what is the typical IETF approach to this sort of thing?\r\n\r\nGenerally, the IETF is not in the business of providing or maintaining such resources.\r\nThe IETF does have some \"communications\" activities, so it would be easy to point to such resources, but it always will be clear these are not IETF resources.\r\n\r\nThis may sound negative, but the upside is that these resources are not mired in IETF process, which is heavier for its main goal of standards settings than it needs to be for these resources.",
+          "createdAt": "2024-06-06T22:32:38Z",
+          "updatedAt": "2024-06-06T22:32:38Z"
         }
       ]
     }
