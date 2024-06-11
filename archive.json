@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-06-09T01:24:43.983065+00:00",
+  "timestamp": "2024-06-11T01:19:27.868786+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -17433,6 +17433,30 @@
           "body": "> @cabo/@timbray what is the typical IETF approach to this sort of thing?\r\n\r\nGenerally, the IETF is not in the business of providing or maintaining such resources.\r\nThe IETF does have some \"communications\" activities, so it would be easy to point to such resources, but it always will be clear these are not IETF resources.\r\n\r\nThis may sound negative, but the upside is that these resources are not mired in IETF process, which is heavier for its main goal of standards settings than it needs to be for these resources.",
           "createdAt": "2024-06-06T22:32:38Z",
           "updatedAt": "2024-06-06T22:32:38Z"
+        }
+      ]
+    },
+    {
+      "number": 524,
+      "id": "I_kwDOEIqrgc6LnmGw",
+      "title": "I want to join this oganization",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/524",
+      "state": "OPEN",
+      "author": "kentaurse",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-06-09T18:17:33Z",
+      "updatedAt": "2024-06-09T22:33:22Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Hey there @kentaurse.  We're not really looking to move on anything right now, except for building out the [(unofficial) test suite](https://github.com/jsonpath-standard/jsonpath-compliance-test-suite).  Happy for you to make contributions there or comment on issues, but you don't need to be a member of the org to do that.",
+          "createdAt": "2024-06-09T22:33:22Z",
+          "updatedAt": "2024-06-09T22:33:22Z"
         }
       ]
     }
