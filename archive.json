@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-06-11T01:19:27.868786+00:00",
+  "timestamp": "2024-07-04T01:20:02.732367+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -17424,7 +17424,7 @@
       "labels": [],
       "body": "In order to foster adoption of the new RFC (9535), we should have a documentation site that describes how JSON Path works in less \"specification-y\" terms.\r\n\r\n@cabo/@timbray what is the typical IETF approach to this sort of thing?",
       "createdAt": "2024-06-06T22:04:24Z",
-      "updatedAt": "2024-06-06T22:32:39Z",
+      "updatedAt": "2024-07-02T22:23:32Z",
       "closedAt": null,
       "comments": [
         {
@@ -17433,6 +17433,13 @@
           "body": "> @cabo/@timbray what is the typical IETF approach to this sort of thing?\r\n\r\nGenerally, the IETF is not in the business of providing or maintaining such resources.\r\nThe IETF does have some \"communications\" activities, so it would be easy to point to such resources, but it always will be clear these are not IETF resources.\r\n\r\nThis may sound negative, but the upside is that these resources are not mired in IETF process, which is heavier for its main goal of standards settings than it needs to be for these resources.",
           "createdAt": "2024-06-06T22:32:38Z",
           "updatedAt": "2024-06-06T22:32:38Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "FWIW, I've added some tutorial materials to my learning site https://learn.json-everything.net/json-path.",
+          "createdAt": "2024-07-02T22:23:31Z",
+          "updatedAt": "2024-07-02T22:23:31Z"
         }
       ]
     },
