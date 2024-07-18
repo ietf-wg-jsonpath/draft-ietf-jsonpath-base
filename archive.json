@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-04T01:20:02.732367+00:00",
+  "timestamp": "2024-07-18T01:20:31.338925+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -17424,7 +17424,7 @@
       "labels": [],
       "body": "In order to foster adoption of the new RFC (9535), we should have a documentation site that describes how JSON Path works in less \"specification-y\" terms.\r\n\r\n@cabo/@timbray what is the typical IETF approach to this sort of thing?",
       "createdAt": "2024-06-06T22:04:24Z",
-      "updatedAt": "2024-07-02T22:23:32Z",
+      "updatedAt": "2024-07-16T08:04:38Z",
       "closedAt": null,
       "comments": [
         {
@@ -17440,6 +17440,20 @@
           "body": "FWIW, I've added some tutorial materials to my learning site https://learn.json-everything.net/json-path.",
           "createdAt": "2024-07-02T22:23:31Z",
           "updatedAt": "2024-07-02T22:23:31Z"
+        },
+        {
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "What is your idea behind misspelling my name, Greg?\r\n\r\nhttps://blog.json-everything.net/posts/json-path-spec/\r\n\r\n--\r\nStefan\r\n\r\n\r\nAm 03.07.2024 um 00:23 schrieb Greg Dennis:\r\n>\r\n> FWIW, I've added some tutorial materials to my learning site\r\n> https://learn.json-everything.net/json-path.\r\n>\r\n> \u2014\r\n> Reply to this email directly, view it on GitHub\r\n> <https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/523#issuecomment-2204560001>,\r\n> or unsubscribe\r\n> <https://github.com/notifications/unsubscribe-auth/ABFM6WWOZLMZLUQWLI7MMA3ZKMR7VAVCNFSM6AAAAABI5RNZWSVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDEMBUGU3DAMBQGE>.\r\n> You are receiving this because you are subscribed to this\r\n> thread.Message ID:\r\n> ***@***.***>\r\n>\r\n",
+          "createdAt": "2024-07-16T06:46:21Z",
+          "updatedAt": "2024-07-16T06:46:21Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I'm an idiot american! \ud83d\ude06   I'll fix it.  Sorry.\r\n",
+          "createdAt": "2024-07-16T08:04:37Z",
+          "updatedAt": "2024-07-16T08:04:37Z"
         }
       ]
     },
