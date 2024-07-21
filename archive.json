@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-18T01:20:31.338925+00:00",
+  "timestamp": "2024-07-21T01:33:22.657621+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -17424,7 +17424,7 @@
       "labels": [],
       "body": "In order to foster adoption of the new RFC (9535), we should have a documentation site that describes how JSON Path works in less \"specification-y\" terms.\r\n\r\n@cabo/@timbray what is the typical IETF approach to this sort of thing?",
       "createdAt": "2024-06-06T22:04:24Z",
-      "updatedAt": "2024-07-16T08:04:38Z",
+      "updatedAt": "2024-07-19T17:11:39Z",
       "closedAt": null,
       "comments": [
         {
@@ -17454,6 +17454,27 @@
           "body": "I'm an idiot american! \ud83d\ude06   I'll fix it.  Sorry.\r\n",
           "createdAt": "2024-07-16T08:04:37Z",
           "updatedAt": "2024-07-16T08:04:37Z"
+        },
+        {
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Again, what is your id\u00eba behind missp\u00eblling my nam\u00eb, Gr\u00ebg? https://blog.json-everything.net/posts/json-path-spec/\r\n-- Stefan\r\n\r\n\r\nAm 17.07.2024 um 15:01 schrieb Stefan G\u00f6ssner:\r\n> It's hard for me to believe, that you can't see the difference between\r\n>\r\n> * correct ... 'G\u00f6ssner'\r\n> * alternate ... 'Goessner', since '\u00f6' equiv 'oe'\r\n> * misspelled ... 'Go\u00ebssner'\r\n>\r\n> as you do in ...\r\n>\r\n> https://blog.json-everything.net/posts/json-path-spec/\r\n>\r\n>\r\n> --\r\n> Stefan\r\n>\r\n> Am 16.07.2024 um 08:46 schrieb Stefan G\u00f6ssner:\r\n>> What is your idea behind misspelling my name, Greg?\r\n>>\r\n>> https://blog.json-everything.net/posts/json-path-spec/\r\n>>\r\n>> --\r\n>> Stefan\r\n>>\r\n>>\r\n>> Am 03.07.2024 um 00:23 schrieb Greg Dennis:\r\n>>>\r\n>>> FWIW, I've added some tutorial materials to my learning site\r\n>>> https://learn.json-everything.net/json-path.\r\n>>>\r\n>>> \u2014\r\n>>> Reply to this email directly, view it on GitHub\r\n>>> <https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/523#issuecomment-2204560001>,\r\n>>> or unsubscribe\r\n>>> <https://github.com/notifications/unsubscribe-auth/ABFM6WWOZLMZLUQWLI7MMA3ZKMR7VAVCNFSM6AAAAABI5RNZWSVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDEMBUGU3DAMBQGE>.\r\n>>> You are receiving this because you are subscribed to this\r\n>>> thread.Message ID:\r\n>>> ***@***.***>\r\n>>>\r\n>>\r\n>\r\n",
+          "createdAt": "2024-07-19T10:05:42Z",
+          "updatedAt": "2024-07-19T10:05:42Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Then why is your username @goessner?  I'll do it with a PR this time.",
+          "createdAt": "2024-07-19T10:19:32Z",
+          "updatedAt": "2024-07-19T10:19:32Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": "> Then why is your username @goessner? I'll do it with a PR this time.\r\n\r\nI think _everybody_ took the spelling from [https://goessner.net/index.html](https://goessner.net/index.html). Are PR's to all JSONPath github sites in order?",
+          "createdAt": "2024-07-19T17:11:38Z",
+          "updatedAt": "2024-07-19T17:11:38Z"
         }
       ]
     },
