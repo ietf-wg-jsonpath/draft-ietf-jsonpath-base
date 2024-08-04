@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-21T01:33:22.657621+00:00",
+  "timestamp": "2024-08-04T01:34:19.757255+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -16874,7 +16874,7 @@
       "labels": [],
       "body": "[This question](https://stackoverflow.com/q/78024322/878701) popped up on StackOverflow in which the user wants to select the keys present in the resulting object.  To do this, they're expecting to end the query with `~`.\r\n\r\nSo `$.*~` would select all of the items and then return the keys for those items.\r\n\r\nIn a more complex query, you could have `$[?@.foo == 5]~` to find the property names (or array indices) of every child that meets the condition.\r\n\r\nTo date, I've asked what implementation they're using that supports this syntax, but I've yet to receive a result.\r\n\r\nWe also have #324 that proposed a function extension to do this rather than syntax, but there wasn't much discussion there other than the data is available through the location paths in the query result.  The problem with this is that you can't check that until the query is complete.\r\n\r\nI think a benefit of this is that you could continue querying on the property name set.\r\n\r\nBuilding on the more complex example, with an array of objects, if I wanted the index of the third item where `@.foo == 5`, I could do `$[?@.foo == 5]~[2]`.\r\n\r\nLogging for visibility and discussion.  It seems simple enough.  (This would also be the first functionality that actually _uses_ the location data as part of the query.)",
       "createdAt": "2024-02-21T00:03:05Z",
-      "updatedAt": "2024-05-08T02:53:14Z",
+      "updatedAt": "2024-08-01T23:02:42Z",
       "closedAt": null,
       "comments": [
         {
@@ -17002,6 +17002,13 @@
           "body": "@gregsdennis I have all the test suites passed, and my parser is written with fast parse.",
           "createdAt": "2024-05-08T02:53:13Z",
           "updatedAt": "2024-05-08T02:53:13Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I recently tried to implement a `key()` function in my library and ran into a problem that's likely due to how .Net designed their JSON DOM rather than any shortcoming inherent to this proposal.\r\n\r\nIn the .Net JSON DOM, they've decided to merge the ideas of .Net's null and JSON's `null` literal.  That is, given a variable of type `JsonNode`, a null value (what would be `0x0` in something like C) is used for the JSON value `null`.\r\n\r\nThis design decision means that I can't identify where a null value may be in a JSON structure if I'm only given the value itself.  Even though the `JsonNode` API has methods for finding its parent or the key/index that it's under, this API is inaccessible to me because I need an actual value to use it.\r\n\r\nThe impact for me is that, in order to support this, I need to (internally) represent `@` not as the _value_ but as the entire _node_ (which is defined as the value and its location).\r\n\r\nI expect if .Net has this issue, it's at least likely that some other languages could have this problem as well.  It's not a show-stopper, but it's definitely something that needs to be considered when implementing this.",
+          "createdAt": "2024-08-01T23:02:41Z",
+          "updatedAt": "2024-08-01T23:02:41Z"
         }
       ]
     },
