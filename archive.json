@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-08-04T01:34:19.757255+00:00",
+  "timestamp": "2024-08-06T01:22:46.885587+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -16829,7 +16829,7 @@
       ],
       "body": "_An interesting question was asked on [StackOverflow](https://stackoverflow.com/q/77683897/878701), and [subsequently](https://github.com/gregsdennis/json-everything/issues/602) on my lib's repo, which I thought would be a good suggestion for the V2 spec (supposing that happens)._\r\n\r\n### Proposal\r\n\r\nGiven the JSON document\r\n\r\n```json\r\n{\r\n  \"options\": [\r\n    {\r\n      \"price\": 217,\r\n      \"quantity\": 2\r\n    },\r\n    {\r\n      \"price\": 63,\r\n      \"quantity\": 5\r\n    }\r\n  ]\r\n}\r\n```\r\n\r\nThis proposal enables performing a calculation, e.g. `price * quantity`, and getting its result by assigning a new property in the local JSON so that it can be queried by subsequence segments.\r\n\r\nA path that could do this would be:\r\n\r\n```jsonpath\r\n$.options[?(@.result = @.price * @.quantity)].result\r\n```\r\n\r\nIn this path, `@.result` is assigned the result of the multiplication.  This assignment would operate as an \"upsert\" where it would overwrite any value that may already be there.  The new value is subsequently returned by the next segment `.result`.\r\n\r\nThis likely has applications beyond this simple example and is worth considering.  Additionally, many other query languages (e.g. SQL) permit the creation and selection of temporary values like this.\r\n\r\nIt's understood that filter expressions as currently defined are required to return a boolean value, and the above expression does not, so that aspect of filter expressions will need to be revisited/addressed.\r\n\r\nDepending on how the conversation goes here, I could probably work it up in my implementation as an optional behavior to make it available on [my playground](https://json-everything.net/json-path).\r\n\r\n### Caveat\r\n\r\nThis feature is predicated on math operations being supported, which the base spec does not.  Currently we can't even select based on calculated values meeting some threshold, e.g.\r\n\r\n```jsonpath\r\n$.options[?(@.price * @.quantity > 400)]\r\n```\r\n\r\nNote that these math operators (not assignment, though) _are_ already optionally supported on my playground.",
       "createdAt": "2023-12-19T21:47:16Z",
-      "updatedAt": "2023-12-20T15:56:53Z",
+      "updatedAt": "2024-08-05T15:11:22Z",
       "closedAt": null,
       "comments": [
         {
@@ -16859,6 +16859,20 @@
           "body": "> In this path, `@.result` is assigned the result of the multiplication. This assignment would operate as an \"upsert\" where it would overwrite any value that may already be there. The new value is subsequently returned by the next segment `.result`.\r\n> \r\nIt sounds to me like this would be a use case for lexical scoping. JMESPath recently accepted a [JMESPath Enhancement Proposal](https://jmespath.github.io/jmespath.jep/0018-lexical-scope.html) for lexical scoping using a new let expression. ",
           "createdAt": "2023-12-20T15:56:52Z",
           "updatedAt": "2023-12-20T15:56:52Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> JSONPath's unique feature is that it returns nodes that correspond to location/value pairs in the original document...\r\n\r\nIt's actually a good point that JSON Path returns a set of _nodes_, not values.  There is no node that corresponds to the output of\r\n\r\n```jsonpath\r\n$.options[?(@.result = @.price * @.quantity)].result\r\n```\r\n\r\nSince `result` is a value that's generated at evaluation time, there's no path that leads to it.",
+          "createdAt": "2024-08-05T00:37:54Z",
+          "updatedAt": "2024-08-05T00:37:54Z"
+        },
+        {
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "body": "> Since `result` is a value that's generated at evaluation time, there's no path that leads to it.\r\n\r\nIndeed. It should be noted though that the two biggest JSONPath implementations - Jayway JSONPath and JSONPath Plus - do produce new values in some circumstances. Jayway JSONPath supports path functions , e.g. `$.phoneNumbers.length()`, that returns the number of elements in an array as a new value, and JSONPath Plus supports the length property, e.g. `$.phoneNumbers.length`, that does the same.  Jayway JSONPath raises an error if attempting to return normalized paths when using path functions.",
+          "createdAt": "2024-08-05T15:11:21Z",
+          "updatedAt": "2024-08-05T15:11:21Z"
         }
       ]
     },
